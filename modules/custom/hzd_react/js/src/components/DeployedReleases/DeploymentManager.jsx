@@ -4,8 +4,7 @@ import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootst
 import { Link, useHistory } from 'react-router-dom';
 import DeployedReleasesFilter from './DeployedReleasesFilter';
 import DeploymentForm from './DeploymentForm';
-import ArchiveForm from './ArchiveForm';
-import EinsatzmeldungBearbeiten from '../EinsatzmeldungBearbeiten';
+import ArchiveForm from './ArchiveDeploymentForm';
 import useQuery from '../../hooks/hooks';
 import FormManager from './FormManager';
 
@@ -235,7 +234,6 @@ export default function DeploymentManager() {
       .then(results => {
         if (runner === fetchCount.current) {
           if (results.length === 0) setTimeout(true);
-          // console.log(results);
           setData(results);
         }
       })
@@ -395,29 +393,7 @@ export default function DeploymentManager() {
         handleEdit={handleEdit}
         filterState={filterState}
       />
-      {/*<EinsatzmeldungArchivieren
-        showArchiveForm={showArchiveForm}
-        setShowArchiveForm={setShowArchiveForm}
-        prevDeploymentId={prevDeploymentId}
-        count={count}
-        setCount={setCount}
-        prevName={prevName}
-      />
-      <EinsatzmeldungBearbeiten 
-        showEditForm={showEditForm}
-        setShowEditForm={setShowEditForm}
-        prevDeploymentId={prevDeploymentId}
-        triggerReleaseSelect={triggerReleaseSelect}
-        setTriggerReleaseSelect={setTriggerReleaseSelect}
-        releases={releases}
-        setService={setService}
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        disabled={disabled}
-        setDisabled={setDisabled}
-        deploymentUuid={deploymentUuid}
-        setDeploymentUuid={setDeploymentUuid}
-      /> */}
+      <p>WIP v0.3</p>
     </div>
   )
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 
-export default function ArchiveForm(props) {
+export default function ArchiveDeploymentForm(props) {
   const [showSaving, setShowSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);

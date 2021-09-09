@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import DeploymentForm from './DeploymentForm';
-import ArchiveForm from './ArchiveForm';
+import ArchiveDeploymentForm from './ArchiveDeploymentForm';
+import EditDeploymentForm from './EditDeploymentForm';
 import { Button } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 
@@ -20,21 +21,14 @@ export default function FormManager(props) {
   // disabled state for Relase Selectors.
   const [disabled, setDisabled] = useState(true);
 
-  const [triggerReleaseSelect, setTriggerReleaseSelect] = useState(false);
-
   // Infotext während Releaseauswahl befüllt wird.
   const [loadingMessage, setLoadingMessage] = useState(<p />);
-
-  const [showEditForm, setShowEditForm] = useState(false);
 
   // Für SelectRelease Komponente. Die nicht-eingesetzten Releases.
   const [newReleases, setNewReleases] = useState([]);
 
   // Für SelectPreviousRelease Komponente. Die eingesetzten Releases.
   const [prevReleases, setPrevReleases] = useState([]);
-
-  /** @const {bool} triggerForm - Triggers deployment form. */
-  const [triggerForm, setTriggerForm] = useState(false);
 
   const [submitMessage, setSubmitMessage] = useState(false);
 
@@ -63,7 +57,7 @@ export default function FormManager(props) {
    * @property {string} deploymentData[].uuid - Die UUID der Einsatzmeldung.
    * @property {string} deploymentData[].status - Der Status der Einsatzmeldung.
    */
-  const [deploymentData, setDeploymentData] = useState([false, false, false]);
+  const [deploymentData, setDeploymentData] = useState([]);
 
   const initialFormState = {
     "uuid": "",
@@ -81,6 +75,7 @@ export default function FormManager(props) {
     "archiveThis": false,
     "firstDeployment": true,
     "product": "",
+    "action": "first",
   };
 
   /**
@@ -101,6 +96,7 @@ export default function FormManager(props) {
    * @property {bool}   formState.archiveThis - Should this deployment be archived?
    * @property {bool}   formState.firstDeployment - First deployment of this product?
    * @property {bool}   formState.product - First deployment of this product?
+   * @property {bool}   formState.action - First deployment of this product?
    */
   const [formState, setFormState] = useState(initialFormState);
 
@@ -125,14 +121,16 @@ export default function FormManager(props) {
   }, [deploymentData])
 
   useEffect(() => {
+    setSubmitMessage(false);
     if (props.triggerAction.action == "successor") {
       setFormState(prev => ({
         ...prev,
-        "state": props.triggerAction.args.userState,
+        "state": props.triggerAction.args.state,
         "environment": props.triggerAction.args.environment,
         "service": props.triggerAction.args.service,
         "previousRelease": props.triggerAction.args.release,
         "product": props.triggerAction.args.product,
+        "action": props.triggerAction.action,
       }));
       setPrevDeploymentData(prev => ({...prev, "uuid": props.triggerAction.args.deploymentId}));
       setFormAction(props.triggerAction.action); // ??? Noch nicht verwendet
@@ -144,7 +142,67 @@ export default function FormManager(props) {
       setShowArchiveForm(true);
       props.setTriggerAction(false);
     }
+    if (props.triggerAction.action == "edit") {
+      setFormState(prev => ({
+        ...prev,
+        "uuid": props.triggerAction.uuid,
+        "action": props.triggerAction.action,
+      }));
+      setShowDeploymentForm(true);
+      fetchDeployment(props.triggerAction.args.uuid);
+      setSubmitMessage(<li>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></li>);
+    }
   }, [props.triggerAction])
+
+  const fetchDeployment = (uuid) => {
+    const url = '/jsonapi/node/deployed_releases/'
+      + uuid
+      +'?include=field_deployed_release,field_prev_release,field_service&fields[node--release]=drupal_internal__nid&fields[node--services]=drupal_internal__nid';
+    const headers = new Headers({
+      Accept: 'application/vnd.api+json',
+    });
+    fetch(url, { headers })
+      .then(response => response.json())
+      .then(results => {
+        setSubmitMessage(false);
+        const service = results.included.find(element => {
+          return element.id == results.data.relationships.field_service.data.id;
+        });
+        const release = results.included.find(element => {
+          return element.id == results.data.relationships.field_deployed_release.data.id;
+        });
+        let prevReleaseNid = "0";
+        if (results.data.relationships.field_prev_release.length > 0) {
+          const prevRelease = results.included.find(element => {
+            return element.id == results.data.relationships.field_prev_release.data.id;
+          });
+          prevReleaseNid = prevRelease.attributes.drupal_internal__nid;
+        }
+
+        const abnormalityDescription = results.data.attributes.field_abnormality_description ? results.data.attributes.field_abnormality_description.value : "";
+
+        const installationTime = results.data.attributes.field_installation_time !== null ? results.data.attributes.field_installation_time : "";
+
+        setFormState(prev => ({
+          ...prev,
+          "uuid": results.data.id,
+          "state": results.data.attributes.field_user_state,
+          "environment": results.data.attributes.field_environment,
+          "service": service.attributes.drupal_internal__nid,
+          "date": results.data.attributes.field_date_deployed,
+          "installationTime": installationTime,
+          "isAutomated": results.data.attributes.field_automated_deployment_bool,
+          "abnormalities": results.data.attributes.field_abnormalities_bool,
+          "description": abnormalityDescription,
+          "releaseNid": release.attributes.drupal_internal__nid,
+          "previousRelease": prevReleaseNid,
+          "archivePrevRelease": "",
+          "archiveThis": false,
+          "firstDeployment": results.data.attributes.field_first_deployment,
+        }));
+      })
+      .catch(error => console.log("error", error));
+  }
 
   /**
    * Loads deployment data asnychronous to filter selection.
@@ -184,7 +242,6 @@ export default function FormManager(props) {
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
-    console.log("Einsatzmeldungen laden: " + url);
     setLoadingMessage(<p>Lade Einsatzmeldungen um Releases zu filtern ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
     fetch(url, { headers })
       .then(response => response.json())
@@ -231,58 +288,47 @@ export default function FormManager(props) {
     }
 
     // Releases filtern: Eingesetzt (Vorgängerreleases).
-    // let filteredPrevReleases = releaseArray.filter(release => {
-    //   return deployedReleaseNids.indexOf(release.nid) >= 0;
-    // })
-
-    // Releases filtern: Eingesetzt (Vorgängerreleases).
     let filteredPrevReleases = { ...releaseArray };
-    for (const nid in releaseArray) {
-      if (deployedReleaseNids.indexOf(nid) === -1) {
-        delete filteredPrevReleases[nid];
+    // Filter nur anwenden, wenn uuid leer ist. Dann ist es eine neue Einsatzmeldung.
+    if (formState.uuid === "") {
+      for (const nid in releaseArray) {
+        if (deployedReleaseNids.indexOf(nid) === -1) {
+          delete filteredPrevReleases[nid];
+        }
       }
     }
+
     let deployedReleases = [];
     let product = false;
     for (const release in filteredPrevReleases) {
       deployedReleases.push(filteredPrevReleases[release]);
-      // console.log(filteredPrevReleases[release].nid.toString(), props.previousRelease);
       if (filteredPrevReleases[release].nid.toString() == formState.previousRelease) {
         const title = filteredPrevReleases[release].title;
         product = title.substring(0, title.indexOf('_') + 1);
       }
     }
-    // deployedReleases.sort((a, b) => b - a);
     deployedReleases.sort(function (a, b) {
       var releaseA = a.title.toUpperCase();
       var releaseB = b.title.toUpperCase();
       if (releaseA < releaseB) {
-        return -1;
+        return 1;
       }
       if (releaseA > releaseB) {
-        return 1;
+        return -1;
       }
       return 0;
     });
-
     // Releases filtern: Nicht Eingesetzt (Neue Einsatzmeldung).
-    // let filteredNewReleases = releaseArray.filter(release => {
-    //   let result = false;
-    //   if (deployedReleaseNids.indexOf(release.nid) === -1) {
-    //     result = true;
-    //   }
-    //   if (product && release.title.indexOf(product) == -1) {
-    //     result = false;
-    //   }
-    //   return result;
-    // });
     let filteredNewReleases = { ...releaseArray };
-    for (const nid in releaseArray) {
-      if (deployedReleaseNids.indexOf(nid) >= 0) {
-        delete filteredNewReleases[nid];
-      }
-      if (releaseArray[nid].title.indexOf(formState.product)){
-        delete filteredNewReleases[nid];
+    // Filter nur anwenden, wenn uuid leer ist. Dann ist es eine neue Einsatzmeldung.
+    if (formState.uuid === "") {
+      for (const nid in releaseArray) {
+        if (deployedReleaseNids.indexOf(nid) >= 0) {
+          delete filteredNewReleases[nid];
+        }
+        if (releaseArray[nid].title.indexOf(formState.product)) {
+          delete filteredNewReleases[nid];
+        }
       }
     }
 
@@ -296,15 +342,14 @@ export default function FormManager(props) {
       var releaseA = a.title.toUpperCase();
       var releaseB = b.title.toUpperCase();
       if (releaseA < releaseB) {
-        return -1;
+        return 1;
       }
       if (releaseA > releaseB) {
-        return 1;
+        return -1;
       }
       return 0;
     });
 
-    console.log("Eingesetzte Releases wurden geholt und Releaseoptionen gefiltert.");
     if (undeployedReleases.length === 0) {
       setLoadingMessage(<p>Es stehen keine Releases zur Auswahl zur Verfügung.</p>);
     }
@@ -318,11 +363,11 @@ export default function FormManager(props) {
   }
 
   const handleFirstDeployment = () => {
+    setSubmitMessage(false);
     setFormState(initialFormState);
     setShowDeploymentForm(true);
   }
 
-  // Handler für Button "Ersteinsatz melden".
   const handleClose = () => {
     setFormState(initialFormState);
     setNewReleases([]);
@@ -331,11 +376,7 @@ export default function FormManager(props) {
   }
 
   function handleSave() {
-    console.log("##### HANDLE SAVE START #####")
     postDeployment();
-
-    // Nach Absendung des Formulars alles zurücksetzen.
-    // setFormState(initialFormState);
   }
 
   const postDeployment = () => {
@@ -403,18 +444,14 @@ export default function FormManager(props) {
     // var data should be completed with relationsship field_prev_release
     if (formState.previousRelease != "0") {
       // UUID des Vorgängerrelease.
-      // @todo prevReleases aus Manager ziehen
-      // let pRelease = allReleases[formState.service].filter(element => {
-      //   return formState.previousRelease === element.nid;
-      // })
       let pRelease = false;
       if (formState.previousRelease in allReleases[formState.service]) {
         pRelease = allReleases[formState.service][formState.previousRelease];
       }
 
       if (!pRelease) {
-        // props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
-        setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die UUID eines Vorgängerreleases nicht ermittelt werden konnte.</li>);
+        props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
+        setSubmitMessage(<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die UUID eines Vorgängerreleases nicht ermittelt werden konnte.</li>);
         return;
       }
       const uuidPrevRelease = pRelease.uuid;
@@ -427,35 +464,40 @@ export default function FormManager(props) {
       }
       postdata["data"]["relationships"] = { ...postdata["data"]["relationships"], field_prev_release };
     }
-
-    console.log("POST");
-    console.log(postdata);
-    const csrfUrl = `/session/token?_format=json`;
+    
     let fetchUrl = "/jsonapi/node/deployed_releases";
+    let method = "POST";
+
+    if (formState.action == "edit") {
+      method = "PATCH";
+      fetchUrl += '/' + formState.uuid;
+      postdata["data"]["id"] = formState.uuid;
+    }
+
+    const csrfUrl = `/session/token?_format=json`;
     let fetchOptions = {
-      method: 'POST',
-      headers: new Headers({
+      "method": method,
+      "headers": new Headers({
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
         'Cache': 'no-cache',
       }),
-      body: JSON.stringify(postdata),
+      "body": JSON.stringify(postdata),
     }
 
     fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
       .then(antwort => antwort.json())
       .then(antwort => {
-        console.log(antwort);
         if ("errors" in antwort) {
-          // props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
-          setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
+          props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden.</li>);
+          setSubmitMessage(<li>Die Einsatzmeldung konnte nicht gespeichert werden.</li>);
           props.setCount(props.count + 1);
         }
         else {
           props.setDeploymentHistory(prev => [...prev, formState.releaseNid]);
           setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
           // Is the previous deployment supposed to be archived?
-          if (prevDeploymentData && formState.archivePrevRelease === true) {
+          if (prevDeploymentData && formState.archivePrevRelease === true && formState.action == "successor") {
             patchDeployment();
           }
           // No further action needed, reset everything.
@@ -468,7 +510,7 @@ export default function FormManager(props) {
       })
       .catch(error => {
         console.log('fehler:', error);
-        // props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
+        props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
         setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
       });
   }
@@ -500,7 +542,6 @@ export default function FormManager(props) {
     fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
       .then(antwort => antwort.json())
       .then(antwort => {
-        console.log(antwort);
         props.setCount(props.count + 1);
         if ("errors" in antwort) {
           setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
@@ -519,7 +560,6 @@ export default function FormManager(props) {
       });
   }
 
-
   return (
     <div>
       { props.status == "1" &&
@@ -535,11 +575,7 @@ export default function FormManager(props) {
       setCount={props.setCount}
       formState={formState}
       setFormState={setFormState}
-      triggerForm={triggerForm}
-      setTriggerForm={setTriggerForm}
       releases={props.releases}
-      triggerReleaseSelect={triggerReleaseSelect}
-      setTriggerReleaseSelect={setTriggerReleaseSelect}
       isLoading={isLoading}
       setIsLoading={setIsLoading}
       disabled={disabled}
@@ -557,7 +593,7 @@ export default function FormManager(props) {
       submitMessage={submitMessage}
       setSubmitMessage={setSubmitMessage}
     />
-    <ArchiveForm
+    <ArchiveDeploymentForm
       showArchiveForm={showArchiveForm}
       setShowArchiveForm={setShowArchiveForm}
       prevDeploymentData={prevDeploymentData}

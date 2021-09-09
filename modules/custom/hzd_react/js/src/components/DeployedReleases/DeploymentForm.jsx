@@ -9,6 +9,7 @@ export default function DeploymentForm(props) {
   const [disabledPrevRelease, setDisabledPrevRelease] = useState(true);
   const [disableSubmit, setDisableSubmit] = useState(false);
   const [validateMessage, setValidateMessage] = useState([]);
+  const [title, setTitle] = useState("");
 
   // let firstDeployment = false;
   // if (props.previousRelease == "0") {
@@ -19,12 +20,12 @@ export default function DeploymentForm(props) {
 
   // POST Request zum anlegen einer neuen Einsatzmeldung.
 
-
-  useEffect(() => {
-    if (props.showDeploymentForm === true) {
-      props.setSubmitMessage(false);
-    }
-  }, [props.showDeploymentForm])
+  // Nicht mehr beötigt, da handleClose das übernimmt?
+  // useEffect(() => {
+  //   if (props.showDeploymentForm === true) {
+  //     props.setSubmitMessage(false);
+  //   }
+  // }, [props.showDeploymentForm])
 
   //Umgebungen Drop Down
   const environments = global.drupalSettings.environments;
@@ -130,6 +131,25 @@ export default function DeploymentForm(props) {
     }
 
   }, [props.formState.environment, props.formState.service, props.formState.releaseNid, props.formState.previousRelease, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease])
+
+  // Set title.
+  useEffect(() => {
+    let state = props.formState.state;
+    if (typeof props.formState.state === 'string') {
+      state = parseInt(props.formState.state);
+    }
+    switch (props.formState.action) {
+      case "first":
+        setTitle("Neuer Ersteinsatz - " + global.drupalSettings.states[state]);
+        break;
+      case "successor":
+        setTitle("Nachfolgerelease melden - " + global.drupalSettings.states[state]);
+        break;
+      case "edit":
+        setTitle("Einsatzmeldung bearbeiten - " + global.drupalSettings.states[state]);
+        break;
+    }
+  }, [props.formState.action])
 
   const handleRadio = (e) => {
     let val = {};
@@ -333,7 +353,7 @@ export default function DeploymentForm(props) {
     <div>
       <Modal show={props.showDeploymentForm} onHide={props.handleClose}>
         <Modal.Header closeButton>
-          {props.firstDeployment ? <Modal.Title>Ersteinsatz melden - {global.drupalSettings.states[props.userState]}</Modal.Title> : <Modal.Title>Nachfolger melden - {global.drupalSettings.states[props.userState]}</Modal.Title>}
+          <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
       {formBody}
       </Modal>

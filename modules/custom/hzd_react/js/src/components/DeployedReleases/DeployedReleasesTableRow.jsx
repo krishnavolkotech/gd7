@@ -13,7 +13,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
   const service = deployment.serviceNid;
   const release = deployment.releaseNid;
   const releaseName = deployment.release;
-  const [product] = releaseName.split("_") + "_";
+  const product = releaseName.split("_")[0] + "_";
   const uuid = deployment.uuid;
   const nid= deployment.nid;
 
@@ -69,7 +69,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         <span>
           <OverlayTrigger placement="top" overlay={ttEdit}>
             {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/r/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
-            <Button bsStyle="primary" onClick={() => handleEdit(deploymentId)}><span className="glyphicon glyphicon-edit" /></Button>
+            <Button bsStyle="primary" onClick={() => handleAction("edit", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
