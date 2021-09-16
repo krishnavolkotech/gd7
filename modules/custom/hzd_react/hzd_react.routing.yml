@@ -38,7 +38,7 @@ hzd_react.deployed_releases_list:
   path: '/group/{group}/r/einsatzmeldungen/eingesetzt'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
-    _title: 'ZRML'
+    _title: 'Einsatzmeldungen verwalten'
   requirements:
     _permission: 'access content'
     group: '5'
@@ -46,8 +46,15 @@ hzd_react.archived_deployments:
   path: '/group/{group}/r/einsatzmeldungen/archiviert'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
-    _title: 'ZRML'
+    _title: 'Einsatzmeldungen verwalten'
   requirements:
     _permission: 'access content'
     group: '5'
+hzd_react.releases_in_progress:
+  path: '/group/{group}/r/releases/in-bearbeitung'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'Release Management'
+  requirements:
+    _permission: 'access content'
 

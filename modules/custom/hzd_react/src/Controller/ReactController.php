@@ -6,6 +6,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\group\Entity\Group;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Routing\RouteMatchInterface;
 
 /**
  * Defines ReactController class.
@@ -18,7 +19,6 @@ class ReactController extends ControllerBase {
    * @var \Drupal\Core\Entity\EntityTypeManager
    */
   protected $entityTypeManager;
-
 
   /**
    * ReactController constructor.
@@ -64,7 +64,7 @@ class ReactController extends ControllerBase {
    * @return array
    *   Return markup array.
    */
-  public function content($reactPage = NULL) {
+  public function content(RouteMatchInterface $routeMatch) {
     // if siteadmin
 
     // if rm group admin zrml
@@ -73,6 +73,7 @@ class ReactController extends ControllerBase {
 
     // get role -> drupalSettings (site admin > group admin rm > zrml)
     // get Verfahren
+    $groupId = $routeMatch->getParameter('group');
 
     $build = [
       '#type' => 'markup',
@@ -83,6 +84,7 @@ class ReactController extends ControllerBase {
     // In Zukunft noch um Geschäftsservice und Sonstiges Projekt ergänzen.
     $serviceTypes = [459, 460];
   
+    $services = [];
     foreach ($serviceTypes as $value) {
       $serviceQuery = db_query("SELECT n.title, n.nid
         FROM {node_field_data} n, {group_releases_view} grv, 
@@ -90,7 +92,7 @@ class ReactController extends ControllerBase {
         WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
         and grv.group_id = :gid and nrt.release_type_target_id = :tid 
         ORDER BY n.title asc", array(
-          ":gid" => 1,
+          ":gid" => $groupId,
           ":tid" => $value,
         )
       )->fetchAll();

@@ -10,6 +10,7 @@ import { Jumbotron, Button, Panel, Grid, Row, Col } from 'react-bootstrap';
 import ReleaseDeploymentHome from './ReleaseDeploymentHome';
 import DeployedReleasesZrmlView from './DeployedReleasesZrmlView';
 import DeploymentManager from './DeployedReleases/DeploymentManager';
+import ReleaseTableManager from './ReleaseTable/ReleaseTableManager';
 
 class App extends React.Component {
   constructor(props) {
@@ -25,8 +26,8 @@ class App extends React.Component {
             <Route path="/r/home">
               <Home />
             </Route>
-            <Route path="/r/releases">
-              <ReleaseManagementDashboard />
+            <Route path="/:group/r/releases/in-bearbeitung">
+              <ReleaseTableManager />
             </Route>
             <Route exact path="/zrml/r/einsatzmeldungen">
               <ReleaseDeploymentHome />

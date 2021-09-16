@@ -20,14 +20,14 @@ use Drupal\Core\Entity\Query\QueryFactory;
  * releases.
  *
  * @JsonapiHypermediaLinkProvider(
-*    id = "hzd_react.early_warnings",
+ *   id = "hzd_react.deployed_releases",
  *   link_context = {
  *     "resource_object" = "node--release",
  *   }
  * )
  *
  */
-final class EarlyWarningLinkProvider extends LinkProviderBase implements ContainerFactoryPluginInterface {
+final class DeployedReleasesLinkProvider extends LinkProviderBase implements ContainerFactoryPluginInterface {
 
   /**
    * The current account.
@@ -78,7 +78,7 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
    * {@inheritdoc}
    */
   public function getLinkRelationType() {
-    return 'early-warnings';
+    return 'deployed-releases';
   }
 
   /**
@@ -98,25 +98,32 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     // Nid of the release.
     $releaseNid = $context->getField("drupal_internal__nid")->value;
 
-    // Use nid of the release to find associated Early Warnings.
-    $earlyWarnings = $this->entityQuery->get('node')
+    // Use nid of the release to find associated deployed releases.
+    /** @var string[] $deployedReleases - Nids of deployed releases. */
+    $deployedReleases = $this->entityQuery->get('node')
       ->condition('status', 1)
-      ->condition('type', 'early_warnings')
-      ->condition('field_earlywarning_release', $releaseNid)
+      ->condition('type', 'deployed_releases')
+      ->condition('field_deployed_release', $releaseNid)
       ->execute();
+
     
+    $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/e-icon.png';
+    $deployed_img = "<img title='Einsatzinformationen anzeigen' class = 'e-info-icon' src = '/" . $deployed_imgpath . "'>";
+
+    $groupId = RELEASE_MANAGEMENT;
+    // $options = \Drupal::request()->query->all();
+    // $options['services'] = $releases->field_relese_services->target_id;
+    // $options['releases'] = $releases->id();
+    // unset($options['form_id']);
+    // unset($options['form_build_id']);
+    // unset($options['page']);
+
+    // $url = Url::fromRoute('hzd_release_management.deployedinfo', array('group' => $groupId), [
+    //     'query' => $options
+    // ]);
     $serviceNid = $context->getField("field_relese_services")->entity->id();
 
-    // @todo Identify correct release type (459 = KONSENS, 460 = Best/Fakt)
-    // $viewOptions = [
-    //   "query" => [
-    //     "services" => $serviceNid,
-    //     "releases" => $releaseNid,
-    //     "release_type" => 459,
-    //   ],
-    // ];
-    // $view_earlywarning_url = Url::fromRoute('hzd_earlywarnings.view_early_warnings', array('group' => 1), $viewOptions);
-    $url = Url::fromRoute('view.early_warnings_mit_ref.page_1',[],['query' => [
+    $url = Url::fromRoute('view.release_views.page_6',[],['query' => [
       'services' => $serviceNid,
       'releases' => $releaseNid,
     ]]);
@@ -126,16 +133,17 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     $link_cacheability->addCacheContexts(['session.exists', 'user.roles:anonymous']);
 
     // For debugging purposes only. Doesn't seem to work.
-    // $link_cacheability->setCacheMaxAge(1);
+    // $link_cacheabili ty->setCacheMaxAge(1);
 
-    if (count($earlyWarnings) == 0) {
+    if (count($deployedReleases) == 0) {
       return AccessRestrictedLink::createInaccessibleLink($link_cacheability);
     }
 
     return AccessRestrictedLink::createLink(AccessResult::allowed(), $link_cacheability, $url, $this->getLinkRelationType(), [
-      'earlyWarnings' => $earlyWarnings,
-      'earlyWarningCount' => count($earlyWarnings),
+      'deployedReleases' => $deployedReleases,
+      'deployedReleasesCount' => count($deployedReleases),
     ]);
+    
   }
 
 }

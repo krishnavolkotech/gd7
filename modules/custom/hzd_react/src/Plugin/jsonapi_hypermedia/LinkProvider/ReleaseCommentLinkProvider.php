@@ -20,14 +20,14 @@ use Drupal\Core\Entity\Query\QueryFactory;
  * releases.
  *
  * @JsonapiHypermediaLinkProvider(
-*    id = "hzd_react.early_warnings",
+*    id = "hzd_react.release_comments",
  *   link_context = {
  *     "resource_object" = "node--release",
  *   }
  * )
  *
  */
-final class EarlyWarningLinkProvider extends LinkProviderBase implements ContainerFactoryPluginInterface {
+final class ReleaseCommentLinkProvider extends LinkProviderBase implements ContainerFactoryPluginInterface {
 
   /**
    * The current account.
@@ -78,7 +78,7 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
    * {@inheritdoc}
    */
   public function getLinkRelationType() {
-    return 'early-warnings';
+    return 'release-comments';
   }
 
   /**
@@ -99,10 +99,10 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     $releaseNid = $context->getField("drupal_internal__nid")->value;
 
     // Use nid of the release to find associated Early Warnings.
-    $earlyWarnings = $this->entityQuery->get('node')
+    $releaseComments = $this->entityQuery->get('node')
       ->condition('status', 1)
-      ->condition('type', 'early_warnings')
-      ->condition('field_earlywarning_release', $releaseNid)
+      ->condition('type', 'release_comments')
+      ->condition('field_release_ref', $releaseNid)
       ->execute();
     
     $serviceNid = $context->getField("field_relese_services")->entity->id();
@@ -115,8 +115,8 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     //     "release_type" => 459,
     //   ],
     // ];
-    // $view_earlywarning_url = Url::fromRoute('hzd_earlywarnings.view_early_warnings', array('group' => 1), $viewOptions);
-    $url = Url::fromRoute('view.early_warnings_mit_ref.page_1',[],['query' => [
+    // $view_earlywarning_url = Url::fromRoute('hzd_releaseComments.view_early_warnings', array('group' => 1), $viewOptions);
+    $url = Url::fromRoute('view.release_kommentare_ref.page_1',[],['query' => [
       'services' => $serviceNid,
       'releases' => $releaseNid,
     ]]);
@@ -128,13 +128,9 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     // For debugging purposes only. Doesn't seem to work.
     // $link_cacheability->setCacheMaxAge(1);
 
-    if (count($earlyWarnings) == 0) {
-      return AccessRestrictedLink::createInaccessibleLink($link_cacheability);
-    }
-
     return AccessRestrictedLink::createLink(AccessResult::allowed(), $link_cacheability, $url, $this->getLinkRelationType(), [
-      'earlyWarnings' => $earlyWarnings,
-      'earlyWarningCount' => count($earlyWarnings),
+      'releaseComments' => $releaseComments,
+      'releaseCommentCount' => count($releaseComments),
     ]);
   }
 
