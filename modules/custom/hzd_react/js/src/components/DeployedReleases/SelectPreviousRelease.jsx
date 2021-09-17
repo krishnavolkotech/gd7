@@ -45,7 +45,7 @@ export default function SelectPreviousRelease({ formState, handleChange, prevRel
           name="previousRelease"
           value={formState.previousRelease}
           onChange={handleChange}
-          disabled={false}
+          disabled={true}
         >
           {releaseOptions}
         </FormControl>

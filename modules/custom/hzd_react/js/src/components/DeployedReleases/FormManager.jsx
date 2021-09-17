@@ -102,11 +102,12 @@ export default function FormManager(props) {
    * @property {bool}   formState.action - First deployment of this product?
    */
   const [formState, setFormState] = useState(initialFormState);
-
+  console.log(formState);
   // Trigger 1/3 release-selector filtering.
   useEffect(() => {
     if (formState.environment !== "0" && formState.service !== "0") {
       setDisabled(true);
+      setIsLoading(true);
       setLoadingMessage(<p>Releases werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
       props.fetchReleases(formState.service);
     }
@@ -134,6 +135,7 @@ export default function FormManager(props) {
         "previousRelease": props.triggerAction.args.release,
         "product": props.triggerAction.args.product,
         "action": props.triggerAction.action,
+        "firstDeployment": false,
       }));
       setPrevDeploymentData(prev => ({...prev, "uuid": props.triggerAction.args.uuid}));
       // setFormAction(props.triggerAction.action); // ??? Noch nicht verwendet
@@ -158,7 +160,8 @@ export default function FormManager(props) {
       }));
       setShowDeploymentForm(true);
       fetchDeployment(props.triggerAction.args.uuid);
-      setSubmitMessage(<li>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></li>);
+      setSubmitMessage(<FormSkeleton />);
+      // setSubmitMessage(<li>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></li>);
     }
   }, [props.triggerAction])
 
@@ -180,9 +183,9 @@ export default function FormManager(props) {
           return element.id == results.data.relationships.field_deployed_release.data.id;
         });
         let prevReleaseNid = "0";
-        if (results.data.relationships.field_prev_release.length > 0) {
+        if (results.data.relationships.field_prev_release.data.length > 0) {
           const prevRelease = results.included.find(element => {
-            return element.id == results.data.relationships.field_prev_release.data.id;
+            return element.id == results.data.relationships.field_prev_release.data[0].id;
           });
           prevReleaseNid = prevRelease.attributes.drupal_internal__nid;
         }
@@ -425,7 +428,10 @@ export default function FormManager(props) {
           "field_first_deployment": formState.firstDeployment,
           "field_abnormalities_bool": formState.abnormalities,
           "field_automated_deployment_bool": formState.isAutomated,
-          "field_abnormality_description": formState.description,
+          "field_abnormality_description": {
+            "value": formState.description,
+            "format": "plain_text",
+          },
           "field_date_deployed": formState.date,
           "field_installation_time": formState.installationTime,
           "field_user_state": formState.state,
@@ -620,4 +626,36 @@ export default function FormManager(props) {
       />
     </div>
   )
+}
+
+const FormSkeleton = () => {
+  return (
+    <div>
+      <div className="skeleton-label loading"></div>
+      <div className="skeleton-select loading"></div>
+      <div className="skeleton-label loading"></div>
+      <div className="skeleton-select loading"></div>
+      <div className="skeleton-label loading"></div>
+      <div className="skeleton-select loading"></div>
+      <div className="skeleton-label loading"></div>
+      <div className="skeleton-select loading"></div>
+      <div>
+        <div className="skeleton-select-box loading"></div>
+        <div className="skeleton-select-box-label loading"></div>
+      </div>
+      <div>
+        <div className="skeleton-select-box loading"></div>
+        <div className="skeleton-select-box-label loading"></div>
+      </div>
+
+      <div className="panel panel-default">
+        <div className="panel-body">
+          <div className="skeleton-label loading"></div>
+          <div className="skeleton-select loading"></div>
+          <div className="skeleton-textbody loading"></div>
+          <div className="skeleton-textbody loading"></div>
+        </div>
+      </div>
+    </div>
+  );
 }

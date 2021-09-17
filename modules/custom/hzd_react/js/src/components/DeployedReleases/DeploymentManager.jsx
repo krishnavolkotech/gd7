@@ -7,6 +7,7 @@ import DeploymentForm from './DeploymentForm';
 import ArchiveForm from './ArchiveDeploymentForm';
 import useQuery from '../../hooks/hooks';
 import FormManager from './FormManager';
+import NodeView from './NodeView';
 
 export default function DeploymentManager() {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
@@ -108,6 +109,8 @@ export default function DeploymentManager() {
 
   const [triggerAction, setTriggerAction] = useState(false);
 
+  const [viewNode, setViewNode] = useState(false);
+
   /**
    * Implements hook useEffect().
    * Fetches the deployed releases.
@@ -194,7 +197,6 @@ export default function DeploymentManager() {
     let url = '/api/v1/deployments';
 
     // Status-Filter
-    // @todo Status "Fehlmeldung" fehlt noch.
     url += '?status[]=' + filterState.status;
 
     // Landes-Filter (nur für Gruppen- und Site-Admins)
@@ -212,11 +214,13 @@ export default function DeploymentManager() {
       url += '&service=' + filterState.service;
     }
 
+    // Nur im Status "im Einsatz" sollen alle Einsatzmeldungen auf einmal geladen
+    // werden.
     if (filterState.status === "1") {
       url += '&items_per_page=All';
     }
 
-    if (filterState.status === "2") {
+    if (filterState.status !== "1") {
       url += '&page=' + (page - 1);
       url += '&releaseTitle=' + filterState.product;
     }
@@ -234,6 +238,7 @@ export default function DeploymentManager() {
       .then(results => {
         if (runner === fetchCount.current) {
           if (results.length === 0) setTimeout(true);
+          // Hier results sortieren :)
           setData(results);
         }
       })
@@ -334,8 +339,17 @@ export default function DeploymentManager() {
     // setShowEditForm(true);
   }
 
+  const handleView = (nid) => {
+    setViewNode(nid);
+  }
+  console.log(viewNode);
   return (
     <div>
+      {/* <div className="skeleton-header loading"></div>
+      <div className="skeleton-select"></div>
+      <div className="skeleton-textbody loading"></div>
+      <div className="skeleton-textbody loading"></div>
+      <div className="skeleton-textbody loading"></div> */}
       <Nav bsStyle="tabs" activeKey={filterState.status} onSelect={handleNav}>
         <NavItem eventKey="1">
           Eingesetzt
@@ -349,6 +363,12 @@ export default function DeploymentManager() {
         </NavItem>
         }
       </Nav>
+      {viewNode &&
+      <NodeView
+        nid={viewNode}
+        setViewNode={setViewNode}
+      />
+      }
       {error &&
       <Alert bsStyle="danger" onDismiss={() => setError(false)}>
         <h4>Fehler</h4>
@@ -397,8 +417,9 @@ export default function DeploymentManager() {
         handleArchive={handleArchive}
         handleEdit={handleEdit}
         filterState={filterState}
+        handleView={handleView}
       />
-      <p>WIP v0.3</p>
+      <p>WIP v0.4</p>
     </div>
   )
 }

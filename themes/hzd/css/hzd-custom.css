@@ -685,9 +685,6 @@ input.hasDatepicker,
     border: 0 !important;
     border-radius: 3px !important;
 }
-.btn-success {
-  background-color: #0e9e57 !important;
-}
 .btn-default:hover,
 .views-exposed-form button:hover,
 button.button--reset:hover {
@@ -1674,4 +1671,98 @@ a.btn.btn-danger.legal-decline-btn {
 
 .messages__wrapper p {
     display: inline !important;
+
+      /* <div className="skeleton-header"></div>
+      <div className="skeleton-select"></div>
+      <div className="skeleton-textbody"></div>
+      <div className="skeleton-table"></div> */
+
+.skeleton-header {
+  background-color: #eaeaea;
+  width: 30%;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+}
+
+.skeleton-label {
+  background-color: #eaeaea;
+  width: 25%;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+}
+
+.skeleton-select {
+  background-color: #eaeaea;
+  width: 100%;
+  height: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 15px;
+  border-radius: 5px;
+}
+
+.skeleton-select-box {
+  float: left;
+  background-color: #eaeaea;
+  width: 12px;
+  height: 12px;
+  margin: 5px 0px;
+  border-radius: 1px;
+}
+
+.skeleton-select-box-label {
+  background-color: #eaeaea;
+  width: 150px;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 15px 15px;
+  border-radius: 5px;
+}
+
+.skeleton-textbody {
+  background-color: #eaeaea;
+  width: 100%;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+}
+
+.loading {
+    position: relative;
+    background-color: #eaeaea;
+}
+
+.loading::after {
+    display: block;
+    content: "";
+    /* position: absolute; */
+    width: 20%;
+    height: 100%;
+    transform: translateX(0);
+    /* background: -webkit-gradient(linear, left top,
+                right top, from(transparent), 
+                color-stop(rgba(255, 255, 255, 0.2)),
+                to(transparent)); */
+                  
+    background: linear-gradient(90deg, transparent,
+            rgba(255, 255, 255, 0.2), transparent);
+    /* background:rgba(0, 0, 0, 0.3); */
+    /* Adding animation */
+    animation: loading 1.5s infinite;
+}
+
+/* Loading Animation */
+@keyframes loading {
+    100% {
+        transform: translateX(400%);
+    }
 }

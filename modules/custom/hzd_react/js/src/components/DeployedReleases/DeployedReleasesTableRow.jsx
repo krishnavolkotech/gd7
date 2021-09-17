@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-export default function DeployedReleasesTableRow({ deployment, handleAction, highlight, handleArchive, handleEdit, status }) {
+export default function DeployedReleasesTableRow({ deployment, handleAction, highlight, handleArchive, handleEdit, status, handleView }) {
   const date = new Date(deployment.date);
   const localeDate = date.toLocaleDateString('de-DE', {
     year: "numeric",
@@ -41,8 +41,23 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
     </Tooltip>
   );
 
+  // Apply row highlighting class.
+  // "info": deployment.changed younger than 10 hours.
+  // "success": Deployment has been updated in the current session.
+  const now = Date.now() / 1000;
+  const recent = now - 60 * 60 * 10;
+  const changed = parseInt(deployment.changed);
+  let rowClass = "";
+
+  if (changed > recent) {
+    rowClass = "info";
+  }
+  if (highlight != "") {
+    rowClass = highlight;
+  }
+
   return (
-    <tr className={highlight}>
+    <tr className={rowClass}>
       <td>{global.drupalSettings.states[deployment.state]}</td>
       <td>{global.drupalSettings.environments[deployment.environment]}</td>
       <td>{deployment.service}</td>
@@ -51,7 +66,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
       <td>
         { status == "1" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
+          <OverlayTrigger placement="top" overlay={ttReportSuccessor} trigger="hover">
             <Button bsStyle="success" onClick={() => handleAction("successor", {state, environment, service, release, product, uuid})}><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
@@ -59,15 +74,15 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         }
         { status == "1" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttArchive}>
+          <OverlayTrigger placement="top" overlay={ttArchive} trigger="hover">
             <Button bsStyle="info" onClick={() => handleAction("archive", {nid, uuid, releaseName})}><span className="glyphicon glyphicon-folder-close" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
-        { global.drupalSettings.role !== "ZRML" &&
+        { global.drupalSettings.role !== "ZRML" && status != "3" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttEdit}>
+          <OverlayTrigger placement="top" overlay={ttEdit} trigger="hover">
             {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/r/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
             <Button bsStyle="primary" onClick={() => handleAction("edit", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
           </OverlayTrigger>
@@ -76,13 +91,14 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         }
         { global.drupalSettings.role !== "ZRML" && status =="1" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttFail}>
+          <OverlayTrigger placement="top" overlay={ttFail} trigger="hover">
             <Button bsStyle="danger" onClick={() => handleAction("failed", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
-        <Button bsStyle="link" href={"/node/" + nid}><span className="glyphicon glyphicon-eye-open" /></Button>
+        {/* <Button bsStyle="link" href={"/node/" + nid}><span className="glyphicon glyphicon-eye-open" /></Button> */}
+        <Button bsStyle="link" onClick={() => handleView(nid)}><span className="glyphicon glyphicon-eye-open" /></Button>
       </td>
     </tr>
   );
