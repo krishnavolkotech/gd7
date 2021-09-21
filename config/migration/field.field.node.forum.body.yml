@@ -6,14 +6,24 @@ dependencies:
     - field.storage.node.body
     - node.type.forum
   module:
+    - allowed_formats
     - text
+third_party_settings:
+  allowed_formats:
+    full_html: '0'
+    basic_html: '0'
+    restricted_html: '0'
+    filtered_html: '0'
+    messaging_plain_text: '0'
+    php_code: '0'
+    plain_text: '0'
 _core:
   default_config_hash: xSp91evhyztzrWlSVAiXsWNZReMhYXvcAEg59GLfZjg
 id: node.forum.body
 field_name: body
 entity_type: node
 bundle: forum
-label: Body
+label: Textkörper
 description: ''
 required: false
 translatable: true
