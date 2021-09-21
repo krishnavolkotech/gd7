@@ -137,11 +137,20 @@ class CancelForm extends FormBase {
       $form['notifications']['#type'] = 'fieldset';
       $form['notifications']['#title'] = t('Notifications');
       $form['notifications']['#collapsible'] = TRUE;
+
+
+      $form['notifications']['notifications_content_disable'] = send_notification_form_element();
+      $form['notifications']['notifications_content_disable']['#weight'] = 2;
+
+
+  /*
       $form['notifications']['notifications_content_disable'] = array(
         '#type' => 'checkbox',
         '#weight' => 2,
         '#title' => t('Do not send notifications for this update.'),
       );
+*/
+
     }
 
     $form['nid'] = array(

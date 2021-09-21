@@ -511,6 +511,11 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
 
   if($form_id == 'comment_comment_forum_form' || $form_id == 'comment_comment_no_subject_form') {
       $form['field_do_not_send_notifications']['widget']['value']['#default_value'] = FALSE;
+      $donot_send = send_notification_form_element();
+      $form['field_do_not_send_notifications']['widget']['#title'] = $donot_send['#title'];
+      $form['field_do_not_send_notifications']['widget']['#options'] = $donot_send['#options'];
+      unset($form['field_do_not_send_notifications']['widget']['#default_value']);
+      //dump($form['field_do_not_send_notifications']['widget']['#default_value']);
   }
 
     if($form_id == 'node_page_edit_form') {

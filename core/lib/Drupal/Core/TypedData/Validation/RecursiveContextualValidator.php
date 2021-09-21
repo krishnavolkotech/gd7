@@ -126,7 +126,7 @@ class RecursiveContextualValidator implements ContextualValidatorInterface {
 
     $metadata = $this->metadataFactory->getMetadataFor($data);
     $cache_key = spl_object_hash($data);
-    $property_path = $is_root_call ? '' : PropertyPath::append($previous_path, $data->getName());
+    $property_path = $is_root_call ? '' : PropertyPath::append((string)$previous_path, (string)$data->getName());
 
     // Prefer a specific instance of the typed data manager stored by the data
     // if it is available. This is necessary for specialized typed data objects,

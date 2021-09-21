@@ -3,6 +3,7 @@ langcode: de
 status: true
 dependencies:
   config:
+    - field.storage.group.field_group_body
     - field.storage.node.body
     - search_api.index.hzd_solr_index
     - user.role.authenticated
@@ -650,9 +651,12 @@ display:
             - field_custom_title
             - field_dates
             - field_depend_other_services
+            - field_description
             - field_detailed_question
             - field_diagnose
+            - field_einfuehrung
             - field_eroffnet
+            - field_group_body
             - field_intial_situation
             - field_other_services
             - field_problem_name
@@ -669,7 +673,6 @@ display:
             - field_technical_impact
             - field_technical_impact_services
             - field_work_around
-            - filename
             - filename_1
             - filename_2
             - filename_3
@@ -677,7 +680,7 @@ display:
             - filename_5
             - id
             - label
-            - origname
+            - label_1
             - origname_1
             - processed
             - subject
@@ -1605,6 +1608,75 @@ display:
           multi_type: separator
           multi_separator: ', '
           plugin_id: search_api
+        field_group_body:
+          id: field_group_body
+          table: search_api_index_hzd_solr_index
+          field: field_group_body
+          relationship: none
+          group_type: group
+          admin_label: ''
+          label: ''
+          exclude: false
+          alter:
+            alter_text: false
+            text: ''
+            make_link: false
+            path: ''
+            absolute: false
+            external: false
+            replace_spaces: false
+            path_case: none
+            trim_whitespace: false
+            alt: ''
+            rel: ''
+            link_class: ''
+            prefix: ''
+            suffix: ''
+            target: ''
+            nl2br: false
+            max_length: 0
+            word_boundary: true
+            ellipsis: true
+            more_link: false
+            more_link_text: ''
+            more_link_path: ''
+            strip_tags: false
+            trim: false
+            preserve_tags: ''
+            html: false
+          element_type: ''
+          element_class: ''
+          element_label_type: ''
+          element_label_class: ''
+          element_label_colon: false
+          element_wrapper_type: ''
+          element_wrapper_class: ''
+          element_default_classes: true
+          empty: ''
+          hide_empty: false
+          empty_zero: false
+          hide_alter_empty: true
+          click_sort_column: value
+          type: text_default
+          settings: {  }
+          group_column: value
+          group_columns: {  }
+          group_rows: true
+          delta_limit: 0
+          delta_offset: 0
+          delta_reversed: false
+          delta_first_last: false
+          multi_type: separator
+          separator: ', '
+          field_api_classes: false
+          field_rendering: true
+          fallback_handler: search_api
+          fallback_options:
+            link_to_item: false
+            use_highlighting: false
+            multi_type: separator
+            multi_separator: ', '
+          plugin_id: search_api_field
     cache_metadata:
       max-age: -1
       contexts:
@@ -1614,4 +1686,5 @@ display:
         - url.query_args
         - user.roles
       tags:
+        - 'config:field.storage.group.field_group_body'
         - 'config:field.storage.node.body'

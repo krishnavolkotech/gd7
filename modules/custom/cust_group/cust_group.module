@@ -34,6 +34,7 @@ use Drupal\file\Entity\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\pathauto\PathautoState;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -688,6 +689,29 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
         $form['actions']['submit']['#submit'][] = 'requst_submit_handler';
       }
       break;
+    case 'node_page_edit_form':
+     $current_user = \Drupal::currentUser();    
+     if (!in_array('site_administrator', $current_user->getRoles())) {
+       $alias = $form['path']['widget'][0]['alias']['#default_value'];
+       $current_path = \Drupal::service('path.current')->getPath();
+       
+       $path = explode('/', $current_path);
+       $end_path = end($path);
+
+       $group_alias = '';
+       if ($end_path == 'edit' && is_numeric($path[2]) && $path[1] == 'node') {
+         $parent_group = get_parent_group($path[2]);
+         $group_alias = get_group_node_alias($parent_group);
+	 if ($alias) {
+            if(strpos($alias, $group_alias) === 0) {
+              $alias_new = str_replace($group_alias, "",$alias);
+	      $form['path']['widget'][0]['alias']['#default_value'] = $alias_new;
+            }
+	 }
+	 
+       }
+     }
+    break;
     case 'node_faqs_delete_form':
 //            kint($_SERVER);
       $previousUrl = \Drupal::request()->server->get('HTTP_REFERER');
@@ -753,10 +777,15 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       '#type' => 'fieldset',
       '#weight' => 99,
     );
+    $form['notification']['node_notification_checkbox'] = send_notification_form_element();
+    /*
     $form['notification']['node_notification_checkbox'] = array(
-      '#type' => 'checkbox',
-      '#title' => t('Do not send notifications for this update.'),
+      '#type' => 'radios',
+      '#options' => [0 => 'No', 1 => 'Yes'],
+      '#required' => TRUE,
+      //'#title' => t('Do not send notifications for this update.'),
     );
+    */
   }
 
   //Sending the group id to browser for IMCE to request folder structure within the group
@@ -1623,6 +1652,7 @@ function get_grequest_status($group) {
   return FALSE;
 }
 
+
 function group_request_status($groupContent) {
 	 //    dump($groupContent->getGroupContent());
     //if ($groupContent->getGroupContent()->get('request_status')->value == 1) {
@@ -1630,3 +1660,144 @@ function group_request_status($groupContent) {
     //}
     //return 0;
 }
+
+function cust_group_theme_suggestions_input_alter(&$suggestions, array $variables) {
+  $element = $variables['element'];
+  $id_item = str_replace('-', '_', $element['#id']);
+  if (isset($variables['element']['#id'])) {
+    if ($variables['element']['#id'] == 'edit-path-0-alias') {
+      $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+    }
+  }
+}
+
+/*
+ * Get Parent Group NODE ALIAS
+*/
+function get_group_node_alias($gid) {
+  $group_node_path = '/group/'.$gid; 
+  return $result = \Drupal::service('path.alias_manager')->getAliasByPath($group_node_path);
+}	 
+
+/*
+ * Get Parent Group ID
+ * Assumption : Node is related with single Group
+*/
+function get_parent_group($nid) {
+  $ids = \Drupal::entityQuery('group_content')
+    ->condition('entity_id', $nid)
+    ->execute();
+  $relations = \Drupal\group\Entity\GroupContent::loadMultiple($ids);
+  foreach ($relations as $rel) {
+    if ($rel->getEntity()->getEntityTypeId() == 'node') {
+      return $rel->getGroup()->id();
+    }
+  }
+  return false;
+}
+
+function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
+  $current_user = \Drupal::currentUser();
+  $roles = $current_user->getRoles();
+
+  if (!in_array('site_administrator', $current_user->getRoles())) {
+    if ($entity->getEntityTypeId() == 'node') {
+      $token_type = \Drupal::service('token.entity_mapper');
+      $data = [$token_type->getTokenTypeForEntityType($entity->getEntityTypeId()) => $entity,];
+
+      $token = Drupal::token();
+      $group_alias = $token->replace('[node:group_raw]', $data);
+      $node_alias = $entity->path->getValue('list')[0]['alias'];
+
+      $pathurl_state = $entity->get('path')->first()->get('pathauto')->getValue();
+      if ($pathurl_state) {
+          $entity->path = [
+            'pathauto' => PathautoState::CREATE,
+          ];
+      }
+      else {
+        if ($group_alias && $node_alias) {
+          if(strpos($node_alias, "/".$group_alias) === 0) {
+          }
+          else {
+            $new_alias = "/".$group_alias. $node_alias;
+            $entity->path = [
+              'alias' => $new_alias,
+              'pathauto' => PathautoState::SKIP,
+            ];
+          }
+        }
+        else {
+          $entity->path = [
+            'pathauto' => PathautoState::CREATE,
+          ];
+        }// END OF groupAlias
+      }
+      
+    }
+  }
+}
+
+/*
+function content_type_pattern($type) {
+  switch($type) {
+    case 'release':
+      return 'release-management/release/[node:nid]';
+    case 'quickinfo':
+      return 'release-management/rz-schnellinfos/[node:field_unique_id]';
+    case 'early_warnings':
+      return 'release-management/early-warnings/[node:field_earlywarning_release_title]/[node:title]';
+    case 'downtimes':
+      return 'incident-management/stoerung/[node:nid]';
+    case 'measure':
+      return '/risikomanagement-betrieb/massnahme/[node:field_risk_id]';
+    case 'risk':
+      return '/risikomanagement-betrieb/risiko/[node:field_risk_id]';
+    case 'risk_cluster':
+      return '/risikomanagement-betrieb/risikocluster/[node:field_risk_id]';
+    case 'problem':
+      return 'problem-management/problem/[node:nid]';
+    case 'page':
+      return '[node:group_raw]/[node:menu-link:parents:join-path]/[node:title]';
+    case 'forum':
+      return '[node:group_raw]/forum/[node:title]';
+  }
+}
+*/
+
+/*
+function update_group_alias($path_alias) {
+  $current_user = \Drupal::currentUser();
+  $roles = $current_user->getRoles();
+
+ // if (!in_array('site_administrator', $current_user->getRoles())) {
+    $path = explode('/', $path_alias->getPath());
+    $group_alias = '';
+    if ($path[1] == 'node' && is_numeric($path[2])) {
+      $parent_group = get_parent_group($path[2]);
+      $group_alias = get_group_node_alias($parent_group);
+    }
+    if ($path_alias) {
+       $alias = $path_alias->get('alias')->getValue()[0]['value'];
+       if(strpos($alias, $group_alias) === 0) {
+ 
+       }
+      else {
+        $alias_new = $group_alias . $alias;
+	$updated_alias = \Drupal::entityTypeManager()->getStorage('path_alias')->load($path_alias->id());
+        $updated_alias->setAlias($alias_new);
+        $updated_alias->save();
+      }
+      }
+  //}
+}
+
+
+function cust_group_path_alias_insert(Drupal\path_alias\PathAliasInterface $path_alias) {
+   update_group_alias($path_alias);
+}
+
+function cust_group_path_alias_update(Drupal\path_alias\PathAliasInterface $path_alias) {
+   update_group_alias($path_alias);
+}
+*/

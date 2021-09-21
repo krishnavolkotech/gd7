@@ -1631,3 +1631,29 @@ span.field-content::first-letter {
   color: #fff !important;
   background-color: #c9302c !important;
 }
+
+.left {
+    float: left;
+    width: auto;
+    margin-right: 5px;
+    margin-top: 7px;
+}
+
+.right {
+    float: left;
+    width: 52%;
+}
+
+.cust-filebrowser-actions.form-group {
+  margin: 0px;
+}
+
+.folder-path {
+  color: rgb(168, 168, 168);
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+.current-folder {
+  color: rgb(31, 31, 31);
+}

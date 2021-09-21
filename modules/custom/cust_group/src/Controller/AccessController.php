@@ -452,7 +452,11 @@ class AccessController extends ControllerBase
         }
       } elseif ($group_id == QUICKINFO) {
         if ($plugin_id == 'group_node:quickinfo') {
-          $content = $group->getMember(\Drupal::currentUser());
+	  $current_user = \Drupal::currentUser();
+          if (in_array('site_administrator', $current_user->getRoles())) {
+            return AccessResult::allowed();
+	  }
+          $content = $group->getMember($current_user);
           if ($content && group_request_status($content)) {
             return AccessResult::allowed();
           } else {

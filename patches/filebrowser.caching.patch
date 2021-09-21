@@ -1,0 +1,123 @@
+diff --git a/modules/contrib/filebrowser/filebrowser.module b/modules/contrib/filebrowser/filebrowser.module
+index 2cca292ae..b5c76833d 100644
+--- a/modules/contrib/filebrowser/filebrowser.module
++++ b/modules/contrib/filebrowser/filebrowser.module
+@@ -239,9 +239,63 @@ function filebrowser_node_view(array &$build, NodeInterface $node, EntityViewDis
+     $manager = \Drupal::service('filebrowser.manager');
+     // get the argument $fid from query
+     $fid = \Drupal::request()->query->get('fid');
+-
+-    $list = new \Drupal\filebrowser\File\DisplayFileList($node, $fid);
+-    $display_list = $list->get();
++    $fids = [];
++    // HZD: Caching solves performance issues for filebrowsers with many files.
++    // Query parameter is not always set. If not, database query must be used to 
++    // identify fid.
++    $database = \Drupal::database();
++    if (is_null($fid)) {
++      $result = $database
++        ->query("SELECT fid FROM filebrowser_content 
++        WHERE nid=:nid
++        AND path LIKE :rootPath", [
++          ':nid' => $node->id(),
++          ':rootPath' => '/',
++          ])
++        ->fetch();
++      $fid = $result->fid;
++      $cid = 'filebrowser_files:' . $node->id() . ':' . $fid;
++    }
++    else {
++      // Each subfolder has 2 fids. So we need both of them for our cid.
++      // Otherwise, cache only gets cleared for one of them.
++      $result = $database
++        ->query(
++          "SELECT fid FROM filebrowser_content 
++          WHERE path like (SELECT path FROM filebrowser_content WHERE fid=:fid)
++          AND path NOT LIKE :rootPath",
++          [
++            ":fid" => $fid,
++            ":rootPath" => "/",
++          ]
++        )
++        ->fetchAll();
++      // Default $cid.
++      $cid = 'filebrowser_files:' . $node->id() . ':' . $fid;
++      // Case: subfolder.
++      if (count($result) === 2) {
++        $fids = [$result[0]->fid, $result[1]->fid];
++        $cid = 'filebrowser_files:' . $node->id() . ':' . $fids[0] . ':' . $fids[1];
++      }
++    }
++    $fileCache = \Drupal::cache()->get($cid);
++    $display_list = is_object($fileCache) ? $fileCache->data : FALSE;
++    if (!is_array($display_list)) {
++      $list = new \Drupal\filebrowser\File\DisplayFileList($node, $fid);
++      $display_list = $list->get();
++      $cacheTags = [];
++      // Provide appropriate cache-tags for subfolders with two fids.
++      if (count($fids) == 2) {
++        $cacheTags = [
++          'filebrowser:node:' . $node->id() . ':' . $fids[0],
++          'filebrowser:node:' . $node->id() . ':' . $fids[1],
++        ];
++      }
++      else {
++        $cacheTags = ['filebrowser:node:' . $node->id() . ':' . $fid];
++      }
++      \Drupal::cache()->set($cid, $display_list, -1, $cacheTags);
++    }
+ 
+     // Show file listing content part
+     if ($display->getComponent('filebrowser_file_list')) {
+diff --git a/modules/contrib/filebrowser/src/Form/DeleteForm.php b/modules/contrib/filebrowser/src/Form/DeleteForm.php
+index 1acca1499..669d406b0 100644
+--- a/modules/contrib/filebrowser/src/Form/DeleteForm.php
++++ b/modules/contrib/filebrowser/src/Form/DeleteForm.php
+@@ -181,6 +181,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+         if ($success) {
+           // invalidate the cache for this node
+           Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
++          // HZD: Invalidate custom cache tag.
++          Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->queryFid]);
+         }
+         else {
+           \Drupal::messenger()->addWarning($this->t('Unable to delete @file', ['@file' => $data->uri]));
+diff --git a/modules/contrib/filebrowser/src/Form/FolderForm.php b/modules/contrib/filebrowser/src/Form/FolderForm.php
+index e76f3b9a1..6c0bf9c38 100644
+--- a/modules/contrib/filebrowser/src/Form/FolderForm.php
++++ b/modules/contrib/filebrowser/src/Form/FolderForm.php
+@@ -100,6 +100,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     }
+     else{
+       Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
++      // HZD: Invalidate custom cache tag.
++      Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->relativeFid]);
+     }
+     $route = $this->common->redirectRoute($this->relativeFid, $this->node->id());
+     $form_state->setRedirect($route['name'], $route['node'], $route['query']);
+diff --git a/modules/contrib/filebrowser/src/Form/RenameForm.php b/modules/contrib/filebrowser/src/Form/RenameForm.php
+index 98acbb67a..19fcf981c 100644
+--- a/modules/contrib/filebrowser/src/Form/RenameForm.php
++++ b/modules/contrib/filebrowser/src/Form/RenameForm.php
+@@ -177,6 +177,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+       }
+     }
+     Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
++    // HZD: Invalidate custom cache tag.
++    Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->queryFid]);
+     $form_state->setRedirect($this->route['name'], $this->route['node'], $this->route['query']);;
+   }
+ 
+diff --git a/modules/contrib/filebrowser/src/Form/UploadForm.php b/modules/contrib/filebrowser/src/Form/UploadForm.php
+index 767026a06..4e029a49c 100644
+--- a/modules/contrib/filebrowser/src/Form/UploadForm.php
++++ b/modules/contrib/filebrowser/src/Form/UploadForm.php
+@@ -108,6 +108,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     }
+     // invalidate the cache for this node
+     Cache::invalidateTags(['filebrowser:node:' . $this->nid]);
++    // HZD: Invalidate custom cache tag.
++    Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->queryFid]);
+     $route = $this->common->redirectRoute($this->queryFid, $this->node->id());
+     $form_state->setRedirect($route['name'], $route['node'], $route['query']);
+   }
