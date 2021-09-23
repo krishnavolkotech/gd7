@@ -151,8 +151,10 @@ function cust_group_group_insert($group) {
   ]);
   $faqcategoryterm->save();
 
-  \Drupal::service('path_alias.storage')
-    ->delete(['source' => '/node/' . $node->id()]);
+  
+  delete_path_alias('/node/' . $node->id());
+ // \Drupal::service('path_alias.repository')->delete(['source' => '/node/' . $node->id()]);
+    
   $group->set('field_old_reference', $node->id());
   $group->set('field_forum_containers', $forum->id());
   $group->save();
@@ -1439,16 +1441,16 @@ function cust_group_schema() {
 
   $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
   $path_alias = $parent_alias . '/' . $title;
-  \Drupal::service('path_alias.storage')
-  ->save($system_path, $path_alias, $langcode);
+  create_path_alias($system_path, $path_alias);
+  // \Drupal::service('path_alias.repository')->save($system_path, $path_alias, $langcode);
   }
   else {
   $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
   $groupalias = \Drupal::service('path_alias.manager')
   ->getAliasByPath('/group/' . $pgroupid, $langcode);
   $path_alias = $groupalias . '/' . $title;
-  \Drupal::service('path_alias.storage')
-  ->save($system_path, $path_alias, $langcode);
+  create_path_alias($system_path, $path_alias);
+  //\Drupal::service('path_alias.repository')->save($system_path, $path_alias, $langcode);
   }
   }
   } */
@@ -1548,14 +1550,12 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
 function cust_group_entity_update(EntityInterface $entity) {
   if ($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
     $source = '/' . $entity->toUrl()->getInternalPath();
-    \Drupal::service('path_alias.storage')->delete(array(
-      'source' => $source,
-      'langcode' => 'de'
-    ));
+    delete_path_alias($source);
 
-    $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
-    \Drupal::service('path_alias.storage')->save('/' . $entity->toUrl()
-        ->getInternalPath(), $path_alias, 'de');
+    $path = '/' . $entity->toUrl()->getInternalPath();
+    $alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
+    create_path_alias($path, $alias);
+   // \Drupal::entityTypeManager()->getStorage('path_alias')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
   }
 }
 
@@ -1799,3 +1799,22 @@ function cust_group_path_alias_update(Drupal\path_alias\PathAliasInterface $path
    update_group_alias($path_alias);
 }
 */
+
+function create_path_alias($path, $alias) {
+  $path_alias_manager = \Drupal::entityTypeManager()->getStorage('path_alias');
+
+  $path_alias = $path_alias_manager->create([
+    'path' => $path,
+    'alias' => $alias,
+    'langcode' => 'de',
+  ]);
+  $path_alias->save();
+}
+
+function delete_path_alias($source) {
+  $path_alias_manager = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $alias_objects = $path_alias_manager->loadByProperties(['path' => $source]);
+  foreach ($alias_objects as $alias_object) {
+    $alias_object->delete();
+  }
+}
