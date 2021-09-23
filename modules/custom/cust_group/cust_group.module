@@ -1663,9 +1663,11 @@ function group_request_status($groupContent) {
 
 function cust_group_theme_suggestions_input_alter(&$suggestions, array $variables) {
   $element = $variables['element'];
-  $id_item = str_replace('-', '_', $element['#id']);
-  if ($variables['element']['#id'] == 'edit-path-0-alias') {
-    $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+  if (isset($element['#id'])) {
+    $id_item = str_replace('-', '_', $element['#id']);
+    if ($variables['element']['#id'] == 'edit-path-0-alias') {
+      $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+    }
   }
 }
 
