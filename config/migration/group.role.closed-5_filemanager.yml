@@ -1,0 +1,21 @@
+uuid: e57e4fb2-792d-4c6c-b321-cbb2750f7145
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.closed
+id: closed-5_filemanager
+label: Dateiverwalter
+weight: 8
+internal: false
+audience: member
+group_type: closed
+permissions_ui: true
+permissions:
+  - 'create folders'
+  - 'delete files'
+  - 'download archive'
+  - 'download files'
+  - 'edit description'
+  - 'rename files'
+  - 'upload files'

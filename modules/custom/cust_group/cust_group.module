@@ -785,7 +785,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
       '#type' => 'radios',
       '#options' => [0 => 'No', 1 => 'Yes'],
       '#required' => TRUE,
-      '#title' => t('Do not send notifications for this update.'),
+      //'#title' => t('Do not send notifications for this update.'),
     );
     */
   }
@@ -1665,8 +1665,10 @@ function cust_group_theme_suggestions_input_alter(&$suggestions, array $variable
   $element = $variables['element'];
   if (isset($element['#id'])) {
     $id_item = str_replace('-', '_', $element['#id']);
-    if ($variables['element']['#id'] == 'edit-path-0-alias') {
-      $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+    if (isset($variables['element']['#id'])) {
+      if ($variables['element']['#id'] == 'edit-path-0-alias') {
+        $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+      }
     }
   }
 }

@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/filebrowser/src/EventSubscriber/MetadataEventSubscriber.php b/modules/contrib/filebrowser/src/EventSubscriber/MetadataEventSubscriber.php
+index 8d376ba8d..ed6af217b 100644
+--- a/modules/contrib/filebrowser/src/EventSubscriber/MetadataEventSubscriber.php
++++ b/modules/contrib/filebrowser/src/EventSubscriber/MetadataEventSubscriber.php
+@@ -132,7 +132,7 @@ public function generateDescription($file, $subdir_fid, $fid) {
+     }
+     else{
+       // no description available
+-      $description = 'Default description';
++      $description = '';
+     }
+ 
+     if(!empty($subdir_fid)) {

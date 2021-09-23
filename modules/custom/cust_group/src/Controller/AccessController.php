@@ -22,7 +22,7 @@ if (!defined('QUICKINFO')) {
  */
 class AccessController extends ControllerBase
 {
-    
+
     /**
      * Checks access for a specific request.
      *
@@ -33,19 +33,19 @@ class AccessController extends ControllerBase
         // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
         $node = $route_match->getParameter('node');
         if (is_object($node)) {
-            
+
             if ($node->getType() == 'quickinfo' && $node->isPublished()) {
 	       $uid = \Drupal::currentUser()->id();
                if ($uid != 1) {
                  return AccessResult::forbidden();
                }
             }
-            
+
             if ($node->getType() == 'quickinfo' && !$node->isPublished()) {
                 /**
                  * group id has to be dynamic
                  */
-                
+
                 $group = \Drupal\group\Entity\Group::load(QUICKINFO);
                 $content = $group->getMember($user);
                 if (array_intersect($user->getRoles(), ['site_administrator', 'administrator'])) {
@@ -57,9 +57,9 @@ class AccessController extends ControllerBase
                     return AccessResult::forbidden();
                 }
             }
-            
+
             if ($node->getType() == 'downtimes') {
-                
+
                 if(array_intersect($user->getRoles(), ['site_administrator','administrator'])){
                     return AccessResult::allowed();
                 }
@@ -73,7 +73,7 @@ class AccessController extends ControllerBase
                 $incidentManagement = \Drupal\group\Entity\Group::load(INCIDENT_MANAGEMENT);
                 $incidentManagementGroupMember = $incidentManagement->getMember($user);
                 if($downtime_type == 1){
-                    
+
                     if (($groupMember && group_request_status($groupMember) && $incidentManagementGroupMember) || array_intersect($user->getRoles(), [
                         'site_administrator',
                         'administrator'
@@ -217,8 +217,8 @@ class AccessController extends ControllerBase
 //        echo 12312;exit;
         return AccessResult::allowed();
     }
-    
-    
+
+
     function userEditAcces(Route $route, RouteMatch $route_match, AccountInterface $user) {
     if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
       return AccessResult::allowed();
@@ -248,7 +248,7 @@ class AccessController extends ControllerBase
         }
         return AccessResult::forbidden();
     }
-    
+
     function groupTitle() {
         $group = \Drupal::routeMatch()->getParameter('group');
         if (!is_object($group)) {
@@ -260,7 +260,7 @@ class AccessController extends ControllerBase
         }
         return 'Members of ' . $this->t($group->label());
     }
-    
+
     static function groupAdminAccess() {
         $user = \Drupal::currentUser();
         if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
@@ -278,7 +278,7 @@ class AccessController extends ControllerBase
                 }
             }
             //pr($roles);exit;
-            
+
             return AccessResult::forbidden();
         }
         return AccessResult::neutral();
@@ -379,7 +379,7 @@ class AccessController extends ControllerBase
     }
     return AccessResult::forbidden();
   }
-    
+
     function userCreateAccess() {
         $user = \Drupal::currentUser();
         if ($user && array_intersect($user->getRoles(), ['admininstrator', 'site_administrator'])) {
@@ -387,7 +387,7 @@ class AccessController extends ControllerBase
         }
         return AccessResult::forbidden();
     }
-    
+
     function isGroupAdminAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
       if (array_intersect(['site_administrator', 'administrator'], $user->getRoles())) {
         return AccessResult::allowed();
@@ -403,7 +403,7 @@ class AccessController extends ControllerBase
         }
         return AccessResult::allowed();
     }
-    
+
     public function groupContentAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
       $groupContent = $route_match->getParameter('group_content');
       $group = $route_match->getParameter('group');
@@ -417,6 +417,11 @@ class AccessController extends ControllerBase
 
 
   public function groupContentCreateAccess(Route $route, RouteMatch $route_match, AccountInterface $user) {
+    // Site Administrator may create everything.
+    if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+      return AccessResult::allowed();
+    }
+
     $group = $route_match->getParameter('group');
     $plugin_id = $route_match->getParameter('plugin_id');
     $userEntity = User::load($user->id());
@@ -425,7 +430,7 @@ class AccessController extends ControllerBase
       'group_node:faq',
       'group_node:forum',
       'group_node:page',
-      'group_node:newsletter'
+      'group_node:newsletter',
     ];
     if (is_object($group) && isset($plugin_id)) {
       $group_id = $group->id();
@@ -486,7 +491,7 @@ class AccessController extends ControllerBase
       }
       return AccessResult::neutral();
     }
-    
+
     function pendingMembersAccess(Route $route, RouteMatch $route_match, AccountInterface $user){
 //        exit;
         $group = $route_match->getParameter('group');

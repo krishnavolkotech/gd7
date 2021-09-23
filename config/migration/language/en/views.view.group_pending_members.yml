@@ -1,3 +1,4 @@
+label: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
 display:
   default:
     display_options:
@@ -14,9 +15,21 @@ display:
             items_per_page_label: 'Elemente pro Seite'
             items_per_page_options_all_label: '- Alle -'
       fields:
+        created:
+          label: 'Angefragt am'
+        gid:
+          label: 'Übergeordnete Gruppe'
         dropbutton:
           label: Operationen
+      title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
+      empty:
+        area_text_custom:
+          content: 'Keine Daten vorhanden'
       arguments:
         gid:
           exception:
             title: Alle
+  page_1:
+    display_options:
+      menu:
+        title: 'Benutzer freischalten'

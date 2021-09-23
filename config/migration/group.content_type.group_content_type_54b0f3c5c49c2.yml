@@ -1,0 +1,19 @@
+uuid: 2c217c6a-a68b-4137-9615-a9b410cd5f35
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate_private
+    - node.type.dir_listing
+  module:
+    - gnode
+    - node
+id: group_content_type_54b0f3c5c49c2
+label: 'Moderiert Privat: Gruppeninhalt (Directory listing)'
+description: '<em class="placeholder">Directory listing</em> in der Gruppe erstellen'
+group_type: moderate_private
+content_plugin: 'group_node:dir_listing'
+plugin_config:
+  group_cardinality: 1
+  entity_cardinality: 1
+  use_creation_wizard: false

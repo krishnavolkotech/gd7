@@ -1,0 +1,13 @@
+services:
+  cust_filebrowser.access_checker:
+    class: Drupal\cust_filebrowser\Access\FilebrowserDownloadAccessCheck
+    tags:
+      - { name: access_check, applies_to: _cust_filebrowser_access_check }
+    arguments: ['@current_route_match', '@current_user', '@filebrowser.common', '@cust_filebrowser.filebrowser_helper']
+  cust_filebrowser.route_subscriber:
+    class: Drupal\cust_filebrowser\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
+  cust_filebrowser.filebrowser_helper:
+    class: Drupal\cust_filebrowser\Services\FilebrowserHelper
+    arguments: ['@entity_type.manager']
