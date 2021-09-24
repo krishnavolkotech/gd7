@@ -48,7 +48,7 @@ class CustomUserSelection extends DefaultSelection {
   
   public function getReferenceableEntities($match = NULL, $match_operator = 'CONTAINS', $limit = 10) {
     $users = [];
-    $group = $this->configuration['handler_settings']['hzd_group'];
+    $group = $this->configuration['hzd_group'];
     if ($group) {
       $exclude_members = $this->configuration['handler_settings']['exclude_members'];
       $plugin = $group->getGroupType()

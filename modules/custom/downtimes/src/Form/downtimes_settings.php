@@ -99,7 +99,7 @@ class downtimes_settings extends FormBase {
     $selected_services = $form['services']['#post']['services'];
     $counter = HzdDowntimeStorage::insert_group_downtimes_view($selected_services);
 
-    $tempstore = \Drupal::service('user.private_tempstore')->get('downtimes');
+    $tempstore = \Drupal::service('tempstore.private')->get('downtimes');
     $gid = $tempstore->get('Group_id');
 
     $menu_name = 'menu-' . $gid;

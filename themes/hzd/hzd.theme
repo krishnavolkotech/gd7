@@ -535,7 +535,7 @@ function hzd_preprocess_node(&$variables) {
     $variables['back_to_search'] = \Drupal::service('link_generator')
       ->generate(t('Back To Search'), $url);
 
-    $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
+    $tempstore = \Drupal::service('tempstore.private')->get('problem_management');
     $problem_paginations = explode(',', $tempstore->get('problem_paginations'));
     //$filterData = \Drupal::request()->query;
     $current = array_search($variables['node']->id(), $problem_paginations, TRUE);
