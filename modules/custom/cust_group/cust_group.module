@@ -1247,7 +1247,7 @@ function get_planning_file_data($type) {
   foreach ($planningFileNodes as $node) {
     $file = $node->get('field_upload_planning_file')->referencedEntities();
     if (!empty($file[0])) {
-      $fileUrl = $file[0]->url();
+      $fileUrl = $file[0]->createFileUrl(FALSE);
       $date = \Drupal::service('date.formatter')
         ->format($node->getChangedTime(), 'short');
       $filenames[] = [

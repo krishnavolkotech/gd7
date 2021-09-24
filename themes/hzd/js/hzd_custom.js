@@ -602,6 +602,11 @@ jQuery("div.riskcluster-list > div.view-content > div > table.table").tablesorte
 	  }).popover('show');
 	  return false;
       });
+
+$('.dropdown-toggle').on('click', function(e) {
+    $(this).parent().toggleClass("open");
+});	
+
 				     
       /**
        *  Close popover, if clicked outside.
