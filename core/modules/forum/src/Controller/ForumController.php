@@ -316,9 +316,9 @@ class ForumController extends ControllerBase {
     if (empty($links)) {
       // Authenticated user does not have access to create new topics.
       if ($user->isAuthenticated()) {
-        $links['disallowed'] = [
+/*        $links['disallowed'] = [
           '#markup' => $this->t('You are not allowed to post new content in the forum.'),
-        ];
+        ];*/
       }
       // Anonymous user does not have access to create new topics.
       else {

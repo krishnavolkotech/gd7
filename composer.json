@@ -48,6 +48,8 @@
         "drupal/flood_unblock": "^3.2",
         "drupal/hook_post_action": "^1.1",
         "drupal/inline_entity_form": "^1.0@RC",
+        "drupal/jquery_ui": "^1.4",
+        "drupal/jquery_ui_datepicker": "^1.1",
         "drupal/login_emailusername": "^1.2",
         "drupal/masquerade": "^2.0@beta",
         "drupal/matomo": "^1.11",

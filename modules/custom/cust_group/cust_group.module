@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\pathauto\PathautoState;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -1331,12 +1332,14 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  *
  */
 function cust_group_file_download($uri) {
-  $scheme = \Drupal::service('file_system')->uriScheme($uri);
+  $scheme = StreamWrapperManager::getScheme($uri);
+  //$scheme = \Drupal::service('file_system')->uriScheme($uri);
   if (\Drupal::currentUser()->isAnonymous() && $scheme == 'private') {
     return -1;
   }
   else {
-    $target = file_uri_target($uri);
+    $target = StreamWrapperManager::getTarget($uri);
+    //$target = file_uri_target($uri);
 
     $path_parts = explode('/', $target);
     if (count($path_parts) > 1 && $path_parts[0] == 'gruppen' && isset($path_parts[1])) {
