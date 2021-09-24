@@ -1,0 +1,21 @@
+uuid: b35a7de9-1aae-4e02-ad21-35428815ad38
+langcode: de
+status: true
+dependencies:
+  config:
+    - group.type.moderate
+id: moderate-5_filemanager
+label: Dateiverwalter
+weight: 10
+internal: false
+audience: member
+group_type: moderate
+permissions_ui: true
+permissions:
+  - 'create folders'
+  - 'delete files'
+  - 'download archive'
+  - 'download files'
+  - 'edit description'
+  - 'rename files'
+  - 'upload files'

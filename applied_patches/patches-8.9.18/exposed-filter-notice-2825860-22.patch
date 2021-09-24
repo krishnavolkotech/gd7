@@ -1,0 +1,14 @@
+diff --git a/core/modules/views/src/Plugin/views/filter/NumericFilter.php b/core/modules/views/src/Plugin/views/filter/NumericFilter.php
+index d2a6ab0..f3809bf 100644
+--- a/core/modules/views/src/Plugin/views/filter/NumericFilter.php
++++ b/core/modules/views/src/Plugin/views/filter/NumericFilter.php
+@@ -401,6 +401,9 @@ public function acceptExposedInput($input) {
+             }
+             break;
+           case 2:
++            if (empty($this->value['min']) || empty($this->value['max'])) {
++              return FALSE;
++            }            
+             if ($value['min'] === '' && $value['max'] === '') {
+               return FALSE;
+             }

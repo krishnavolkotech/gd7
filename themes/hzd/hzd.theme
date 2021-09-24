@@ -1080,12 +1080,26 @@ function hzd_preprocess_views_view_summary_unformatted(&$variables) {
   }
 }
 
+/**
+ * Implements hook_form_alter().
+ * 
+ * Alters the menu form, which is used to create a group menu link to the node.
+ * This alters and overrides the available options to match the current group 
+ * context.
+ * 
+ */
 function hzd_form_alter(&$form, $form_state, $form_id) {
-  if ($form_id == 'node_page_form' || $form_id == 'node_page_edit_form') {
-    if ($form_id == 'node_page_form') {
+  $createNodeForms = ['node_page_form', 'node_dir_listing_form'];
+  $editNodeForms = ['node_page_edit_form', 'node_dir_listing_edit_form'];
+
+  // Is it the menu-form we want to change? (Page or Filebrowser)
+  if (in_array($form_id, array_merge($createNodeForms, $editNodeForms))) {
+    // Gets group from new node.
+    if (in_array($form_id, $createNodeForms)) {
       $group = \Drupal::routeMatch()->getRawParameter('group');
     }
-    elseif ($form_id == 'node_page_edit_form') {
+    // Gets group from existing node.
+    elseif (in_array($form_id, $editNodeForms)) {
       $node = \Drupal::routeMatch()->getParameter('node');
       $groupContent = \Drupal\cust_group\CustGroupHelper::getGroupNodeFromNodeId($node->id());
       if (!empty($groupContent)) {
@@ -1105,14 +1119,6 @@ function hzd_form_alter(&$form, $form_state, $form_id) {
           ->getParentSelectOptions('', [$menuEntity->id() => $menuEntity->label()]);
       }
       $form['menu']['link']['menu_parent']['#options'] = $menuOptions;
-//      pr($x);exit;
-      /* foreach($options as $key=>$option){
-        if(strpos($key,$menu) !== 0){
-        unset($form['menu']['link']['menu_parent']['#options'][$key]);
-        }
-        } */
-      /*      kint($menu);
-        kint($options);exit; */
     }
   }
 }
@@ -1382,8 +1388,8 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
           case "entity:group_content/entity_id:entity:body":
 	  case "entity:group/field_group_body":
           case "entity:node/body":
-            // $body = $val[0]->getText();
-            $body = $val[0];
+	    $body = $val[0]->getText();
+            //$body = $val[0];
             $out = strlen($body) > 300 ? substr($body, 0,300)."..." : $body;
             $result['body'] = $out;
           break;
@@ -1399,7 +1405,8 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
               $result['gid'] = $group_entity->id();
   	      $result['entity'] = $group_entity->id();
    	      $result['title'] = $group_entity->get('label')->getValue()[0]['value'];
-	      $result['type'] = $group_entity->getEntityTypeId();
+	      $result['type'] = t($group_entity->getEntityTypeId());
+	      $result['gtype'] = $group_entity->getEntityTypeId();
               $result['changed'] = date('d.m.Y', $group_entity->getChangedTime());
             }
           break;
@@ -1410,7 +1417,7 @@ function hzd_preprocess_views_view__solr_search(&$variables) {
         }
 
         if (isset($result['entity']) && isset($result['title'])) {
-	  if ($result['type'] == 'group') {
+	  if (isset($result['gtype']) && $result['gtype'] == 'group') {
 	    $result['node_link'] = Link::createFromRoute($result['title'], 'entity.group.canonical', ['group' => $result['entity']])->toString();
 	  }
 	  else {
@@ -1643,6 +1650,7 @@ function hzd_preprocess_input(&$variables) {
 
   if (!in_array('site_administrator', $current_user->getRoles())) {
     $element = $variables['element'];
+    if (isset($element['#id'])) {
     if ($element['#id'] == 'edit-path-0-alias') {
       $current_path = \Drupal::service('path.current')->getPath();
       $route_match = \Drupal::routeMatch();
@@ -1666,6 +1674,7 @@ function hzd_preprocess_input(&$variables) {
          $variables['group_name'] = "/" . ltrim($group_alias, '/');
       }
       
+    }
     }
     
   }

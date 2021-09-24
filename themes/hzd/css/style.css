@@ -316,7 +316,7 @@ form.node-service-profile-edit-form .service-time .container-inline {
         padding-top: 15px !important;
     }
     .block-hzd-header-links {
-        background: #004077;
+        background: #027596;
         width: 100% !important;
         float: left;
         padding: 10px 0 !important;
@@ -363,7 +363,7 @@ form.node-service-profile-edit-form .service-time .container-inline {
         float: left !important;
         margin-left: 15px;
         margin-bottom: 0 !important;
-        background: #004077;
+        background: #027596;
         border: none !important;
     }
     button.navbar-toggle:hover,
@@ -461,7 +461,7 @@ header .navbar-collapse.collapse {
 #block-general {
     width: 100%;
     float: left;
-    border: 1px solid #004077;
+    border: 1px solid #027596;
     background: #eaeff5;
     margin-top: 20px;
     margin-bottom: 20px;
@@ -472,7 +472,7 @@ header .navbar-collapse.collapse {
     color: #424241;
 }
 #block-general li a:hover {
-    color: #004077;
+    color: #027596;
     background: #eaeff5;
 }
 #block-general h2 {
@@ -481,7 +481,7 @@ header .navbar-collapse.collapse {
     font-size: 14px;
     font-weight: bold;
     padding: 10px 15px;
-    background: #004077;
+    background: #027596;
 }
 .navbar-toggle {
     margin-top: 20px !important;
@@ -548,7 +548,7 @@ body.not-loggedin.path-user .region-content {
 .user-pass button {
     float: right;
     margin-bottom: 25px;
-    background: #004077;
+    background: #027596;
     color: #ffffff;
     border: none !important;
 }
@@ -739,12 +739,12 @@ form.release-filter-form .hzd-form-element,
 .nav-tabs > li > a:focus,
 .nav-tabs > li > a:hover {
     border-color: #5289a1;
-    color: #004077 !important;
+    color: #027596 !important;
     text-decoration: none !important;
     background: #fff !important;
 }
 .region-content ul.nav-tabs li.active a:hover {
-    color: #004077;
+    color: #027596;
 }
 .nav > li > a {
     color: #222222;
@@ -758,7 +758,7 @@ form.release-filter-form .hzd-form-element,
 }
 .region-content .nav > li.active > a:hover,
 .region-content .nav > li.active > a {
-    color: #004077 !important;
+    color: #027596 !important;
     background: #fff !important;
 }
 .nav-tabs > li > a {
@@ -974,7 +974,7 @@ input.hasDatepicker {
     color: #ffffff !important;
     padding: 4px 8px !important;
     float: left;
-    background: #004077;
+    background: #027596;
     border: none;
 }
 #pagination ul li.pager__item--ellipsis {
@@ -1025,7 +1025,7 @@ input.hasDatepicker {
     float: right;
 }
 #header-right form#search-block-form button {
-    background: #004077 !important;
+    background: #027596 !important;
 }
 button,
 input[type="submit"],
@@ -1041,7 +1041,7 @@ input[type="reset"]:hover,
 input[type="button"]:hover,
 .btn-default:hover {
     background: #fff !important;
-    color: #004077;
+    color: #027596;
 }
 .views-exposed-form button,
 .views-exposed-form button:hover,
@@ -1134,8 +1134,8 @@ select {
 }
 
 li.comment-add {
-    border-top: 1px solid #004077;
-    border-bottom: 1px solid #004077;
+    border-top: 1px solid #027596;
+    border-bottom: 1px solid #027596;
     list-style-type: none;
     text-align: right;
     float: left;
@@ -1159,7 +1159,7 @@ li.comment-edit a,
 li.comment-reply a {
     color: #ffffff;
     font-size: 14px;
-    background: #004077;
+    background: #027596;
     line-height: 25px;
     float: left;
     padding: 0 10px;
@@ -1237,7 +1237,7 @@ button[value="Delete"] {
 }
 .hzd-secondary-tabs .notifications_title {
     font-size: 14px;
-    color: #004077;
+    color: #027596;
     padding-bottom: 5px;
     font-weight: bold;
 }
@@ -1247,7 +1247,7 @@ table.view-deployed-releases {
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
-    background-color: #004077;
+    background-color: #027596;
 }
 .dropdown-menu {
     border: 0;
@@ -1398,7 +1398,7 @@ article .quickedit-field .field__items .field--item {
 }
 .node-preview-container {
     width: 250px;
-    background: #004077;
+    background: #027596;
     top: 95px;
     left: 10px;
 }
@@ -1426,7 +1426,7 @@ article .quickedit-field .field__items .field--item {
     padding: 0 !important;
 }
 .btn-primary {
-    background: #004077 !important;
+    background: #027596 !important;
     padding: 6px 10px !important;
 }
 form.contact-message-form label {
@@ -1805,7 +1805,7 @@ strong {
 .block-maintenance-block h3 {
     width: 100%;
     float: left;
-    color: #004077;
+    color: #027596;
     margin: 0 !important;
     font-size: 14px !important;
     text-indent: 2px;
@@ -1822,7 +1822,7 @@ strong {
 section h2.block-title,
 .block-favorites h2.block-title,
 .block-maintenance-block h2.block-title {
-    color: #004077;
+    color: #027596;
 }
 .block-incidents-block h2.block-title,
 section h2.block-title,
@@ -1967,7 +1967,7 @@ section .form-group .view-content .item-list ul li {
     color: #be214b !important;
 }
 .user-logged-in ul.contextual-links li a {
-    color: #004077 !important;
+    color: #027596 !important;
 }
 section.news-block,
 aside section {
@@ -2057,7 +2057,7 @@ section .form-group .view-footer a.all-problems,
   /*  background: url(../images/grey-list-arrow.png)left 7px no-repeat;*/
     float: left;
     padding-left: 14px !important;
-    color: #004077;
+    color: #027596;
     margin-top: 15px;
 }
 .view-problems-front-page ul li,
@@ -2097,7 +2097,7 @@ section .form-group .more-link a {
     background: url(../images/grey-list-arrow.png)left 6px no-repeat;
     float: left;
     padding-left: 14px;
-    color: #004077;
+    color: #027596;
     margin: 0;
 }
 .block-maintenance-block a.front-page-link {
@@ -2179,7 +2179,7 @@ section form#favorites-add .form-wrapper .panel-heading {
     padding: 0;
 }
 section form#favorites-add .panel-default .panel-heading a.panel-title {
-    background: #004077;
+    background: #027596;
     color: #fff;
     font-size: 14px;
     line-height: 25px;
@@ -2230,7 +2230,7 @@ section form#favorites-add .form-wrapper .panel-heading{
   padding:0;
 }
 section form#favorites-add .panel-default .panel-heading a.panel-title{
-  background:#004077;
+  background:#027596;
   color:#fff;
   font-size: 14px;
   line-height:25px;
@@ -2342,7 +2342,7 @@ section ul.admin-list li a {
     text-decoration: none;
 }
 section ul.admin-list li a .label {
-    color: #004077;
+    color: #027596;
     font-weight: bold;
     padding: 0;
     font-size: 14px;
@@ -2401,10 +2401,10 @@ h3.current_incidents_title {
     color: #d0021b !important;
 }
 .filter_title_header h3 {
-    color: #004077;
+    color: #027596;
 }
 form.incidents .filter_title_header h3 {
-    color: #004077;
+    color: #027596;
 }
 a {
     color: #0084bf;
@@ -2464,7 +2464,7 @@ section .form-group .more-link a:hover,
 .block-maintenance-block a:hover,
 .block-incidents-block a:hover {
     text-decoration: underline;
-    color: #004077;
+    color: #027596;
 }
 .block-incidents-block ul li span {
     font-size: 14px;
@@ -2700,14 +2700,14 @@ article.quickinfo h2 {
     float: left;
     font-size: 20px !important;
     margin: 10px 0 !important;
-    color: #004077;
+    color: #027596;
 }
 article.downtimes .downtime-view-history {
     width: 100%;
     float: left;
     font-size: 20px;
     margin-bottom: 10px;
-    color: #004077;
+    color: #027596;
 }
 article.downtimes .changed-group .reason p {
     width: 100%;
@@ -2872,7 +2872,7 @@ a#edit-cancel:hover {
 }
 .form-actions button {
      margin: 0 5px 5px 0;
-   /* background: #004077 !important;
+   /* background: #027596 !important;
     color: #fff !important;
     padding: 6px 12px !important;*/
 }
@@ -3167,7 +3167,7 @@ table.archived tr th:last-child {
 .field--type-text-long h1,
 h2,
 h3 {
-    color: #004077 !important;
+    color: #027596 !important;
 }
 .field--type-text-long h1 {
     font-size: 18px !important;
@@ -3360,7 +3360,7 @@ header .block-cust-group-search-block button {
     width: 100%;
     float: left;
     margin-bottom: 5px;
-    border-bottom: 1px dotted #004077;
+    border-bottom: 1px dotted #027596;
 }
 .fieldset-legend,
 .form-required{
