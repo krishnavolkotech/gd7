@@ -1469,6 +1469,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $rows = [];
     foreach ($release_node_ids as $release_node_id) {
       $link = null;
+      $link_path = '';
       $releases = \Drupal\node\Entity\Node::load($release_node_id);
       if ($releases->field_documentation_link->value) {
         $link = self::hzd_get_release_documentation_link(

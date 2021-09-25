@@ -404,7 +404,9 @@ class HzdReleases extends ControllerBase {
       
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
       $url = Url::fromRoute('hzd_release_management.extended_deployed_releases', ['group' => Zentrale_Release_Manager_Lander], ['attributes' => ['class' => ['button', 'btn-default', 'btn']]]);
-      $link = \Drupal::l(t('Enter a new deployed release:'), $url);
+      //$link = \Drupal::l(t('Enter a new deployed release:'), $url);
+       $link = Link::fromTextAndUrl(t('Enter a new deployed release:'), $url)->toString();      
+
       $output['deploy_release_form']['#markup'] = $link;
       $output['deploy_release_form']['#suffix'] = '</div>';
 

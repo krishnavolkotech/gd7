@@ -36,6 +36,7 @@ use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\pathauto\PathautoState;
 use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\Database\Database;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -492,9 +493,7 @@ function sendGroupAdminRoleMail($group, $user) {
 }
 
 function cust_group_taxonomy_term_insert($term) {
-  if ($term->getVocabularyId() != 'faq_seite' || empty($term->get('parent')
-      ->referencedEntities())
-  ) {
+  if ($term->bundle() != 'faq_seite' || empty($term->get('parent')->referencedEntities())) {
     return;
   }
   $parentlabel = $term->get('parent')->referencedEntities()[0]->label();
@@ -1270,9 +1269,10 @@ function cust_group_cron() {
 }
 
 function cust_group_user_delete($user) {
+  $connection = Database::getConnection();
   $groupContent = \Drupal::entityQuery('group_content')
     ->condition('entity_id', $user->id())
-    ->condition('type', '%' . db_like('group_membership') . '%', 'LIKE')
+    ->condition('type', '%' . $connection->escapeLike('group_membership') . '%', 'LIKE')
     ->execute();
 
   $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);

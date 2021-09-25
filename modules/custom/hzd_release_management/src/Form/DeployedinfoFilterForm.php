@@ -209,7 +209,10 @@ class DeployedinfoFilterForm extends FormBase {
         '#value' => t('Reset'),
         '#weight' => 100,
         '#validate' => array(),
-        '#attributes' => array('onclick' => 'reset_form_elements();return false;'),
+        '#attributes' => [
+		      'onclick' => 'reset_form_elements();return false;',
+		      'class'=> ['button','btn-default','btn']
+		      ],
         '#prefix' => '<div class = "reset_form">',
         '#suffix' => '</div><div style = "clear:both"></div>',
     );
