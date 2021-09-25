@@ -2,5 +2,6 @@ name: Custom Views PHP
 type: module
 description: Custom views field to include PHP logic in views.
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: "HZD Custom"
 

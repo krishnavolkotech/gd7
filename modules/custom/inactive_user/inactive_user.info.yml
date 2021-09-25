@@ -4,4 +4,4 @@ description: 'Automatic handling of inactive users.'
 version: 1.x
 core: 8.x
 package: "HZD Custom"
-
+core_version_requirement: ^8 || ^9

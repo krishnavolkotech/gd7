@@ -2,6 +2,7 @@ name: 'SAMS-Erweiterung: Kommentare'
 type: module
 description: 'Erlaubt die Erstellung von Kommentaren zu Softwareartefakten'
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: 'Custom'
 dependencies:
   - hzd_sams
