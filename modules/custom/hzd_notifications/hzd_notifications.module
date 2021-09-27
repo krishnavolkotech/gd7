@@ -10,6 +10,7 @@ use Drupal\node\Entity\Node;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\hzd_notifications\NotificationManager;
 use Drupal\group\Entity\GroupContent;
+use Drupal\node\NodeInterface;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
@@ -241,7 +242,7 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
 function set_group_status_form_submit($entity_type_id, $group, array $form, $form_state) {
   $formButton = $form_state->getTriggeringElement();
   if (isset($formButton['#published_status'])) {
-    $group->set('status', $formButton['#published_status'] ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+    $group->set('status', $formButton['#published_status'] ? NodeInterface::PUBLISHED : NodeInterface::NOT_PUBLISHED);
   }
 }
 function hzd_notifications_preprocess_form_element(&$variables) {
