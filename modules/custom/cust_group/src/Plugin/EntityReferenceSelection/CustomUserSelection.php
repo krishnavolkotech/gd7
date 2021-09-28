@@ -50,7 +50,8 @@ class CustomUserSelection extends DefaultSelection {
     $users = [];
     $group = $this->configuration['hzd_group'];
     if ($group) {
-      $exclude_members = $this->configuration['handler_settings']['exclude_members'];
+      //$exclude_members = $this->configuration['handler_settings']['exclude_members'];
+      $exclude_members = $this->configuration['exclude_members'];
       $plugin = $group->getGroupType()
         ->getContentPlugin('group_membership')
         ->getContentTypeConfigId();
