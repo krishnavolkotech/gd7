@@ -1006,7 +1006,9 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $plannigFileRefFlipped = array_flip($plannigFileRef);
     $nodeId = $plannigFileRefFlipped[$field_planning_file_type];
     global $base_url;
-    header('Location: ' . $base_url . \Drupal::url('entity.node.canonical', ['node' => $nodeId]));
+    //$base_url . \Drupal::url('entity.node.canonical', ['node' => $nodeId])
+    $url = $base_url . Url::fromRoute('entity.node.canonical', ['node' => $nodeId])->toString();
+    header('Location: ' . $url);
     exit;
   } elseif ('downtimes' == $entity->bundle()) {
     $db = \Drupal::database();

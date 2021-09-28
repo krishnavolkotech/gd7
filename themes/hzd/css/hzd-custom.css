@@ -1631,3 +1631,8 @@ span.field-content::first-letter {
   color: #fff !important;
   background-color: #c9302c !important;
 }
+
+.cust-flex-center-items {
+  display: flex;
+  align-items: center;
+}
