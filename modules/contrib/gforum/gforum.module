@@ -288,6 +288,7 @@ function gforum_container_groups($root_tid) {
     if (in_array('administrator', $roles)) {
       drupal_set_message($txt, 'warning');
     }
+    $gids = [];
   }
 
   if ($gids && $groups = Group::loadMultiple($gids)) {

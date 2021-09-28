@@ -1299,7 +1299,7 @@ function earlywarning_service_dependent_releases() {
   $form = form_builder($_POST['form_id'], $form, $form_state);
 
   $output = '';
-  $output .= drupal_render($form['field_earlywarning_release']);
+  $output .= \Drupal::service('renderer')->render($form['field_earlywarning_release']);
 
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
   exit();
@@ -1335,7 +1335,7 @@ function deployed_environment_service_dependent_releases() {
   $form = form_builder($_POST['form_id'], $form, $form_state);
 
   $output = '';
-  $output .= drupal_render($form['field_earlywarning_release']);
+  $output .= \Drupal::service('renderer')->render($form['field_earlywarning_release']);
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
   exit();
 }

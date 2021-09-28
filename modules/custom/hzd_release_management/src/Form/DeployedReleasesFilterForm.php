@@ -113,7 +113,8 @@ class DeployedReleasesFilterForm extends FormBase {
     );
 
     $current_path = \Drupal::service('path.current')->getPath();
-    $form['reset_link'] = ['#type'=>'container','#attributes'=>['class'=>['reset_form']]];
+    $form['reset_link'] =
+    ['#type'=>'container','#attributes'=>['class'=>['reset_form', 'button','btn-default','btn']]];
     $form['reset_link']['link'] = [
         '#title' => $this->t('Reset'),
         '#type' => 'link',
