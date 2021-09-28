@@ -331,7 +331,8 @@ class DowntimesFilter extends FormBase
             '#weight' => 100,
 //      '#validate' => array(),
             '#attributes' => array(
-                'onclick' => 'reset_form_elements(); return false;'
+                'onclick' => 'reset_form_elements(); return false;',
+   	        'class'=> ['button','btn-default','btn']
             ),
         );
 //        $form['#suffix'] = "</div>";
