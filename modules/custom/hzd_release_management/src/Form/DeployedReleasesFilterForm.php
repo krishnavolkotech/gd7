@@ -106,7 +106,6 @@ class DeployedReleasesFilterForm extends FormBase {
         '#default_value' => $limit_default,
         '#attributes' => array(
             'onchange' => 'this.form.submit()',
-	    'class'=> ['button','btn-default','btn']
         ),
         "#prefix" => "<div class = 'limit_search_dropdown  hzd-form-element'>",
         '#suffix' => '</div>',
