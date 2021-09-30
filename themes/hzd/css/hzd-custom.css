@@ -1636,3 +1636,7 @@ span.field-content::first-letter {
   display: flex;
   align-items: center;
 }
+.right.group_name {
+    width: 65%;
+    margin-left: 2%;
+}
