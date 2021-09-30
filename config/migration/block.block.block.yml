@@ -25,4 +25,8 @@ visibility:
   request_path:
     id: request_path
     negate: true
-    pages: "/*Management*\n/*management*\n/*Betriebsportal*\n/*betriebsportal*"
+    pages: |-
+      /*Management*
+      /*management*
+      /*Betriebsportal*
+      /*betriebsportal*
