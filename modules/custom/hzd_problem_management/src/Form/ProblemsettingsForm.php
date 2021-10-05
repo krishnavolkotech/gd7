@@ -58,7 +58,7 @@ class ProblemsettingsForm extends FormBase {
     $current_route_match = \Drupal::service('current_route_match');
     $breadcrumb = $breadcrumb_manager->build($current_route_match);
 
-    $group_problems_view_service_query = db_select('group_problems_view', 'gpv');
+    $group_problems_view_service_query = \Drupal::database()->select('group_problems_view', 'gpv');
     $group_problems_view_service_query->Fields('gpv', array('service_id'));
     $group_problems_view_service_query->condition('group_id', $group_id, '=');
     $group_problems_view_service = $group_problems_view_service_query->execute()->fetchAll();
@@ -81,7 +81,7 @@ class ProblemsettingsForm extends FormBase {
       $default_services = ['all' => 'all'] + $default_services;
     }
 
-    // $services_obj= db_query("SELECT title, n.nid FROM {node} n, {content_field_service_type} cfst WHERE n.nid = cfst.nid and   field_service_type_value = %d ", 3);
+    // $services_obj= \Drupal::database()->query("SELECT title, n.nid FROM {node} n, {content_field_service_type} cfst WHERE n.nid = cfst.nid and   field_service_type_value = %d ", 3);
     // while ($services = db_fetch_array($services_obj)) {
     // $options[$services['nid']] = $services['title'];
     // }.
@@ -143,7 +143,6 @@ class ProblemsettingsForm extends FormBase {
    * selected services for the individual groups are stored in the table "group_problems_view".
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // db_query("delete from {group_problems_view} where group_id = %d ", $_SESSION['Group_id']);.
     $group = \Drupal::routeMatch()->getParameter('group');
     if (is_object($group)) {
       $group_id = $group->id();
@@ -201,7 +200,7 @@ class ProblemsettingsForm extends FormBase {
       ->invalidateTags([
         'hzd_problem_management:prob'
       ]);
-    drupal_set_message(t('Problem Settings Updated'), 'status');
+    \Drupal::messenger()->addMessage(t('Problem Settings Updated'), 'status');
   }
 
 }

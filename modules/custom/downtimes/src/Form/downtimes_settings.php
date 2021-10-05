@@ -27,8 +27,8 @@ class downtimes_settings extends FormBase {
    /**
     $breadcrumb = array();
     // $breadcrumb[] = \Drupal::l(t('Home'), Url::setUnrouted());
-    $group_name = \Drupal::service('user.private_tempstore')->get()->get('Group_name');
-    $group_id = \Drupal::service('user.private_tempstore')->get()->get('Group_id');
+    $group_name = \Drupal::service('tempstore.private')->get()->get('Group_name');
+    $group_id = \Drupal::service('tempstore.private')->get()->get('Group_id');
 
     if ($group_name) {
       $breadcrumb[] = l(t($group_name), 'node/' . $group_id);
@@ -93,13 +93,13 @@ class downtimes_settings extends FormBase {
    * selected services for the individual groups are stored in the table "group_problems_view".
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // db_query("delete from {group_problems_view} where group_id = %d ", $_SESSION['Group_id']);.
+    // \Drupal::database()->query("delete from {group_problems_view} where group_id = %d ", $_SESSION['Group_id']);.
     /*HzdDowntimeStorage::delete_group_downtimes_view();
 
     $selected_services = $form['services']['#post']['services'];
     $counter = HzdDowntimeStorage::insert_group_downtimes_view($selected_services);
 
-    $tempstore = \Drupal::service('user.private_tempstore')->get('downtimes');
+    $tempstore = \Drupal::service('tempstore.private')->get('downtimes');
     $gid = $tempstore->get('Group_id');
 
     $menu_name = 'menu-' . $gid;
@@ -107,7 +107,7 @@ class downtimes_settings extends FormBase {
 
     // \Drupal::service('plugin.manager.menu.link')->createInstance($menu_link->getPluginId());
     HzdcustomisationStorage::reset_menu_link($counter, 'Downtimes', 'downtimes', $menu_name, $gid);  */
-    drupal_set_message(t('Downtimes Settings Updated'), 'status');
+    \Drupal::messenger()->addMessage(t('Downtimes Settings Updated'), 'status');
   }
 
 }

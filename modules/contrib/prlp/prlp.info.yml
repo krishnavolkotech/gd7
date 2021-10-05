@@ -1,11 +1,12 @@
 name: Password Reset Landing Page (PRLP)
 type: module
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: Administration
 description: Enhances the password reset landing page by letting user change their password on arrival via the password reset link
 configure: admin/config/people/accounts/prlp
 
-# Information added by Drupal.org packaging script on 2020-05-26
-version: '8.x-1.5'
+# Information added by Drupal.org packaging script on 2020-06-20
+version: '8.x-1.6'
 project: 'prlp'
-datestamp: 1590519038
+datestamp: 1592668384

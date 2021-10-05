@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\xmlrpc\Controller\XmlrpcController.
- */
-
 namespace Drupal\xmlrpc\Controller;
 
 use Drupal\Core\Controller\ControllerBase;

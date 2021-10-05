@@ -10,6 +10,7 @@ use Drupal\node\Entity\Node;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\hzd_notifications\NotificationManager;
 use Drupal\group\Entity\GroupContent;
+use Drupal\node\NodeInterface;
 
 define('ENTITY_OP_UPDATE', 'update');
 define('ENTITY_OP_INSERT', 'insert');
@@ -32,7 +33,7 @@ function hzd_get_default_interval($uid, $rel_type) {
  * get all services of a release type
  */
 function hzd_get_all_services($rel_type = NULL) {
-  $query = db_select('node_field_data', 'n');
+  $query = \Drupal::database()->select('node_field_data', 'n');
   $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
   $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
   $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
@@ -57,7 +58,7 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach ($interval as $vals) {
     $uids_list = array();
-    $uids_query = db_query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval",
+    $uids_query = \Drupal::database()->query("SELECT uids FROM {service_notifications} WHERE service_id = :sid AND type = :type AND send_interval = :intval",
       array(
         ":sid" => $nid,
         ":type" => $type,
@@ -71,7 +72,7 @@ function insert_user_service_notifications($type, $nid, $uid, $user_notification
       $uids_list[] = $uid;
     }
     $serialized_uid = serialize($uids_list);
-    db_update('service_notifications')->fields(array('uids' => $serialized_uid))
+    \Drupal::database()->update('service_notifications')->fields(array('uids' => $serialized_uid))
       ->condition('service_id', $nid)
       ->condition('type', $type)
       ->condition('send_interval', $vals)
@@ -241,7 +242,7 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
 function set_group_status_form_submit($entity_type_id, $group, array $form, $form_state) {
   $formButton = $form_state->getTriggeringElement();
   if (isset($formButton['#published_status'])) {
-    $group->set('status', $formButton['#published_status'] ? NODE_PUBLISHED : NODE_NOT_PUBLISHED);
+    $group->set('status', $formButton['#published_status'] ? NodeInterface::PUBLISHED : NodeInterface::NOT_PUBLISHED);
   }
 }
 function hzd_notifications_preprocess_form_element(&$variables) {
@@ -720,6 +721,7 @@ function _notify_users(&$entity, $action, $user_data){
       $error ="Die Seite hat " . strlen($body) . " Zeichen. "
         . "Das Maximum für den Inhalt von Benachrichtigungen liegt bei 65535 Zeichen."
         . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link zu dieser Seite.";
+
       $body = "Der Inhalt der Seite ist zu groß zum Versenden. Untenstehender Link führt zum Inhalt.";
       // Modified warning text for quickinfo.
       if ($entity->bundle() == 'quickinfo') {
@@ -728,7 +730,7 @@ function _notify_users(&$entity, $action, $user_data){
           . "Die versendete Benachrichtigung enthält deshalb lediglich einen Link sowie eine PDF-Datei.";
         $body = "RZ-Schnellinfo ist zu groß um im Mailbody versendet zu werden. Den Inhalt finden Sie im angehängten PDF oder wenn Sie dem Link folgen.";
       }
-      drupal_set_message($error, 'warning');
+      \Drupal::messenger()->addMessage($error, 'warning');	
     }
     $notification_scheduler->schedule($entity, $action, (array)$user_data, $body, $subject);
   }
@@ -963,7 +965,7 @@ function hzd_get_immediate_qi_notification_user_mails($services) {
     $affetced_services[] = $options[$val['value']];
   }
 
-  $query = db_select('quickinfo_notifications', 'q')
+  $query = \Drupal::database()->select('quickinfo_notifications', 'q')
     ->fields('q', array('uids'))
     ->condition('q.cck', $affetced_services, 'IN')
     ->condition('q.send_interval', 0, '=');

@@ -18,6 +18,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @MigrateProcessPlugin(
  *   id = "matomo_visibility_pages"
  * )
+ *
+ * TODO update with new migrate process:
+ *   @see https://www.drupal.org/node/3047268
  */
 class MatomoVisibilityPages extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
@@ -29,15 +32,18 @@ class MatomoVisibilityPages extends ProcessPluginBase implements ContainerFactor
   protected $moduleHandler;
 
   /**
-   * The migration process plugin, configured for lookups in the d6_user_role
-   * and d7_user_role migrations.
+   * The migration process plugin.
+   *
+   * Configured for lookups in the d6_user_role and d7_user_role migrations.
    *
    * @var \Drupal\migrate\Plugin\MigrateProcessInterface
    */
   protected $migrationPlugin;
 
   /**
-   * Whether or not to skip Matomo that use PHP for visibility. Only applies if
+   * Skip PHP setting.
+   *
+   * Whether or not to skip Matomo that uses PHP for visibility. Only applies if
    * the PHP module is not enabled.
    *
    * @var bool

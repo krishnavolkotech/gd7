@@ -111,7 +111,7 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_set_message(t('Service mail preferences saved successfully'));
+    \Drupal::messenger()->addMessage(t('Service mail preferences saved successfully'));
     $service = $form_state->getValue('services');
     $content_type = $form_state->getValue('content_type');
     $send_interval = $form_state->getValue('send_interval');
@@ -139,7 +139,6 @@ class ServiceSpecificNotificationsUserForm extends FormBase {
         ->fields($service_override_record)
         ->execute();
     }
-    //db_insert('service_notifications_override')->fields($service_override_record)->execute();
 
     // get user default interval of a particlural type
     $default_intval = HzdNotificationsHelper::hzd_default_content_type_intval($uid, $types[$content_type], $rel_type);

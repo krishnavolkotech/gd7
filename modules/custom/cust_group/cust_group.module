@@ -35,6 +35,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Drupal\pathauto\PathautoPatternInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\pathauto\PathautoState;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\Database\Database;
 
 function cust_group_transliteration_overrides_alter(&$overrides, $langcode) {
   $overrides[0xC4] = 'AE';
@@ -84,7 +86,7 @@ function get_user_fields($user) {
   $state_name = $state->execute()->fetchField();
   $variables['name'] = [
     'label' => 'User Name',
-    'value' => $user->getUsername()
+    'value' => $user->getDisplayName()
   ];
   $variables['firstname'] = [
     'label' => 'First Name',
@@ -151,8 +153,10 @@ function cust_group_group_insert($group) {
   ]);
   $faqcategoryterm->save();
 
-  \Drupal::service('path.alias_storage')
-    ->delete(['source' => '/node/' . $node->id()]);
+  
+  delete_path_alias('/node/' . $node->id());
+ // \Drupal::service('path_alias.repository')->delete(['source' => '/node/' . $node->id()]);
+    
   $group->set('field_old_reference', $node->id());
   $group->set('field_forum_containers', $forum->id());
   $group->save();
@@ -286,7 +290,7 @@ if (isset($entity->original->request_status->value) &&
     ]);
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
     if ($result['result']) {
-      drupal_set_message(t('Mail sent.'), 'status');
+      \Drupal::messenger()->addMessage(t('Mail sent.'), 'status');
     }
   }
 
@@ -335,13 +339,13 @@ function cust_group_group_content_delete(\Drupal\group\Entity\GroupContentInterf
     }
 
     if ($group->id() == \Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id')) {
-      db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
+      \Drupal::database()->query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
     //wird dies für SAMS überhaupt benötigt? Eingetragen, weil paralel zu ALEDV erstellt im Rahmen der Trennung von SAMS und ALEDV
     // Ja, wir benötigt um abonnierte Benachrichtigungen aus Datenbank zu löschen, wenn user die Gruppe verlässt.
     // @todo Testen.
     if ($group->id() == \Drupal::config('cust_group.sams.settings')->get('sams_id')) {
-      db_query("DELETE FROM {sams_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
+      \Drupal::database()->query("DELETE FROM {sams_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
     }
   }
   $tags = ['config:block.block.hzd_local_tasks', 'config:system.menu.primary-links'];
@@ -489,9 +493,7 @@ function sendGroupAdminRoleMail($group, $user) {
 }
 
 function cust_group_taxonomy_term_insert($term) {
-  if ($term->getVocabularyId() != 'faq_seite' || empty($term->get('parent')
-      ->referencedEntities())
-  ) {
+  if ($term->bundle() != 'faq_seite' || empty($term->get('parent')->referencedEntities())) {
     return;
   }
   $parentlabel = $term->get('parent')->referencedEntities()[0]->label();
@@ -837,7 +839,7 @@ function membership_reject_submit_handler(&$form, $form_state) {
   ]);
   $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
   if ($result['result']) {
-    drupal_set_message(t('Mail sent.'), 'status');
+    \Drupal::messenger()->addMessage(t('Mail sent.'), 'status');
   }
 
   \Drupal::logger('group_content')->notice('@type: rejected %title.', [
@@ -914,7 +916,7 @@ function mailToGroupAdmins($data = []) {
       $result = $mailManager->mail($data['module'], $data['key'], $userEntity->getEmail(), $langcode, $params, NULL, $send);
     }
   }
-  //drupal_set_message(t('Request has been sucessfully placed.'), 'status');
+  //\Drupal::messenger()->addMessage(t('Request has been sucessfully placed.'), 'status');
 }
 
 use Drupal\group\Entity\Group;
@@ -1004,7 +1006,9 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
     $plannigFileRefFlipped = array_flip($plannigFileRef);
     $nodeId = $plannigFileRefFlipped[$field_planning_file_type];
     global $base_url;
-    header('Location: ' . $base_url . \Drupal::url('entity.node.canonical', ['node' => $nodeId]));
+    //$base_url . \Drupal::url('entity.node.canonical', ['node' => $nodeId])
+    $url = $base_url . Url::fromRoute('entity.node.canonical', ['node' => $nodeId])->toString();
+    header('Location: ' . $url);
     exit;
   } elseif ('downtimes' == $entity->bundle()) {
     $db = \Drupal::database();
@@ -1244,7 +1248,7 @@ function get_planning_file_data($type) {
   foreach ($planningFileNodes as $node) {
     $file = $node->get('field_upload_planning_file')->referencedEntities();
     if (!empty($file[0])) {
-      $fileUrl = $file[0]->url();
+      $fileUrl = $file[0]->createFileUrl(FALSE);
       $date = \Drupal::service('date.formatter')
         ->format($node->getChangedTime(), 'short');
       $filenames[] = [
@@ -1267,9 +1271,10 @@ function cust_group_cron() {
 }
 
 function cust_group_user_delete($user) {
+  $connection = Database::getConnection();
   $groupContent = \Drupal::entityQuery('group_content')
     ->condition('entity_id', $user->id())
-    ->condition('type', '%' . db_like('group_membership') . '%', 'LIKE')
+    ->condition('type', '%' . $connection->escapeLike('group_membership') . '%', 'LIKE')
     ->execute();
 
   $groupUsers = \Drupal\group\Entity\GroupContent::loadMultiple($groupContent);
@@ -1329,12 +1334,14 @@ function cust_group_entity_operation_alter(array &$operations, \Drupal\Core\Enti
  *
  */
 function cust_group_file_download($uri) {
-  $scheme = \Drupal::service('file_system')->uriScheme($uri);
+  $scheme = StreamWrapperManager::getScheme($uri);
+  //$scheme = \Drupal::service('file_system')->uriScheme($uri);
   if (\Drupal::currentUser()->isAnonymous() && $scheme == 'private') {
     return -1;
   }
   else {
-    $target = file_uri_target($uri);
+    $target = StreamWrapperManager::getTarget($uri);
+    //$target = file_uri_target($uri);
 
     $path_parts = explode('/', $target);
     if (count($path_parts) > 1 && $path_parts[0] == 'gruppen' && isset($path_parts[1])) {
@@ -1376,7 +1383,7 @@ function hzdGroupFileAccess($group_id) {
 
 function getGroupIdFromFolderName($folder_name) {
   $sql = "select id from {groups_field_data} where replace(REPLACE(label,' - ',' '), ' ', '-') = :folder_name";
-  return $group_id = db_query($sql, array(':folder_name' => $folder_name))->fetchField();
+  return $group_id = \Drupal::database()->query($sql, array(':folder_name' => $folder_name))->fetchField();
 }
 
 function al_edvFileAccess($uri){
@@ -1434,21 +1441,21 @@ function cust_group_schema() {
   ->loadByProperties(array('uuid' => $menu_uuid));
   $menu_content = array_shift($menu_content);
   $parent_path = explode(':', $menu_content->link->uri)[1];
-  $parent_alias = \Drupal::service('path.alias_manager')
+  $parent_alias = \Drupal::service('path_alias.manager')
   ->getAliasByPath($parent_path, $langcode);
 
   $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
   $path_alias = $parent_alias . '/' . $title;
-  \Drupal::service('path.alias_storage')
-  ->save($system_path, $path_alias, $langcode);
+  create_path_alias($system_path, $path_alias);
+  // \Drupal::service('path_alias.repository')->save($system_path, $path_alias, $langcode);
   }
   else {
   $system_path = '/' . $groupcontent->toUrl()->getInternalPath();
-  $groupalias = \Drupal::service('path.alias_manager')
+  $groupalias = \Drupal::service('path_alias.manager')
   ->getAliasByPath('/group/' . $pgroupid, $langcode);
   $path_alias = $groupalias . '/' . $title;
-  \Drupal::service('path.alias_storage')
-  ->save($system_path, $path_alias, $langcode);
+  create_path_alias($system_path, $path_alias);
+  //\Drupal::service('path_alias.repository')->save($system_path, $path_alias, $langcode);
   }
   }
   } */
@@ -1548,14 +1555,12 @@ function cust_group_pathauto_pattern_alter(PathautoPatternInterface $pattern, ar
 function cust_group_entity_update(EntityInterface $entity) {
   if ($entity->bundle() == 'quickinfo' && $entity->isPublished()) {
     $source = '/' . $entity->toUrl()->getInternalPath();
-    \Drupal::service('path.alias_storage')->delete(array(
-      'source' => $source,
-      'langcode' => 'de'
-    ));
+    delete_path_alias($source);
 
-    $path_alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
-    \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()
-        ->getInternalPath(), $path_alias, 'de');
+    $path = '/' . $entity->toUrl()->getInternalPath();
+    $alias = '/release-management/rz-schnellinfos/' . $entity->get('field_unique_id')->value;
+    create_path_alias($path, $alias);
+   // \Drupal::entityTypeManager()->getStorage('path_alias')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
   }
 }
 
@@ -1663,10 +1668,12 @@ function group_request_status($groupContent) {
 
 function cust_group_theme_suggestions_input_alter(&$suggestions, array $variables) {
   $element = $variables['element'];
-  $id_item = str_replace('-', '_', $element['#id']);
-  if (isset($variables['element']['#id'])) {
-    if ($variables['element']['#id'] == 'edit-path-0-alias') {
-      $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+  if (isset($element['#id'])) {
+    $id_item = str_replace('-', '_', $element['#id']);
+    if (isset($variables['element']['#id'])) {
+      if ($variables['element']['#id'] == 'edit-path-0-alias') {
+        $suggestions[] = 'input__alias__form-control__' . $element['#type'];
+      }
     }
   }
 }
@@ -1676,7 +1683,7 @@ function cust_group_theme_suggestions_input_alter(&$suggestions, array $variable
 */
 function get_group_node_alias($gid) {
   $group_node_path = '/group/'.$gid; 
-  return $result = \Drupal::service('path.alias_manager')->getAliasByPath($group_node_path);
+  return $result = \Drupal::service('path_alias.manager')->getAliasByPath($group_node_path);
 }	 
 
 /*
@@ -1801,3 +1808,22 @@ function cust_group_path_alias_update(Drupal\path_alias\PathAliasInterface $path
    update_group_alias($path_alias);
 }
 */
+
+function create_path_alias($path, $alias) {
+  $path_alias_manager = \Drupal::entityTypeManager()->getStorage('path_alias');
+
+  $path_alias = $path_alias_manager->create([
+    'path' => $path,
+    'alias' => $alias,
+    'langcode' => 'de',
+  ]);
+  $path_alias->save();
+}
+
+function delete_path_alias($source) {
+  $path_alias_manager = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $alias_objects = $path_alias_manager->loadByProperties(['path' => $source]);
+  foreach ($alias_objects as $alias_object) {
+    $alias_object->delete();
+  }
+}

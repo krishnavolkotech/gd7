@@ -50,9 +50,7 @@ class BulkMailGroupMembersForm extends FormBase {
           $userGroupsAsAdmin[$group->id()] = $group->label();
         }
       }
-      /*      $group_members_query = db_query("SELECT distinct(gcfd_mem.gid), gcfd_mem.label FROM group_content__group_roles gcgr, group_content_field_data gcfd_mem, group_content_field_data gcfd,
-      users_field_data ufd WHERE ufd.uid = gcfd_mem.uid AND gcfd_mem.request_status = 1 AND gcfd_mem.gid = gcfd.gid AND gcgr.entity_id = gcfd.id AND gcgr.group_roles_target_id like '%admin%' AND gcfd.entity_id = $uid GROUP BY gcfd_mem.gid, gcfd_mem.label")->fetchAllKeyed();*/
-
+ 
     }
     $form['group'] = [
       '#type' => 'select',

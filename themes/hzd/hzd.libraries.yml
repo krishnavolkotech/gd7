@@ -34,6 +34,9 @@ bootstrap-scripts:
   dependencies:
       - core/drupal.tableheader
       - core/drupal.ajax
+      - core/jquery
+      - core/jquery.ui
+      - jquery_ui_datepicker/datepicker
 theme:
   js:
     js/3.3.5/bootstrap.js: {}

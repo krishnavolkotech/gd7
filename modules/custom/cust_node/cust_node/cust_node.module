@@ -36,7 +36,7 @@ function cust_node_form_alter(&$form, $form_state, $form_id) {
     if($group_name) {
       if ($group_id == QUICKINFO) {
         $path = 'node/' . $form['#node_revision']->nid;
-        $quickinfo_path = \Drupal::service('path.alias_manager')->getAliasByPath($path);
+        $quickinfo_path = \Drupal::service('path_alias.manager')->getAliasByPath($path);
         $form['#redirect'] = $quickinfo_path;
       }
       else {
@@ -58,7 +58,7 @@ function cust_node_form_alter(&$form, $form_state, $form_id) {
         $form['#redirect'] = $quickinfo_path;
     }
     else {
-    if (db_result(db_query('SELECT COUNT(vid) FROM {node_revisions} WHERE nid = %d', $node->nid)) > 1) {
+    if (\Drupal::database()->result(\Drupal::database()->query('SELECT COUNT(vid) FROM {node_revisions} WHERE nid = %d', $node->nid)) > 1) {
       if($group_name) {
          $form['#redirect'] = $group_name . '/' . $node->type . '/' . $node->nid . '/revisions';
       }

@@ -17,7 +17,7 @@ downtimes:
     - core/jquery
     - core/jquery.ui
     - core/drupal.dialog
-    - core/jquery.ui.datepicker
+    - jquery_ui_datepicker/datepicker
 
 downtimes.sitewardjs:
   version: 1.x
@@ -28,7 +28,7 @@ downtimes.sitewardjs:
     - core/jquery
     - core/jquery.ui
     - core/drupal.dialog
-    - core/jquery.ui.datepicker
+    - jquery_ui_datepicker/datepicker
 
 downtimes.maintenancejs:
   version: 1.x
@@ -39,7 +39,7 @@ downtimes.maintenancejs:
     - core/jquery
     - core/jquery.ui
     - core/drupal.dialog
-    - core/jquery.ui.datepicker
+    - jquery_ui_datepicker/datepicker
 
 downtimes.service_data:
   version: 1.x
@@ -50,7 +50,7 @@ downtimes.service_data:
     - core/jquery
     - core/jquery.ui
     - core/drupal.dialog
-    - core/jquery.ui.datepicker
+    - jquery_ui_datepicker/datepicker
 
 downtimes.currentincidents:
     version: 1.x
@@ -65,7 +65,7 @@ downtimes.currentincidents:
       - core/jquery
       - core/jquery.ui
       - core/drupal.dialog
-      - core/jquery.ui.datepicker 
+      - jquery_ui_datepicker/datepicker
 
 downtimes.newdowntimes:
   version: 1.x
@@ -76,4 +76,4 @@ downtimes.newdowntimes:
     - core/jquery
     - core/jquery.ui
     - core/drupal.dialog
-    - core/jquery.ui.datepicker
+    - jquery_ui_datepicker/datepicker

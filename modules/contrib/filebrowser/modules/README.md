@@ -1,1 +1,0 @@
-This module provides an example how to generate custom metadata for your files.

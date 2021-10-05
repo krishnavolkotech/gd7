@@ -27,4 +27,34 @@ visibility:
   request_path:
     id: request_path
     negate: true
-    pages: "/address\n/AndhraPradesh/address\n/TamilNadu/address\n/Orissa/address\n/Punjab/address\n/Delhi/address\n/Assam/address\n/UttarPradesh/address\n/Goa/address\n/State9/address\n/event\n/AndhraPradesh/event\n/TamilNadu/event\n/Orissa/event\n/Punjab/event\n/Delhi/event\n/Assam/event\n/UttarPradesh/event\n/Goa/event\n/State9/event\n/TamilNadu/statedowntimes_page\n/AndhraPradesh/statedowntimes_page\n/Orissa/statedowntimes_page\n/Punjab/statedowntimes_page\n/Delhi/statedowntimes_page\n/Assam/statedowntimes_page\n/UttarPradesh/statedowntimes_page\n/Goa/statedowntimes_page\n/State9/statedowntimes_page\n/statedowntimes_page"
+    pages: |-
+      /address
+      /AndhraPradesh/address
+      /TamilNadu/address
+      /Orissa/address
+      /Punjab/address
+      /Delhi/address
+      /Assam/address
+      /UttarPradesh/address
+      /Goa/address
+      /State9/address
+      /event
+      /AndhraPradesh/event
+      /TamilNadu/event
+      /Orissa/event
+      /Punjab/event
+      /Delhi/event
+      /Assam/event
+      /UttarPradesh/event
+      /Goa/event
+      /State9/event
+      /TamilNadu/statedowntimes_page
+      /AndhraPradesh/statedowntimes_page
+      /Orissa/statedowntimes_page
+      /Punjab/statedowntimes_page
+      /Delhi/statedowntimes_page
+      /Assam/statedowntimes_page
+      /UttarPradesh/statedowntimes_page
+      /Goa/statedowntimes_page
+      /State9/statedowntimes_page
+      /statedowntimes_page

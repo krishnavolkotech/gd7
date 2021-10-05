@@ -14,7 +14,7 @@ class InactiveuserStorage {
    */
   static public function inactive_user_admin_mail() {
     $admin_user = User::load(1);
-    // $admin_mail	= db_query('SELECT mail FROM {users} WHERE uid = :uid', array(':uid' => 1))->fetchField();
+    // $admin_mail	=  \Drupal::database()->query('SELECT mail FROM {users} WHERE uid = :uid', array(':uid' => 1))->fetchField();
     $mail = \Drupal::config('system.site')->get('mail');
     $inactive_user_admin_email = \Drupal::config('inactive_user.settings')->get('inactive_user_admin_email');
     if ($inactive_user_admin_email) {

@@ -127,7 +127,7 @@ class HzdArtifactComments extends ControllerBase {
         } else {
             $default_type = null;
             if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-                $default_type = db_query("SELECT release_type FROM "
+                $default_type = \Drupal::database()->query("SELECT release_type FROM "
                     . "{default_release_type} WHERE group_id = :gid",
                     array(
                         ":gid" => $group_id

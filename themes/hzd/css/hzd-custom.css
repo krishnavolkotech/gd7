@@ -1656,4 +1656,13 @@ span.field-content::first-letter {
 
 .current-folder {
   color: rgb(31, 31, 31);
+
+  .cust-flex-center-items {
+  display: flex;
+  align-items: center;
+}
+
+.right.group_name {
+    width: 65%;
+    margin-left: 2%;
 }

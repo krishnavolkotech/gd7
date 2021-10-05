@@ -1,0 +1,12 @@
+diff --git a/modules/contrib/gforum/gforum.module b/modules/contrib/gforum/gforum.module
+index 840aaf4ed..a8ce062c8 100644
+--- a/modules/contrib/gforum/gforum.module
++++ b/modules/contrib/gforum/gforum.module
+@@ -288,6 +288,7 @@ function gforum_container_groups($root_tid) {
+     if (in_array('administrator', $roles)) {
+       drupal_set_message($txt, 'warning');
+     }
++    $gids = [];
+   }
+ 
+   if ($gids && $groups = Group::loadMultiple($gids)) {

@@ -48,7 +48,7 @@ class StarFavAddForm extends FormBase
         }
         if ($title == '') {
             $current_path = \Drupal::service('path.current')->getPath();
-            $title = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
+            $title = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
         }
         if (is_string($title)) {
             $title = strip_tags($title);

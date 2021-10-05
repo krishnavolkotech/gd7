@@ -1,0 +1,31 @@
+views.display_extender.views_merge_rows:
+  type: views_display_extender
+  mapping:
+    merge_rows:
+      type: boolean
+      label: 'Enable merge rows feature'
+    field_config:
+      type: sequence
+      label: 'Merge row configuration for each field'
+      sequence:
+        type: views_merge_rows.field_config
+
+views_merge_rows.field_config:
+  type: mapping
+  label: 'Merge row configuration for a field'
+  mapping:
+    merge_option:
+      type: string
+      label: 'Merge strategy'
+    exclude_first:
+      type: boolean
+      label: 'Exclude the first row'
+    prefix:
+      type: label
+      label: 'Prefix'
+    separator:
+      type: string
+      label: 'Separator'
+    suffix:
+      type: label
+      label: 'Suffix'

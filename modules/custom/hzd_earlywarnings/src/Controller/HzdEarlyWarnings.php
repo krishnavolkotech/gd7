@@ -63,7 +63,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $lastcomment = array('data' => t('Last Comment'), 'class' => 'last-comment-hdr');
     $header = array($earlywarnings, $date, $responses, $lastcomment);
     0
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
     $query->join('node__release_type', 'nrt', 'nfrs.field_release_service_value = nrt.entity_id');
@@ -95,7 +95,7 @@ class HzdEarlyWarnings extends ControllerBase {
     $result = $paged_query->execute()->fetchAll();
 
     foreach($result as $vals) {
-    $user_query = db_select('cust_profile', 'cp');
+    $user_query = \Drupal::database()->select('cust_profile', 'cp');
     $user_query->condition('cp.uid', $vals->uid, '=')
     ->fields('cp', array('firstname', 'lastname'));
     $author = $user_query->execute()->fetchAll();
@@ -133,13 +133,13 @@ class HzdEarlyWarnings extends ControllerBase {
    * Get early warning responses info.
    */
   public function get_earlywarning_responses_info($earlywarnings_nid) {
-    $total_responses = db_query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid", array(":nid" => $earlywarnings_nid))->fetchField();
-    $resonses_sql = db_query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1", array(":eid" => $earlywarnings_nid))->fetchAll();
+    $total_responses = \Drupal::database()->query("SELECT COUNT(*) FROM {comment_field_data} WHERE entity_id = :nid", array(":nid" => $earlywarnings_nid))->fetchField();
+    $resonses_sql = \Drupal::database()->query("SELECT entity_id, uid, created FROM {comment_field_data} WHERE entity_id = :eid ORDER BY created DESC limit 1", array(":eid" => $earlywarnings_nid))->fetchAll();
     foreach ($resonses_sql as $vals) {
       $responses['uid'] = $vals->uid;
       $responses['last_posted'] = date('d.m.Y', $vals->created);
       if ($responses['last_posted']) {
-        $user_query = db_select('cust_profile', 'cp');
+        $user_query = \Drupal::database()->select('cust_profile', 'cp');
         $user_query->condition('cp.uid', $vals->uid, '=')
           ->fields('cp', array('firstname', 'lastname'));
         $author = $user_query->execute()->fetchAll();
@@ -157,8 +157,9 @@ class HzdEarlyWarnings extends ControllerBase {
    */
   public function add_early_warnings() {
     // Replace this with the node type in which we need to display the form for.
-    $type = node_type_load("early_warnings");
-    $samplenode = $this->entityManager()->getStorage('node')->create(array(
+    //$type = node_type_load("early_warnings");
+    $type = \Drupal\node\Entity\NodeType::load("early_warnings");
+    $samplenode = $this->entityTypeManager()->getStorage('node')->create(array(
       'type' => $type->id(),
     ));
     $node_create_form = $this->entityFormBuilder()->getForm($samplenode);
@@ -179,14 +180,14 @@ class HzdEarlyWarnings extends ControllerBase {
     
     $output['content']['#attached']['drupalSettings']['group_id'] = $group_id;
     $output['content']['#attached']['drupalSettings']['type'] = $type;
-    
+
     //$node = \Drupal\node\Entity\Node::load(EARLYWARNING_TEXT);
     $node_body = Markup::create(node_get_field_data_fast([EARLYWARNING_TEXT], 'body')[EARLYWARNING_TEXT]);
     $create_icon_path = drupal_get_path('module', 'hzd_release_management') .
       '/images/create-icon.png';
     $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
     $is_member = $group->getMember(\Drupal::service('current_user'));
-    
+
     $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
     $destination = Url::fromRoute('entity.group.canonical', ['group' => RELEASE_MANAGEMENT,])->toString();
     
@@ -206,21 +207,22 @@ class HzdEarlyWarnings extends ControllerBase {
       $output['content']['pretext']['#markup'] = $node_body;
       $output['content']['pretext']['#suffix'] = "<a href='" . $url . "?destination=" . $destination . "?services=0&amp;releases=0' title='" . t("Add an Early Warning for this release") . "'>" . $create_icon . "</a></div>";
     }
-    
+
     $output['content']['table_header']['#markup'] = '<h2>' .
       t('Current Early Warnings') . '</h2>';
     $output['content']['filter_form']['#prefix'] = "<div class = "
       . "'specific_earlywarnings'>";
     $output['content']['filter_form']['filter_form_wrapper']['#markup'] =
       "<div id = 'earlywarnings_results_wrapper'>";
-    
+
     $output['content']['earlywarnings_filter_form'] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_earlywarnings\Form\EarlyWarningsFilterForm', $type);
 //    $output['content']['filter_form']['reset_form']['#prefix'] = "<div class = 'reset_form'>";
 //    $output['content']['filter_form']['reset_form']['reset_button'] = HzdreleasemanagementHelper::releases_reset_element();
 //    $output['content']['filter_form']['reset_form']['#suffix'] = "<div class = 'reset_form'>";
 //    $output['content']['filter_form']['clear']['#markup'] = "<div style = 'clear:both'></div>";
-    
+
+
     $output['content']['table']['#prefix'] = "<div class = 'view_earlywarnings_output'>";
     $output['content']['table'][] = self::release_earlywarnings_display_table($group);
     $output['content']['table']['#suffix'] = "</div></div></div>";
@@ -240,12 +242,13 @@ class HzdEarlyWarnings extends ControllerBase {
     $filter_value = HzdearlywarningsStorage::get_earlywarning_filters();
     $group_id = $group->id();
     $rows = array();
+
     if (isset($filter_value['release_type'])) {
       $default_type = $filter_value['release_type'];
     } else {
       $default_type = null;
       if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-        $default_type = db_query("SELECT release_type FROM "
+        $default_type = \Drupal::database()->query("SELECT release_type FROM "
           . "{default_release_type} WHERE group_id = :gid",
           array(
             ":gid" => $group_id
@@ -271,7 +274,6 @@ class HzdEarlyWarnings extends ControllerBase {
       'class' => 'last-posting-hdr'
     );
     $header = array($release, $earlywarnings, $responses, $lastposting);
-    $temp = \Drupal::database()->query('SET sql_mode = \'\'');
     $query = \Drupal::database()->select('node_field_data','nfd');
     $query->addExpression("count(nfd.nid)",'ew_count');
     $query->addExpression("nfd.nid",'early_warning');

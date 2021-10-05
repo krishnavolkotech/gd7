@@ -138,7 +138,7 @@ class ResolveForm extends FormBase {
     );
 
     // $nodeinfo = node_load($nid);
-    $query = db_select('downtimes', 'd');
+    $query = \Drupal::database()->select('downtimes', 'd');
     $query->Fields("d");
     $query->where('d.downtime_id = ' . $nid);
     $nodeinfo = $query->execute()->fetchObject();

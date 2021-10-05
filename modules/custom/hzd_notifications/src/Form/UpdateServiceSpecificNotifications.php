@@ -91,12 +91,12 @@ class UpdateServiceSpecificNotifications extends FormBase {
     $rel_type = $form_state->getValue('rel_type');
     $uid = $form_state->getValue('account');
     $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);
-    $intval = db_query("SELECT send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type 
+    $intval = \Drupal::database()->query("SELECT send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type 
              AND uid = :uid AND rel_type = :rel_type", 
              array(":sid" => $service, ":type" => $types[$content_type], ":uid" => $uid, ":rel_type" => $rel_type))->fetchField();
     if($intval != $send_interval) {
       // update service notifications override table
-      db_update('service_notifications_override')->fields(array('send_interval' => $send_interval))
+      \Drupal::database()->update('service_notifications_override')->fields(array('send_interval' => $send_interval))
 	      ->condition('service_id', $service)
 	      ->condition('type', $types[$content_type])
 	      ->condition('uid', $uid)

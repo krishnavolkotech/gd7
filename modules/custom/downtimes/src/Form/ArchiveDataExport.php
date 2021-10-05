@@ -143,7 +143,7 @@ class ArchiveDataExport extends FormBase {
           AND       ds.downtime_id  = ri.downtime_id
            ORDER BY  ds.startdate_planned ASC ';
 
-    $result = db_query($query)->fetchAll();
+    $result = \Drupal::database()->query($query)->fetchAll();
 
     //CSV file headers.
     $result2[] = array('Betroffenes Land', 'Beginn', 'Voraussichtliches Ende', 'Tatsaechliches Ende', 'Gemeldet am', 'Gemeldet von', 'Verfahren', 'Status', 'Grund', 'In Wartungsfenster', 'Beschreibung', 'Url');
@@ -156,15 +156,15 @@ class ArchiveDataExport extends FormBase {
       $title = array();
       foreach ($service_id as $key => $value) {
         $query = "select title from {node_field_data} where nid = ?";
-        $title[] = db_query($query, array($value))->fetchField();
+        $title[] = \Drupal::database()->query($query, array($value))->fetchField();
       }
       $states = explode(',', $result1['state_id']);
       $states_id = [];
       foreach ($states as $key => $value) {
         $query = "select abbr from {states} where id = ?";
-        $states_id[] = db_query($query, array($value))->fetchField();
+        $states_id[] = \Drupal::database()->query($query, array($value))->fetchField();
       }
-      $result1['uid'] = db_query("select abbr from {node_field_data} n, {cust_profile} p, {states} s where n.uid = p.uid and state_id = id and n.uid = ?", array($result1['uid']))->fetchField();
+      $result1['uid'] = \Drupal::database()->query("select abbr from {node_field_data} n, {cust_profile} p, {states} s where n.uid = p.uid and state_id = id and n.uid = ?", array($result1['uid']))->fetchField();
       // Converting timestamps to Date format.
       $result1['service_id'] = implode(',', $title);
       $result1['state_id'] = implode(',', $states_id);

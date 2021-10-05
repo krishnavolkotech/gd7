@@ -36,7 +36,7 @@ class MassMail {
     $key = 'mass_contact_immediate';
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
     if ($result['result']) {
-      drupal_set_message(t('Your message has been sent.'));
+      \Drupal::messenger()->addMessage(t('Your message has been sent.'));
     }
   }
 
@@ -51,8 +51,8 @@ class MassMail {
     else {
       $message = t('Finished with an error.');
     }
-    drupal_set_message($message);*/
-    drupal_set_message(t('Successfuly sent mail\'s'));
+    \Drupal::messenger()->addMessage($message);*/
+    \Drupal::messenger()->addMessage(t('Successfuly sent mail\'s'));
   }
 
 }

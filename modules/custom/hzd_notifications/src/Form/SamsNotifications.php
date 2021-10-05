@@ -236,8 +236,8 @@ class SamsNotifications extends FormBase {
     // file_put_contents('drupal_debug.txt',"$uid $service $product $class");
     // file_put_contents('drupal_debug.txt',json_encode($result));
 
-    // drupal_set_message(json_encode($preferences));
-    drupal_set_message(t('Service mail preferences saved successfully'));
+    // \Drupal::messenger()->addMessage(json_encode($preferences));
+    \Drupal::messenger()->addMessage(t('Service mail preferences saved successfully'));
   }
 
   /**

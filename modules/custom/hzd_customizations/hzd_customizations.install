@@ -24,7 +24,7 @@ function hzd_customizations_update_8002(&$sandbox) {
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership')
                   and uid != 0 and uid <= 1500 ";
-  $users = db_query($sql)->fetchAll();
+  $users = \Drupal::database()->query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
       $user = \Drupal\user\Entity\User::load($uid->uid);
@@ -32,7 +32,7 @@ function hzd_customizations_update_8002(&$sandbox) {
       $group->addMember($user);
     }
   }
-  drupal_set_message('Module hzd_customizations Update # 8002 () was executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_customizations Update # 8002 () was executed successfully.');
 }
 
 /**
@@ -44,7 +44,7 @@ function hzd_customizations_update_8003(&$sandbox) {
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership')
                   and uid != 0 and uid between 1500 and 2500";
-  $users = db_query($sql)->fetchAll();
+  $users = \Drupal::database()->query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
       $user = \Drupal\user\Entity\User::load($uid->uid);
@@ -52,7 +52,7 @@ function hzd_customizations_update_8003(&$sandbox) {
       $group->addMember($user);
     }
   }
-  drupal_set_message('Module hzd_customizations Update # 8003 () was executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_customizations Update # 8003 () was executed successfully.');
 }
 
 /**
@@ -64,7 +64,7 @@ function hzd_customizations_update_8004(&$sandbox) {
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership')
                   and uid != 0 and uid between 2499 and 3500";
-  $users = db_query($sql)->fetchAll();
+  $users = \Drupal::database()->query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
       $user = \Drupal\user\Entity\User::load($uid->uid);
@@ -72,7 +72,7 @@ function hzd_customizations_update_8004(&$sandbox) {
       $group->addMember($user);
     }
   }
-  drupal_set_message('Module hzd_customizations Update # 8004 () was executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_customizations Update # 8004 () was executed successfully.');
 }
 
 /**
@@ -84,7 +84,7 @@ function hzd_customizations_update_8005(&$sandbox) {
           WHERE uid NOT IN (SELECT entity_id from {group_content_field_data}
                                            WHERE gid = 77 and type = 'open-group_membership')
                   and uid != 0 and uid between 3499 and 10000";
-  $users = db_query($sql)->fetchAll();
+  $users = \Drupal::database()->query($sql)->fetchAll();
   if (count($users) > 0) {
     foreach($users as $uid) {
       $user = \Drupal\user\Entity\User::load($uid->uid);
@@ -92,7 +92,7 @@ function hzd_customizations_update_8005(&$sandbox) {
       $group->addMember($user);
     }
   }
-  drupal_set_message('Module hzd_customizations Update # 8005 () was executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_customizations Update # 8005 () was executed successfully.');
 }
 
 
@@ -100,11 +100,11 @@ function hzd_customizations_update_8006(&$sandbox) {
   $sql = "SELECT uid from users u
           LEFT OUTER JOIN {nsm_user_role} nur on u.uid = nur.user_id
           WHERE  nur.user_id IS NULL";
-  $users = db_query($sql)->fetchAll();
+  $users = \Drupal::database()->query($sql)->fetchAll();
   foreach($users as $user) {
     insert_nsm_role($user->uid);
   }
-  drupal_set_message('Module hzd_customizations Update # 8006 is executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_customizations Update # 8006 is executed successfully.');
 }
 
 function hzd_customizations_update_8012(&$sandbox) {
@@ -113,7 +113,7 @@ function hzd_customizations_update_8012(&$sandbox) {
         $sql = "SELECT uid
           FROM {users_field_data}
           WHERE uid != 0";
-        $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+        $users = \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
         $sandbox['total'] = count($users);
         $sandbox['current'] = 0;
     }
@@ -128,7 +128,7 @@ function hzd_customizations_update_8012(&$sandbox) {
 
     $limit = ' limit ' . $startLimit . "  , ". $endLimit;
     $sql = $select . $where . $limit;
-    $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+    $users = \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
 
     if (count($users) > 0) {
         foreach($users as $uid) {
@@ -141,7 +141,7 @@ function hzd_customizations_update_8012(&$sandbox) {
         }
     }
 
-    drupal_set_message($sandbox['current'] . ' Users Processed.');
+    \Drupal::messenger()->addMessage($sandbox['current'] . ' Users Processed.');
     if ($sandbox['total'] == 0) {
         $sandbox['#finished'] = 1;
     }
@@ -157,7 +157,7 @@ function hzd_customizations_update_8013(&$sandbox) {
         $sql = "SELECT uid
           FROM {users_field_data}
           WHERE uid != 0 ";
-        $sandbox['users'] = $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+        $sandbox['users'] = $users = \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
         $sandbox['total'] = count($users);
         $sandbox['current'] = 0;
     }
@@ -172,16 +172,16 @@ function hzd_customizations_update_8013(&$sandbox) {
     $limit = ' limit ' . $startLimit . "  , ". $endLimit;
     $sql = $sql_users . $limit;
 
-    $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+    $users = \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
     if (count($users) > 0) {
         foreach($users as $uid) {
             Drupal\hzd_notifications\HzdNotificationsHelper::save_group_default_notifications($uid->uid, $gid, 0);
 	    error_log(" Notification Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
-	    //drupal_set_message(" Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
+	    //\Drupal::messenger()->addMessage(" Current : ". $sandbox['current']. "  UID  : ". $uid->uid . "  GID  ". $gid);
         $sandbox['current']++;
         }
     }
-    //drupal_set_message($sandbox['current'] . ' Notficaions Processed.');
+    //\Drupal::messenger()->addMessage($sandbox['current'] . ' Notficaions Processed.');
 
     if ($sandbox['total'] == 0) {
         $sandbox['#finished'] = 1;
@@ -234,7 +234,7 @@ function hzd_customizations_update_8061() {
             ->getStorage('group_content')
             ->create($releaseManagementGroupContentValues)
             ->save();
-        drupal_set_message("Group node id " . $nodeId);
+        \Drupal::messenger()->addMessage("Group node id " . $nodeId);
       }
     }
   }
@@ -250,7 +250,7 @@ function hzd_customizations_update_8062(&$sandbox) {
       $sql = "SELECT uid
         FROM {users_field_data}
         WHERE uid != 0";
-      $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+      $users = \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
       $sandbox['total'] = count($users);
       $sandbox['current'] = 0;
   }
@@ -265,7 +265,7 @@ function hzd_customizations_update_8062(&$sandbox) {
 
   $limit = ' limit ' . $startLimit . "  , ". $endLimit;
   $sql = $select . $where . $limit;
-  $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+  $users = \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
 
   if (count($users) > 0) {
       foreach($users as $uid) {
@@ -278,7 +278,7 @@ function hzd_customizations_update_8062(&$sandbox) {
       }
   }
 
-  drupal_set_message($sandbox['current'] . ' Users Processed.');
+  \Drupal::messenger()->addMessage($sandbox['current'] . ' Users Processed.');
   if ($sandbox['total'] == 0) {
       $sandbox['#finished'] = 1;
   }
@@ -296,7 +296,7 @@ function hzd_customizations_update_8063(&$sandbox) {
   $gid = 21;
   if (!isset($sandbox['total'])) {
       $sql = "SELECT nid FROM {node_field_data} WHERE type = :type";
-      $nodes = db_query($sql, array(':type' => 'news'))->fetchAll();
+      $nodes = \Drupal::database()->query($sql, array(':type' => 'news'))->fetchAll();
       $sandbox['total'] = count($nodes);
       $sandbox['current'] = 0;
   }
@@ -310,7 +310,7 @@ function hzd_customizations_update_8063(&$sandbox) {
 
   $limit = ' limit ' . $startLimit . "  , ". $endLimit;
   $sql = $select . $where . $limit;
-  $nodes = db_query($sql, array(':type' => 'news'))->fetchAll();
+  $nodes = \Drupal::database()->query($sql, array(':type' => 'news'))->fetchAll();
 
   if (count($nodes) > 0) {
       foreach($nodes as $nid) {
@@ -320,7 +320,7 @@ function hzd_customizations_update_8063(&$sandbox) {
       }
   }
 
-  drupal_set_message($sandbox['current'] . ' News Processed(moving existing news to bpk group).');
+  \Drupal::messenger()->addMessage($sandbox['current'] . ' News Processed(moving existing news to bpk group).');
   if ($sandbox['total'] == 0) {
       $sandbox['#finished'] = 1;
   }

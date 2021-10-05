@@ -53,7 +53,7 @@ class MyFavController extends ControllerBase {
     $result = FavoriteStorage::getFavorites($uid);
     $message = '<ul>';
     foreach ($result as $favorite) {
-      $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/' . trim($favorite->path, '/'));
+      $favorite->path = \Drupal::service('path_alias.manager')->getAliasByPath('/' . trim($favorite->path, '/'));
       if ($favorite->query != '') {
         $url = $base_url . $favorite->path . '?' . $favorite->query;
       }

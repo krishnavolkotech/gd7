@@ -6,15 +6,13 @@
  *
  * Adds the required Javascript to all your Drupal pages to allow tracking by
  * the Matomo statistics package.
- *
- * @author: Alexander Hass <https://drupal.org/user/85918>
  */
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Crypt;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Site\Settings;
@@ -73,6 +71,7 @@ function matomo_page_attachments(array &$page) {
 
     // Add link tracking.
     $link_settings = [];
+    $link_settings['disableCookies'] = $config->get('privacy.disablecookies');
     $link_settings['trackMailto'] = $config->get('track.mailto');
 
     if ((\Drupal::moduleHandler()->moduleExists('colorbox')) && $track_colorbox = $config->get('track.colorbox')) {
@@ -173,7 +172,7 @@ function matomo_page_attachments(array &$page) {
         $custom_var_value = \Drupal::token()->replace($custom_var_value, $types, ['clear' => TRUE]);
 
         // Suppress empty custom names and/or variables.
-        if (!Unicode::strlen(trim($custom_var_name)) || !Unicode::strlen(trim($custom_var_value))) {
+        if (!mb_strlen(trim($custom_var_name)) || !mb_strlen(trim($custom_var_value))) {
           continue;
         }
 
@@ -199,7 +198,7 @@ function matomo_page_attachments(array &$page) {
     $script .= '(function(){';
     $script .= 'var u=(("https:" == document.location.protocol) ? "' . UrlHelper::filterBadProtocol($url_https) . '" : "' . UrlHelper::filterBadProtocol($url_http) . '");';
     $script .= '_paq.push(["setSiteId", ' . Json::encode($id) . ']);';
-    $script .= '_paq.push(["setTrackerUrl", u+"piwik.php"]);';
+    $script .= '_paq.push(["setTrackerUrl", u+"matomo.php"]);';
 
     // Track logged in users across all devices.
     if ($config->get('track.userid') && $account->isAuthenticated()) {
@@ -226,8 +225,14 @@ function matomo_page_attachments(array &$page) {
       $script .= '_paq.push(["setDoNotTrack", 1]);';
     }
 
+    // Disable all Matomo tracking cookies.
+    if ($config->get('privacy.disablecookies')) {
+      $script .= '_paq.push(["disableCookies"]);';
+    }
+
     // Domain tracking type.
-    global $cookie_domain;
+    $session_storage_options = \Drupal::getContainer()->getParameter('session.storage.options');
+    $cookie_domain = !empty($session_storage_options['cookie_domain']) ? $session_storage_options['cookie_domain'] : NULL;
     $domain_mode = $config->get('domain_mode');
 
     // Per RFC 2109, cookie domains must contain at least one dot other than the
@@ -297,7 +302,7 @@ function matomo_page_attachments(array &$page) {
     $script .= 'g.async=true;';
 
     // Should a local cached copy of the tracking code be used?
-    if ($config->get('cache') && $url = _matomo_cache($url_http . 'piwik.js')) {
+    if ($config->get('cache') && $url = _matomo_cache($url_http . 'matomo.js')) {
       // A dummy query-string is added to filenames, to gain control over
       // browser-caching. The string changes on every update or full cache
       // flush, forcing browsers to load a new copy of the files, as the
@@ -307,7 +312,7 @@ function matomo_page_attachments(array &$page) {
       $script .= 'g.src="' . $url . $query_string . '";';
     }
     else {
-      $script .= 'g.src=u+"piwik.js";';
+      $script .= 'g.src=u+"matomo.js";';
     }
 
     $script .= 's.parentNode.insertBefore(g,s);';
@@ -439,9 +444,9 @@ function matomo_cron() {
   $config = \Drupal::config('matomo.settings');
   $request_time = \Drupal::time()->getRequestTime();
 
-  // Regenerate the piwik.js every day.
+  // Regenerate the matomo.js every day.
   if ($request_time - \Drupal::state()->get('matomo.last_cache') >= 86400 && $config->get('cache')) {
-    _matomo_cache($config->get('url_http') . 'piwik.js', TRUE);
+    _matomo_cache($config->get('url_http') . 'matomo.js', TRUE);
     \Drupal::state()->set('matomo.last_cache', $request_time);
   }
 }
@@ -458,13 +463,15 @@ function matomo_preprocess_item_list__search_results(&$variables) {
   if ($config->get('track.site_search')) {
     // There is no search result $variable available that hold the number of
     // items found. The variable $variables['items'] has the current page items
-    // only. But the pager item mumber can tell the number of search results.
-    global $pager_total_items;
-
+    // only. But the pager item number can tell the number of search results.
+    /* @var $pager_manager \Drupal\Core\Pager\PagerManagerInterface */
+    $pager_manager = \Drupal::service('pager.manager');
+    $pager = $pager_manager->getPager();
+    $pager_total_items = $pager ? $pager->getTotalItems() : 0;
     $variables['#attached']['html_head'][] = [
       [
         '#tag' => 'script',
-        '#value' => 'window.matomo_search_results = ' . intval($pager_total_items[0]) . ';',
+        '#value' => 'window.matomo_search_results = ' . $pager_total_items . ';',
         '#weight' => JS_LIBRARY - 1,
       ],
       'matomo_search_script',
@@ -499,12 +506,12 @@ function _matomo_cache($location, $synchronize = FALSE) {
         $data_hash_local = Crypt::hashBase64(file_get_contents($file_destination));
         $data_hash_remote = Crypt::hashBase64($data);
         // Check that the files directory is writable.
-        if ($data_hash_local != $data_hash_remote && file_prepare_directory($path)) {
+        if ($data_hash_local != $data_hash_remote && \Drupal::service('file_system')->prepareDirectory($path)) {
           // Save updated tracking code file to disk.
-          file_unmanaged_save_data($data, $file_destination, FILE_EXISTS_REPLACE);
+          \Drupal::service('file_system')->saveData($data, $file_destination, FileSystemInterface::EXISTS_REPLACE);
           // Based on Drupal Core class AssetDumper.
           if (extension_loaded('zlib') && \Drupal::config('system.performance')->get('js.gzip')) {
-            file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
+            \Drupal::service('file_system')->saveData(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FileSystemInterface::EXISTS_REPLACE);
           }
           \Drupal::logger('matomo')->info('Locally cached tracking code file has been updated.');
 
@@ -515,13 +522,13 @@ function _matomo_cache($location, $synchronize = FALSE) {
       }
       else {
         // Check that the files directory is writable.
-        if (file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
+        if (\Drupal::service('file_system')->prepareDirectory($path, FileSystemInterface::CREATE_DIRECTORY)) {
           // There is no need to flush JS here as core refreshes JS caches
           // automatically, if new files are added.
-          file_unmanaged_save_data($data, $file_destination, FILE_EXISTS_REPLACE);
+          \Drupal::service('file_system')->saveData($data, $file_destination, FileSystemInterface::EXISTS_REPLACE);
           // Based on Drupal Core class AssetDumper.
           if (extension_loaded('zlib') && \Drupal::config('system.performance')->get('js.gzip')) {
-            file_unmanaged_save_data(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FILE_EXISTS_REPLACE);
+            \Drupal::service('file_system')->saveData(gzencode($data, 9, FORCE_GZIP), $file_destination . '.gz', FileSystemInterface::EXISTS_REPLACE);
           }
           \Drupal::logger('matomo')->info('Locally cached tracking code file has been saved.');
 
@@ -545,8 +552,8 @@ function _matomo_cache($location, $synchronize = FALSE) {
  */
 function matomo_clear_js_cache() {
   $path = 'public://matomo';
-  if (file_prepare_directory($path)) {
-    file_scan_directory($path, '/.*/', ['callback' => 'file_unmanaged_delete']);
+  if (\Drupal::service('file_system')->prepareDirectory($path)) {
+    \Drupal::service('file_system')->scanDirectory($path, '/.*/', ['callback' => '_matomo_file_delete']);
     \Drupal::service('file_system')->rmdir($path);
 
     // Change query-strings on css/js files to enforce reload for all users.
@@ -647,11 +654,11 @@ function _matomo_visibility_pages() {
     if (!empty($visibility_request_path_pages)) {
       // Convert path to lowercase. This allows comparison of the same path
       // with different case. Ex: /Page, /page, /PAGE.
-      $pages = Unicode::strtolower($visibility_request_path_pages);
+      $pages = mb_strtolower($visibility_request_path_pages);
       if ($visibility_request_path_mode < 2) {
         // Compare the lowercase path alias (if any) and internal path.
         $path = \Drupal::service('path.current')->getPath();
-        $path_alias = Unicode::strtolower(\Drupal::service('path.alias_manager')->getAliasByPath($path));
+        $path_alias = mb_strtolower(\Drupal::service('path_alias.manager')->getAliasByPath($path));
         $page_match = \Drupal::service('path.matcher')->matchPath($path_alias, $pages) || (($path != $path_alias) && \Drupal::service('path.matcher')->matchPath($path, $pages));
         // When $visibility_request_path_mode has a value of 0, the tracking
         // code is displayed on all pages except those listed in $pages. When
@@ -726,4 +733,16 @@ function _matomo_get_hierarchy_titles() {
   }
 
   return $titles;
+}
+
+/**
+ * Removes unmanaged file from the file system.
+ *
+ * @param string $uri
+ *   The file to delete.
+ *
+ * @internal
+ */
+function _matomo_file_delete($uri) {
+  \Drupal::service('file_system')->delete($uri);
 }

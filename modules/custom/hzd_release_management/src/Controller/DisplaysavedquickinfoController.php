@@ -88,7 +88,7 @@ class DisplaysavedquickinfoController extends ControllerBase {
             $related_sw_transfer_num = $node->field_related_transfer_number_value;
             $published = date('d.m.Y', $node->changed);
 
-            $alias_path = \Drupal::service('path.alias_manager')->getAliasByPath('/node/' . $node->nid);
+            $alias_path = \Drupal::service('path_alias.manager')->getAliasByPath('/node/' . $node->nid);
             $absolute_path = Url::fromUserInput($alias_path);
             $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
             // $data = \Drupal\Component\Utility\Html::load($other_services);

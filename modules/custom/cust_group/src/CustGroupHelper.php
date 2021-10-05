@@ -115,9 +115,11 @@ class CustGroupHelper {
     $group = \Drupal::request()->get('group',null);
     if(!$group){
       $nodeId = \Drupal::request()->get('node');
-      $groupContent = self::getGroupNodeFromNodeId($nodeId->id());
-      if($groupContent instanceof GroupContent){
-        $group = $groupContent->getGroup();
+      if($nodeId) {
+        $groupContent = self::getGroupNodeFromNodeId($nodeId->id());
+        if($groupContent instanceof GroupContent){
+          $group = $groupContent->getGroup();
+        }
       }
     }
     if($group instanceof Group){

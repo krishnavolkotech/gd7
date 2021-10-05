@@ -117,7 +117,7 @@ class ArchiveDeployedReleaseForm extends FormBase {
         \Drupal::service('cache_tags.invalidator')->invalidateTags(['deployedReleasesOverview']);
       }
       $form_state->setRedirectUrl($url);
-      drupal_set_message(t('Release Archived'));
+      \Drupal::messenger()->addMessage(t('Release Archived'));
     }
   }
 

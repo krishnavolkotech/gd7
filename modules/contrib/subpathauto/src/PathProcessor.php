@@ -68,9 +68,30 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
   }
 
   /**
+   * Encodes all parts of a path
+   * @param  string $path 
+   *   The path of the request.
+   * 
+   * @return string      
+   *   The encoded path of the request.
+   */
+  public function encodeParts($path) {
+    $path_parts = [];
+    foreach (explode('/', $path) as $key => $value) {
+      $path_parts[] = urlencode($value);
+    }
+    return implode('/', $path_parts);
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function processInbound($path, Request $request) {
+    // Encode all path parts to accurately compar path to request. Some special
+    // URLs contain charaters that would otherwise be encoded later. 
+    // See Drupal\Core\PathProcessor\PathProcessorDecode for more information.
+    $path = $this->encodeParts($path);
+
     $request_path = $this->getPath($request->getPathInfo());
     // The path won't be processed if the path has been already modified by
     // a path processor (including this one), or if this is a recursive call
@@ -99,7 +120,6 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
         // valid. Since this method has generated the path, it should ignore all
         // recursive calls made for this method.
         $valid_path = $this->isValidPath($path);
-
         // Use generated path if it's valid, otherwise give up and return
         // original path to give other path processors chance to make their
         // modifications for the path.
@@ -154,7 +174,7 @@ class PathProcessor implements InboundPathProcessorInterface, OutboundPathProces
       $path_info = '/' . substr($path_info, strlen($language_prefix));
     }
 
-    return rtrim(urldecode($path_info),'/');
+    return $path_info;
   }
 
   /**
