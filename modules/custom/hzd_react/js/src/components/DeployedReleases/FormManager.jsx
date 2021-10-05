@@ -102,7 +102,6 @@ export default function FormManager(props) {
    * @property {bool}   formState.action - First deployment of this product?
    */
   const [formState, setFormState] = useState(initialFormState);
-  console.log(formState);
   // Trigger 1/3 release-selector filtering.
   useEffect(() => {
     if (formState.environment !== "0" && formState.service !== "0") {
@@ -531,15 +530,32 @@ export default function FormManager(props) {
 
   // PATCH: Vorgängerrelease archivieren.
   const patchDeployment = () => {
+    const allReleases = props.releases;
+    let currentRelease = false;
+    if (formState.releaseNid in allReleases[formState.service]) {
+      currentRelease = allReleases[formState.service][formState.releaseNid];
+    }
+    const uuidRelease = currentRelease.uuid;
+
+
     const archiveBody = {
       "data": {
         "type": "node--deployed_releases",
         "id": prevDeploymentData.uuid,
         "attributes": {
-          "field_deployment_status": "2"
+          "field_deployment_status": "2",
+        },
+        "relationships": {
+          "field_successor_release": {
+            "data": {
+              "type": "node--release",
+              "id": uuidRelease,
+            }
+          }
         }
       }
     }
+
     const csrfUrl = `/session/token?_format=json`;
     const fetchUrl = '/jsonapi/node/deployed_releases/' + prevDeploymentData.uuid;
     const fetchOptions = {
