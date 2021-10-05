@@ -16,7 +16,7 @@ id: node.dir_listing.body
 field_name: body
 entity_type: node
 bundle: dir_listing
-label: Body
+label: Textkörper
 description: ''
 required: false
 translatable: true
