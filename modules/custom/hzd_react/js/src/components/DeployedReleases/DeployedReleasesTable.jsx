@@ -54,8 +54,8 @@ export default function DeployedReleasesTable(props) {
     }
     if (props.filterState.sortBy == "field_state_list_value") {
       newData.sort((a, b) => {
-        if (a.state > b.state) return direction;
-        if (a.state < b.state) return -direction;
+        if (parseInt(a.state) > parseInt(b.state)) return direction;
+        if (parseInt(a.state) < parseInt(b.state)) return -direction;
       });
     }
     return newData;
