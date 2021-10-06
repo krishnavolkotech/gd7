@@ -180,6 +180,16 @@ export default function DeploymentForm(props) {
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
     }
 
+    // Validates, that the selected date is not in the future.
+    if (props.formState.date) {
+      const formDate = new Date(props.formState.date);
+      const now = Date.now();
+      if (formDate > now) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Das angegebene Einsatzdatum liegt in der Zukunft</strong></p>])
+      }
+    }
+
     if (props.formState.abnormalities) {
       if (props.formState.description.length == 0) {
         setDisableSubmit(true);
