@@ -78,6 +78,8 @@ export default function DeploymentManager() {
     "service": query.has("service") ? query.get("service") : "0",
     "product": query.has("product") ? query.get("product") : "",
     "status": status,
+    "sortBy": query.has("sortBy") ? query.get("sortBy") : "field_date_deployed_value",
+    "sortOrder": query.has("sortOrder") ? query.get("sortOrder") : "DESC",
   };
   /**
    * The filter state object.
@@ -87,6 +89,8 @@ export default function DeploymentManager() {
    * @property {string} filterState.service - The service id.
    * @property {string} filterState.product - The product name.
    * @property {string} filterState.status - The deployment status.
+   * @property {string} filterState.sortBy - Field name for sorting.
+   * @property {string} filterState.sortOrder - The sorting direction ('ASC', 'DESC').
    */
   const [filterState, setFilterState] = useState(initialFilterState);
 
@@ -166,6 +170,18 @@ export default function DeploymentManager() {
       params.delete("product");
     }
 
+    if (filterState.sortBy !== "") {
+      params.append("sortBy", filterState.sortBy);
+    } else {
+      params.delete("sortBy");
+    }
+
+    if (filterState.sortOrder !== "") {
+      params.append("sortOrder", filterState.sortOrder);
+    } else {
+      params.delete("sortOrder");
+    }
+
     history.push({
       pathname: pathname,
       search: params.toString(),
@@ -224,6 +240,10 @@ export default function DeploymentManager() {
       url += '&page=' + (page - 1);
       url += '&releaseTitle=' + filterState.product;
     }
+
+    // Apply sorting.
+    url += '&sort_by=' + filterState.sortBy;
+    url += '&sort_order=' + filterState.sortOrder;
 
     setData([]);
     setTimeout(false);
@@ -307,6 +327,8 @@ export default function DeploymentManager() {
       "service": "0",
       "product": "",
       "status": filterState.status,
+      "sortBy": "field_date_deployed_value",
+      "sortOrder": "DESC",
     });
   }
 
@@ -342,7 +364,7 @@ export default function DeploymentManager() {
   const handleView = (nid) => {
     setViewNode(nid);
   }
-  console.log(viewNode);
+
   return (
     <div>
       {/* <div className="skeleton-header loading"></div>

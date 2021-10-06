@@ -18,9 +18,48 @@ export default function DeployedReleasesTable(props) {
     else if (newData.length > 0) {
       props.setTimeout(false);
     }
+    newData = applySorting(newData);
     setFilteredData(newData);
   }, [props.filterState, props.data])
 
+  // Applies javascript based sorting possibly on top of default view sorting.
+  const applySorting = (newData) => {
+    const direction = props.filterState.sortOrder == "ASC" ? 1 : -1;
+    if (props.filterState.sortBy == "field_date_deployed_value") {
+      newData.sort((a, b) => {
+        if (a.date > b.date) return direction;
+        if (a.date < b.date) return -direction;
+      });
+    }
+    if (props.filterState.sortBy == "field_environment_value") {
+      newData.sort((a, b) => {
+        if (a.environment > b.environment) return direction;
+        if (a.environment < b.environment) return -direction;
+      });
+    }
+    // Sort releases too, if service was selected for sorting.
+    if (props.filterState.sortBy == "title") {
+      newData.sort((a, b) => {
+        if (a.service > b.service) return direction;
+        if (a.service < b.service) return -direction;
+        if (a.release > b.release) return direction;
+        if (a.release < b.release) return -direction;
+      });
+    }
+    if (props.filterState.sortBy == "title_1") {
+      newData.sort((a, b) => {
+        if (a.release > b.release) return direction;
+        if (a.release < b.release) return -direction;
+      });
+    }
+    if (props.filterState.sortBy == "field_state_list_value") {
+      newData.sort((a, b) => {
+        if (a.state > b.state) return direction;
+        if (a.state < b.state) return -direction;
+      });
+    }
+    return newData;
+  }
 
   const handlePagination = (e) => {
     if (e.target.name == "next") {

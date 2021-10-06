@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { FormGroup, FormControl, Grid, Row, Col, Button, Tooltip, OverlayTrigger, Dropdown, MenuItem } from 'react-bootstrap'
+import { Form, FormGroup, FormControl, ControlLabel, Grid, Row, Col, Button, Tooltip, OverlayTrigger, Dropdown, MenuItem } from 'react-bootstrap'
 
 /**
  * Deployed Releases Filter Component.
@@ -123,8 +123,33 @@ export default function DeployedReleasesFilter(props) {
       setDisableProductFilter(true);
       props.setFilterState(prev => ({ ...prev, "product": "0" }));
     }
+
+    // Product filtering should trigger fetch only when status is "2".
     if (props.filterState.status === "2" && e.target.name === "product") {
       props.setCount(props.count + 1);
+      return;
+    }
+
+    if (e.target.name === "sortOrder") {
+      if (props.filterState.status === "2") {
+        props.setCount(props.count + 1);
+        return;
+      }
+      // if (props.filterState.sortBy !== "title") {
+      //   props.setCount(props.count + 1);
+      //   return;
+      // }
+    }
+
+    if (e.target.name === "sortBy") {
+      if (props.filterState.status === "2") {
+        props.setCount(props.count + 1);
+        return;
+      }
+      // if (e.target.value !== "title") {
+      //   props.setCount(props.count + 1);
+      //   return;
+      // }
     }
   }
 
@@ -154,7 +179,7 @@ export default function DeployedReleasesFilter(props) {
     </Tooltip>);
 
   return (
-    <form>
+    <div>
         <Row>
           <Col sm={3}>
             <FormGroup bsClass="select-wrapper hzd-form-element" controlId="state-filter">
@@ -178,7 +203,7 @@ export default function DeployedReleasesFilter(props) {
                 validationState="warning"
               >
                 {optionsEnvironments}
-          <span className="glyphicon-warning-sign" />
+                <span className="glyphicon-warning-sign" />
               </FormControl>
             </FormGroup>
           </Col>
@@ -207,13 +232,47 @@ export default function DeployedReleasesFilter(props) {
               </FormControl>
             </FormGroup>
           </Col>
-          </Row>
-          <Row>
+        </Row>
+        <Row>
+          <Col sm={6}>
+            <Form inline>
+              <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortBy">
+                <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
+                <FormControl
+                  name="sortBy"
+                  componentClass="select"
+                  placeholder="select"
+                  onChange={handleFilterSelect}
+                  value={props.filterState.sortBy}
+                >
+                  <option value="field_date_deployed_value">Einsatzdatum</option>
+                  <option value="field_environment_value">Umgebung</option>
+                  <option value="title">Verfahren</option>
+                  <option value="title_1">Release</option>
+                  <option value="field_state_list_value">Land</option>
+                </FormControl>
+              </FormGroup>
+              <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">
+                <FormControl
+                  name="sortOrder"
+                  componentClass="select"
+                  placeholder="select"
+                  onChange={handleFilterSelect}
+                  value={props.filterState.sortOrder}
+                >
+                  <option value="ASC">Aufsteigend</option>
+                  <option value="DESC">Absteigend</option>
+                </FormControl>
+              </FormGroup>
+            </Form>
+          </Col>
+        </Row>
+        <Row>
           <Col sm={6}>
             <div>
-            {/* <OverlayTrigger placement="top" overlay={ttFilter} trigger="hover">
+              {/* <OverlayTrigger placement="top" overlay={ttFilter} trigger="hover">
                 <Button onClick={props.fetchDeployments} bsStyle="success"><span className="glyphicon glyphicon-filter" /></Button>
-              </OverlayTrigger>
+                </OverlayTrigger>
               &nbsp; */}
               <OverlayTrigger placement="top" overlay={ttReset} trigger="hover">
                 <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
@@ -226,18 +285,18 @@ export default function DeployedReleasesFilter(props) {
             </div>
           </Col>
           <Col sm={6}>
-          { props.loadingReleasesSpinner &&
-            <OverlayTrigger placement="top" overlay={ttLoading} trigger="hover">
-              <span className="pull-right glyphicon glyphicon-refresh glyphicon-spin" role="status" />
-            </OverlayTrigger>
-          }
-          {/* (props.filterState.environment == "0" || props.filterState.service == "0") &&
-            <OverlayTrigger placement="top" overlay={ttWarning} trigger="hover">
-              <span className="pull-right glyphicon-warning-sign" />
-            </OverlayTrigger>
-        */}
+            { props.loadingReleasesSpinner &&
+              <OverlayTrigger placement="top" overlay={ttLoading} trigger="hover">
+                <span className="pull-right glyphicon glyphicon-refresh glyphicon-spin" role="status" />
+              </OverlayTrigger>
+            }
+            {/* (props.filterState.environment == "0" || props.filterState.service == "0") &&
+              <OverlayTrigger placement="top" overlay={ttWarning} trigger="hover">
+                <span className="pull-right glyphicon-warning-sign" />
+              </OverlayTrigger>
+            */}
           </Col>
         </Row>
-    </form>
+    </div>
   )
 }

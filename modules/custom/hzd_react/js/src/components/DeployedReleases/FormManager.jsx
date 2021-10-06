@@ -196,7 +196,7 @@ export default function FormManager(props) {
         setFormState(prev => ({
           ...prev,
           "uuid": results.data.id,
-          "state": results.data.attributes.field_user_state,
+          "state": results.data.attributes.field_state_list,
           "environment": results.data.attributes.field_environment,
           "service": service.attributes.drupal_internal__nid,
           "date": results.data.attributes.field_date_deployed,
@@ -433,7 +433,7 @@ export default function FormManager(props) {
           },
           "field_date_deployed": formState.date,
           "field_installation_time": formState.installationTime,
-          "field_user_state": formState.state,
+          "field_state_list": formState.state,
           "field_environment": formState.environment,
         },
         "relationships": {
