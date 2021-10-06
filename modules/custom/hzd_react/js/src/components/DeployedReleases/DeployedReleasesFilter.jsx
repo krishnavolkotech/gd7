@@ -226,7 +226,6 @@ export default function DeployedReleasesFilter(props) {
                 componentClass="select"
                 onChange={handleFilterSelect}
                 value={props.filterState.environment}
-                validationState="warning"
               >
                 {environmentOptions}
                 <span className="glyphicon-warning-sign" />

@@ -389,6 +389,15 @@ export default function FormManager(props) {
     postDeployment();
   }
 
+  // Returns time in minutes from string in the following format: 0:01 - 999:59.
+  const calculateInstallationTime = (text) => {
+    const pieces = text.split(":");
+    const hours = parseInt(pieces[0]);
+    const minutes = parseInt(pieces[1]);
+    const time = hours * 60 + minutes;
+    return time;
+  }
+
   const postDeployment = () => {
     // UUID des gemeldeten Release.
     // @todo releases aus Manager beziehen
@@ -418,6 +427,8 @@ export default function FormManager(props) {
     }
     const deploymentTitle = formState.state + "_" + formState.environment + "_" + formState.service + "_" + releaseName;
 
+    const installationTime = calculateInstallationTime(formState.installationTime);
+
     var postdata = {
       "data": {
         "type": "node--deployed_releases",
@@ -432,7 +443,7 @@ export default function FormManager(props) {
             "format": "plain_text",
           },
           "field_date_deployed": formState.date,
-          "field_installation_time": formState.installationTime,
+          "field_installation_time": installationTime,
           "field_state_list": formState.state,
           "field_environment": formState.environment,
         },

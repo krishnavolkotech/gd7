@@ -183,7 +183,7 @@ export default function DeploymentForm(props) {
     if (props.formState.abnormalities) {
       if (props.formState.description.length == 0) {
         setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>])
+        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>]);
       }
     }
 
@@ -191,8 +191,15 @@ export default function DeploymentForm(props) {
       props.setFormState(prev => ({ ...prev, "description": "" }));
 
     }
+    if (props.formState.installationTime.length > 0) {
+      const allowedFormat = new RegExp('^[0-9]{1,3}:[0-5][0-9]$');
+      if (!allowedFormat.test(props.formState.installationTime)) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Unerlaubte Eingabe beim Feld "Installationsdauer". Mögliche Werte: 0:01 - 999:59</strong></p>]);
+      }
+    }
 
-  }, [props.formState.environment, props.formState.service, props.formState.releaseNid, props.formState.previousRelease, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease])
+  }, [props.formState.environment, props.formState.service, props.formState.releaseNid, props.formState.previousRelease, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease, props.formState.installationTime])
 
   // Set title.
   useEffect(() => {
@@ -282,15 +289,15 @@ export default function DeploymentForm(props) {
               </FormGroup>
             <FormGroup controlId="7">
               <ControlLabel bsClass="control-label">Installationsdauer</ControlLabel>
+              <div class="custom-help-text">Mögliche Werte: 0:01 - 999:59, Format: hhh:mm </div>
               <FormControl
                 componentClass="input"
-                type="number"
-                step="1"
-                min="1"
+                type="text"
                 name="installationTime"
                 value={props.formState.installationTime}
                 onChange={handleChange}
-                placeholder="in Minuten"
+                placeholder="0:01 - 999:59"
+                maxLength="6"
               >
               </FormControl>
             </FormGroup>
