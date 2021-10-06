@@ -239,63 +239,9 @@ function filebrowser_node_view(array &$build, NodeInterface $node, EntityViewDis
     $manager = \Drupal::service('filebrowser.manager');
     // get the argument $fid from query
     $fid = \Drupal::request()->query->get('fid');
-    $fids = [];
-    // HZD: Caching solves performance issues for filebrowsers with many files.
-    // Query parameter is not always set. If not, database query must be used to 
-    // identify fid.
-    $database = \Drupal::database();
-    if (is_null($fid)) {
-      $result = $database
-        ->query("SELECT fid FROM filebrowser_content 
-        WHERE nid=:nid
-        AND path LIKE :rootPath", [
-          ':nid' => $node->id(),
-          ':rootPath' => '/',
-          ])
-        ->fetch();
-      $fid = $result->fid;
-      $cid = 'filebrowser_files:' . $node->id() . ':' . $fid;
-    }
-    else {
-      // Each subfolder has 2 fids. So we need both of them for our cid.
-      // Otherwise, cache only gets cleared for one of them.
-      $result = $database
-        ->query(
-          "SELECT fid FROM filebrowser_content 
-          WHERE path like (SELECT path FROM filebrowser_content WHERE fid=:fid)
-          AND path NOT LIKE :rootPath",
-          [
-            ":fid" => $fid,
-            ":rootPath" => "/",
-          ]
-        )
-        ->fetchAll();
-      // Default $cid.
-      $cid = 'filebrowser_files:' . $node->id() . ':' . $fid;
-      // Case: subfolder.
-      if (count($result) === 2) {
-        $fids = [$result[0]->fid, $result[1]->fid];
-        $cid = 'filebrowser_files:' . $node->id() . ':' . $fids[0] . ':' . $fids[1];
-      }
-    }
-    $fileCache = \Drupal::cache()->get($cid);
-    $display_list = is_object($fileCache) ? $fileCache->data : FALSE;
-    if (!is_array($display_list)) {
-      $list = new \Drupal\filebrowser\File\DisplayFileList($node, $fid);
-      $display_list = $list->get();
-      $cacheTags = [];
-      // Provide appropriate cache-tags for subfolders with two fids.
-      if (count($fids) == 2) {
-        $cacheTags = [
-          'filebrowser:node:' . $node->id() . ':' . $fids[0],
-          'filebrowser:node:' . $node->id() . ':' . $fids[1],
-        ];
-      }
-      else {
-        $cacheTags = ['filebrowser:node:' . $node->id() . ':' . $fid];
-      }
-      \Drupal::cache()->set($cid, $display_list, -1, $cacheTags);
-    }
+
+    $list = new \Drupal\filebrowser\File\DisplayFileList($node, $fid);
+    $display_list = $list->get();
 
     // Show file listing content part
     if ($display->getComponent('filebrowser_file_list')) {
