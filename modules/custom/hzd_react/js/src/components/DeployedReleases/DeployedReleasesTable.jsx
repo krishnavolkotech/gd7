@@ -128,7 +128,7 @@ export default function DeployedReleasesTable(props) {
         <tbody>
           {tableData.length ? tableData.map(deployment => {
           let highlight = "";
-          if (props.deploymentHistory.indexOf(deployment.releaseNid.toString()) >= 0) {
+          if (props.deploymentHistory.indexOf(parseInt(deployment.nid)) >= 0) {
             highlight = "success";
           }
           return (

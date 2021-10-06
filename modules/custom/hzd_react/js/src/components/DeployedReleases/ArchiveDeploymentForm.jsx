@@ -47,7 +47,7 @@ export default function ArchiveDeploymentForm(props) {
           setHasError(true);
         }
         else {
-          props.setDeploymentHistory(prev => [...prev, props.prevDeploymentData.nid]);
+          props.setDeploymentHistory(prev => [...prev, parseInt(props.prevDeploymentData.nid)]);
           props.setCount(props.count + 1);
         }
       })

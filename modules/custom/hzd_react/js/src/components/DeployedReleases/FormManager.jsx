@@ -518,7 +518,7 @@ export default function FormManager(props) {
           props.setCount(props.count + 1);
         }
         else {
-          props.setDeploymentHistory(prev => [...prev, formState.releaseNid]);
+          props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
           setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
           // Is the previous deployment supposed to be archived?
           if (prevDeploymentData && formState.archivePrevRelease === true && formState.action == "successor") {
@@ -589,7 +589,7 @@ export default function FormManager(props) {
           props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
         }
         else {
-          props.setDeploymentHistory(prev => [...prev, formState.previousRelease]);
+          props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
           setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
           handleClose();
         }
