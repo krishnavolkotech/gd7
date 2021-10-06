@@ -22,6 +22,31 @@ export default function DeployedReleasesFilter(props) {
   /** @const {Object[]} productOptions - The product option components array. */
   const [productOptions, setProductOptions] = useState(<option value="0">&lt;Komponente&gt;</option>);
 
+  const defaultEnvironments = [
+    <option value="0">&lt;Umgebung&gt;</option>,
+    <option value="1">Produktion</option>,
+    <option value="2">Pilot</option>,
+  ];
+  const [environmentOptions, setEnvironmentOptions] = useState(defaultEnvironments);
+
+  useEffect(() => {
+    let url = '/jsonapi/node/non_production_environment';
+    url += '?fields[node--non_production_environment]=drupal_internal__nid,field_non_production_state,title';
+    url += '&filter[field_non_production_state]=' + props.filterState.state;
+    const headers = new Headers({
+      Accept: 'application/vnd.api+json',
+    });
+    fetch(url, { headers })
+      .then(results => results.json())
+      .then(results => {
+        const environments = results.data.map(result => {
+          return (<option value={result.attributes.drupal_internal__nid}>{result.attributes.title}</option>);
+        });
+        setEnvironmentOptions([...defaultEnvironments, ...environments]);
+      })
+      .catch(error => console.log(error));
+  }, [props.filterState.state])
+
   /**
    * Changes to selected service filter or releases for the service will trigger
    * the population of the product filter.
@@ -37,11 +62,6 @@ export default function DeployedReleasesFilter(props) {
   const statesObject = global.drupalSettings.states;
   const statesArray = Object.entries(statesObject);
   const optionsStates = statesArray.map(state => <option value={state[0]}>{state[1]}</option>)
-
-  // Umgebungen Filter
-  const environments = global.drupalSettings.environments;
-  const environmentsArray = Object.entries(environments);
-  const optionsEnvironments = environmentsArray.map(environment => <option value={environment[0]}>{environment[1]}</option>)
 
   // Verfahren Filter
   const services = global.drupalSettings.services;
@@ -124,6 +144,12 @@ export default function DeployedReleasesFilter(props) {
       props.setFilterState(prev => ({ ...prev, "product": "0" }));
     }
 
+    if (e.target.name == "state") {
+      if (props.filterState.environment.length > 1) {
+        props.setFilterState(prev => ({ ...prev, "environment": "0" }));
+      }
+    }
+
     // Product filtering should trigger fetch only when status is "2".
     if (props.filterState.status === "2" && e.target.name === "product") {
       props.setCount(props.count + 1);
@@ -202,7 +228,7 @@ export default function DeployedReleasesFilter(props) {
                 value={props.filterState.environment}
                 validationState="warning"
               >
-                {optionsEnvironments}
+                {environmentOptions}
                 <span className="glyphicon-warning-sign" />
               </FormControl>
             </FormGroup>

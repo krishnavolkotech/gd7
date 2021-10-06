@@ -86,8 +86,6 @@ export default function DeploymentForm(props) {
     fetch(url, {headers})
       .then(results => results.json())
       .then(results => {
-        console.log(results);
-        // @todo HIER WEITERMACHEN: Optionen in state speichern. Default Produktion und Pilot nicht vergessen!
         const environments = results.data.map(result => {
           return (<option value={result.attributes.drupal_internal__nid}>{result.attributes.title}</option>);
         });
