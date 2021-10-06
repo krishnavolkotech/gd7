@@ -77,6 +77,7 @@ module:
   imce: 0
   inactive_user: 0
   jquery_ui: 0
+  jquery_ui_accordion: 0
   jquery_ui_datepicker: 0
   jquery_ui_effects: 0
   l10n_client_contributor: 0
