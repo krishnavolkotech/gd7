@@ -323,18 +323,22 @@ export default function DeploymentForm(props) {
                 Auffälligkeiten
               </Checkbox>
             </FormGroup>
-          {props.formState.abnormalities &&
-            <FormGroup controlId="11">
-              <ControlLabel bsClass="control-label js-form-required form-required">Beschreibung der Auffälligkeiten</ControlLabel>
-              <FormControl
-                componentClass="textarea"
-                name="description"
-                value={props.formState.description}
-                onChange={handleChange}
-              >
-              </FormControl>
-            </FormGroup>
-          }
+            {props.formState.abnormalities &&
+              <div>
+                <FormGroup controlId="11">
+                  <ControlLabel bsClass="control-label js-form-required form-required">Beschreibung der Auffälligkeiten</ControlLabel>
+                  <div class="custom-help-text">{props.formState.description.length}/400 Zeichen verwendet</div>
+                  <FormControl
+                    componentClass="textarea"
+                    name="description"
+                    value={props.formState.description}
+                    onChange={handleChange}
+                    maxLength="400"
+                  >
+                  </FormControl>
+                </FormGroup>
+              </div>
+            }
           {!props.isLoading &&
           <div className="panel panel-default">
             <div className="panel-body">
