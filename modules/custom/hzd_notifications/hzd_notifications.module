@@ -157,7 +157,7 @@ function hzd_notifications_form_group_form_alter(&$form, \Drupal\Core\Form\FormS
   $current_user = \Drupal::service('current_user');
   $current_user_roles = $current_user->getRoles();
   $group = \Drupal::routeMatch()->getParameter('group');
-  if (!is_object($group)) {
+  if ($group && !is_object($group)) {
     $group = \Drupal\group\Entity\Group::load($group);
   }
   if (isset($group) && \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group->id())

@@ -41,21 +41,23 @@ class FavBlock extends BlockBase {
     if ($uid) {
             $result = FavoriteStorage::getFavorites($uid);
             $i = 0;
-            foreach ($result as $favorite) {
-                    $favorite->path = \Drupal::service('path_alias.manager')->getAliasByPath('/'.trim($favorite->path,'/'));
-                    if($favorite->query != ''){
-                        $url = $base_url.$favorite->path.'?'.$favorite->query;    
-                    }
-                    else{
-                        $url = $base_url.$favorite->path;    
-                    }                
-                    $url = Url::fromUri($url);
-                    $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
-                    $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
-                    $items[$i]['remove_link'] = \Drupal::l('X', $url_delete);
-                    $items[$i]['id'] = $favorite->fid;
-                    $i++;
+            if($result){
+              foreach ($result as $favorite) {
+                $favorite->path = \Drupal::service('path_alias.manager')->getAliasByPath('/'.trim($favorite->path,'/'));
+                if($favorite->query != ''){
+                    $url = $base_url.$favorite->path.'?'.$favorite->query;
+                }
+                else{
+                    $url = $base_url.$favorite->path;
+                }
+                $url = Url::fromUri($url);
+                $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
+                $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
+                $items[$i]['remove_link'] = \Drupal::l('X', $url_delete);
+                $items[$i]['id'] = $favorite->fid;
+                $i++;
             }
+          }
     }
     return array(     
       '#attached' => array(

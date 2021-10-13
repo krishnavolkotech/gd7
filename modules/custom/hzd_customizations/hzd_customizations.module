@@ -880,11 +880,13 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
         if(!in_array('site_administrator', $user->getRoles())) {
             foreach ($view -> result as $key => &$result) {
                 $groupMember = $result->_entity->getMember($user);
-                $roles = $groupMember->getRoles();
-                if(!$result->_entity->isPublished() && $groupMember
-                && group_request_status($groupMember)
-                && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
-                    unset($view -> result[$key]);
+                if($groupMember){
+                  $roles = $groupMember->getRoles();
+                  if(!$result->_entity->isPublished() && $groupMember
+                  && group_request_status($groupMember)
+                  && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
+                      unset($view -> result[$key]);
+                  }
                 }
             }
         }
