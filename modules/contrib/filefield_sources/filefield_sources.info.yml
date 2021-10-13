@@ -8,8 +8,3 @@ dependencies:
   - drupal:system
 test_dependencies:
   - imce:imce
-
-# Information added by Drupal.org packaging script on 2020-11-09
-version: '8.x-1.0-alpha4'
-project: 'filefield_sources'
-datestamp: 1604947960

@@ -46,7 +46,7 @@
         "drupal/field_permissions": "^1.1",
         "drupal/filebrowser": "^3.0",
         "drupal/filefield_paths": "^1.0@beta",
-        "drupal/filefield_sources": "^1.0@alpha",
+        "drupal/filefield_sources": "1.x-dev@dev",
         "drupal/flood_unblock": "^3.2",
         "drupal/hook_post_action": "^1.1",
         "drupal/inline_entity_form": "^1.0@RC",
