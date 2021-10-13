@@ -209,8 +209,12 @@ class HzdreleasemanagementHelper {
     $releases_title = '';
     if (!empty($release_name)) {
         $release_product = explode("_", $release_name);
-        $release_versions = explode("-", $release_product[1]);
-        $releases_title = $release_product[0] . "_" . $release_versions[0];
+        if(isset($release_product[1])) {
+          $release_versions = explode("-", $release_product[1]);
+        }
+        if(isset($release_versions[0])){
+          $releases_title = $release_product[0] . "_" . $release_versions[0];
+        }
     }
     // Get the documentation folder path.
     $file_path = \Drupal::service('file_system')->realpath("private://");

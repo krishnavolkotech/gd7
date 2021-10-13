@@ -82,10 +82,15 @@ class HzdReleases extends ControllerBase {
       $release_name = \Drupal::database()->query("SELECT title FROM {node_field_data} "
                                  . "where nid= :nid", array(":nid" => $release_id))->fetchField();
       $releases_title = '';
+      $release_versions = [];
       if (!empty($release_name)) {
         $release_product = explode("_", $release_name);
-        $release_versions = explode("-", $release_product[1]);
-        $releases_title = $release_product[0] . "_" . $release_versions[0];
+        if(isset($release_product[1])){
+          $release_versions = explode("-", $release_product[1]);
+        }
+        if(isset($release_versions[0])){
+          $releases_title = $release_product[0] . "_" . $release_versions[0];
+        }
       }
       return $this->t("Documentation for @title", ['@title' => $releases_title]);
     }
@@ -273,12 +278,16 @@ class HzdReleases extends ControllerBase {
 
       if (is_numeric($release_id)) {  
           $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
-          $arr = $doc_values['arr'];
-          $files = $doc_values['files'];
+          if(isset($doc_values['arr'])){
+            $arr = $doc_values['arr'];
+          }
+          if(isset($doc_values['files'])){
+            $files = $doc_values['files'];
+            // $major_directory = $release_product . "_" . max($arr);
+            unset($files[0]);
+            unset($files[1]);
+          }
         
-          // $major_directory = $release_product . "_" . max($arr);
-          unset($files[0]);
-          unset($files[1]);
       }
       // Check the documentation link download or not. if not failed download link will display.
       if (!empty($files)) {

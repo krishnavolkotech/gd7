@@ -45,7 +45,7 @@ class ImportHistoryController extends ControllerBase {
     );
 
     $breadcrumb = array();
-    $breadcrumb[] = Link(t('Home'), Url::fromUserInput('/'));
+    $breadcrumb[] = Link::createFromRoute($this->t('Home'), '<front>');
     // $group_id = \Drupal::service('tempstore.private')->get()->get('Group_id');
     // $group_name = \Drupal::service('tempstore.private')->get()->get('Group_name');
     $request = \Drupal::request();

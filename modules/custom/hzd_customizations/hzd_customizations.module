@@ -748,6 +748,26 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
  */
 function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
   if ($view->id() == 'my_groups') {
+    $member = \Drupal::currentUser();
+    $user_groups = \Drupal\cust_group\CustGroupHelper::hzd_user_groups_list($member->id());
+    $gids = array_keys($user_groups);
+    if($gids){
+      $query->where[1]['conditions'][] = [
+        "field"    => 'groups_field_data.id',
+        "value"    => $gids,
+        "operator" => 'IN',
+      ];
+    }else{
+      $query->where[1]['conditions'][] = [
+        "field"    => 'groups_field_data.id',
+        "value"    => NULL,
+        "operator" => 'IN',
+      ];
+    }
+    if (!isset($query->where[1]['type'])) {
+      $query->where[1]['type'] = 'AND';
+    }
+/*
     // Traverse through the 'where' part of the query.
     foreach ($query->where as &$condition_group) {
       foreach ($condition_group['conditions'] as &$condition) {
@@ -762,6 +782,7 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
         }
       }
     }
+*/
   }
 
   // Altering the problems block on front page

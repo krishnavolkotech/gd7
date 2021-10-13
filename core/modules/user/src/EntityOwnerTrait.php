@@ -87,4 +87,14 @@ trait EntityOwnerTrait {
     return \Drupal::currentUser()->id();
   }
 
+  /**
+   * Default value callback for 'owner' base field.
+   *
+   * @return mixed
+   *   A default value for the owner field.
+   */
+  public static function getCurrentUserId() {
+    return \Drupal::currentUser()->id();
+  }
+
 }
