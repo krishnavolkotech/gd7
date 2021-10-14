@@ -56,6 +56,8 @@ export default function DeploymentForm(props) {
   ];
   const [environmentOptions, setEnvironmentOptions] = useState(defaultEnvironments);
 
+  const [addPrevReleaseDisabled, setAddPrevReleaseDisabled] = useState(false);
+
   // let firstDeployment = false;
   // if (props.previousRelease == "0") {
   //   firstDeployment = true;
@@ -129,6 +131,12 @@ export default function DeploymentForm(props) {
     </Tooltip>
   );
 
+  const ttAddPrevRelease = (
+    <Tooltip id="ttAddPrevRelease">
+      Weiteres Vorgängerrelease hinzufügen
+    </Tooltip>
+  );
+
   // Disables SelectPreviousRelease.
   useEffect(() => {
     if (props.firstDeployment) {
@@ -141,40 +149,66 @@ export default function DeploymentForm(props) {
     if (props.disabled) {
       setDisabledPrevRelease(true);
     }
+    else {
+      setDisabledPrevRelease(false);
+    }
   }, [props.formState.firstDeployment, props.disabled])
 
-  // Validate form.
+  // Validate the form.
   useEffect(() => {
+    // Resets validation state before re-evaluating the validation state.
     setValidateMessage([]);
     setDisableSubmit(false);
 
+    // Verify environment selection.
     if (props.formState.environment === "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte eine Umgebung auswählen</strong></p>])
     }
 
+    // Verify service selection.
     if (props.formState.service == "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Verfahren auswählen</strong></p>])
     }
 
+    // Verify release selection.
     if (props.formState.releaseNid == "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Release auswählen</strong></p>])
     }
 
-    if (props.formState.previousRelease == "0" || props.formState.previousRelease == "0") {
-      props.setFormState(prev => ({...prev, "archivePrevRelease": "null"}));
-      // setArchivePrevRelease('null');
-    }
+    // if (props.formState.previousRelease == "0" || props.formState.previousRelease == "0") {
+    //   props.setFormState(prev => ({...prev, "archivePrevRelease": "null"}));
+    // }
 
-    if (props.formState.previousRelease != "0") {
-      if (props.formState.archivePrevRelease == 'null') {
-        setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
+    // Verify selection and addition of previous releases.
+    let prevArchiveFailed = false;
+    let prevSelectFailed = false;
+    let addPrevDisable = false;
+    props.formState.previousReleases.map(prev => {
+      if (typeof prev.archive !== "boolean") {
+        prevArchiveFailed = true;
       }
+      if (prev.uuid.length <= 1) {
+        addPrevDisable = true;
+        prevSelectFailed = true;
+      }
+    });
+    // Disables the add prev-release button, as long as no prev release has been selected.
+    setAddPrevReleaseDisabled(addPrevDisable);
+    // Disables submit, if archive radio has not been selected.
+    if (prevArchiveFailed) {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
+    }
+    // Disables Submit, if no previuos release has been selected.
+    if (prevSelectFailed) {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Vorgängerrelease auswählen.</strong></p>])
     }
 
+    // Verify date selection.
     if (!props.formState.date) {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
@@ -190,6 +224,7 @@ export default function DeploymentForm(props) {
       }
     }
 
+    // Verify abnormality description.
     if (props.formState.abnormalities) {
       if (props.formState.description.length == 0) {
         setDisableSubmit(true);
@@ -197,10 +232,13 @@ export default function DeploymentForm(props) {
       }
     }
 
+    // Reset abnormality description, if abnormality checkbox is unchecked.
     if (!props.formState.abnormalities) {
       props.setFormState(prev => ({ ...prev, "description": "" }));
 
     }
+
+    // Validate format of field installation time.
     if (props.formState.installationTime.length > 0) {
       const allowedFormat = new RegExp('^[0-9]{1,3}:[0-5][0-9]$');
       if (!allowedFormat.test(props.formState.installationTime)) {
@@ -209,7 +247,7 @@ export default function DeploymentForm(props) {
       }
     }
 
-  }, [props.formState.environment, props.formState.service, props.formState.releaseNid, props.formState.previousRelease, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease, props.formState.installationTime])
+  }, [props.formState.environment, props.formState.service, props.formState.releaseNid, props.formState.previousReleases, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease, props.formState.installationTime, props.formState.pCount])
 
   // Set title.
   useEffect(() => {
@@ -232,12 +270,14 @@ export default function DeploymentForm(props) {
 
   const handleRadio = (e) => {
     let val = {};
+    val.previousReleases = props.formState.previousReleases;
+    val.pCount = props.formState.pCount + 1;
     if (e.target.value == "ja") {
-      val[e.target.name] = true;
+      val.previousReleases[parseInt(e.target.name)].archive = true;
       props.setFormState(prev => ({ ...prev, ...val }));
     }
     if (e.target.value == "nein") {
-      val[e.target.name] = false;
+      val.previousReleases[parseInt(e.target.name)].archive = false;
       props.setFormState(prev => ({ ...prev, ...val }));
     }
   }
@@ -250,6 +290,28 @@ export default function DeploymentForm(props) {
     else {
       val[e.target.name] = e.target.value;
     }
+
+    props.setFormState(prev => ({ ...prev, ...val }));
+  }
+
+  const handleAddPrevRelease = () => {
+    let val = {};
+    val.previousReleases = props.formState.previousReleases;
+    val.pCount = props.formState.pCount + 1;
+    console.log(val.pCount);
+    val.previousReleases.push({
+      "uuid": "",
+      "archive": "",
+      "title": "",
+    })
+    props.setFormState(prev =>({ ...prev, ...val}));
+  }
+
+  const removePrevReleaseSelector = (i) => {
+    let val = {};
+    val.previousReleases = props.formState.previousReleases;
+    val.previousReleases.splice(i, 1);
+    val.pCount = props.formState.pCount + 1;
     props.setFormState(prev => ({ ...prev, ...val }));
   }
 
@@ -367,6 +429,7 @@ export default function DeploymentForm(props) {
               <Table>
                 <thead>
                   <tr>
+                    <th></th>
                     <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
                     <th>
                       {props.formState.action != 'edit' &&
@@ -376,36 +439,58 @@ export default function DeploymentForm(props) {
                   </tr>
                 </thead>
                 <tbody>
+                  {props.formState.previousReleases.map((r, i) => {
+                    return (
+                      <tr>
+                        <td>
+                        {
+                          i > 0 &&
+                          <Button bsStyle="danger" onClick={() => removePrevReleaseSelector(i)}><span className="glyphicon glyphicon-trash" /></Button>
+                        }
+                        </td>
+                        <td>
+                          <SelectPreviousRelease
+                            formState={props.formState}
+                            setFormState={props.setFormState}
+                            handleChange={handleChange}
+                            prevReleases={props.prevReleases}
+                            isLoading={props.isLoading}
+                            setIsLoading={props.setIsLoading}
+                            disabled={disabledPrevRelease}
+                            index={i}
+                          />
+                        </td>
+                        <td>
+                        {props.formState.action != 'edit' &&
+                          <Form inline>
+                            <FormGroup onChange={handleRadio} controlId="5">
+                              <Radio
+                                name={i}
+                                value="ja"
+                                checked={props.formState.previousReleases[i].archive === true}
+                              >
+                                &nbsp;Ja
+                              </Radio>
+                              &nbsp;&nbsp;
+                              <Radio
+                                name={i}
+                                value="nein"
+                                checked={props.formState.previousReleases[i].archive === false}
+                              >
+                                &nbsp;Nein
+                              </Radio>
+                            </FormGroup>
+                          </Form>
+                        }
+                        </td>
+                      </tr>
+                    );
+                  })}
                   <tr>
-                    <td>
-                      <SelectPreviousRelease
-                        formState={props.formState}
-                        handleChange={handleChange}
-                        prevReleases={props.prevReleases}
-                        isLoading={props.isLoading}
-                        setIsLoading={props.setIsLoading}
-                        disabled={disabledPrevRelease}
-                      />
-                    </td>
-                    <td>
-                    {props.formState.previousRelease > 0 && props.formState.action != 'edit' &&
-                      <FormGroup onChange={handleRadio} controlId="5">
-                        <Radio
-                          name="archivePrevRelease"
-                          value="ja"
-                          checked={props.formState.archivePrevRelease === true}
-                        >
-                          Ja
-                        </Radio>
-                        <Radio
-                          name="archivePrevRelease"
-                          value="nein"
-                          checked={props.formState.archivePrevRelease === false}
-                        >
-                          Nein
-                        </Radio>
-                      </FormGroup>
-                    }
+                    <td colspan="2">
+                      <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
+                        <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success"><span className="glyphicon glyphicon-plus" /></Button>
+                      </OverlayTrigger>
                     </td>
                   </tr>
                 </tbody>
@@ -428,7 +513,7 @@ export default function DeploymentForm(props) {
     </div>
     );
 
-  if (props.submitMessage !== false) {
+  if (props.submitMessage.length > 0) {
     formBody = (
       <div>
         <Modal.Body>

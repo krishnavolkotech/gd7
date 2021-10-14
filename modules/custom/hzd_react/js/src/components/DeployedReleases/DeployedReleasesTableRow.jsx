@@ -66,33 +66,33 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
       <td>
         { status == "1" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttReportSuccessor} trigger="hover">
-            <Button bsStyle="success" onClick={() => handleAction("successor", {state, environment, service, release, product, uuid})}><span className="glyphicon glyphicon-forward" /></Button>
+          <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
+            <Button bsStyle="success" onClick={(e) => handleAction(e, "successor", {state, environment, service, release, product, uuid, releaseName})}><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
         { status == "1" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttArchive} trigger="hover">
-            <Button bsStyle="info" onClick={() => handleAction("archive", {nid, uuid, releaseName})}><span className="glyphicon glyphicon-folder-close" /></Button>
+          <OverlayTrigger placement="top" overlay={ttArchive}>
+            <Button bsStyle="info" onClick={(e) => handleAction(e, "archive", {nid, uuid, releaseName})}><span className="glyphicon glyphicon-folder-close" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
         { global.drupalSettings.role !== "ZRML" && status != "3" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttEdit} trigger="hover">
+          <OverlayTrigger placement="top" overlay={ttEdit}>
             {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/r/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
-            <Button bsStyle="primary" onClick={() => handleAction("edit", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
+            <Button bsStyle="primary" onClick={(e) => handleAction(e, "edit", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
         { global.drupalSettings.role !== "ZRML" && status =="1" &&
         <span>
-          <OverlayTrigger placement="top" overlay={ttFail} trigger="hover">
-            <Button bsStyle="danger" onClick={() => handleAction("failed", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
+          <OverlayTrigger placement="top" overlay={ttFail}>
+            <Button bsStyle="danger" onClick={(e) => handleAction(e, "failed", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>

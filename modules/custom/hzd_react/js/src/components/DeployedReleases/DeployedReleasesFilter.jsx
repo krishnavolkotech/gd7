@@ -295,15 +295,15 @@ export default function DeployedReleasesFilter(props) {
         <Row>
           <Col sm={6}>
             <div>
-              {/* <OverlayTrigger placement="top" overlay={ttFilter} trigger="hover">
+              {/* <OverlayTrigger placement="top" overlay={ttFilter}>
                 <Button onClick={props.fetchDeployments} bsStyle="success"><span className="glyphicon glyphicon-filter" /></Button>
                 </OverlayTrigger>
               &nbsp; */}
-              <OverlayTrigger placement="top" overlay={ttReset} trigger="hover">
+              <OverlayTrigger placement="top" overlay={ttReset}>
                 <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
               </OverlayTrigger>
               &nbsp;
-              <OverlayTrigger placement="top" overlay={ttRefresh} trigger="hover">
+              <OverlayTrigger placement="top" overlay={ttRefresh}>
                 <Button onClick={() => props.setCount(props.count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
               </OverlayTrigger>
               &nbsp;
@@ -311,12 +311,12 @@ export default function DeployedReleasesFilter(props) {
           </Col>
           <Col sm={6}>
             { props.loadingReleasesSpinner &&
-              <OverlayTrigger placement="top" overlay={ttLoading} trigger="hover">
+              <OverlayTrigger placement="top" overlay={ttLoading}>
                 <span className="pull-right glyphicon glyphicon-refresh glyphicon-spin" role="status" />
               </OverlayTrigger>
             }
             {/* (props.filterState.environment == "0" || props.filterState.service == "0") &&
-              <OverlayTrigger placement="top" overlay={ttWarning} trigger="hover">
+              <OverlayTrigger placement="top" overlay={ttWarning}>
                 <span className="pull-right glyphicon-warning-sign" />
               </OverlayTrigger>
             */}

@@ -31,6 +31,13 @@ export default function FormManager(props) {
   const [newReleases, setNewReleases] = useState([]);
 
   // Für SelectPreviousRelease Komponente. Die eingesetzten Releases.
+  /**
+   * @const {Object[]} prevReleases - Array der möglichen Vorgängerreleases.
+   * @property {string} prevReleases[].nid - Die Release NID.
+   * @property {string} prevReleases[].service - Die NID des Verfahrens.
+   * @property {string} prevReleases[].title - Der Titel des Releases.
+   * @property {string} prevReleases[].uuid - Die UUID des Releases.
+   */
   const [prevReleases, setPrevReleases] = useState([]);
 
   const [submitMessage, setSubmitMessage] = useState(false);
@@ -79,6 +86,8 @@ export default function FormManager(props) {
     "firstDeployment": true,
     "product": "",
     "action": "first",
+    "pCount": 1,
+    "previousReleases": [],
   };
 
   /**
@@ -100,6 +109,11 @@ export default function FormManager(props) {
    * @property {bool}   formState.firstDeployment - First deployment of this product?
    * @property {bool}   formState.product - First deployment of this product?
    * @property {bool}   formState.action - First deployment of this product?
+   * @property {number}   formState.pCount - Deep Scan workaround for previousReleases (detects changes).
+   * @property {array}   formState.previousReleases - Array of selected previous releases.
+   * @property {string}   formState.previousReleases[].uuid - Uuid of previous release.
+   * @property {bool}   formState.previousReleases[].archive - Bool indicating, if prev release should be archived.
+   * @property {string}   formState.previousReleases[].title - The release name.
    */
   const [formState, setFormState] = useState(initialFormState);
   // Trigger 1/3 release-selector filtering.
@@ -124,14 +138,20 @@ export default function FormManager(props) {
   }, [deploymentData])
 
   useEffect(() => {
-    setSubmitMessage(false);
+    setSubmitMessage([]);
     if (props.triggerAction.action == "successor") {
       setFormState(prev => ({
         ...prev,
         "state": props.triggerAction.args.state,
         "environment": props.triggerAction.args.environment,
         "service": props.triggerAction.args.service,
-        "previousRelease": props.triggerAction.args.release,
+        "previousReleases": [
+          {
+            "uuid": props.triggerAction.args.uuid,
+            "archive": "",
+            "title": props.triggerAction.args.releaseName,
+          },
+        ],
         "product": props.triggerAction.args.product,
         "action": props.triggerAction.action,
         "firstDeployment": false,
@@ -159,7 +179,7 @@ export default function FormManager(props) {
       }));
       setShowDeploymentForm(true);
       fetchDeployment(props.triggerAction.args.uuid);
-      setSubmitMessage(<FormSkeleton />);
+      setSubmitMessage([<FormSkeleton />]);
       // setSubmitMessage(<li>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></li>);
     }
   }, [props.triggerAction])
@@ -174,7 +194,7 @@ export default function FormManager(props) {
     fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        setSubmitMessage(false);
+        setSubmitMessage([]);
         const service = results.included.find(element => {
           return element.id == results.data.relationships.field_service.data.id;
         });
@@ -273,7 +293,6 @@ export default function FormManager(props) {
     // }
     // // Trigger zurücksetzen.
     // setTriggerReleaseSelect(false);
-
     let filteredDeployments = deploymentData.filter(deployment => {
       let result = true;
       if (deployment.state != formState.state) {
@@ -288,8 +307,9 @@ export default function FormManager(props) {
       return result;
     });
 
-    let deployedReleaseNids = filteredDeployments.map((deployment) => {
-      return deployment.releaseNid;
+    let releasesWithDeployments = {};
+    filteredDeployments.map((deployment) => {
+      releasesWithDeployments[deployment.releaseNid] = deployment.uuid;
     });
 
     if (formState.service in props.releases) {
@@ -302,9 +322,15 @@ export default function FormManager(props) {
     // Filter nur anwenden, wenn uuid leer ist. Dann ist es eine neue Einsatzmeldung.
     if (formState.uuid === "") {
       for (const nid in releaseArray) {
-        if (deployedReleaseNids.indexOf(nid) === -1) {
+        if (nid in releasesWithDeployments) {
+          filteredPrevReleases[nid]["uuidDeployment"] = releasesWithDeployments[nid];
+        }
+        else {
           delete filteredPrevReleases[nid];
         }
+        // if (releaseArray[nid].title.indexOf(formState.product)) {
+        //   delete filteredPrevReleases[nid];
+        // }
       }
     }
 
@@ -312,33 +338,25 @@ export default function FormManager(props) {
     let product = false;
     for (const release in filteredPrevReleases) {
       deployedReleases.push(filteredPrevReleases[release]);
-      if (filteredPrevReleases[release].nid.toString() == formState.previousRelease) {
-        const title = filteredPrevReleases[release].title;
-        product = title.substring(0, title.indexOf('_') + 1);
-      }
+      // if (filteredPrevReleases[release].nid.toString() == formState.previousRelease) {
+      //   const title = filteredPrevReleases[release].title;
+      //   product = title.substring(0, title.indexOf('_') + 1);
+      // }
     }
     deployedReleases.sort(function (a, b) {
-      var releaseA = a.title.toUpperCase();
-      var releaseB = b.title.toUpperCase();
-      if (releaseA < releaseB) {
-        return 1;
-      }
-      if (releaseA > releaseB) {
-        return -1;
-      }
-      return 0;
+      return compareReleases(a, b);
     });
     // Releases filtern: Nicht Eingesetzt (Neue Einsatzmeldung).
     let filteredNewReleases = { ...releaseArray };
     // Filter nur anwenden, wenn uuid leer ist. Dann ist es eine neue Einsatzmeldung.
     if (formState.uuid === "") {
       for (const nid in releaseArray) {
-        if (deployedReleaseNids.indexOf(nid) >= 0) {
+        if (nid in releasesWithDeployments) {
           delete filteredNewReleases[nid];
         }
-        if (releaseArray[nid].title.indexOf(formState.product)) {
-          delete filteredNewReleases[nid];
-        }
+        // if (releaseArray[nid].title.indexOf(formState.product)) {
+        //   delete filteredNewReleases[nid];
+        // }
       }
     }
 
@@ -349,15 +367,7 @@ export default function FormManager(props) {
     }
     // undeployedReleases.sort((a, b) => b - a);
     undeployedReleases.sort(function (a, b) {
-      var releaseA = a.title.toUpperCase();
-      var releaseB = b.title.toUpperCase();
-      if (releaseA < releaseB) {
-        return 1;
-      }
-      if (releaseA > releaseB) {
-        return -1;
-      }
-      return 0;
+      return compareReleases(a, b);
     });
 
     if (undeployedReleases.length === 0) {
@@ -372,8 +382,57 @@ export default function FormManager(props) {
     setIsLoading(false);
   }
 
+  /**
+   * Compares two release names for sorting.
+   * 
+   * Sorting criteria hierarchy:
+   *  1. Matching product on top.
+   *  2. Descending product name.
+   *  3. Ascending version number.
+   * 
+   * @param {object} a - The first release object.
+   * @param {object} b - The second release object.
+   * @returns {number} - 1, -1 or 0.
+   */
+  const compareReleases = (a, b) => {
+    const productA = a.title.substring(0, a.title.indexOf('_') + 1);
+    const productB = b.title.substring(0, b.title.indexOf('_') + 1);
+    const versionA = a.title.substring(a.title.indexOf('_') + 1);
+    const versionB = b.title.substring(b.title.indexOf('_') + 1);
+    // Matching product should be on top of the list.
+    if (productA == formState.product && productA != productB) {
+      return -1;
+    }
+    if (productB == formState.product && productA != productB) {
+      return 1;
+    }
+    // Product should be alphabetically.
+    if (productA < productB) {
+      return -1;
+    }
+    if (productA > productB) {
+      return 1;
+    }
+    // Version should be descending.
+    const partsA = versionA.split('.')
+    const partsB = versionB.split('.')
+    for (var i = 0; i < partsB.length; i++) {
+      const vA = ~~partsA[i] // parse int
+      const vB = ~~partsB[i] // parse int
+      if (vA > vB) return -1
+      if (vA < vB) return 1
+    }
+    if (versionA < versionB) {
+      return 1;
+    }
+    if (versionA > versionB) {
+      return -1;
+    }
+    return 0;
+  }
+
   const handleFirstDeployment = () => {
-    setSubmitMessage(false);
+    setSubmitMessage([]);
     setFormState(initialFormState);
     setShowDeploymentForm(true);
   }
@@ -412,12 +471,12 @@ export default function FormManager(props) {
 
     if (!currentRelease) {
       // props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
-      setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
+      setSubmitMessage([<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>]);
       return;
     }
     const uuidRelease = currentRelease.uuid;
     const releaseName = currentRelease.title;
-    setSubmitMessage(<p>Einsatzmeldung für {releaseName} wird gespeichert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
+    setSubmitMessage([<p>Einsatzmeldung für {releaseName} wird gespeichert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>]);
     // const product = releaseName.substring(0, releaseName.indexOf('_'));
 
     // UUID des Verfahrens.
@@ -475,7 +534,7 @@ export default function FormManager(props) {
 
       if (!pRelease) {
         props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
-        setSubmitMessage(<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die UUID eines Vorgängerreleases nicht ermittelt werden konnte.</li>);
+        setSubmitMessage([<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die UUID eines Vorgängerreleases nicht ermittelt werden konnte.</li>]);
         return;
       }
       const uuidPrevRelease = pRelease.uuid;
@@ -513,15 +572,16 @@ export default function FormManager(props) {
       .then(antwort => antwort.json())
       .then(antwort => {
         if ("errors" in antwort) {
-          props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden.</li>);
-          setSubmitMessage(<li>Die Einsatzmeldung konnte nicht gespeichert werden.</li>);
+          props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></li>);
+          setSubmitMessage([<li>Die Einsatzmeldung konnte nicht gespeichert werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></li>]);
           props.setCount(props.count + 1);
         }
         else {
           props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
-          setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
+          setSubmitMessage([<li>Einsatzmeldung gespeichert. <span className="glyphicon glyphicon-ok-circle" role="status" /></li>]);
           // Is the previous deployment supposed to be archived?
-          if (prevDeploymentData && formState.archivePrevRelease === true && formState.action == "successor") {
+          // @todo Anpassen für archivierung mehrerer Vorgängerreleases.
+          if (formState.action == "successor") {
             patchDeployment();
           }
           // No further action needed, reset everything.
@@ -534,8 +594,8 @@ export default function FormManager(props) {
       })
       .catch(error => {
         console.log('fehler:', error);
-        props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
-        setSubmitMessage(<li>Die Einsatzmeldung konnte nicht erstellt werden.</li>);
+        props.setError(<li>Die Einsatzmeldung konnte nicht erstellt werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></li>);
+        setSubmitMessage([<li>Die Einsatzmeldung konnte nicht erstellt werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></li>]);
       });
   }
 
@@ -548,57 +608,80 @@ export default function FormManager(props) {
     }
     const uuidRelease = currentRelease.uuid;
 
-
-    const archiveBody = {
-      "data": {
-        "type": "node--deployed_releases",
-        "id": prevDeploymentData.uuid,
-        "attributes": {
-          "field_deployment_status": "2",
-        },
-        "relationships": {
-          "field_successor_release": {
-            "data": {
-              "type": "node--release",
-              "id": uuidRelease,
+    let csrfUrl = `/session/token?_format=json`;
+    let fetchUrl = '';
+    let fetchOptions = {};
+    formState.previousReleases.forEach((p, index) => {
+      let archiveBody = {
+        "data": {
+          "type": "node--deployed_releases",
+          "id": p.uuid,
+          "attributes": {
+            "field_deployment_status": p.archive ? "2" : "1",
+          },
+          "relationships": {
+            "field_successor_release": {
+              "data": {
+                "type": "node--release",
+                "id": uuidRelease,
+              }
             }
           }
         }
       }
-    }
-
-    const csrfUrl = `/session/token?_format=json`;
-    const fetchUrl = '/jsonapi/node/deployed_releases/' + prevDeploymentData.uuid;
-    const fetchOptions = {
-      method: 'PATCH',
-      headers: new Headers({
-        'Accept': 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-        'Cache': 'no-cache',
-      }),
-      body: JSON.stringify(archiveBody),
-    }
-    setPrevDeploymentData(false);
-    setSubmitMessage(<p>Vorgängerrelease wird archiviert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
-    fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
-      .then(antwort => antwort.json())
-      .then(antwort => {
-        props.setCount(props.count + 1);
-        if ("errors" in antwort) {
-          setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
-          props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
-        }
-        else {
-          props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
-          setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
-          handleClose();
-        }
-      })
-      .catch(error => {
-        console.log('fehler:', error);
-        setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
-        props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
+  
+      fetchUrl = '/jsonapi/node/deployed_releases/' + p.uuid;
+      fetchOptions = {
+        method: 'PATCH',
+        headers: new Headers({
+          'Accept': 'application/vnd.api+json',
+          'Content-Type': 'application/vnd.api+json',
+          'Cache': 'no-cache',
+        }),
+        body: JSON.stringify(archiveBody),
+      }
+      // @todo abbauen.
+      // setPrevDeploymentData(false);
+      setSubmitMessage(prev => {
+        let messages = prev;
+        messages[index] = <p>{p.title} wird aktualisiert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>;
+        return messages;
       });
+      fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
+        .then(antwort => antwort.json())
+        .then(antwort => {
+          props.setCount(props.count + 1);
+          if ("errors" in antwort) {
+            setSubmitMessage(prev => {
+              let messages = prev;
+              messages[index] = <p>{p.title} konnte nicht aktualisiert werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></p>;
+              return messages;
+            });
+            // setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
+            props.setError(<li>Fehler beim Aktualisieren des Vorgängerrelease.</li>);
+          }
+          else {
+            props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
+            setSubmitMessage(prev => {
+              let messages = prev;
+              messages[index] = <p>{p.title} wurde aktualisiert. <span className="glyphicon glyphicon-ok-circle" role="status" /></p>;
+              return messages;
+            });
+            // setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
+            // handleClose();
+          }
+        })
+        .catch(error => {
+          console.log('fehler:', error);
+          setSubmitMessage(prev => {
+            let messages = prev;
+            messages[index] = <p>{p.title} konnte nicht aktualisiert werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></p>;
+            return messages;
+          });
+          props.setError(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
+        });
+    });
+
   }
 
   return (

@@ -7,7 +7,7 @@ export default function SelectRelease({ formState, handleChange, newReleases, is
   // Befüllt Release Releaseoptionen basierend auf newReleases (prop).
   useEffect(() => {
     //Release Drop Down
-    setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
+    // setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
     let defaultRelease = [<option value="0">&lt;Release&gt;</option>];
     let optionsReleases = [];
     // Dropdown deaktivieren, bevor die Optionen gefüllt sind..
@@ -15,6 +15,7 @@ export default function SelectRelease({ formState, handleChange, newReleases, is
       setIsLoading(false);
       return;
     }
+    // Options befüllen.
     if (newReleases.length > 0) {
       optionsReleases = newReleases.map(option => {
         for (const nid in option) {

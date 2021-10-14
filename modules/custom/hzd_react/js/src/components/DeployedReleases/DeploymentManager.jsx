@@ -333,7 +333,8 @@ export default function DeploymentManager() {
   }
 
   // Nachfolgerelase melden
-  const handleAction = (action, args) => {
+  const handleAction = (e, action, args) => {
+    // e.preventDefault();
     setTriggerAction({ action, args });
 
     // setFirstDeployment(false);
