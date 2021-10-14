@@ -20,12 +20,12 @@ export default function DeployedReleasesFilter(props) {
   const [disableProductFilter, setDisableProductFilter] = useState(true);
 
   /** @const {Object[]} productOptions - The product option components array. */
-  const [productOptions, setProductOptions] = useState(<option value="0">&lt;Komponente&gt;</option>);
+  const [productOptions, setProductOptions] = useState(<option key="product-0" value="0">&lt;Komponente&gt;</option>);
 
   const defaultEnvironments = [
-    <option value="0">&lt;Umgebung&gt;</option>,
-    <option value="1">Produktion</option>,
-    <option value="2">Pilot</option>,
+    <option key="env-0" value="0">&lt;Umgebung&gt;</option>,
+    <option key="env-1" value="1">Produktion</option>,
+    <option key="env-2" value="2">Pilot</option>,
   ];
   const [environmentOptions, setEnvironmentOptions] = useState(defaultEnvironments);
 
@@ -40,7 +40,7 @@ export default function DeployedReleasesFilter(props) {
       .then(results => results.json())
       .then(results => {
         const environments = results.data.map(result => {
-          return (<option value={result.attributes.drupal_internal__nid}>{result.attributes.title}</option>);
+          return (<option key={"env-" + result.attributes.drupal_internal__nid} value={result.attributes.drupal_internal__nid}>{result.attributes.title}</option>);
         });
         setEnvironmentOptions([...defaultEnvironments, ...environments]);
       })
@@ -61,7 +61,7 @@ export default function DeployedReleasesFilter(props) {
   // States Filter
   const statesObject = global.drupalSettings.states;
   const statesArray = Object.entries(statesObject);
-  const optionsStates = statesArray.map(state => <option value={state[0]}>{state[1]}</option>)
+  const optionsStates = statesArray.map(state => <option key={"state-" + state[0]} value={state[0]}>{state[1]}</option>)
 
   // Verfahren Filter
   const services = global.drupalSettings.services;
@@ -77,14 +77,14 @@ export default function DeployedReleasesFilter(props) {
     }
     return 0;
   });
-  const optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
+  const optionsServices = servicesArray.map(service => <option key={"service-" + service[0]} value={service[0]}>{service[1][0]}</option>)
 
   /**
    * Populates the product filter based on the selected service and releases.
    */
   const populateProductFilter = () => {
     // Product Filter.
-    const defaultProduct = [<option value="0">&lt;Komponente&gt;</option>];
+    const defaultProduct = [<option key="product-default" value="0">&lt;Komponente&gt;</option>];
     let optionsProducts = [];
     if (props.filterState.service != "0" && Object.keys(props.releases).length > 0) {
       // Verify that the releases for the selected service are loaded.
@@ -123,7 +123,7 @@ export default function DeployedReleasesFilter(props) {
       
       // Populate options for selected input.
       optionsProducts = products.map(product => {
-        return <option value={product}>{product}</option>;
+        return <option key={"product-" + product} value={product}>{product}</option>;
       });
   
     }
@@ -228,7 +228,6 @@ export default function DeployedReleasesFilter(props) {
                 value={props.filterState.environment}
               >
                 {environmentOptions}
-                <span className="glyphicon-warning-sign" />
               </FormControl>
             </FormGroup>
           </Col>
@@ -270,11 +269,11 @@ export default function DeployedReleasesFilter(props) {
                   onChange={handleFilterSelect}
                   value={props.filterState.sortBy}
                 >
-                  <option value="field_date_deployed_value">Einsatzdatum</option>
-                  <option value="field_environment_value">Umgebung</option>
-                  <option value="title">Verfahren</option>
-                  <option value="title_1">Release</option>
-                  <option value="field_state_list_value">Land</option>
+                  <option key="sort-1" value="field_date_deployed_value">Einsatzdatum</option>
+                  <option key="sort-2" value="field_environment_value">Umgebung</option>
+                  <option key="sort-3" value="title">Verfahren</option>
+                  <option key="sort-4" value="title_1">Release</option>
+                  <option key="sort-5" value="field_state_list_value">Land</option>
                 </FormControl>
               </FormGroup>
               <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">
@@ -285,8 +284,8 @@ export default function DeployedReleasesFilter(props) {
                   onChange={handleFilterSelect}
                   value={props.filterState.sortOrder}
                 >
-                  <option value="ASC">Aufsteigend</option>
-                  <option value="DESC">Absteigend</option>
+                  <option key="order-asc" value="ASC">Aufsteigend</option>
+                  <option key="order-desc" value="DESC">Absteigend</option>
                 </FormControl>
               </FormGroup>
             </Form>

@@ -17,29 +17,29 @@ const SelectReleaseSkeleton = () => {
   );
 }
 
-const FormSkeleton = () => {
-  return (
-    <div>
-      <div className="skeleton-label loading"></div>
-      <div className="skeleton-select loading"></div>
-      <div className="skeleton-label loading"></div>
-      <div className="skeleton-select loading"></div>
-      <div className="skeleton-label loading"></div>
-      <div className="skeleton-select loading"></div>
-      <div className="skeleton-label loading"></div>
-      <div className="skeleton-select loading"></div>
-      <div>
-        <div className="skeleton-select-box loading"></div>
-        <div className="skeleton-select-box-label loading"></div>
-      </div>
-      <div>
-        <div className="skeleton-select-box loading"></div>
-        <div className="skeleton-select-box-label loading"></div>
-      </div>
-      <SelectReleaseSkeleton />
-    </div>
-  );
-}
+// const FormSkeleton = () => {
+//   return (
+//     <div>
+//       <div className="skeleton-label loading"></div>
+//       <div className="skeleton-select loading"></div>
+//       <div className="skeleton-label loading"></div>
+//       <div className="skeleton-select loading"></div>
+//       <div className="skeleton-label loading"></div>
+//       <div className="skeleton-select loading"></div>
+//       <div className="skeleton-label loading"></div>
+//       <div className="skeleton-select loading"></div>
+//       <div>
+//         <div className="skeleton-select-box loading"></div>
+//         <div className="skeleton-select-box-label loading"></div>
+//       </div>
+//       <div>
+//         <div className="skeleton-select-box loading"></div>
+//         <div className="skeleton-select-box-label loading"></div>
+//       </div>
+//       <SelectReleaseSkeleton />
+//     </div>
+//   );
+// }
 
 
 export default function DeploymentForm(props) {
@@ -50,9 +50,9 @@ export default function DeploymentForm(props) {
   const [title, setTitle] = useState("");
 
   const defaultEnvironments = [
-    <option value="0">&lt;Umgebung&gt;</option>,
-    <option value="1">Produktion</option>,
-    <option value="2">Pilot</option>,
+    <option key="form-env-0" value="0">&lt;Umgebung&gt;</option>,
+    <option key="form-env-1" value="1">Produktion</option>,
+    <option key="form-env-2" value="2">Pilot</option>,
   ];
   const [environmentOptions, setEnvironmentOptions] = useState(defaultEnvironments);
 
@@ -89,7 +89,7 @@ export default function DeploymentForm(props) {
       .then(results => results.json())
       .then(results => {
         const environments = results.data.map(result => {
-          return (<option value={result.attributes.drupal_internal__nid}>{result.attributes.title}</option>);
+          return (<option key={"form-env-" + result.attributes.drupal_internal__nid} value={result.attributes.drupal_internal__nid}>{result.attributes.title}</option>);
         });
         setEnvironmentOptions([...defaultEnvironments, ...environments]);
       })
@@ -112,7 +112,7 @@ export default function DeploymentForm(props) {
       return 0;
   });
 
-  let optionsServices = servicesArray.map(service => <option value={service[0]}>{service[1][0]}</option>)
+  let optionsServices = servicesArray.map(service => <option key={"form-service-" + service[0]} value={service[0]}>{service[1][0]}</option>)
 
   // Tooltip für Button "Neue Einsatzmeldung".
   // const ttNewReport = (
@@ -163,19 +163,19 @@ export default function DeploymentForm(props) {
     // Verify environment selection.
     if (props.formState.environment === "0") {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte eine Umgebung auswählen</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-environment"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte eine Umgebung auswählen</strong></p>])
     }
 
     // Verify service selection.
     if (props.formState.service == "0") {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Verfahren auswählen</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-service"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Verfahren auswählen</strong></p>])
     }
 
     // Verify release selection.
     if (props.formState.releaseNid == "0") {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Release auswählen</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-release"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Release auswählen</strong></p>])
     }
 
     // if (props.formState.previousRelease == "0" || props.formState.previousRelease == "0") {
@@ -200,18 +200,18 @@ export default function DeploymentForm(props) {
     // Disables submit, if archive radio has not been selected.
     if (prevArchiveFailed) {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-archive"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
     }
     // Disables Submit, if no previuos release has been selected.
     if (prevSelectFailed) {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Vorgängerrelease auswählen.</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-select-prev"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Vorgängerrelease auswählen.</strong></p>])
     }
 
     // Verify date selection.
     if (!props.formState.date) {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-date"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
     }
 
     // Validates, that the selected date is not in the future.
@@ -220,7 +220,7 @@ export default function DeploymentForm(props) {
       const now = Date.now();
       if (formDate > now) {
         setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Das angegebene Einsatzdatum liegt in der Zukunft</strong></p>])
+        setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Das angegebene Einsatzdatum liegt in der Zukunft</strong></p>])
       }
     }
 
@@ -228,7 +228,7 @@ export default function DeploymentForm(props) {
     if (props.formState.abnormalities) {
       if (props.formState.description.length == 0) {
         setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>]);
+        setValidateMessage(prev => [...prev, <p key="val-abnorm"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>]);
       }
     }
 
@@ -243,7 +243,7 @@ export default function DeploymentForm(props) {
       const allowedFormat = new RegExp('^[0-9]{1,3}:[0-5][0-9]$');
       if (!allowedFormat.test(props.formState.installationTime)) {
         setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Unerlaubte Eingabe beim Feld "Installationsdauer". Mögliche Werte: 0:01 - 999:59</strong></p>]);
+        setValidateMessage(prev => [...prev, <p key="val-inst-time"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Unerlaubte Eingabe beim Feld "Installationsdauer". Mögliche Werte: 0:01 - 999:59</strong></p>]);
       }
     }
 
@@ -320,7 +320,6 @@ export default function DeploymentForm(props) {
   var formBody = (
     <div>
         <Modal.Body>
-          <Form>
             <FormGroup controlId="1">
               <ControlLabel bsClass="control-label js-form-required form-required">Umgebung</ControlLabel>
               <div className="select-wrapper">
@@ -361,7 +360,7 @@ export default function DeploymentForm(props) {
               </FormGroup>
             <FormGroup controlId="7">
               <ControlLabel bsClass="control-label">Installationsdauer</ControlLabel>
-              <div class="custom-help-text">Mögliche Werte: 0:01 - 999:59, Format: hhh:mm </div>
+              <div className="custom-help-text">Mögliche Werte: 0:01 - 999:59, Format: hhh:mm </div>
               <FormControl
                 componentClass="input"
                 type="text"
@@ -399,7 +398,7 @@ export default function DeploymentForm(props) {
               <div>
                 <FormGroup controlId="11">
                   <ControlLabel bsClass="control-label js-form-required form-required">Beschreibung der Auffälligkeiten</ControlLabel>
-                  <div class="custom-help-text">{props.formState.description.length}/400 Zeichen verwendet</div>
+                  <div className="custom-help-text">{props.formState.description.length}/400 Zeichen verwendet</div>
                   <FormControl
                     componentClass="textarea"
                     name="description"
@@ -441,7 +440,7 @@ export default function DeploymentForm(props) {
                 <tbody>
                   {props.formState.previousReleases.map((r, i) => {
                     return (
-                      <tr>
+                      <tr key={"pr-row-" + props.formState.previousReleases[i].uuid}>
                         <td>
                         {
                           i > 0 &&
@@ -468,6 +467,7 @@ export default function DeploymentForm(props) {
                                 name={i}
                                 value="ja"
                                 checked={props.formState.previousReleases[i].archive === true}
+                                readOnly
                               >
                                 &nbsp;Ja
                               </Radio>
@@ -476,6 +476,7 @@ export default function DeploymentForm(props) {
                                 name={i}
                                 value="nein"
                                 checked={props.formState.previousReleases[i].archive === false}
+                                readOnly
                               >
                                 &nbsp;Nein
                               </Radio>
@@ -487,7 +488,7 @@ export default function DeploymentForm(props) {
                     );
                   })}
                   <tr>
-                    <td colspan="2">
+                    <td colSpan="2">
                       <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
                         <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success"><span className="glyphicon glyphicon-plus" /></Button>
                       </OverlayTrigger>
@@ -501,7 +502,6 @@ export default function DeploymentForm(props) {
           {props.isLoading === true &&
             <SelectReleaseSkeleton />
           }
-          </Form>
         </Modal.Body>
         <Modal.Footer>
           <OverlayTrigger placement="top" overlay={ttValidateMessage}>

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 export default function SelectPreviousRelease({ formState, setFormState, handleChange, prevReleases, isLoading, setIsLoading, disabled, index }) {
-  const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
+  const [releaseOptions, setReleaseOptions] = useState([<option key="select-pr-0" value="0">&lt;Release&gt;</option>]);
 
   //Previous Release Drop Down
   useEffect(() => {
     // console.log(prevReleases);
-    setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
+    setReleaseOptions([<option key="select-pr-0" value="0">&lt;Release&gt;</option>]);
     let defaultPrevRelease = formState.firstDeployment ? 
-      [<option value="0">Ersteinsatz</option>] :
-      [<option value="0">&lt;Vorgängerrelease&gt;</option>];
+      [<option key="select-pr-1" value="0">Ersteinsatz</option>] :
+      [<option key="select-pr-2" value="0">&lt;Vorgängerrelease&gt;</option>];
     let optionsPrevReleases = [];
 
     if (typeof prevReleases !== 'object') {
@@ -23,7 +23,7 @@ export default function SelectPreviousRelease({ formState, setFormState, handleC
         for (const val of formState.previousReleases) {
           // Erstes Element.
           if (formState.previousReleases.length === 1) {
-            return <option value={option.uuidDeployment}>{option.title}</option>;
+            return <option key={"select-pr-" + option.uuidDeployment} value={option.uuidDeployment}>{option.title}</option>;
           }
           // Alle vorherigen Optionen entfernen.
           if (option.uuidDeployment === val.uuid) {
@@ -31,7 +31,7 @@ export default function SelectPreviousRelease({ formState, setFormState, handleC
           }
         }
         for (const nid in option) {
-          return <option value={option.uuidDeployment}>{option.title}</option>;
+          return <option key={"select-pr-" + option.uuidDeployment} value={option.uuidDeployment}>{option.title}</option>;
         }
       });
     }

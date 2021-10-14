@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 export default function SelectRelease({ formState, handleChange, newReleases, isLoading, setIsLoading, disabled, setDisabled}) {
-  const [releaseOptions, setReleaseOptions] = useState([<option value="0">&lt;Release&gt;</option>]);
+  const [releaseOptions, setReleaseOptions] = useState([<option key="select-release-0" value="0">&lt;Release&gt;</option>]);
 
   // Befüllt Release Releaseoptionen basierend auf newReleases (prop).
   useEffect(() => {
     //Release Drop Down
     // setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
-    let defaultRelease = [<option value="0">&lt;Release&gt;</option>];
+    let defaultRelease = [<option key="select-release-0" value="0">&lt;Release&gt;</option>];
     let optionsReleases = [];
     // Dropdown deaktivieren, bevor die Optionen gefüllt sind..
     if (typeof newReleases !== 'object') {
@@ -19,7 +19,7 @@ export default function SelectRelease({ formState, handleChange, newReleases, is
     if (newReleases.length > 0) {
       optionsReleases = newReleases.map(option => {
         for (const nid in option) {
-          return <option value={option.nid}>{option.title}</option>;
+          return <option key={"select-release-" + option.nid} value={option.nid}>{option.title}</option>;
         }
       });
     }

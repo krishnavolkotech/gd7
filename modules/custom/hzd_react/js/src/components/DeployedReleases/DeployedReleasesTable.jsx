@@ -118,7 +118,7 @@ export default function DeployedReleasesTable(props) {
   const items = [];
   for (let number = 1; number <= pageCount; number++) {
     items.push(
-      <Pagination.Item active={number === props.page} onClick={() => props.setPage(number)}>{number}</Pagination.Item>
+      <Pagination.Item key={"pager-" + number} active={number === props.page} onClick={() => props.setPage(number)}>{number}</Pagination.Item>
     );
   }
   return(
@@ -133,9 +133,9 @@ export default function DeployedReleasesTable(props) {
           }
           return (
             <DeployedReleasesTableRow
+              key={"row-" + deployment.nid}
               deployment={deployment}
               handleAction={props.handleAction}
-              key={deployment.id}
               highlight={highlight}
               handleArchive={props.handleArchive}
               handleEdit={props.handleEdit}
