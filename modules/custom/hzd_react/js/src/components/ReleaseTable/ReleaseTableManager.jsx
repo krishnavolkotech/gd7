@@ -1,7 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import ReleaseFilter from './ReleaseFilter';
 import ReleaseTable from './ReleaseTable';
-import { Nav, NavItem } from 'react-bootstrap';
 
 export default function ReleaseTableManager() {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
@@ -36,9 +35,7 @@ export default function ReleaseTableManager() {
 
   const [page, setPage] = useState(1);
 
-  console.log(loadingReleases);
   useEffect(() => {
-    console.log(filterState);
     setLoadingReleases(true);
     setReleases([]);
     fetchReleases();
@@ -140,27 +137,8 @@ export default function ReleaseTableManager() {
     setFilterState(initialFilterState);
   }
 
-  const handleNav = (k) => {
-    setFilterState(prev => ({ ...prev, "status": k }));
-  }
-
-  console.log(releases);
   return (
     <div>
-      <Nav bsStyle="tabs" activeKey={filterState.status} onSelect={handleNav}>
-        <NavItem eventKey="1">
-          Bereitgestellt
-        </NavItem>
-        <NavItem eventKey="2">
-          In Bearbeitung
-        </NavItem>
-        <NavItem eventKey="3">
-          Gesperrt
-        </NavItem>
-        <NavItem eventKey="5">
-          Archiviert
-        </NavItem>
-      </Nav>
       <ReleaseFilter
         filterState={filterState}
         setFilterState={setFilterState}
@@ -175,5 +153,5 @@ export default function ReleaseTableManager() {
         setPage={setPage}
       />
     </div>
-  )
+  );
 }
