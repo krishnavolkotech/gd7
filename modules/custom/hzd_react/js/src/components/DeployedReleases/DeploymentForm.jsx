@@ -190,7 +190,7 @@ export default function DeploymentForm(props) {
       if (typeof prev.archive !== "boolean") {
         prevArchiveFailed = true;
       }
-      if (prev.uuid.length <= 1) {
+      if (prev.release.length <= 1) {
         addPrevDisable = true;
         prevSelectFailed = true;
       }
@@ -198,7 +198,7 @@ export default function DeploymentForm(props) {
     // Disables the add prev-release button, as long as no prev release has been selected.
     setAddPrevReleaseDisabled(addPrevDisable);
     // Disables submit, if archive radio has not been selected.
-    if (prevArchiveFailed) {
+    if (prevArchiveFailed && props.formState.action != "edit") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p key="val-archive"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
     }
@@ -235,7 +235,6 @@ export default function DeploymentForm(props) {
     // Reset abnormality description, if abnormality checkbox is unchecked.
     if (!props.formState.abnormalities) {
       props.setFormState(prev => ({ ...prev, "description": "" }));
-
     }
 
     // Validate format of field installation time.
@@ -298,11 +297,12 @@ export default function DeploymentForm(props) {
     let val = {};
     val.previousReleases = props.formState.previousReleases;
     val.pCount = props.formState.pCount + 1;
-    console.log(val.pCount);
     val.previousReleases.push({
-      "uuid": "",
+      "uuidRelease": "",
+      "uuidDeployment": "",
       "archive": "",
       "title": "",
+      "release": "",
     })
     props.setFormState(prev =>({ ...prev, ...val}));
   }
@@ -411,92 +411,109 @@ export default function DeploymentForm(props) {
               </div>
             }
           {!props.isLoading &&
-          <div className="panel panel-default">
-            <div className="panel-body">
-              {/* <Well bsSize="small">
-              {props.loadingMessage}
-              </Well> */}
-              <SelectRelease
-                formState={props.formState}
-                handleChange={handleChange}
-                newReleases={props.newReleases}
-                isLoading={props.isLoading}
-                setIsLoading={props.setIsLoading}
-                disabled={props.disabled}
-                setDisabled={props.setDisabled}
-              />
-              <Table>
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
-                    <th>
-                      {props.formState.action != 'edit' &&
-                      <ControlLabel bsClass="control-label js-form-required form-required">Vorgängerrelease archivieren?</ControlLabel>
-                      }
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {props.formState.previousReleases.map((r, i) => {
-                    return (
-                      <tr key={"pr-row-" + props.formState.previousReleases[i].uuid}>
-                        <td>
-                        {
-                          i > 0 &&
-                          <Button bsStyle="danger" onClick={() => removePrevReleaseSelector(i)}><span className="glyphicon glyphicon-trash" /></Button>
-                        }
-                        </td>
-                        <td>
-                          <SelectPreviousRelease
-                            formState={props.formState}
-                            setFormState={props.setFormState}
-                            handleChange={handleChange}
-                            prevReleases={props.prevReleases}
-                            isLoading={props.isLoading}
-                            setIsLoading={props.setIsLoading}
-                            disabled={disabledPrevRelease}
-                            index={i}
-                          />
-                        </td>
-                        <td>
+          <div>
+            <div className="panel panel-default">
+              <div className="panel-body">
+                {/* <Well bsSize="small">
+                {props.loadingMessage}
+                </Well> */}
+                <SelectRelease
+                  formState={props.formState}
+                  handleChange={handleChange}
+                  newReleases={props.newReleases}
+                  isLoading={props.isLoading}
+                  setIsLoading={props.setIsLoading}
+                  disabled={props.disabled}
+                  setDisabled={props.setDisabled}
+                />
+                <Table>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
+                      <th>
                         {props.formState.action != 'edit' &&
-                          <Form inline>
-                            <FormGroup onChange={handleRadio} controlId="5">
-                              <Radio
-                                name={i}
-                                value="ja"
-                                checked={props.formState.previousReleases[i].archive === true}
-                                readOnly
-                              >
-                                &nbsp;Ja
-                              </Radio>
-                              &nbsp;&nbsp;
-                              <Radio
-                                name={i}
-                                value="nein"
-                                checked={props.formState.previousReleases[i].archive === false}
-                                readOnly
-                              >
-                                &nbsp;Nein
-                              </Radio>
-                            </FormGroup>
-                          </Form>
+                        <ControlLabel bsClass="control-label js-form-required form-required">Vorgängerrelease archivieren?</ControlLabel>
                         }
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  <tr>
-                    <td colSpan="2">
-                      <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
-                        <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success"><span className="glyphicon glyphicon-plus" /></Button>
-                      </OverlayTrigger>
-                    </td>
-                  </tr>
-                </tbody>
-              </Table>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {props.formState.previousReleases.map((r, i) => {
+                      return (
+                        <tr key={"pr-row-" + i}>
+                          <td>
+                          {
+                            i > 0 &&
+                            <Button bsStyle="danger" onClick={() => removePrevReleaseSelector(i)}><span className="glyphicon glyphicon-trash" /></Button>
+                          }
+                          </td>
+                          <td>
+                            <SelectPreviousRelease
+                              formState={props.formState}
+                              setFormState={props.setFormState}
+                              handleChange={handleChange}
+                              prevReleases={props.prevReleases}
+                              isLoading={props.isLoading}
+                              setIsLoading={props.setIsLoading}
+                              disabled={disabledPrevRelease}
+                              index={i}
+                            />
+                          </td>
+                          <td>
+                          {props.formState.action != 'edit' &&
+                            <Form inline>
+                              <FormGroup onChange={handleRadio} controlId="5">
+                                <Radio
+                                  name={i}
+                                  value="ja"
+                                  checked={props.formState.previousReleases[i].archive === true}
+                                >
+                                  &nbsp;Ja
+                                </Radio>
+                                &nbsp;&nbsp;
+                                <Radio
+                                  name={i}
+                                  value="nein"
+                                  checked={props.formState.previousReleases[i].archive === false}
+                                >
+                                  &nbsp;Nein
+                                </Radio>
+                              </FormGroup>
+                            </Form>
+                          }
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    <tr>
+                      <td colSpan="3">
+                        <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
+                          <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success"><span className="glyphicon glyphicon-plus" /></Button>
+                        </OverlayTrigger>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
             </div>
+            {props.formState.action == "edit" &&
+              <FormGroup controlId="6">
+                <ControlLabel bsClass="control-label js-form-required form-required">Status</ControlLabel>
+                <div className="select-wrapper">
+                  <FormControl
+                    componentClass="select"
+                    name="status"
+                    value={props.formState.status}
+                    onChange={handleChange}
+                  >
+                    <option key="status-1" value="1">Im Einsatz</option>
+                    <option key="status-2" value="2">Archiviert</option>
+                    <option key="status-3" value="3">Fehlmeldung</option>
+                  </FormControl>
+                </div>
+              </FormGroup>
+            }
           </div>
           }
           {props.isLoading === true &&

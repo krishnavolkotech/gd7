@@ -21,14 +21,14 @@ export default function FailedDeploymentForm(props) {
     const body = {
       "data": {
         "type": "node--deployed_releases",
-        "id": props.prevDeploymentData.uuid,
+        "id": props.prevDeploymentData.uuidDeployment,
         "attributes": {
           "field_deployment_status": "3"
         }
       }
     }
     const csrfUrl = `/session/token?_format=json`;
-    const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentData.uuid;
+    const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentData.uuidDeployment;
     const fetchOptions = {
       "method": 'PATCH',
       "headers": new Headers({

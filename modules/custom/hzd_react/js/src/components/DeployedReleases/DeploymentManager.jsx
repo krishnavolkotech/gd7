@@ -300,7 +300,7 @@ export default function DeploymentManager() {
         releaseData[mixedService] = {};
         results.map((result) => {
           let release = {
-            "uuid": result.uuid,
+            "uuidRelease": result.uuid,
             "nid": result.nid,
             "title": result.title,
             "service": result.service,

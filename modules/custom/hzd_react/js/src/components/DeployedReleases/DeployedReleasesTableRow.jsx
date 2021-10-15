@@ -14,8 +14,8 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
   const release = deployment.releaseNid;
   const releaseName = deployment.release;
   const product = releaseName.split("_")[0] + "_";
-  const uuid = deployment.uuid;
-  const nid= deployment.nid;
+  const uuidDeployment = deployment.uuid;
+  const nid = deployment.nid;
 
   const ttReportSuccessor = (
     <Tooltip id="ttReportSuccessor">
@@ -67,7 +67,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
-            <Button bsStyle="success" onClick={(e) => handleAction(e, "successor", {state, environment, service, release, product, uuid, releaseName})}><span className="glyphicon glyphicon-forward" /></Button>
+            <Button bsStyle="success" onClick={(e) => handleAction(e, "successor", { state, environment, service, release, product, releaseName })}><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -75,7 +75,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttArchive}>
-            <Button bsStyle="info" onClick={(e) => handleAction(e, "archive", {nid, uuid, releaseName})}><span className="glyphicon glyphicon-folder-close" /></Button>
+            <Button bsStyle="info" onClick={(e) => handleAction(e, "archive", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-folder-close" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -84,7 +84,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         <span>
           <OverlayTrigger placement="top" overlay={ttEdit}>
             {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/r/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
-            <Button bsStyle="primary" onClick={(e) => handleAction(e, "edit", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
+            <Button bsStyle="primary" onClick={(e) => handleAction(e, "edit", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -92,7 +92,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { global.drupalSettings.role !== "ZRML" && status =="1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttFail}>
-            <Button bsStyle="danger" onClick={(e) => handleAction(e, "failed", { nid, uuid, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
+            <Button bsStyle="danger" onClick={(e) => handleAction(e, "failed", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>

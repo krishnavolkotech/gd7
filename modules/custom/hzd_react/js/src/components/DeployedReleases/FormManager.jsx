@@ -36,7 +36,8 @@ export default function FormManager(props) {
    * @property {string} prevReleases[].nid - Die Release NID.
    * @property {string} prevReleases[].service - Die NID des Verfahrens.
    * @property {string} prevReleases[].title - Der Titel des Releases.
-   * @property {string} prevReleases[].uuid - Die UUID des Releases.
+   * @property {string} prevReleases[].uuidRelease - Die UUID des Releases.
+   * @property {string} prevReleases[].uuidDeployment - Die UUID der Einsatzmeldung.
    */
   const [prevReleases, setPrevReleases] = useState([]);
 
@@ -71,6 +72,7 @@ export default function FormManager(props) {
 
   const initialFormState = {
     "uuid": "",
+    "status": "1",
     "state": props.state,
     "environment": "0",
     "service": "0",
@@ -94,6 +96,7 @@ export default function FormManager(props) {
    * The form state object.
    * @property {Object} formState - The form state object.
    * @property {string} formState.uuid - The uuid of the deployment (if editing existing deployment).
+   * @property {string} formState.status - The deployment status number (1, 2, 3).
    * @property {string} formState.state - The state of the deployment.
    * @property {string} formState.environment - The environment of the deployment.
    * @property {string} formState.service - The service of the deployment.
@@ -111,9 +114,11 @@ export default function FormManager(props) {
    * @property {bool}   formState.action - First deployment of this product?
    * @property {number}   formState.pCount - Deep Scan workaround for previousReleases (detects changes).
    * @property {array}   formState.previousReleases - Array of selected previous releases.
-   * @property {string}   formState.previousReleases[].uuid - Uuid of previous release.
+   * @property {string}   formState.previousReleases[].uuidRelease - Uuid of previous release.
+   * @property {string}   formState.previousReleases[].uuidDeployment - Uuid of previous release deployment.
    * @property {bool}   formState.previousReleases[].archive - Bool indicating, if prev release should be archived.
    * @property {string}   formState.previousReleases[].title - The release name.
+   * @property {string}   formState.previousReleases[].release - The release nid.
    */
   const [formState, setFormState] = useState(initialFormState);
   // Trigger 1/3 release-selector filtering.
@@ -147,9 +152,11 @@ export default function FormManager(props) {
         "service": props.triggerAction.args.service,
         "previousReleases": [
           {
-            "uuid": props.triggerAction.args.uuid,
+            "uuidRelease": "",
+            "uuidDeployment": "",
             "archive": "",
             "title": props.triggerAction.args.releaseName,
+            "release": props.triggerAction.args.release,
           },
         ],
         "product": props.triggerAction.args.product,
@@ -174,11 +181,11 @@ export default function FormManager(props) {
     if (props.triggerAction.action == "edit") {
       setFormState(prev => ({
         ...prev,
-        "uuid": props.triggerAction.uuid,
+        "uuidDeployment": props.triggerAction.uuidDeployment,
         "action": props.triggerAction.action,
       }));
       setShowDeploymentForm(true);
-      fetchDeployment(props.triggerAction.args.uuid);
+      fetchDeployment(props.triggerAction.args.uuidDeployment);
       setSubmitMessage([<FormSkeleton />]);
       // setSubmitMessage(<li>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></li>);
     }
@@ -187,7 +194,7 @@ export default function FormManager(props) {
   const fetchDeployment = (uuid) => {
     const url = '/jsonapi/node/deployed_releases/'
       + uuid
-      +'?include=field_deployed_release,field_prev_release,field_service&fields[node--release]=drupal_internal__nid&fields[node--services]=drupal_internal__nid';
+      +'?include=field_deployed_release,field_prev_release,field_service&fields[node--release]=id,drupal_internal__nid,title&fields[node--services]=drupal_internal__nid';
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
@@ -195,18 +202,29 @@ export default function FormManager(props) {
       .then(response => response.json())
       .then(results => {
         setSubmitMessage([]);
+        // Service.
         const service = results.included.find(element => {
           return element.id == results.data.relationships.field_service.data.id;
         });
+        // Release.
         const release = results.included.find(element => {
           return element.id == results.data.relationships.field_deployed_release.data.id;
         });
-        let prevReleaseNid = "0";
+        // Previous Releases.
+        let previousReleases = [];
         if (results.data.relationships.field_prev_release.data.length > 0) {
-          const prevRelease = results.included.find(element => {
+          const includedPrevReleases = results.included.filter(element => {
             return element.id == results.data.relationships.field_prev_release.data[0].id;
           });
-          prevReleaseNid = prevRelease.attributes.drupal_internal__nid;
+          for (const val of includedPrevReleases) {
+            previousReleases.push({
+              "uuidRelease": "",
+              "uuidDeployment": "",
+              "title": val.attributes.title,
+              "archive": "",
+              "release": val.attributes.drupal_internal__nid,
+            });
+          }
         }
 
         const abnormalityDescription = results.data.attributes.field_abnormality_description ? results.data.attributes.field_abnormality_description.value : "";
@@ -216,6 +234,7 @@ export default function FormManager(props) {
         setFormState(prev => ({
           ...prev,
           "uuid": results.data.id,
+          "status": results.data.attributes.field_deployment_status,
           "state": results.data.attributes.field_state_list,
           "environment": results.data.attributes.field_environment,
           "service": service.attributes.drupal_internal__nid,
@@ -225,7 +244,7 @@ export default function FormManager(props) {
           "abnormalities": results.data.attributes.field_abnormalities_bool,
           "description": abnormalityDescription,
           "releaseNid": release.attributes.drupal_internal__nid,
-          "previousRelease": prevReleaseNid,
+          "previousReleases": previousReleases,
           "archivePrevRelease": "",
           "archiveThis": false,
           "firstDeployment": results.data.attributes.field_first_deployment,
@@ -320,6 +339,9 @@ export default function FormManager(props) {
     // Releases filtern: Eingesetzt (Vorgängerreleases).
     let filteredPrevReleases = { ...releaseArray };
     // Filter nur anwenden, wenn uuid leer ist. Dann ist es eine neue Einsatzmeldung.
+    if (formState.service === "27111") {
+      let test = props.releases[formState.service]["73354"];
+    }
     if (formState.uuid === "") {
       for (const nid in releaseArray) {
         if (nid in releasesWithDeployments) {
@@ -474,7 +496,7 @@ export default function FormManager(props) {
       setSubmitMessage([<li>Die Einsatzmeldung konnte nicht erstellt werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>]);
       return;
     }
-    const uuidRelease = currentRelease.uuid;
+    const uuidRelease = currentRelease.uuidRelease;
     const releaseName = currentRelease.title;
     setSubmitMessage([<p>Einsatzmeldung für {releaseName} wird gespeichert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>]);
     // const product = releaseName.substring(0, releaseName.indexOf('_'));
@@ -488,12 +510,12 @@ export default function FormManager(props) {
 
     const installationTime = calculateInstallationTime(formState.installationTime);
 
-    var postdata = {
+    var postData = {
       "data": {
         "type": "node--deployed_releases",
         "attributes": {
           "title": deploymentTitle,
-          "field_deployment_status": '1',
+          "field_deployment_status": formState.status,
           "field_first_deployment": formState.firstDeployment,
           "field_abnormalities_bool": formState.abnormalities,
           "field_automated_deployment_bool": formState.isAutomated,
@@ -525,27 +547,21 @@ export default function FormManager(props) {
 
     // in case a previous release has been selected in the deployed_releases_form,
     // var data should be completed with relationsship field_prev_release
-    if (formState.previousRelease != "0") {
+    // @todo umbauen auf previousReleases Array.
+    if (formState.previousReleases.length > 0) {
       // UUID des Vorgängerrelease.
-      let pRelease = false;
-      if (formState.previousRelease in allReleases[formState.service]) {
-        pRelease = allReleases[formState.service][formState.previousRelease];
-      }
-
-      if (!pRelease) {
-        props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
-        setSubmitMessage([<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die UUID eines Vorgängerreleases nicht ermittelt werden konnte.</li>]);
-        return;
-      }
-      const uuidPrevRelease = pRelease.uuid;
-      setPrevDeploymentData(prev => ({ ...prev, "uuid": uuidPrevRelease }));
-      let field_prev_release = {
-        "data": {
+      const field_prev_release = formState.previousReleases.map(pr => {
+        if (pr.uuidRelease.length <= 1) {
+          props.setError(<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die zugehörige UUID nicht ermittelt werden konnte.</li>);
+          setSubmitMessage([<li>Die Einsatzmeldung konnte nicht gespeichert werden, weil die UUID eines Vorgängerreleases nicht ermittelt werden konnte.</li>]);
+          return;
+        }
+        return {
           "type": "node--release",
-          "id": uuidPrevRelease,
-        },
-      }
-      postdata["data"]["relationships"] = { ...postdata["data"]["relationships"], field_prev_release };
+          "id": pr.uuidRelease,
+        };
+      });
+      postData["data"]["relationships"] = { ...postData["data"]["relationships"], "field_prev_release": { "data": field_prev_release} };
     }
     
     let fetchUrl = "/jsonapi/node/deployed_releases";
@@ -554,7 +570,7 @@ export default function FormManager(props) {
     if (formState.action == "edit") {
       method = "PATCH";
       fetchUrl += '/' + formState.uuid;
-      postdata["data"]["id"] = formState.uuid;
+      postData["data"]["id"] = formState.uuid;
     }
 
     const csrfUrl = `/session/token?_format=json`;
@@ -565,7 +581,7 @@ export default function FormManager(props) {
         'Content-Type': 'application/vnd.api+json',
         'Cache': 'no-cache',
       }),
-      "body": JSON.stringify(postdata),
+      "body": JSON.stringify(postData),
     }
 
     fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
@@ -579,8 +595,6 @@ export default function FormManager(props) {
         else {
           props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
           setSubmitMessage([<li>Einsatzmeldung gespeichert. <span className="glyphicon glyphicon-ok-circle" role="status" /></li>]);
-          // Is the previous deployment supposed to be archived?
-          // @todo Anpassen für archivierung mehrerer Vorgängerreleases.
           if (formState.action == "successor") {
             patchDeployment();
           }
@@ -601,13 +615,6 @@ export default function FormManager(props) {
 
   // PATCH: Vorgängerrelease archivieren.
   const patchDeployment = () => {
-    const allReleases = props.releases;
-    let currentRelease = false;
-    if (formState.releaseNid in allReleases[formState.service]) {
-      currentRelease = allReleases[formState.service][formState.releaseNid];
-    }
-    const uuidRelease = currentRelease.uuid;
-
     let csrfUrl = `/session/token?_format=json`;
     let fetchUrl = '';
     let fetchOptions = {};
@@ -615,22 +622,22 @@ export default function FormManager(props) {
       let archiveBody = {
         "data": {
           "type": "node--deployed_releases",
-          "id": p.uuid,
-          "attributes": {
-            "field_deployment_status": p.archive ? "2" : "1",
-          },
+          "id": p.uuidDeployment,
           "relationships": {
             "field_successor_release": {
               "data": {
                 "type": "node--release",
-                "id": uuidRelease,
+                "id": p.uuidRelease,
               }
             }
           }
         }
       }
-  
-      fetchUrl = '/jsonapi/node/deployed_releases/' + p.uuid;
+      if (p.archive) {
+        const attributes = {"attributes": {"field_deployment_status": "2"}};
+        archiveBody["data"] = { ...archiveBody["data"], ...attributes };
+      }
+      fetchUrl = '/jsonapi/node/deployed_releases/' + p.uuidDeployment;
       fetchOptions = {
         method: 'PATCH',
         headers: new Headers({
@@ -641,7 +648,7 @@ export default function FormManager(props) {
         body: JSON.stringify(archiveBody),
       }
       // @todo abbauen.
-      // setPrevDeploymentData(false);
+      setPrevDeploymentData(false);
       setSubmitMessage(prev => {
         let messages = prev;
         messages[index] = <p>{p.title} wird aktualisiert ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>;
@@ -657,7 +664,6 @@ export default function FormManager(props) {
               messages[index] = <p>{p.title} konnte nicht aktualisiert werden. <span className="glyphicon glyphicon-exclamation-sign" role="status" /></p>;
               return messages;
             });
-            // setSubmitMessage(<li>Das Vorgängerrelease konnte nicht archiviert werden.</li>);
             props.setError(<li>Fehler beim Aktualisieren des Vorgängerrelease.</li>);
           }
           else {
@@ -667,8 +673,6 @@ export default function FormManager(props) {
               messages[index] = <p>{p.title} wurde aktualisiert. <span className="glyphicon glyphicon-ok-circle" role="status" /></p>;
               return messages;
             });
-            // setSubmitMessage(<li>Einsatzmeldung gespeichert.</li>);
-            // handleClose();
           }
         })
         .catch(error => {
