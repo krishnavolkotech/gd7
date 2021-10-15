@@ -27,9 +27,11 @@ class AlteredNodeForm extends NodeForm {
       $messages = \Drupal::messenger()->all();
       $nodeTitle = $node->tolink($node->label())->toString();
       if ($node->get('status')->value == 1) {
+                \Drupal::messenger()->deleteAll();	
         \Drupal::messenger()->addMessage(t('@type @title has been published.', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       }
       elseif($node->custom_isnew == 1) {
+          \Drupal::messenger()->deleteAll();
           \Drupal::messenger()->addMessage(t('@type @title has been saved', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       } else {
         \Drupal::messenger()->addMessage(t('@type @title has been updated', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
