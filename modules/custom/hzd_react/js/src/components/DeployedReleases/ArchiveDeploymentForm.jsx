@@ -76,7 +76,7 @@ export default function ArchiveDeploymentForm(props) {
           }
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="danger" onClick={handleHide}>Schließen</Button>
+          <Button bsStyle="danger" onClick={handleHide}><span className="glyphicon glyphicon-remove" /> Schließen</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -94,8 +94,8 @@ export default function ArchiveDeploymentForm(props) {
           <p>Die Aktion kann nicht rückgängig gemacht werden.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="primary" onClick={handleSave} >Archivieren</Button>
-          <Button bsStyle="danger" onClick={handleHide}>Abbrechen</Button>
+          <Button bsStyle="primary" onClick={handleSave}><span className="glyphicon glyphicon-ok" /> Archivieren</Button>
+          <Button bsStyle="danger" onClick={handleHide}><span className="glyphicon glyphicon-remove" /> Abbrechen</Button>
         </Modal.Footer>
       </Modal>
     </div>  )

@@ -62,7 +62,7 @@ export default function NodeView({ nid, setViewNode}) {
           {body}
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="primary" onClick={() => setViewNode(false)}>Schließen</Button>
+          <Button bsStyle="danger" onClick={() => setViewNode(false)}><span className="glyphicon glyphicon-remove" /> Schließen</Button>
         </Modal.Footer>
       </Modal>
     </div>

@@ -41,6 +41,12 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
     </Tooltip>
   );
 
+  const ttView = (
+    <Tooltip id="ttView">
+      Einsatzmeldung ansehen.
+    </Tooltip>
+  );
+
   // Apply row highlighting class.
   // "info": deployment.changed younger than 10 hours.
   // "success": Deployment has been updated in the current session.
@@ -98,7 +104,9 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         </span>
         }
         {/* <Button bsStyle="link" href={"/node/" + nid}><span className="glyphicon glyphicon-eye-open" /></Button> */}
-        <Button bsStyle="link" onClick={() => handleView(nid)}><span className="glyphicon glyphicon-eye-open" /></Button>
+          <OverlayTrigger placement="top" overlay={ttView}>
+            <Button bsStyle="primary" onClick={() => handleView(nid)}><span className="glyphicon glyphicon-eye-open" /></Button>
+          </OverlayTrigger>
       </td>
     </tr>
   );

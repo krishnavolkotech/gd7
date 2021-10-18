@@ -75,7 +75,7 @@ export default function FailedDeploymentForm(props) {
           }
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="danger" onClick={handleHide}>Schließen</Button>
+          <Button bsStyle="danger" onClick={handleHide}><span className="glyphicon glyphicon-remove" /> Schließen</Button>
         </Modal.Footer>
       </Modal>
     );
@@ -92,8 +92,8 @@ export default function FailedDeploymentForm(props) {
           <p>Die Änderung kann nicht rückgängig gemacht werden.</p>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="primary" onClick={handleSave} >Speichern</Button>
-          <Button bsStyle="danger" onClick={handleHide}>Abbrechen</Button>
+          <Button bsStyle="primary" onClick={handleSave} ><span className="glyphicon glyphicon-ok" /> Speichern</Button>
+          <Button bsStyle="danger" onClick={handleHide}><span className="glyphicon glyphicon-remove" /> Abbrechen</Button>
         </Modal.Footer>
       </Modal>
     </div>  )

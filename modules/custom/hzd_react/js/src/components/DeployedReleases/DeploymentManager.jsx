@@ -72,8 +72,11 @@ export default function DeploymentManager() {
   // Pagination.
   const [page, setPage] = useState(1);
 
+  let initialState = query.has("state") ? query.get("state") : global.drupalSettings.userstate;
+  initialState = global.drupalSettings.role === "ZRML" ? global.drupalSettings.userstate : initialState;
+
   const initialFilterState = {
-    "state": query.has("state") ? query.get("state") : global.drupalSettings.userstate,
+    "state": initialState,
     "environment": query.has("environment") ? query.get("environment") : "0",
     "service": query.has("service") ? query.get("service") : "0",
     "product": query.has("product") ? query.get("product") : "",
@@ -104,7 +107,6 @@ export default function DeploymentManager() {
 
   const [prevName, setPrevName] = useState("");
 
-
   // Für Formular zum Bearbeiten der Einsatzmeldung.
   const [deploymentUuid, setDeploymentUuid] = useState(false);
 
@@ -132,6 +134,7 @@ export default function DeploymentManager() {
    * Implements hook useEffect().
    */
   useEffect(() => {
+    // Change URL path based on status.
     let pathname;
     switch (filterState.status) {
       case "1":
@@ -144,7 +147,8 @@ export default function DeploymentManager() {
         pathname = '/zrml/r/einsatzmeldungen/eingesetzt';
         break;
     }
-    // Change URL Params
+    
+    // Change URL Params.
     const params = new URLSearchParams();
     if (filterState.state !== "1" && filterState.state) {
       params.append("state", filterState.state);
@@ -236,6 +240,7 @@ export default function DeploymentManager() {
       url += '&items_per_page=All';
     }
 
+    // Apply product filtering, if not on page "deployed".
     if (filterState.status !== "1") {
       url += '&page=' + (page - 1);
       url += '&releaseTitle=' + filterState.product;

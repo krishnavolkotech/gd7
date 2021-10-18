@@ -29,6 +29,8 @@ export default function DeployedReleasesFilter(props) {
   ];
   const [environmentOptions, setEnvironmentOptions] = useState(defaultEnvironments);
 
+  const disabledState = global.drupalSettings.role === "ZRML" ? true : false;
+
   useEffect(() => {
     let url = '/jsonapi/node/non_production_environment';
     url += '?fields[node--non_production_environment]=drupal_internal__nid,field_non_production_state,title';
@@ -214,6 +216,7 @@ export default function DeployedReleasesFilter(props) {
                 componentClass="select"
                 onChange={handleFilterSelect}
                 value={props.filterState.state}
+                disabled={disabledState}
               >
                 {optionsStates}
               </FormControl>
