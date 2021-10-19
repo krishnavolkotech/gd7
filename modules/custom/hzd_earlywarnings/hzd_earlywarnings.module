@@ -13,6 +13,9 @@ function getErlywarningServies() {
   $node = \Drupal::routeMatch()->getParameter('node');
   $nid = NULL;
   if ($node) {
+    if (!is_object($node)) {
+      $node = \Drupal::entityTypeManager()->getStorage('node')->load($node);
+    }
     $nid = $node->id();
   }
   $query = \Drupal::database()->select('node_field_data', 'nfd');

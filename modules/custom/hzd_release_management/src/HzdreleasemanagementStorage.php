@@ -1495,7 +1495,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
        }
       $depolyed_link = '';
       if ($type == 'progress' || $type == 'released') {
-        $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($releases);
+        // $has_depoyment_info = HzdreleasemanagementStorage::has_deployed_info($releases);
+        $has_depoyment_info = false;
         if ($has_depoyment_info) {
           $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/e-icon.png';
           $deployed_img = "<img title='Einsatzinformationen anzeigen' class = 'e-info-icon' src = '/" . $deployed_imgpath . "'>";
