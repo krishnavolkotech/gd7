@@ -25,9 +25,9 @@ function hzd_react_theme() {
   ];
 }
 
-function hzd_react_page_attachments(array &$page) { 
-  $page['#attached']['library'][] = 'hzd_react/react_app_dev';
-}
+// function hzd_react_page_attachments(array &$page) { 
+//   $page['#attached']['library'][] = 'hzd_react/react_app_dev';
+// }
 
 /**
  * Implements hook_ENTITY_TYPE_presave.

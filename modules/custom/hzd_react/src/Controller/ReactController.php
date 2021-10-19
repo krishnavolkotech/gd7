@@ -78,7 +78,8 @@ class ReactController extends ControllerBase {
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
-      '#attached' => ['library' => 'hzd_react/react_app_dev'],
+      // '#attached' => ['library' => 'hzd_react/react_app_dev'],
+      '#attached' => ['library' => 'hzd_react/react_app'],
     ];
 
     // In Zukunft noch um Geschäftsservice und Sonstiges Projekt ergänzen.
@@ -263,7 +264,8 @@ class ReactController extends ControllerBase {
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
       '#attached' => [
-        'library' => 'hzd_react/react_app_dev',
+        // 'library' => 'hzd_react/react_app_dev',
+        'library' => 'hzd_react/react_app',
         'drupalSettings' => [
           'environments' => $environments,
           'states' => $finalStates,
