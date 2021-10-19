@@ -8,7 +8,9 @@ dependencies:
     - field.field.node.release_comments.body
     - field.field.node.release_comments.comment_no_subject
     - field.field.node.release_comments.field_earlywarning_release
+    - field.field.node.release_comments.field_release_ref
     - field.field.node.release_comments.field_release_service
+    - field.field.node.release_comments.field_service
     - node.type.release_comments
   module:
     - comment
@@ -61,4 +63,6 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_release_ref: true
+  field_service: true
   langcode: true

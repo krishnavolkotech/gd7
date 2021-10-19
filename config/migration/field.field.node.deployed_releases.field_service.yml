@@ -1,0 +1,29 @@
+uuid: d7606503-a259-4d66-b0a0-c29094a6eb19
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_service
+    - node.type.deployed_releases
+    - node.type.services
+id: node.deployed_releases.field_service
+field_name: field_service
+entity_type: node
+bundle: deployed_releases
+label: Verfahren
+description: ''
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      services: services
+    sort:
+      field: title
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

@@ -1,0 +1,28 @@
+uuid: e7a4b6e3-9dfd-4bb6-bb6b-1b24e21bfa67
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_successor_release
+    - node.type.deployed_releases
+    - node.type.release
+id: node.deployed_releases.field_successor_release
+field_name: field_successor_release
+entity_type: node
+bundle: deployed_releases
+label: Nachfolgerelease
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      release: release
+    sort:
+      field: _none
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

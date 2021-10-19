@@ -9,7 +9,7 @@ id: node.deployed_releases.field_installation_duration
 field_name: field_installation_duration
 entity_type: node
 bundle: deployed_releases
-label: Installationsdauer
+label: 'Installationsdauer (Veraltet)'
 description: ''
 required: false
 translatable: true

@@ -1,0 +1,23 @@
+uuid: a99e2194-ff10-404d-a551-0b967d9b4926
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_deployment_status
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_deployment_status
+field_name: field_deployment_status
+entity_type: node
+bundle: deployed_releases
+label: Status
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: '1'
+default_value_callback: ''
+settings: {  }
+field_type: list_string

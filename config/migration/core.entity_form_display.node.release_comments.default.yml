@@ -6,7 +6,9 @@ dependencies:
     - field.field.node.release_comments.body
     - field.field.node.release_comments.comment_no_subject
     - field.field.node.release_comments.field_earlywarning_release
+    - field.field.node.release_comments.field_release_ref
     - field.field.node.release_comments.field_release_service
+    - field.field.node.release_comments.field_service
     - node.type.release_comments
   module:
     - text
@@ -30,11 +32,31 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
+  field_release_ref:
+    weight: 26
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
   field_release_service:
     weight: 1
     settings: {  }
     third_party_settings: {  }
     type: options_select
+    region: content
+  field_service:
+    weight: 27
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
   status:
     type: boolean_checkbox

@@ -1,0 +1,29 @@
+uuid: b5939168-f7ab-43ef-86f2-6e617fe7017a
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_service
+    - node.type.early_warnings
+    - node.type.services
+id: node.early_warnings.field_service
+field_name: field_service
+entity_type: node
+bundle: early_warnings
+label: 'Verfahren Ref'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      services: services
+    sort:
+      field: field_eroffnet
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

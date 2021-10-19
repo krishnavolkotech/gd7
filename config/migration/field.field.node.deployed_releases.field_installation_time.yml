@@ -1,0 +1,23 @@
+uuid: c8540829-9ed6-4f7c-8659-929ef880fc4e
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_installation_time
+    - node.type.deployed_releases
+id: node.deployed_releases.field_installation_time
+field_name: field_installation_time
+entity_type: node
+bundle: deployed_releases
+label: 'Installationsdauer (Minuten)'
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 0
+  max: 59999
+  prefix: ''
+  suffix: Minuten
+field_type: integer
