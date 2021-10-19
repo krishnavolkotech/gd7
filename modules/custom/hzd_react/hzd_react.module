@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\group\Entity\GroupContent;
+
 /**
  * Implements hook_page_attachments_alter().
  */
@@ -48,15 +50,15 @@ function hzd_react_node_presave(Drupal\Core\Entity\EntityInterface $entity) {
  */
 function hzd_react_node_insert(Drupal\Core\Entity\EntityInterface $entity) {
   if ($entity->bundle() === "deployed_releases") {
-        // $group = Drupal\group\Entity\Group::load(5);
-        // $groupId = $group->id();
-        // //Adding node to group
-        // $groupContent = GroupContent::create([
-        //   'type' => $group->getGroupType()->getContentPlugin('group_node:deployed_releases')->getContentTypeConfigId(),
-        //   'gid' => $groupId,
-        //   'entity_id' => $entity->id(),
-        //   'request_status' => 1,
-        // ]);
-        // $groupContent->save();
+    // Load Group "Release Management (1)".
+    $group = Drupal\group\Entity\Group::load(1);
+    // Adding node to group.
+    $groupContent = GroupContent::create([
+      'type' => $group->getGroupType()->getContentPlugin('group_node:deployed_releases')->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id' => $entity->id(),
+      'request_status' => 1,
+    ]);
+    $groupContent->save();
   }
 }
