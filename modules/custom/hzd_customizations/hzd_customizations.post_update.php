@@ -159,6 +159,13 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
 
     $sandbox['progress']++;
     $sandbox['current_id'] = $result;
+
+    // Creates new revision.
+    $node->setNewRevision(TRUE);
+    $node->revision_log = 'Update der Einsatzmeldung.';
+    $node->setRevisionCreationTime(REQUEST_TIME);
+    $node->setRevisionUserId(1);
+
     $node->save();
   }
 
