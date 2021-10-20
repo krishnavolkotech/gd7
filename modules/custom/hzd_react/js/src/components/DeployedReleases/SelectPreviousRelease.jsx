@@ -68,10 +68,18 @@ export default function SelectPreviousRelease({ formState, setFormState, handleC
     });
     let val = {};
     val.previousReleases = formState.previousReleases;
-    val.previousReleases[index].uuidDeployment = release.uuidDeployment;
-    val.previousReleases[index].uuidRelease = release.uuidRelease;
-    val.previousReleases[index].title = label;
-    val.previousReleases[index].release = release.nid;
+    if (typeof release === "undefined") {
+      val.previousReleases[index].uuidDeployment = "";
+      val.previousReleases[index].uuidRelease = "";
+      val.previousReleases[index].title = "";
+      val.previousReleases[index].release = "0";
+    }
+    else {
+      val.previousReleases[index].uuidDeployment = release.uuidDeployment;
+      val.previousReleases[index].uuidRelease = release.uuidRelease;
+      val.previousReleases[index].title = label;
+      val.previousReleases[index].release = release.nid;
+    }
     val.pCount = formState.pCount + 1;
     setFormState(prev => ({ ...prev, ...val }));
   }

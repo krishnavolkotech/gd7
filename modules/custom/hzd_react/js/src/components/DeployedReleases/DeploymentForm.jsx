@@ -297,6 +297,7 @@ export default function DeploymentForm(props) {
     let val = {};
     val.previousReleases = props.formState.previousReleases;
     val.pCount = props.formState.pCount + 1;
+    val.firstDeployment = false;
     val.previousReleases.push({
       "uuidRelease": "",
       "uuidDeployment": "",
@@ -309,6 +310,9 @@ export default function DeploymentForm(props) {
 
   const removePrevReleaseSelector = (i) => {
     let val = {};
+    if (props.formState.previousReleases.length === 1) {
+      val.firstDeployment = true;
+    }
     val.previousReleases = props.formState.previousReleases;
     val.previousReleases.splice(i, 1);
     val.pCount = props.formState.pCount + 1;
@@ -432,7 +436,7 @@ export default function DeploymentForm(props) {
                       <th></th>
                       <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
                       <th>
-                        {props.formState.action != 'edit' &&
+                        {props.formState.action === 'successor' &&
                         <ControlLabel bsClass="control-label js-form-required form-required">Vorgängerrelease archivieren?</ControlLabel>
                         }
                       </th>
@@ -443,8 +447,7 @@ export default function DeploymentForm(props) {
                       return (
                         <tr key={"pr-row-" + i}>
                           <td>
-                          {
-                            i > 0 &&
+                          { r.release != "0" &&
                             <Button bsStyle="danger" onClick={() => removePrevReleaseSelector(i)}><span className="glyphicon glyphicon-trash" /></Button>
                           }
                           </td>
@@ -486,6 +489,27 @@ export default function DeploymentForm(props) {
                         </tr>
                       );
                     })}
+                    { props.formState.previousReleases.length === 0 &&
+                  <tr>
+                    <td></td>
+                    <td>
+                      <FormGroup controlId="4">
+                        <div className="select-wrapper">
+                          <FormControl
+                            componentClass="select"
+                            name="dummyPreviousRelease"
+                            value={0}
+                            disabled={true}
+                          >
+                            <option key="dummy-select-pr-1" value="0">Ersteinsatz</option>
+                          </FormControl>
+                        </div>
+                      </FormGroup>
+                    </td>
+                    <td></td>
+                  </tr>
+                    }
+                    { props.formState.action !== "first" &&
                     <tr>
                       <td colSpan="3">
                         <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
@@ -493,6 +517,7 @@ export default function DeploymentForm(props) {
                         </OverlayTrigger>
                       </td>
                     </tr>
+                    }
                   </tbody>
                 </Table>
               </div>

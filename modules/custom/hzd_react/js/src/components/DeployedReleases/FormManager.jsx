@@ -230,7 +230,7 @@ export default function FormManager(props) {
         const abnormalityDescription = results.data.attributes.field_abnormality_description ? results.data.attributes.field_abnormality_description.value : "";
 
         const installationTime = results.data.attributes.field_installation_time !== null ? results.data.attributes.field_installation_time : "";
-
+        const formattedInstallationTime = formatInstallationTime(installationTime);
         setFormState(prev => ({
           ...prev,
           "uuid": results.data.id,
@@ -239,7 +239,7 @@ export default function FormManager(props) {
           "environment": results.data.attributes.field_environment,
           "service": service.attributes.drupal_internal__nid,
           "date": results.data.attributes.field_date_deployed,
-          "installationTime": installationTime,
+          "installationTime": formattedInstallationTime,
           "isAutomated": results.data.attributes.field_automated_deployment_bool,
           "abnormalities": results.data.attributes.field_abnormalities_bool,
           "description": abnormalityDescription,
@@ -477,6 +477,18 @@ export default function FormManager(props) {
     const minutes = parseInt(pieces[1]);
     const time = hours * 60 + minutes;
     return time;
+  }
+
+  // Formats time in minutes for the deployment edit form.
+  const formatInstallationTime = (minutes) => {
+    const hours = Math.floor(minutes/60);
+    const minutesRest = minutes % 60;
+    if (minutesRest < 10) {
+      // Add "0" if minutes is single digit.
+      return hours + ':0' + minutesRest;
+    }
+
+    return hours + ':' + minutesRest;
   }
 
   const postDeployment = () => {
