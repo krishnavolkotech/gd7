@@ -35,6 +35,9 @@ function prk($data) {
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   if ($form_id == 'user_register_form' || $form_id == 'user_form') {
+    $url_impressum = Url::fromUserInput('/impressum');
+    $link_impressum = Link::fromTextAndUrl(t('Datenschutzerklärung'), $url_impressum)->toString();
+    $form['field_privacy_policy']['widget']['value']['#title'] = t("Ich stimme der $link_impressum zu.");
     	$val = [];
 	$user_states = hzd_states();
 	asort($user_states);
