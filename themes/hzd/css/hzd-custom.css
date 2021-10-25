@@ -1656,8 +1656,9 @@ span.field-content::first-letter {
 
 .current-folder {
   color: rgb(31, 31, 31);
+}
 
-  .cust-flex-center-items {
+.cust-flex-center-items {
   display: flex;
   align-items: center;
 }
@@ -1665,4 +1666,8 @@ span.field-content::first-letter {
 .right.group_name {
     width: 65%;
     margin-left: 2%;
+}
+
+.messages__wrapper p {
+    display: inline !important;
 }

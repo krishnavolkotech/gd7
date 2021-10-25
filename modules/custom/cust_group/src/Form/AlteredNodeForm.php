@@ -34,6 +34,7 @@ class AlteredNodeForm extends NodeForm {
           \Drupal::messenger()->deleteAll();
           \Drupal::messenger()->addMessage(t('@type @title has been saved', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       } else {
+        \Drupal::messenger()->deleteAll();
         \Drupal::messenger()->addMessage(t('@type @title has been updated', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       }
     }
