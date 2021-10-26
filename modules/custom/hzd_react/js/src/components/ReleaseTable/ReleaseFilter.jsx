@@ -34,25 +34,25 @@ export default function ReleaseFilter(props) {
   }
 
   const optionsTypes = [
-    <option value="459">KONSENS</option>,
-    <option value="460">Best/Fakt</option>,
+    <option key="type-459" value="459">KONSENS</option>,
+    <option key="type-460" value="460">Best/Fakt</option>,
   ];
 
   const optionsServices = [
-    <option value="0">&lt;Verfahren&gt;</option>,
+    <option key="service-0" value="0">&lt;Verfahren&gt;</option>,
   ];
   if (props.filterState.type in global.drupalSettings.services) {
     for (const key in global.drupalSettings.services[props.filterState.type]) {
-      optionsServices.push(<option value={key}>{global.drupalSettings.services[props.filterState.type][key]}</option>)
+      optionsServices.push(<option key={"service-" + key} value={key}>{global.drupalSettings.services[props.filterState.type][key]}</option>)
     }
   }
 
   useEffect(() => {
     let options = [
-      <option value="0">&lt;Release&gt;</option>,
+      <option key="release-0" value="0">&lt;Release&gt;</option>,
     ];
     for (let i = 0; i < props.filterReleases.length; i++) {
-      options.push(<option value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
+      options.push(<option key={"release-" + props.filterReleases[i].nid} value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
     }
     setReleaseOptions(options);
   }, [props.filterReleases])

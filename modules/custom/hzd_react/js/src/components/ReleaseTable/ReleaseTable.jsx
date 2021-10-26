@@ -34,7 +34,7 @@ export default function ReleaseTable(props) {
           { props.loadingReleases &&
           <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr>
           }
-          {props.releases.map(release => <ReleaseRow release={release} />)}
+          {props.releases.map(release => <ReleaseRow key={"row-" + release.attributes.drupal_internal__nid} release={release} />)}
         </tbody>
       </Table>
       <SimplePager

@@ -60,7 +60,7 @@ export default function ReleaseViewNavigator() {
   return (
     <div>
       <Nav bsStyle="tabs" activeKey={activeKey}>
-        <NavItem eventKey="1"  onSelect={handleNav}>
+        <NavItem eventKey="1" onSelect={handleNav}>
           Bereitgestellt
         </NavItem>
         <NavItem eventKey="2" onSelect={handleNav}>

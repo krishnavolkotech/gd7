@@ -35,12 +35,18 @@ export default function ReleaseTableManager() {
 
   const [page, setPage] = useState(1);
 
+  /**
+   * Fetches new releases if the filter or page is changed.
+   */
   useEffect(() => {
     setLoadingReleases(true);
     setReleases([]);
     fetchReleases();
   }, [filterState, page]);
 
+  /**
+   * Fetches the releases for the release filter, if a service is selected.
+   */
   useEffect(() => {
     setDisableReleaseFilter(true);
     if (filterState.service != "0") {
@@ -48,6 +54,9 @@ export default function ReleaseTableManager() {
     }
   }, [filterState.service])
 
+  /**
+   * Fetch the releases for the release table.
+   */
   function fetchReleases() {
     let url = '/jsonapi/node/release';
     url += '?sort=-field_date';
@@ -82,8 +91,6 @@ export default function ReleaseTableManager() {
 
     url += '&filter[field_release_type]=' + filterState.status;
 
-    console.log(url);
-
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
@@ -107,6 +114,9 @@ export default function ReleaseTableManager() {
       });
     }
 
+    /**
+     * Fetches the releases for the release filter.
+     */
   function fetchReleasesForFilter() {
     let url = "/api/v1/releases/" + filterState.service;
     const headers = new Headers({
@@ -121,6 +131,9 @@ export default function ReleaseTableManager() {
       .catch(error => console.log(error));
   }
 
+  /**
+   * Adds service information to the release object after fetching.
+   */
   function addRelationshipData(response) {
     return response.data.map(release => {
       // Add Service name.
@@ -133,6 +146,9 @@ export default function ReleaseTableManager() {
     })
   }
 
+  /**
+   * Resets the filter state.
+   */
   function handleReset() {
     setFilterState(initialFilterState);
   }
