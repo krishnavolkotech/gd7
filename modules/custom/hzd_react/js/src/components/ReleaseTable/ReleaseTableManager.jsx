@@ -17,6 +17,8 @@ export default function ReleaseTableManager(props) {
     "service": "0",
     "release": "0",
     "status": props.activeKey,
+    "sortBy": "field_date",
+    "sortOrder": "-",
   };
 
   /**
@@ -26,6 +28,8 @@ export default function ReleaseTableManager(props) {
    * @property {string} filterState.service - The service id.
    * @property {string} filterState.release - The release id.
    * @property {string} filterState.status - The release status.
+   * @property {string} filterState.sortBy - The release status.
+   * @property {string} filterState.sortOrder - The release status.
    */
   const [filterState, setFilterState] = useState(initialFilterState);
 
@@ -46,6 +50,7 @@ export default function ReleaseTableManager(props) {
     setLoadingReleases(true);
     setReleases([]);
     fetchReleases();
+    setPage(1);
   }, [filterState, page]);
 
   /**
@@ -63,7 +68,7 @@ export default function ReleaseTableManager(props) {
    */
   function fetchReleases() {
     let url = '/jsonapi/node/release';
-    url += '?sort=-field_date';
+    url += '?sort=' + filterState.sortOrder + filterState.sortBy;
     url += '&include=field_relese_services';
 
     url += '&filter[field_release_type]=' + filterState.type;

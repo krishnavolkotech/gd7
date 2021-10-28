@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Row, Col, FormGroup, FormControl, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Row, Col, FormGroup, FormControl, Button, OverlayTrigger, Tooltip, Form, ControlLabel } from 'react-bootstrap';
 
 export default function ReleaseFilter(props) {
 
@@ -71,7 +71,7 @@ export default function ReleaseFilter(props) {
     </Tooltip>);
 
   return (
-    <form>
+    <div>
       <Row>
         <Col sm={3}>
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="type-filter">
@@ -113,14 +113,47 @@ export default function ReleaseFilter(props) {
       </Row>
       <Row>
         <Col sm={6}>
+          <Form inline>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortBy">
+              <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
+              <FormControl
+                name="sortBy"
+                componentClass="select"
+                placeholder="select"
+                onChange={handleFilterSelect}
+                value={props.filterState.sortBy}
+              >
+                <option key="sort-1" value="field_date">Datum</option>
+                <option key="sort-2" value="field_relese_services.title">Verfahren</option>
+                <option key="sort-3" value="title">Release</option>
+                <option key="sort-4" value="field_status">Status</option>
+              </FormControl>
+            </FormGroup>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">
+              <FormControl
+                name="sortOrder"
+                componentClass="select"
+                placeholder="select"
+                onChange={handleFilterSelect}
+                value={props.filterState.sortOrder}
+              >
+                <option key="order-asc" value="">Aufsteigend</option>
+                <option key="order-desc" value="-">Absteigend</option>
+              </FormControl>
+            </FormGroup>
+          </Form>
+        </Col>
+      </Row>
+      <Row>
+        <Col sm={6}>
           <div>
-            <OverlayTrigger placement="top" overlay={ttReset} trigger="hover">
+            <OverlayTrigger placement="top" overlay={ttReset}>
               <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
             </OverlayTrigger>
             &nbsp;
           </div>
         </Col>
       </Row>
-    </form>
+    </div>
   )
 }
