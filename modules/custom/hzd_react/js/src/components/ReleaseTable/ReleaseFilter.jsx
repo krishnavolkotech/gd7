@@ -38,14 +38,22 @@ export default function ReleaseFilter(props) {
     <option key="type-460" value="460">Best/Fakt</option>,
   ];
 
-  const optionsServices = [
-    <option key="service-0" value="0">&lt;Verfahren&gt;</option>,
-  ];
-  if (props.filterState.type in global.drupalSettings.services) {
-    for (const key in global.drupalSettings.services[props.filterState.type]) {
-      optionsServices.push(<option key={"service-" + key} value={key}>{global.drupalSettings.services[props.filterState.type][key]}</option>)
+  // Verfahren Filter
+  const services = global.drupalSettings.services[props.filterState.type];
+  let servicesArray = Object.entries(services);
+  servicesArray.sort(function (a, b) {
+    const serviceA = a[1].toUpperCase();
+    const serviceB = b[1].toUpperCase();
+    if (serviceA < serviceB) {
+      return -1;
     }
-  }
+    if (serviceA > serviceB) {
+      return 1;
+    }
+    return 0;
+  });
+  const optionsServices = [<option key="service-0" value="0">&lt;Verfahren&gt;</option>, servicesArray.map(service => <option key={"service-" + service[0]} value={service[0]}>{service[1]}</option>)];
+
 
   useEffect(() => {
     let options = [

@@ -26,15 +26,22 @@ export default function ReleaseTable(props) {
             <th>Release</th>
             <th>Status</th>
             <th>Datum</th>
+            {props.filterState.status !== "3" &&
             <th>Early Warnings</th>
+            }
+            {props.filterState.status !== "3" &&
             <th>Ei/D/L</th>
+            }
+            {props.filterState.status === "3" &&
+            <th>Kommentar</th>
+            }
           </tr>
         </thead>
         <tbody>
           { props.loadingReleases &&
           <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr>
           }
-          {props.releases.map(release => <ReleaseRow key={"row-" + release.attributes.drupal_internal__nid} release={release} />)}
+          {props.releases.map(release => <ReleaseRow key={"row-" + release.attributes.drupal_internal__nid} release={release} filterState={props.filterState} />)}
         </tbody>
       </Table>
       <SimplePager

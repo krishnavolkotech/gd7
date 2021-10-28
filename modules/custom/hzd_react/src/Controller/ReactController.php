@@ -59,6 +59,30 @@ class ReactController extends ControllerBase {
   }
 
   /**
+   * Returns role based on membership in ZRML-Group.
+   * 
+   * @return string $role
+   *  The group role.
+   */
+  protected function getRole() {
+    $role = '';
+    $group = Group::load(Zentrale_Release_Manager_Lander);
+    $member = $group->getMember(\Drupal::currentUser());
+    if ($member && group_request_status($member)) {
+      $roles = $member->getRoles();
+      $role = "ZRML";
+      if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
+        $role = "ZRMK";
+      }
+    }
+    
+    if (array_intersect(['site_administrator','administrator'], \Drupal::currentUser()->getRoles())) {
+      $role = "SITE-ADMIN";
+    }
+    return $role;
+  }
+
+  /**
    * Display the markup.
    *
    * @return array
@@ -78,8 +102,8 @@ class ReactController extends ControllerBase {
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
-      // '#attached' => ['library' => 'hzd_react/react_app_dev'],
-      '#attached' => ['library' => 'hzd_react/react_app'],
+      '#attached' => ['library' => 'hzd_react/react_app_dev'],
+      // '#attached' => ['library' => 'hzd_react/react_app'],
     ];
 
     // In Zukunft noch um Geschäftsservice und Sonstiges Projekt ergänzen.
@@ -104,9 +128,10 @@ class ReactController extends ControllerBase {
       }
     }
 
-    $build['#attached']['drupalSettings']['userRole']['zrml'] = false;
-    $build['#attached']['drupalSettings']['userRole']['rm-admin'] = false;
-    $build['#attached']['drupalSettings']['userRole']['site-admin'] = false;
+    // Rolle: site-admin, zrmk, zrml?
+    $role = $this->getRole();
+
+    $build['#attached']['drupalSettings']['role'] = $role;
     $build['#attached']['drupalSettings']['services'] = $services;
 
     return $build;
@@ -245,27 +270,14 @@ class ReactController extends ControllerBase {
     $stTime = number_format(( microtime(true) - $startTime), 4);
 
     // Rolle: site-admin, zrmk, zrml?
-    $role = '';
-    $group = Group::load(Zentrale_Release_Manager_Lander);
-    $member = $group->getMember(\Drupal::currentUser());
-    if ($member && group_request_status($member)) {
-      $roles = $member->getRoles();
-      $role = "ZRML";
-      if (in_array($group->getGroupType()->id() . '-admin', array_keys($roles))) {
-        $role = "ZRMK";
-      }
-    }
-    
-    if (array_intersect(['site_administrator','administrator'], \Drupal::currentUser()->getRoles())) {
-      $role = "SITE-ADMIN";
-    }
+    $role = $this->getRole();
 
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
       '#attached' => [
-        // 'library' => 'hzd_react/react_app_dev',
-        'library' => 'hzd_react/react_app',
+        'library' => 'hzd_react/react_app_dev',
+        // 'library' => 'hzd_react/react_app',
         'drupalSettings' => [
           'environments' => $environments,
           'states' => $finalStates,

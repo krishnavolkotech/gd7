@@ -26,10 +26,19 @@ class App extends React.Component {
             <Route path="/r/home">
               <Home />
             </Route>
-            <Route path="/:group/r/releases/in-bearbeitung">
+            <Route exact path="/:group/r/releases/bereitgestellt">
               <ReleaseViewNavigator />
             </Route>
-            <Route path="/:group/r/releases/eingesetzt-uebersicht">
+            <Route exact path="/:group/r/releases/in-bearbeitung">
+              <ReleaseViewNavigator />
+            </Route>
+            <Route exact path="/:group/r/releases/gesperrt">
+              <ReleaseViewNavigator />
+            </Route>
+            <Route exact path="/:group/r/releases/archiviert">
+              <ReleaseViewNavigator />
+            </Route>
+            <Route exact path="/:group/r/releases/eingesetzt-uebersicht">
               <ReleaseViewNavigator />
             </Route>
             <Route exact path="/zrml/r/einsatzmeldungen">

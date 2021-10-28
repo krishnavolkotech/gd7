@@ -8,9 +8,21 @@ export default function ReleaseViewNavigator() {
   /** @const {object} history - The history object (URL modifications). */
   const history = useHistory()
 
-  let active = "2";
-  if (history.location.pathname.indexOf('eingesetzt-uebersicht') > 0) {
+  let active = "1";
+  if (history.location.pathname.indexOf('bereitgestellt') > 0) {
+    active = "1";
+  }
+  if (history.location.pathname.indexOf('in-bearbeitung') > 0) {
+    active = "2";
+  }
+  if (history.location.pathname.indexOf('gesperrt') > 0) {
+    active = "3";
+  }
+  if (history.location.pathname.indexOf('archiviert') > 0) {
     active = "5";
+  }
+  if (history.location.pathname.indexOf('eingesetzt-uebersicht') > 0) {
+    active = "6";
   }
 
   const [activeKey, setActiveKey] = useState(active);
@@ -35,10 +47,13 @@ export default function ReleaseViewNavigator() {
       case "3":
         explodedPath[explodedPath.length - 1] = "gesperrt";
         break;
+      case "5":
+        explodedPath[explodedPath.length - 1] = "archiviert";
+        break;
       case "4":
         explodedPath[explodedPath.length - 1] = "eingesetzt";
         break;
-      case "5":
+      case "6":
         explodedPath[explodedPath.length - 1] = "eingesetzt-uebersicht";
         break;
       default:
@@ -56,7 +71,7 @@ export default function ReleaseViewNavigator() {
   const handleNav = (k) => {
     setActiveKey(k);
   }
-
+  console.log(global.drupalSettings)
   return (
     <div>
       <Nav bsStyle="tabs" activeKey={activeKey}>
@@ -69,17 +84,22 @@ export default function ReleaseViewNavigator() {
         <NavItem eventKey="3" onSelect={handleNav}>
           Gesperrt
         </NavItem>
+        { ["ZRMK", "SITE-ADMIN"].includes(global.drupalSettings.role) && 
+        <NavItem eventKey="5" onSelect={handleNav}>
+          Archiviert
+        </NavItem>
+        }
         <NavItem eventKey="4" onSelect={handleNav}>
           Eingesetzt
         </NavItem>
-        <NavItem eventKey="5" onSelect={handleNav}>
+        <NavItem eventKey="6" onSelect={handleNav}>
           Eingesetzt(Übersicht)
         </NavItem>
       </Nav>
-      { activeKey != "5" &&
-        <ReleaseTableManager />
+      { activeKey != "6" &&
+        <ReleaseTableManager activeKey={activeKey} />
       }
-      { activeKey == "5" &&
+      { activeKey == "6" &&
         <Ers />
       }
     </div>

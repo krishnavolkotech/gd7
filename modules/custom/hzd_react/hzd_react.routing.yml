@@ -50,8 +50,29 @@ hzd_react.archived_deployments:
   requirements:
     _permission: 'access content'
     group: '5'
+hzd_react.released:
+  path: '/group/{group}/r/releases/bereitgestellt'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'Release Management'
+  requirements:
+    _permission: 'access content'
 hzd_react.releases_in_progress:
   path: '/group/{group}/r/releases/in-bearbeitung'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'Release Management'
+  requirements:
+    _permission: 'access content'
+hzd_react.locked:
+  path: '/group/{group}/r/releases/gesperrt'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'Release Management'
+  requirements:
+    _permission: 'access content'
+hzd_react.locked:
+  path: '/group/{group}/r/releases/archiviert'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'

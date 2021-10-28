@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import ReleaseFilter from './ReleaseFilter';
 import ReleaseTable from './ReleaseTable';
 
-export default function ReleaseTableManager() {
+export default function ReleaseTableManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
 
@@ -16,7 +16,7 @@ export default function ReleaseTableManager() {
     "type": "459",
     "service": "0",
     "release": "0",
-    "status": "1",
+    "status": props.activeKey,
   };
 
   /**
@@ -34,6 +34,10 @@ export default function ReleaseTableManager() {
   const [loadingReleases, setLoadingReleases] = useState(true);
 
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    setFilterState(prev => ({ ...prev, "status": props.activeKey}))
+  }, [props.activeKey])
 
   /**
    * Fetches new releases if the filter or page is changed.
@@ -167,6 +171,7 @@ export default function ReleaseTableManager() {
         loadingReleases={loadingReleases}
         page={page}
         setPage={setPage}
+        filterState={filterState}
       />
     </div>
   );
