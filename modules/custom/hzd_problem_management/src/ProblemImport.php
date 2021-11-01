@@ -127,6 +127,55 @@ class ProblemImport {
  //field_s_no ist out of use. New field_orp_nr is string.
  //   $values['sno'] = (int) $values['sno'];
 
+
+    //Formatierung/Anpassung von Feldinhalten aus CSV
+    if ($values['taskforce'] == 'true'){
+      $values['taskforce'] = 'JA';
+    } 
+    elseif ($values['taskforce'] == 'false'){
+      $values['taskforce'] = 'NEIN';
+    }
+
+    if ($values['proactive_creation'] == 'true'){
+      $values['proactive_creation'] = 'JA';
+    }
+    elseif ($values['proactive_creation'] == 'false'){
+      $values['proactive_creation'] = 'NEIN';
+    }
+
+    if ($values['interface_affected'] == 'true'){
+      $values['interface_affected'] = 'JA';
+    }
+    elseif ($values['interface_affected'] == 'false'){
+      $values['interface_affected'] = 'NEIN';
+    }
+
+    if ($values['unlocated_cause'] == 'true'){
+      $values['unlocated_cause'] = 'JA';
+    }
+    elseif ($values['unlocated_cause'] == 'false'){
+      $values['unlocated_cause'] = 'NEIN';
+    }
+
+    if ($values['part_of_lueafp'] == 'true'){
+      $values['part_of_lueafp'] = 'JA';
+    }
+    elseif ($values['part_of_lueafp'] == 'false'){
+      $values['part_of_lueafp'] = 'NEIN';
+    }
+
+    if ($values['created']){
+      $time = strtotime($values['created']);
+      $newFormatCreated = date('d.m.Y', $time);
+      $values['created'] = $newFormatCreated;
+    }
+
+    if ($values['last_update']){
+      $time = strtotime($values['last_update']);
+      $newFormatLastUpdate = date('d.m.Y', $time);
+      $values['last_update'] = $newFormatLastUpdate;
+    }
+
     $query = \Drupal::entityQuery('node')
       ->condition('type', 'problem')
       ->condition('field_orp_nr', $values['sno'])
@@ -138,7 +187,7 @@ class ProblemImport {
     if($query){
       $node = Node::load(reset($query));
     }
-    //Formatierung Erstelldatum?? Was ist mit updatedatum?
+    //funktioniert vermutlich nicht und $eroffnet wird mit time gefüllt
     $replace = array('/' => '.', '-' => '.');
     $formatted_date = strtr($values['created'], $replace);
 
@@ -275,12 +324,10 @@ class ProblemImport {
     ));
     // $problem_node->set('field_s_no', $values['sno']);
     // $problem_node->set('field_release', $values['release']);.
-    //Task Force Feld anpassen dass JA, NEIN angezeigt wird statt false, true aus neuer csv
     $problem_node->set('field_task_force', array(
       'value' => check_markup($values['taskforce'],'plain_text'),
       'format' => 'plain_text',
     ));
-//vier neue Felder ergänzt, noch anpassen wegen 'false' anzeige
     $problem_node->set('field_proactive_creation', $values['proactive_creation']);
     $problem_node->set('field_interface_affected', $values['interface_affected']);
     $problem_node->set('field_unlocated_cause', $values['unlocated_cause']);
