@@ -435,11 +435,6 @@ export default function DeploymentForm(props) {
                     <tr>
                       <th></th>
                       <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
-                      <th>
-                        {props.formState.action === 'successor' &&
-                        <ControlLabel bsClass="control-label js-form-required form-required">Vorgängerrelease archivieren?</ControlLabel>
-                        }
-                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -462,12 +457,12 @@ export default function DeploymentForm(props) {
                               disabled={disabledPrevRelease}
                               index={i}
                             />
-                          </td>
-                          <td>
                           {props.formState.action != 'edit' &&
                             <Form inline>
                               <FormGroup onChange={handleRadio} controlId="5">
-                                <Radio
+                                <ControlLabel bsClass="control-label js-form-required form-required">Vorgängermeldung Archivieren?</ControlLabel>
+                                &nbsp;
+                               <Radio
                                   name={i}
                                   value="ja"
                                   checked={props.formState.previousReleases[i].archive === true}
@@ -506,7 +501,6 @@ export default function DeploymentForm(props) {
                         </div>
                       </FormGroup>
                     </td>
-                    <td></td>
                   </tr>
                     }
                     { props.formState.action !== "first" &&

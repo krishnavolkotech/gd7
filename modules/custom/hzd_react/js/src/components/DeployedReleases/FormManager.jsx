@@ -553,6 +553,9 @@ export default function FormManager(props) {
               "id": uuidService,
             },
           },
+          "field_prev_release": {
+            "data": [],
+          },
         }
       }
     }
@@ -608,7 +611,7 @@ export default function FormManager(props) {
           props.setDeploymentHistory(prev => [...prev, parseInt(antwort.data.attributes.drupal_internal__nid)]);
           setSubmitMessage([<li>Einsatzmeldung gespeichert. <span className="glyphicon glyphicon-ok-circle" role="status" /></li>]);
           if (formState.action == "successor") {
-            patchDeployment();
+            patchDeployment(uuidRelease);
           }
           // No further action needed, reset everything.
           else {
@@ -626,10 +629,14 @@ export default function FormManager(props) {
   }
 
   // PATCH: Vorgängerrelease archivieren.
-  const patchDeployment = () => {
+  const patchDeployment = (uuidRelease) => {
     let csrfUrl = `/session/token?_format=json`;
     let fetchUrl = '';
     let fetchOptions = {};
+    const length = formState.previousReleases.length;
+    if (length === 0) {
+      props.setCount(props.count + 1);
+    }
     formState.previousReleases.forEach((p, index) => {
       let archiveBody = {
         "data": {
@@ -639,7 +646,7 @@ export default function FormManager(props) {
             "field_successor_release": {
               "data": {
                 "type": "node--release",
-                "id": p.uuidRelease,
+                "id": uuidRelease,
               }
             }
           }
@@ -669,7 +676,9 @@ export default function FormManager(props) {
       fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
         .then(antwort => antwort.json())
         .then(antwort => {
-          props.setCount(props.count + 1);
+          if (index === length - 1) {
+            props.setCount(props.count + 1);
+          }
           if ("errors" in antwort) {
             setSubmitMessage(prev => {
               let messages = prev;

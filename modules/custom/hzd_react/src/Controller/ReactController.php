@@ -172,7 +172,7 @@ class ReactController extends ControllerBase {
     $query = \Drupal::service('entity.query');
     $result = $query->get('node')
       ->condition('type', 'services')
-      ->condition('release_type' , 459)
+      // ->condition('release_type' , 459)
       ->condition('field_release_name', '', '!=')
       ->execute();
 

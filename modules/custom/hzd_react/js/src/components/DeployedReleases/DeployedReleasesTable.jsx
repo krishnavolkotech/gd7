@@ -49,8 +49,29 @@ export default function DeployedReleasesTable(props) {
     // Sort by release.
     if (props.filterState.sortBy == "title_1") {
       newData.sort((a, b) => {
-        if (a.release > b.release) return direction;
-        if (a.release < b.release) return -direction;
+        const productA = a.release.substring(0, a.release.indexOf('_') + 1);
+        const productB = b.release.substring(0, b.release.indexOf('_') + 1);
+        const versionA = a.release.substring(a.release.indexOf('_') + 1);
+        const versionB = b.release.substring(b.release.indexOf('_') + 1);
+        // First: sort by name.
+        if (productA > productB) return direction;
+        if (productA < productB) return -direction;
+        // Second: sort by version number.
+        const partsA = versionA.split('.')
+        const partsB = versionB.split('.')
+        for (var i = 0; i < partsB.length; i++) {
+          const vA = ~~partsA[i] // parse int
+          const vB = ~~partsB[i] // parse int
+          if (vA > vB) return -direction
+          if (vA < vB) return direction
+        }
+        if (versionA < versionB) {
+          return direction;
+        }
+        if (versionA > versionB) {
+          return -direction;
+        }
+        return 0;
       });
     }
     if (props.filterState.sortBy == "field_state_list_value") {
