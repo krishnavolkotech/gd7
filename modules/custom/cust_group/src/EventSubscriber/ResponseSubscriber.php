@@ -59,7 +59,7 @@ class ResponseSubscriber implements EventSubscriberInterface {
         $currentPath = \Drupal::service('path.current')->getPath();
         $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
 
-        if ($group) {
+        if (is_a($group, "Drupal\group\Entity\Group")) {
           $groupType = $group->getGroupType()->id();
           // Do not attempt to redirect a group member. Prevents redirect loop.
           if ($group->getMember(\Drupal::currentUser())) {
