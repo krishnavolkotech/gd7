@@ -33,6 +33,7 @@ hzd_react.deployed_releases_home:
     _title: 'ZRML'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.deployed_releases_list:
   path: '/group/{group}/r/einsatzmeldungen/eingesetzt'
@@ -41,6 +42,7 @@ hzd_react.deployed_releases_list:
     _title: 'Einsatzmeldungen verwalten'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.archived_deployments:
   path: '/group/{group}/r/einsatzmeldungen/archiviert'
@@ -49,6 +51,7 @@ hzd_react.archived_deployments:
     _title: 'Einsatzmeldungen verwalten'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.released:
   path: '/group/{group}/r/releases/bereitgestellt'
