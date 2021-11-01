@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Row, Col, FormGroup, FormControl, Button, Modal, Checkbox, Glyphicon} from 'react-bootstrap';
 
-function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFilter, checkedLand, setCheckedLand, typeFilter, setTypeFilter, setCheckedServices, show, setShow}) {
+function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFilter, checkedLand, setCheckedLand, typeFilter, setTypeFilter, setCheckedServices, show, setShow, isLoading}) {
 
   var ids2 = [];
   ids2[2] = ['Baden-Württemberg (BW)'];
@@ -119,12 +119,14 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
         </Col>
       </Row>
 
+      {!isLoading && 
       <Row bsClass="reset_form">
         <Button bsStyle="primary" bsClass="js-form-submit form-submit btn-default btn" bsSize="large" onClick={handleShow}> 
           <Glyphicon glyph="glyphicon glyphicon-wrench" />
           &nbsp;Anzeige konfigurieren
         </Button> 
       </Row>
+      }
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

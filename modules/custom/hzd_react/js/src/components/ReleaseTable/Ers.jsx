@@ -2,6 +2,8 @@ import React, { useState, useEffect }from 'react';
 import ERTable from './ERTable';
 import ERFilter from './ERFilter';
 
+const loading = <p>Daten werden geladen. Bitte haben Sie einen Moment Gedult ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></p>;
+
 function Ers() {
 
    /** @const {array} eingesetzte - Array that contains all deployed releases as ob. */
@@ -49,12 +51,18 @@ function Ers() {
    /** @const {boolean} show - Indicates wheather the Modal with the filter options is shown, default = not shown */
   const [show, setShow] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(true);
+
   //Get all deployed releases of the selected type.
   useEffect(() => {
+    setIsLoading(true);
     let url = "/api/v1/deployments?status[]=1&environment=1&items_per_page=All&type=" + typeFilter ;
     fetch(url)
       .then(results=> results.json())
-      .then(post=> setEingesetzte(post));
+      .then( post=> {
+        setIsLoading(false);
+        setEingesetzte(post)
+      });
   }, [typeFilter]);
 
 
@@ -134,10 +142,11 @@ function Ers() {
           checkedServices={checkedServices} setCheckedServices={setCheckedServices}
           show={show} setShow={setShow}
           typeFilter={typeFilter} setTypeFilter={setTypeFilter}
+          isLoading={isLoading}
         />
         <p></p>
-        <ERTable
-          eingesetzte={eingesetzte} landGefiltert={landGefiltert} verfahrenGefiltert={verfahrenGefiltert} />
+        { isLoading ? loading : <ERTable eingesetzte={eingesetzte} landGefiltert={landGefiltert} verfahrenGefiltert={verfahrenGefiltert} /> }
+        
     </div>
   );
 }

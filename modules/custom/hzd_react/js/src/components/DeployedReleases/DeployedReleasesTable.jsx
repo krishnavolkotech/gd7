@@ -37,7 +37,7 @@ export default function DeployedReleasesTable(props) {
         if (a.environment < b.environment) return -direction;
       });
     }
-    // Sort releases too, if service was selected for sorting.
+    // Sort by service - sorts releases too.
     if (props.filterState.sortBy == "title") {
       newData.sort((a, b) => {
         if (a.service > b.service) return direction;
@@ -46,6 +46,7 @@ export default function DeployedReleasesTable(props) {
         if (a.release < b.release) return -direction;
       });
     }
+    // Sort by release.
     if (props.filterState.sortBy == "title_1") {
       newData.sort((a, b) => {
         if (a.release > b.release) return direction;

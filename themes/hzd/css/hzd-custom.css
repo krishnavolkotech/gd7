@@ -1766,3 +1766,37 @@ a.btn.btn-danger.legal-decline-btn {
         transform: translateX(400%);
     }
 }
+
+table.deployed_overview_table {
+  display:block;
+  overflow: auto;
+  max-height: 800px;
+  table-layout: fixed;
+}
+
+thead.sticky-row {
+  position: sticky;
+  top: 0;
+}
+table.deployed_overview_table th:last-child {
+  width: 100%;
+}
+
+table.deployed_overview_table tbody td:first-child {
+  position: sticky;
+  font-weight: bold;
+  left: 0;
+  z-index: 1;
+  background: white;
+}
+
+table.deployed_overview_table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: rgb(245, 245, 245);
+}
+
+table.deployed_overview_table thead {
+  z-index: 3;
+}
