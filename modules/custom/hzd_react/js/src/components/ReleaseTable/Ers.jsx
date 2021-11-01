@@ -2,7 +2,7 @@ import React, { useState, useEffect }from 'react';
 import ERTable from './ERTable';
 import ERFilter from './ERFilter';
 
-const loading = <p>Daten werden geladen. Bitte haben Sie einen Moment Gedult ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></p>;
+const loading = <p>Daten werden geladen. Bitte haben Sie einen Moment Geduld ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></p>;
 
 function Ers() {
 
