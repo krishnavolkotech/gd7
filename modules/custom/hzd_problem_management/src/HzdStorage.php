@@ -261,7 +261,9 @@ class HzdStorage {
 
     if (isset($filter_parameter['string']) && t($filter_parameter['string']) != t('Search Title, Description, Cause, Workaround, Solution')) {
       $group = $problem_node_ids->orConditionGroup()
-        ->condition('field_s_no', $filter_parameter['string'], 'LIKE')
+        //changed from old field_s_no to new field_orp_nr
+        ->condition('field_orp_nr', $filter_parameter['string'], 'LIKE')	     
+        //->condition('field_s_no', $filter_parameter['string'], 'LIKE')
         ->condition('title', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('body', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('field_work_around', '%' . $filter_parameter['string'] . '%', 'LIKE');
@@ -280,10 +282,14 @@ class HzdStorage {
       $ids = [-1];
     }
     $conn = \Drupal::database()->select('node_field_data', 'nfd');
-    $conn->innerJoin('node__field_s_no', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
+   //changed from old field_s_no to new field_orp_nr
+    $conn->innerJoin('node__field_orp_nr', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
+    //$conn->innerJoin('node__field_s_no', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
     $conn->addField('nfd', 'nid', 'dsa');
     $conn->addField('nfd', 'changed', 'cha'); //cclaus: eingefügt zum Sortieren nach Updatedatum
-    $conn->addField('nfs', 'field_s_no_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
+    //changed from old field_s_no to new field_orp_nr
+    $conn->addField('nfs', 'field_orp_nr_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
+    //$conn->addField('nfs', 'field_s_no_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
     $conn = $conn->condition('nfd.nid', $ids, 'IN')
       ->orderBy('unix_order', 'desc')
       ->orderBy('cha', 'desc')
@@ -322,7 +328,9 @@ class HzdStorage {
         current($node_problem_group_id));
       $groupContentItemUrl = NULL;
       if ($groupContentEntity instanceof \Drupal\group\Entity\GroupContent) {
-        $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
+	//changed from old field_s_no to new field_orp_nr
+	$groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_orp_nr->value, $problems_node->toUrl('canonical', [
+        //$groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
           'absolute' => 1,
           'query' => $exposedFilterData
         ]));
@@ -336,7 +344,9 @@ class HzdStorage {
         $query = \Drupal::request()->query;
         if ($query->has('print') && $query->get('print') == 'pdf') {
           unset($exposedFilterData['print']);
-          $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
+	  //changed from old field_s_no to new field_orp_nr
+	  $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_orp_nr->value, $problems_node->toUrl('canonical', [
+	  //$groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
             'absolute' => 1,
             'query' => $exposedFilterData
           ]));

@@ -124,12 +124,13 @@ class ProblemImport {
     if (($values['title'] == '') || ($values['status'] == '')) {
       throw new ProblemImportException('invalid_data');
     }
- //muss noch angepasst werden: sno ist kein int mehr sondern "ORP-123"
-    $values['sno'] = (int) $values['sno'];
+ //field_s_no ist out of use. New field_orp_nr is string.
+ //   $values['sno'] = (int) $values['sno'];
 
     $query = \Drupal::entityQuery('node')
       ->condition('type', 'problem')
-      ->condition('field_s_no', $values['sno'])
+      ->condition('field_orp_nr', $values['sno'])
+     // ->condition('field_s_no', $values['sno'])
       ->accessCheck(FALSE)
       ->execute();
     $node = null;
@@ -137,6 +138,7 @@ class ProblemImport {
     if($query){
       $node = Node::load(reset($query));
     }
+    //Formatierung Erstelldatum?? Was ist mit updatedatum?
     $replace = array('/' => '.', '-' => '.');
     $formatted_date = strtr($values['created'], $replace);
 
@@ -211,7 +213,9 @@ class ProblemImport {
         }
       }
       if ($diff) {
-        $this->ignored[] = $node->get('field_s_no')->value;
+	//changed from old field_s_no to new field_orp_nr      
+	$this->ignored[] = $node->get('field_orp_nr')->value;
+        //$this->ignored[] = $node->get('field_s_no')->value;
         // Nothing to do when there are no changes for the node. so skipping the node.
         return TRUE;
       }
@@ -223,7 +227,9 @@ class ProblemImport {
         'uid' => 1,
         'type' => 'problem',
         'created' => \Drupal::time()->getRequestTime(),
-        'field_s_no' => $values['sno'],
+  //changed from old field_s_no to new field_orp_nr
+	'field_orp_nr' => $values['sno'],       
+	//'field_s_no' => $values['sno'],
       ]);
 
     }
