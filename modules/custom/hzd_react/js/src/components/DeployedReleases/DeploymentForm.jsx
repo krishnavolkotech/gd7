@@ -460,7 +460,7 @@ export default function DeploymentForm(props) {
                           {props.formState.action != 'edit' &&
                             <Form inline>
                               <FormGroup onChange={handleRadio} controlId="5">
-                                <ControlLabel bsClass="control-label js-form-required form-required">Vorgängermeldung Archivieren?</ControlLabel>
+                                <ControlLabel bsClass="control-label js-form-required form-required">Vorgängermeldung archivieren?</ControlLabel>
                                 &nbsp;
                                <Radio
                                   name={i}
