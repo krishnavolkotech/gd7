@@ -23,7 +23,7 @@ class FavoriteStorage {
      */
     static function getFavorites($uid) {
         $result = \Drupal::database()->query('select * from {favorites} where uid = :uip order by timestamp DESC', array(':uip' => $uid));
-        return $result = '';
+        return $result;
     }
 
     /**

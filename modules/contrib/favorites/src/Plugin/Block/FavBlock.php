@@ -10,7 +10,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Block\BlockBase;
 use Drupal\favorites\FavoriteStorage;
 use Drupal\Core\Url;
-
+use \Drupal\Core\Link;
 /**
  * Provides a 'favorites' block.
  *
@@ -52,8 +52,8 @@ class FavBlock extends BlockBase {
                 }
                 $url = Url::fromUri($url);
                 $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
-                $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
-                $items[$i]['remove_link'] = \Drupal::l('X', $url_delete);
+                $items[$i]['title_link'] = Link::fromTextAndUrl($favorite->title, $url);
+                $items[$i]['remove_link'] = Link::fromTextAndUrl('X', $url_delete);
                 $items[$i]['id'] = $favorite->fid;
                 $i++;
             }
