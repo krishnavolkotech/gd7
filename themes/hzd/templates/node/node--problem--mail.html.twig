@@ -172,8 +172,28 @@
         </tr>
 
         <tr class='even'>
-            <td class='problem_titles'>{{ 'SDCallID'|trans }}</td>
-            <td class='problem_content'>{{ node.field_s_no.value }}</td>
+            <td class='problem_titles'>{{ 'Proactive Creation'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_proactive_creation.value |raw }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Interface affected'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_interface_affected.value |raw }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Unlocated Cause'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_unlocated_cause.value |raw }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Part of LUEAFP'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_part_of_lueafp.value |raw }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'ORP-Nr'|trans }}</td>
+            <td class='problem_content'>{{ node.field_orp_nr.value }}</td>
         </tr>
 
         <tr class='odd'>
