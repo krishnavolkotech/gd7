@@ -447,7 +447,7 @@ export default function DeploymentManager() {
         filterState={filterState}
         handleView={handleView}
       />
-      <p>Build v0.6</p>
+      <p>Build v0.7</p>
     </div>
   )
 }
