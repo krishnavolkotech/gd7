@@ -441,8 +441,8 @@ export default function FormManager(props) {
     for (var i = 0; i < partsB.length; i++) {
       const vA = ~~partsA[i] // parse int
       const vB = ~~partsB[i] // parse int
-      if (vA > vB) return -1
-      if (vA < vB) return 1
+      if (vA > vB) return -1;
+      if (vA < vB) return 1;
     }
     if (versionA < versionB) {
       return 1;

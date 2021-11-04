@@ -42,36 +42,13 @@ export default function DeployedReleasesTable(props) {
       newData.sort((a, b) => {
         if (a.service > b.service) return direction;
         if (a.service < b.service) return -direction;
-        if (a.release > b.release) return direction;
-        if (a.release < b.release) return -direction;
+        return compareReleases(a, b, direction);
       });
     }
     // Sort by release.
     if (props.filterState.sortBy == "title_1") {
       newData.sort((a, b) => {
-        const productA = a.release.substring(0, a.release.indexOf('_') + 1);
-        const productB = b.release.substring(0, b.release.indexOf('_') + 1);
-        const versionA = a.release.substring(a.release.indexOf('_') + 1);
-        const versionB = b.release.substring(b.release.indexOf('_') + 1);
-        // First: sort by name.
-        if (productA > productB) return direction;
-        if (productA < productB) return -direction;
-        // Second: sort by version number.
-        const partsA = versionA.split('.')
-        const partsB = versionB.split('.')
-        for (var i = 0; i < partsB.length; i++) {
-          const vA = ~~partsA[i] // parse int
-          const vB = ~~partsB[i] // parse int
-          if (vA > vB) return -direction
-          if (vA < vB) return direction
-        }
-        if (versionA < versionB) {
-          return direction;
-        }
-        if (versionA > versionB) {
-          return -direction;
-        }
-        return 0;
+        return compareReleases(a, b, direction);
       });
     }
     if (props.filterState.sortBy == "field_state_list_value") {
@@ -81,6 +58,45 @@ export default function DeployedReleasesTable(props) {
       });
     }
     return newData;
+  }
+
+  /**
+ * Compares two release names for sorting.
+ * 
+ * Sorting criteria hierarchy:
+ *  1. Matching product on top.
+ *  2. Descending product name.
+ *  3. Ascending version number.
+ * 
+ * @param {object} a - The first release object.
+ * @param {object} b - The second release object.
+ * @param {number} direction - The sorting direction (0 or 1).
+ * @returns {number} - 1, -1 or 0.
+ */
+  const compareReleases = (a, b, direction) => {
+    const productA = a.release.substring(0, a.release.indexOf('_') + 1);
+    const productB = b.release.substring(0, b.release.indexOf('_') + 1);
+    const versionA = a.release.substring(a.release.indexOf('_') + 1);
+    const versionB = b.release.substring(b.release.indexOf('_') + 1);
+    // First: sort by name.
+    if (productA > productB) return direction;
+    if (productA < productB) return -direction;
+    // Second: sort by version number.
+    const partsA = versionA.split('.')
+    const partsB = versionB.split('.')
+    for (var i = 0; i < partsB.length; i++) {
+      const vA = ~~partsA[i] // parse int
+      const vB = ~~partsB[i] // parse int
+      if (vA > vB) return direction
+      if (vA < vB) return -direction
+    }
+    if (versionA > versionB) {
+      return direction;
+    }
+    if (versionA < versionB) {
+      return -direction;
+    }
+    return 0;
   }
 
   const handlePagination = (e) => {
