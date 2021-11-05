@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table, Row, Col, Well } from 'react-bootstrap';
+import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio, Table, Row, Col, Well, Alert } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 import SelectRelease from "./SelectRelease";
 import SelectPreviousRelease from "./SelectPreviousRelease";
@@ -57,6 +57,18 @@ export default function DeploymentForm(props) {
   const [environmentOptions, setEnvironmentOptions] = useState(defaultEnvironments);
 
   const [addPrevReleaseDisabled, setAddPrevReleaseDisabled] = useState(false);
+
+  // Validation State.
+  const [environmentValidationState, setEnvironmentValidationState] = useState('');
+  const [serviceValidationState, setServiceValidationState] = useState('');
+  const [dateValidationState, setDateValidationState] = useState('');
+  const [timeValidationState, setTimeValidationState] = useState('');
+  const [abnormalityValidationState, setAbnormalityValidationState] = useState('');
+  const [releaseValidationState, setReleaseValidationState] = useState('');
+  const [prevReleaseValidationState, setPrevReleaseValidationState] = useState('');
+
+  // Validation Alert
+  const [showValidationAlert, setShowValidationAlert] = useState(false);
 
   // let firstDeployment = false;
   // if (props.previousRelease == "0") {
@@ -159,23 +171,79 @@ export default function DeploymentForm(props) {
     // Resets validation state before re-evaluating the validation state.
     setValidateMessage([]);
     setDisableSubmit(false);
+    setEnvironmentValidationState("success");
+    setServiceValidationState("success");
+    setDateValidationState("success");
+    setTimeValidationState("");
+    setAbnormalityValidationState("success");
+    setReleaseValidationState("success");
+    setPrevReleaseValidationState("success");
 
     // Verify environment selection.
     if (props.formState.environment === "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p key="val-environment"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte eine Umgebung auswählen</strong></p>])
+      setEnvironmentValidationState("error");
     }
 
     // Verify service selection.
     if (props.formState.service == "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p key="val-service"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Verfahren auswählen</strong></p>])
+      setServiceValidationState("error");
     }
 
+    // Verify date selection.
+    if (!props.formState.date) {
+      setDisableSubmit(true);
+      setValidateMessage(prev => [...prev, <p key="val-date"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte das Einsatzdatum auswählen</strong></p>])
+      setDateValidationState("error");
+    }
+
+    // Validates, that the selected date is not in the future.
+    if (props.formState.date) {
+      const formDate = new Date(props.formState.date);
+      const now = Date.now();
+      if (formDate > now) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Das angegebene Einsatzdatum liegt in der Zukunft</strong></p>])
+        setDateValidationState("error");
+      }
+    }
+
+    // Validate format of field installation time.
+    if (props.formState.installationTime.length > 0) {
+      const allowedFormat = new RegExp('^[0-9]{1,3}:[0-5][0-9]$');
+      if (!allowedFormat.test(props.formState.installationTime)) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p key="val-inst-time"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Unerlaubte Eingabe beim Feld "Installationsdauer". Mögliche Werte: 0:01 - 999:59</strong></p>]);
+        setTimeValidationState("error");
+      }
+      else {
+        setTimeValidationState("success");
+      }
+    }
+
+    // Verify abnormality description.
+    if (props.formState.abnormalities) {
+      if (props.formState.description.length == 0) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p key="val-abnorm"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>]);
+        setAbnormalityValidationState("error");
+      }
+    }
+
+    // Reset abnormality description, if abnormality checkbox is unchecked.
+    if (!props.formState.abnormalities) {
+      props.setFormState(prev => ({ ...prev, "description": "" }));
+      setAbnormalityValidationState("");
+    }
+    
     // Verify release selection.
     if (props.formState.releaseNid == "0") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p key="val-release"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Release auswählen</strong></p>])
+      setReleaseValidationState("error");
     }
 
     // if (props.formState.previousRelease == "0" || props.formState.previousRelease == "0") {
@@ -197,56 +265,27 @@ export default function DeploymentForm(props) {
     });
     // Disables the add prev-release button, as long as no prev release has been selected.
     setAddPrevReleaseDisabled(addPrevDisable);
+
     // Disables submit, if archive radio has not been selected.
     if (prevArchiveFailed && props.formState.action != "edit") {
       setDisableSubmit(true);
       setValidateMessage(prev => [...prev, <p key="val-archive"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte Auswählen: Vorgängerrelease archivieren?</strong></p>])
+      setPrevReleaseValidationState("error");
     }
     // Disables Submit, if no previuos release has been selected.
     if (prevSelectFailed) {
       setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p key="val-select-prev"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Vorgängerrelease auswählen.</strong></p>])
+      setValidateMessage(prev => [...prev, <p key="val-select-prev"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Vorgängerrelease auswählen</strong></p>])
+      setPrevReleaseValidationState("error");
     }
 
-    // Verify date selection.
-    if (!props.formState.date) {
-      setDisableSubmit(true);
-      setValidateMessage(prev => [...prev, <p key="val-date"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte ein Einsatzdatum auswählen</strong></p>])
-    }
-
-    // Validates, that the selected date is not in the future.
-    if (props.formState.date) {
-      const formDate = new Date(props.formState.date);
-      const now = Date.now();
-      if (formDate > now) {
-        setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Das angegebene Einsatzdatum liegt in der Zukunft</strong></p>])
-      }
-    }
-
-    // Verify abnormality description.
-    if (props.formState.abnormalities) {
-      if (props.formState.description.length == 0) {
-        setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p key="val-abnorm"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte beschreiben Sie die Auffälligkeiten</strong></p>]);
-      }
-    }
-
-    // Reset abnormality description, if abnormality checkbox is unchecked.
-    if (!props.formState.abnormalities) {
-      props.setFormState(prev => ({ ...prev, "description": "" }));
-    }
-
-    // Validate format of field installation time.
-    if (props.formState.installationTime.length > 0) {
-      const allowedFormat = new RegExp('^[0-9]{1,3}:[0-5][0-9]$');
-      if (!allowedFormat.test(props.formState.installationTime)) {
-        setDisableSubmit(true);
-        setValidateMessage(prev => [...prev, <p key="val-inst-time"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Unerlaubte Eingabe beim Feld "Installationsdauer". Mögliche Werte: 0:01 - 999:59</strong></p>]);
-      }
-    }
 
   }, [props.formState.environment, props.formState.service, props.formState.releaseNid, props.formState.previousReleases, props.formState.date, props.formState.abnormalities, props.formState.description, props.formState.archivePrevRelease, props.formState.installationTime, props.formState.pCount])
+
+  // Hide Validation Message on form opening / closing.
+  useEffect(() => {
+    setShowValidationAlert(false);
+  }, [props.showDeploymentForm])
 
   // Set title.
   useEffect(() => {
@@ -324,7 +363,16 @@ export default function DeploymentForm(props) {
   var formBody = (
     <div>
         <Modal.Body>
-            <FormGroup controlId="1">
+          { showValidationAlert && validateMessage.length > 0 &&
+          <Alert bsStyle="danger" onDismiss={() => setShowValidationAlert(false)}>
+            <h4>Überprüfen Sie Ihre Eingaben</h4>
+            <ul>
+              {validateMessage}
+            </ul>
+          </Alert>
+          }
+
+            <FormGroup validationState={environmentValidationState} controlId="1">
               <ControlLabel bsClass="control-label js-form-required form-required">Umgebung</ControlLabel>
               <div className="select-wrapper">
                 <FormControl
@@ -332,13 +380,14 @@ export default function DeploymentForm(props) {
                   name="environment"
                   value={props.formState.environment}
                   onChange={handleChange}
+                  bsClass={"form-control " + environmentValidationState}
                 >
                   {environmentOptions}
                 </FormControl>
               </div>
             </FormGroup>
 
-            <FormGroup controlId="2">
+            <FormGroup validationState={serviceValidationState} controlId="2">
               <ControlLabel bsClass="control-label js-form-required form-required">Verfahren</ControlLabel>
               <div className="select-wrapper">
                 <FormControl
@@ -347,22 +396,24 @@ export default function DeploymentForm(props) {
                   value={props.formState.service}
                   onChange={handleChange}
                   disabled={!props.formState.firstDeployment}
+                  bsClass={"form-control " + serviceValidationState}
                 >
                   {optionsServices}
                 </FormControl>
               </div>
             </FormGroup>
-              <FormGroup controlId="6">
+              <FormGroup validationState={dateValidationState} controlId="6">
                 <ControlLabel bsClass="control-label js-form-required form-required">Datum</ControlLabel>
                 <FormControl
                   type="date"
                   name="date"
                   value={props.formState.date}
                   onChange={handleChange}
+                  bsClass={"form-control " + dateValidationState}
                 >
                 </FormControl>
               </FormGroup>
-            <FormGroup controlId="7">
+            <FormGroup validationState={timeValidationState} controlId="7">
               <ControlLabel bsClass="control-label">Installationsdauer</ControlLabel>
               <div className="custom-help-text">Mögliche Werte: 0:01 - 999:59, Format: hhh:mm </div>
               <FormControl
@@ -371,8 +422,9 @@ export default function DeploymentForm(props) {
                 name="installationTime"
                 value={props.formState.installationTime}
                 onChange={handleChange}
-                placeholder="0:01 - 999:59"
+                placeholder="hhh:mm"
                 maxLength="6"
+                bsClass={"form-control " + timeValidationState}
               >
               </FormControl>
             </FormGroup>
@@ -400,7 +452,7 @@ export default function DeploymentForm(props) {
             </FormGroup>
             {props.formState.abnormalities &&
               <div>
-                <FormGroup controlId="11">
+                <FormGroup validationState={abnormalityValidationState} controlId="11">
                   <ControlLabel bsClass="control-label js-form-required form-required">Beschreibung der Auffälligkeiten</ControlLabel>
                   <div className="custom-help-text">{props.formState.description.length}/400 Zeichen verwendet</div>
                   <FormControl
@@ -409,6 +461,7 @@ export default function DeploymentForm(props) {
                     value={props.formState.description}
                     onChange={handleChange}
                     maxLength="400"
+                    bsClass={"form-control " + abnormalityValidationState}
                   >
                   </FormControl>
                 </FormGroup>
@@ -429,8 +482,9 @@ export default function DeploymentForm(props) {
                   setIsLoading={props.setIsLoading}
                   disabled={props.disabled}
                   setDisabled={props.setDisabled}
+                  releaseValidationState={releaseValidationState}
                 />
-                <Table>
+                <Table className={"has-" + prevReleaseValidationState}>
                   <thead>
                     <tr>
                       <th></th>
@@ -540,9 +594,16 @@ export default function DeploymentForm(props) {
           }
         </Modal.Body>
         <Modal.Footer>
+          { !disableSubmit &&
           <OverlayTrigger placement="top" overlay={ttValidateMessage}>
             <Button disabled={disableSubmit} bsStyle="primary" onClick={props.handleSave} ><span className={submitClass} /> Speichern</Button>
           </OverlayTrigger>
+          }
+          { disableSubmit &&
+          <OverlayTrigger placement="top" overlay={ttValidateMessage}>
+            <Button bsStyle="primary" onClick={() => setShowValidationAlert(true)} ><span className={submitClass} /> Speichern</Button>
+          </OverlayTrigger>
+          }
         <Button bsStyle="danger" onClick={props.handleClose}><span className="glyphicon glyphicon-remove" /> Abbrechen</Button>
         {/* <Button bsStyle="danger" onClick={() => props.setSubmitMessage(<FormSkeleton />)}><span className="glyphicon glyphicon-remove" /> Skeleton</Button> */}
         </Modal.Footer>

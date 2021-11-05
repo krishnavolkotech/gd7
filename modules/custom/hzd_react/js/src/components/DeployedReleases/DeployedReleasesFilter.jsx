@@ -276,7 +276,9 @@ export default function DeployedReleasesFilter(props) {
                   <option key="sort-2" value="field_environment_value">Umgebung</option>
                   <option key="sort-3" value="title">Verfahren</option>
                   <option key="sort-4" value="title_1">Release</option>
-                  <option key="sort-5" value="field_state_list_value">Land</option>
+                  {global.drupalSettings.role !== "ZRML" &&
+                    <option key="sort-5" value="field_state_list_value">Land</option>
+                  }
                 </FormControl>
               </FormGroup>
               <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">

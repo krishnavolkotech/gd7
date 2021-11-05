@@ -86,7 +86,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
           &nbsp;
         </span>
         }
-        { global.drupalSettings.role !== "ZRML" && status != "3" &&
+        { global.drupalSettings.role !== "ZRML" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttEdit}>
             {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/r/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
@@ -95,7 +95,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
           &nbsp;
         </span>
         }
-        { global.drupalSettings.role !== "ZRML" && status =="1" &&
+        { global.drupalSettings.role !== "ZRML" && ["1", "2"].includes(status) &&
         <span>
           <OverlayTrigger placement="top" overlay={ttFail}>
             <Button bsStyle="danger" onClick={(e) => handleAction(e, "failed", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>

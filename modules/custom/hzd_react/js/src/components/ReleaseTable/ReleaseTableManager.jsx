@@ -164,6 +164,7 @@ export default function ReleaseTableManager(props) {
 
   return (
     <div>
+      <p><a href="/release-management/beschreibung-des-status-der-dsl-konsens" target="_blank"><span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status</a></p>
       <ReleaseFilter
         filterState={filterState}
         setFilterState={setFilterState}

@@ -230,7 +230,10 @@ export default function FormManager(props) {
         const abnormalityDescription = results.data.attributes.field_abnormality_description ? results.data.attributes.field_abnormality_description.value : "";
 
         const installationTime = results.data.attributes.field_installation_time !== null ? results.data.attributes.field_installation_time : "";
-        const formattedInstallationTime = formatInstallationTime(installationTime);
+        let formattedInstallationTime = "";
+        if (installationTime !== "") {
+          formattedInstallationTime = formatInstallationTime(installationTime);
+        }
         setFormState(prev => ({
           ...prev,
           "uuid": results.data.id,
@@ -520,7 +523,10 @@ export default function FormManager(props) {
     }
     const deploymentTitle = formState.state + "_" + formState.environment + "_" + formState.service + "_" + releaseName;
 
-    const installationTime = calculateInstallationTime(formState.installationTime);
+    let installationTime = "";
+    if (formState.installationTime !== "") {
+      installationTime = calculateInstallationTime(formState.installationTime);
+    }
 
     var postData = {
       "data": {

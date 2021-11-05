@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
-export default function SelectRelease({ formState, handleChange, newReleases, isLoading, setIsLoading, disabled, setDisabled}) {
+export default function SelectRelease({ formState, handleChange, newReleases, isLoading, setIsLoading, disabled, setDisabled, releaseValidationState}) {
   const [releaseOptions, setReleaseOptions] = useState([<option key="select-release-0" value="0">&lt;Release&gt;</option>]);
 
   // Befüllt Release Releaseoptionen basierend auf newReleases (prop).
@@ -34,7 +34,7 @@ export default function SelectRelease({ formState, handleChange, newReleases, is
   }
 
   return (
-    <FormGroup controlId="3">
+    <FormGroup validationState={releaseValidationState} controlId="3">
       <ControlLabel bsClass="control-label js-form-required form-required">Release{loading}</ControlLabel>
       <div className="select-wrapper">
         <FormControl
@@ -43,6 +43,7 @@ export default function SelectRelease({ formState, handleChange, newReleases, is
           name="releaseNid"
           value={formState.releaseNid}
           onChange={handleChange}
+          bsClass={"form-control " + releaseValidationState}
         >
           {releaseOptions}
         </FormControl>
