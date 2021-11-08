@@ -165,15 +165,17 @@ class ProblemImport {
     }
 
     if ($values['created']){
-      $time = strtotime($values['created']);
-      $newFormatCreated = date('d.m.Y', $time);
-      $values['created'] = $newFormatCreated;
+      $DateCreated = explode(' ', $values['created'], -1);
+      $strDateCreated = strval($DateCreated[0]);
+      $CreatedDate = date_create_from_format('d.m.y', $strDateCreated);
+      $values['created'] = date_format($CreatedDate, 'd.m.Y'); 
     }
 
     if ($values['last_update']){
-      $time = strtotime($values['last_update']);
-      $newFormatLastUpdate = date('d.m.Y', $time);
-      $values['last_update'] = $newFormatLastUpdate;
+      $DateUpdate=explode(' ', $values['last_update'], -1);
+      $strDateUpdate = strval($DateUpdate[0]);
+      $UpdateDate = date_create_from_format('d.m.y', $strDateUpdate);
+      $values['last_update'] = date_format($UpdateDate, 'd.m.Y');
     }
 
     $query = \Drupal::entityQuery('node')
