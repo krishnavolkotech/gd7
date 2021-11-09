@@ -386,8 +386,8 @@ class HzdStorage {
     }
 
     $header = array(
-      0 => array('data' => t('Service'), 'class' => 'service'),
-      1 => array('data' => t('Function'), 'class' => 'function'),
+      0 => array('data' => t('Category 1'), 'class' => 'service'),
+      1 => array('data' => t('Category 2'), 'class' => 'function'),
       2 => array('data' => t('Release'), 'class' => 'release'),
       4 => array('data' => t('Title'), 'class' => 'problem_title'),
       5 => array('data' => t('Status'), 'class' => 'status'),
@@ -395,7 +395,7 @@ class HzdStorage {
       7 => array('data' => t('Last Update'), 'class' => 'last_update'),
     );
     $header[] = array(
-      'data' => t('SDCallID'),
+      'data' => t('ProblemID'),
       'class' => 'action',
     );
     if ($string == 'archived_problems') {
