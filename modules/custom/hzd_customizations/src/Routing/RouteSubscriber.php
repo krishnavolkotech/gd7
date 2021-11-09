@@ -70,6 +70,12 @@ class RouteSubscriber extends RouteSubscriberBase {
     if ($route = $collection->get('forum.page')) {
       $route->setRequirement('_permission', "view releases");
     }
+
+    if($route = $collection->get('legal.legal_login')){
+      $legal_config = \Drupal::service('config.factory')->getEditable('legal.settings');
+      $legal_page_title = $legal_config->get('legal_page_title');
+      $route->setDefault('_title', $legal_page_title);
+    }
   }
 
   /**
