@@ -262,7 +262,7 @@ class HzdStorage {
     if (isset($filter_parameter['string']) && t($filter_parameter['string']) != t('Search Title, Description, Cause, Workaround, Solution')) {
       $group = $problem_node_ids->orConditionGroup()
         //changed from old field_s_no to new field_orp_nr
-        ->condition('field_orp_nr', $filter_parameter['string'], 'LIKE')	     
+        ->condition('field_orp_nr', '%' . $filter_parameter['string'], 'LIKE')	     
         //->condition('field_s_no', $filter_parameter['string'], 'LIKE')
         ->condition('title', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('body', '%' . $filter_parameter['string'] . '%', 'LIKE')
@@ -353,7 +353,7 @@ class HzdStorage {
         }
       }
       // redirect to the node view if a specified SDCallID is searched for
-      if (is_numeric($filterData->get('string', NULL)) && count($result) == 1) {
+      if ((is_numeric($filterData->get('string', NULL)) || str_contains(trim(strtolower($filterData->get('string', NULL))), 'orp-')) && count($result) == 1) {
         $response = new RedirectResponse($groupContentEntity->getEntity()
           ->toUrl()
           ->toString());
