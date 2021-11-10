@@ -177,6 +177,8 @@ class RenameForm extends ConfirmFormBase {
       }
     }
     Cache::invalidateTags(['filebrowser:node:' . $this->node->id()]);
+    // HZD: Invalidate custom cache tag.
+    Cache::invalidateTags(['filebrowser:node:' . $this->node->id() . ':' . $this->queryFid]);
     $form_state->setRedirect($this->route['name'], $this->route['node'], $this->route['query']);;
   }
 
