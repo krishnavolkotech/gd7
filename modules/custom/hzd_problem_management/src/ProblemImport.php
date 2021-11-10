@@ -167,15 +167,17 @@ class ProblemImport {
     if ($values['created']){
       $DateCreated = explode(' ', $values['created'], -1);
       $strDateCreated = strval($DateCreated[0]);
-      $CreatedDate = date_create_from_format('d.m.y', $strDateCreated);
-      $values['created'] = date_format($CreatedDate, 'd.m.Y'); 
+//      $CreatedDate = date_create_from_format('d.m.y', $strDateCreated);
+//      $values['created'] = date_format($CreatedDate, 'd.m.Y'); 
+      $values['created'] = $strDateCreated;
     }
 
     if ($values['last_update']){
       $DateUpdate=explode(' ', $values['last_update'], -1);
       $strDateUpdate = strval($DateUpdate[0]);
-      $UpdateDate = date_create_from_format('d.m.y', $strDateUpdate);
-      $values['last_update'] = date_format($UpdateDate, 'd.m.Y');
+//      $UpdateDate = date_create_from_format('d.m.y', $strDateUpdate);
+//      $values['last_update'] = date_format($UpdateDate, 'd.m.Y');
+      $values['last_update'] = $DateUpdate;
     }
 
     $query = \Drupal::entityQuery('node')
