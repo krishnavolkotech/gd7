@@ -2,7 +2,7 @@
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormState;
 use Drupal\Core\Url;
-
+use Drupal\node\Entity\Node;
 
 function getErlywarningServies() {
   $group_id = get_group_id();
@@ -54,20 +54,16 @@ function hzd_earlywarnings_form_alter(&$form, \Drupal\Core\Form\FormStateInterfa
   if ($form_id == 'node_early_warnings_form') {
     $service = \Drupal::request()->query->get('services');
     $rel = \Drupal::request()->query->get('releases');
-    $form['field_release_service']['widget']['#default_value'] = $service;
-    $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
+    // Neu: Service Reference.
+    $form['field_service']['widget'][0]['target_id']['#default_value'] = Node::load($service);
+    // Neu: Release Reference.
+    $form['field_release_ref']['widget'][0]['target_id']['#default_value'] = Node::load($rel);
     if ($rel && $service) {
-      $form['field_release_service']['#attributes']['readonly'] = 'readonly';
-      $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
-      $form['field_release_service']['#disabled'] = TRUE;
-      $form['field_earlywarning_release']['#disabled'] = TRUE;
+      $form['field_service']['#attributes']['readonly'] = 'readonly';
+      $form['field_release_ref']['#attributes']['readonly'] = 'readonly';
+      $form['field_service']['#disabled'] = TRUE;
+      $form['field_release_ref']['#disabled'] = TRUE;
     }
-    $form['field_release_service']['widget']['#ajax'] = [
-      'callback' => 'hzd_early_warnings_service_change',
-      'wrapper' => 'hzd-release-early-warnings',
-    ];
-    $form['field_earlywarning_release']['widget']['#prefix'] = '<div id="hzd-release-early-warnings">';
-    $form['field_earlywarning_release']['widget']['#sufix'] = '</div>';
   }
   
   return $form;
@@ -116,4 +112,78 @@ function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormS
 function hzd_earlywarnings_comment_insert(Drupal\Core\Entity\EntityInterface $entity) {
   \Drupal::service('cache_tags.invalidator')
     ->invalidateTags(['earlywarning_list']);
+}
+
+/**
+ * Implements hook_form_alter().
+ * 
+ * Alters the early_warnings_mit_ref view filter form elements.
+ */
+function hzd_earlywarnings_form_views_exposed_form_alter(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $view = $form_state->getStorage('view');
+  if (($view['view']->id() == 'early_warnings_mit_ref') && ($view['view']->current_display == 'page_1')) {
+    $releaseType = \Drupal::request()->query->get('release_type') ?: 459;
+    $query = \Drupal::service('entity.query');
+    // Service query.
+    $result = $query->get('node')
+      ->condition('type', 'services')
+      ->condition('release_type' , $releaseType)
+      ->condition('field_release_name', '', '!=')
+      ->execute();
+
+    foreach ($result as $element => $nid) {
+      $node = Node::load($nid);
+      $services[$nid] = $node->title->value;
+    }
+    asort($services);
+
+    $sortedServices = ['' => '<Verfahren>'];
+    foreach ($services as $nid => $title) {
+      $sortedServices[$nid] = $title;
+    }
+
+    // The service form element.
+    $form['services'] = [
+      '#type' => 'select',
+      '#options' => $sortedServices,
+      '#attributes' => [
+        'placeholder' => '<Verfahren>',
+      ],
+    ];
+
+    $selectedService = \Drupal::request()->query->get('services') ?: FALSE;
+    if ($selectedService) {
+      // Release query.
+      $result = $query->get('node')
+        ->condition('type', 'release')
+        ->condition('field_relese_services', $selectedService)
+        ->execute();
+
+      $releases = [];
+      foreach ($result as $element => $nid) {
+        $node = Node::load($nid);
+        $releases[$nid] = $node->title->value;
+      }
+      asort($releases);
+
+      $sortedReleases = ['' => '<Release>'];
+      foreach ($releases as $nid => $title) {
+        $sortedReleases[$nid] = $title;
+      }
+    }
+    else {
+      $sortedReleases = ['' => '<Release>'];
+    }
+    
+    // The release form element.
+    $form['releases'] = [
+      '#type' => 'select',
+      '#options' => $sortedReleases,
+      '#disabled' => $selectedService ? FALSE : TRUE,
+      '#attributes' => [
+        'placeholder' => '<Verfahren>',
+      ],
+    ];
+
+  }
 }

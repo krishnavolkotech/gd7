@@ -94,29 +94,29 @@ export default function FormManager(props) {
 
   /**
    * The form state object.
-   * @property {Object} formState - The form state object.
-   * @property {string} formState.uuid - The uuid of the deployment (if editing existing deployment).
-   * @property {string} formState.status - The deployment status number (1, 2, 3).
-   * @property {string} formState.state - The state of the deployment.
-   * @property {string} formState.environment - The environment of the deployment.
-   * @property {string} formState.service - The service of the deployment.
-   * @property {string} formState.date - The deployment date.
-   * @property {string} formState.installationTime - The deployment installation time.
-   * @property {bool}   formState.isAutomated - The employee's department.
-   * @property {bool}   formState.abnormalities - Does the deployment have abnormalities?
-   * @property {string} formState.description - The abnormality description.
-   * @property {string} formState.releaseNid - The nid of the deployed release.
-   * @property {array}  formState.previousRelease - Array containing nids of previous releases.
-   * @property {array}  formState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
-   * @property {bool}   formState.archiveThis - Should this deployment be archived?
-   * @property {bool}   formState.firstDeployment - First deployment of this product?
-   * @property {bool}   formState.product - First deployment of this product?
-   * @property {bool}   formState.action - First deployment of this product?
+   * @const    {Object}   formState - The form state object.
+   * @property {string}   formState.uuid - The uuid of the deployment (if editing existing deployment).
+   * @property {string}   formState.status - The deployment status number (1, 2, 3).
+   * @property {string}   formState.state - The state of the deployment.
+   * @property {string}   formState.environment - The environment of the deployment.
+   * @property {string}   formState.service - The service of the deployment.
+   * @property {string}   formState.date - The deployment date.
+   * @property {string}   formState.installationTime - The deployment installation time.
+   * @property {bool}     formState.isAutomated - The employee's department.
+   * @property {bool}     formState.abnormalities - Does the deployment have abnormalities?
+   * @property {string}   formState.description - The abnormality description.
+   * @property {string}   formState.releaseNid - The nid of the deployed release.
+   * @property {array}    formState.previousRelease - Array containing nids of previous releases.
+   * @property {array}    formState.archivePrevRelease - Array containing booleans to indicate, if the previous releases should be archived.
+   * @property {bool}     formState.archiveThis - Should this deployment be archived?
+   * @property {bool}     formState.firstDeployment - First deployment of this product?
+   * @property {bool}     formState.product - First deployment of this product?
+   * @property {bool}     formState.action - First deployment of this product?
    * @property {number}   formState.pCount - Deep Scan workaround for previousReleases (detects changes).
-   * @property {array}   formState.previousReleases - Array of selected previous releases.
+   * @property {Object[]} formState.previousReleases - Array of selected previous releases.
    * @property {string}   formState.previousReleases[].uuidRelease - Uuid of previous release.
    * @property {string}   formState.previousReleases[].uuidDeployment - Uuid of previous release deployment.
-   * @property {bool}   formState.previousReleases[].archive - Bool indicating, if prev release should be archived.
+   * @property {bool}     formState.previousReleases[].archive - Bool indicating, if prev release should be archived.
    * @property {string}   formState.previousReleases[].title - The release name.
    * @property {string}   formState.previousReleases[].release - The release nid.
    */
@@ -315,6 +315,8 @@ export default function FormManager(props) {
     // }
     // // Trigger zurücksetzen.
     // setTriggerReleaseSelect(false);
+    
+    // All deployments, that match the current state, environment and service.
     let filteredDeployments = deploymentData.filter(deployment => {
       let result = true;
       if (deployment.state != formState.state) {
