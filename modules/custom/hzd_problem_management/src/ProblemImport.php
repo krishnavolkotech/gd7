@@ -71,13 +71,13 @@ class ProblemImport {
       throw new ProblemImportException("file_unable_to_read", 0, ['%path' => $this->importPath]);
     }
     $count = 1;
-    $data = fgetcsv($this->fileHandle, 5000, ";");
+    $data = fgetcsv($this->fileHandle, 5000, ';', '"', '"' );
     if (!$data) {
       throw new ProblemImportException("empty_file", 0, ['%path' => $this->importPath]);
     }
     $this->failedNodes = [];
     $newservices = [];
-    while (($data = fgetcsv($this->fileHandle, 5000, ";")) !== FALSE) {
+    while (($data = fgetcsv($this->fileHandle, 5000, ';', '"', '"' )) !== FALSE) {
       foreach ($data as $key => $value) {
         $values[$this->headers[$key]] = $data[$key];
       }
