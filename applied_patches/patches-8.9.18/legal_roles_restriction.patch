@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/legal/legal.module b/modules/contrib/legal/legal.module
+index f520046fd..b3d5f5e2a 100644
+--- a/modules/contrib/legal/legal.module
++++ b/modules/contrib/legal/legal.module
+@@ -858,7 +858,7 @@ function legal_user_is_exempt($account) {
+   $settings = \Drupal::config('legal.settings');
+ 
+   $exempt_roles = $settings->get('except_roles');
+-  $account_roles = $account->getRoles(TRUE);
++  $account_roles = $account->getRoles();
+ 
+   if (count(array_intersect($exempt_roles, $account_roles))) {
+     return TRUE;

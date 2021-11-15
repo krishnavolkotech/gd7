@@ -68,7 +68,7 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
 
         $form['legal_decline_button'] = array(
             '#weight' => 150,
-            '#markup' => "<a href='/user/login' class='btn btn-danger legal-decline-btn'>$reject_button_label</a>",
+            '#markup' => "<a href='/user/login?destination=/' class='btn btn-danger legal-decline-btn'>$reject_button_label</a>",
           );
         $url_impressum = Url::fromUserInput('/impressum', array('attributes' => array('target' => '_blank')));
         $link_impressum = Link::fromTextAndUrl(t('Datenschutzerklärung'), $url_impressum)->toString();
