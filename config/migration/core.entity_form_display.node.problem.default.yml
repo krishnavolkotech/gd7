@@ -11,7 +11,11 @@ dependencies:
     - field.field.node.problem.field_diagnose
     - field.field.node.problem.field_eroffnet
     - field.field.node.problem.field_function
+    - field.field.node.problem.field_interface_affected
+    - field.field.node.problem.field_orp_nr
+    - field.field.node.problem.field_part_of_lueafp
     - field.field.node.problem.field_priority
+    - field.field.node.problem.field_proactive_creation
     - field.field.node.problem.field_problem_eroffnet
     - field.field.node.problem.field_problem_status
     - field.field.node.problem.field_problem_symptoms
@@ -24,6 +28,7 @@ dependencies:
     - field.field.node.problem.field_task_force
     - field.field.node.problem.field_ticketstore_count
     - field.field.node.problem.field_ticketstore_link
+    - field.field.node.problem.field_unlocated_cause
     - field.field.node.problem.field_version
     - field.field.node.problem.field_work_around
     - field.field.node.problem.upload
@@ -105,6 +110,30 @@ content:
       rows: 5
     third_party_settings: {  }
     region: content
+  field_interface_affected:
+    weight: 31
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_orp_nr:
+    weight: 34
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
+  field_part_of_lueafp:
+    weight: 33
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
+    region: content
   field_priority:
     weight: 11
     type: string_textarea
@@ -112,6 +141,14 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
+  field_proactive_creation:
+    weight: 30
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
     region: content
   field_problem_eroffnet:
     weight: 24
@@ -202,6 +239,14 @@ content:
       placeholder: ''
       rows: 5
     third_party_settings: {  }
+    region: content
+  field_unlocated_cause:
+    weight: 32
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textarea
     region: content
   field_version:
     weight: 22

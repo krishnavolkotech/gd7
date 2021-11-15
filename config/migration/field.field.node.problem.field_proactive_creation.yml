@@ -1,0 +1,19 @@
+uuid: aba9ee82-a4fa-4684-8509-4afc87b56319
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_proactive_creation
+    - node.type.problem
+id: node.problem.field_proactive_creation
+field_name: field_proactive_creation
+entity_type: node
+bundle: problem
+label: proactive_creation
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long
