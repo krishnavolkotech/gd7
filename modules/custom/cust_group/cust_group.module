@@ -1710,6 +1710,10 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
 
   if (!in_array('site_administrator', $current_user->getRoles())) {
     if ($entity->getEntityTypeId() == 'node') {
+      // Do not create pathauto for deployed releases.
+      if ($entity->bundle() === "deployed_releases") {
+        return;
+      }
       $token_type = \Drupal::service('token.entity_mapper');
       $data = [$token_type->getTokenTypeForEntityType($entity->getEntityTypeId()) => $entity,];
 
