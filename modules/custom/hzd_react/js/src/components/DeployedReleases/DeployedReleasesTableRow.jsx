@@ -73,7 +73,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
-            <Button bsStyle="success" onClick={(e) => handleAction(e, "successor", { state, environment, service, release, product, releaseName })}><span className="glyphicon glyphicon-forward" /></Button>
+            <Button bsStyle="success" onClick={(e) => handleAction(e, "successor", { state, environment, service, release, product, releaseName })} alt="Nachfolgerelease melden" name="Nachfolgerelease melden"><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -81,7 +81,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttArchive}>
-            <Button bsStyle="info" onClick={(e) => handleAction(e, "archive", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-folder-close" /></Button>
+            <Button bsStyle="info" onClick={(e) => handleAction(e, "archive", { nid, uuidDeployment, releaseName })} alt="Archivieren" name="Archivieren"><span className="glyphicon glyphicon-folder-close" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -90,7 +90,7 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         <span>
           <OverlayTrigger placement="top" overlay={ttEdit}>
             {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/r/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
-            <Button bsStyle="primary" onClick={(e) => handleAction(e, "edit", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-edit" /></Button>
+            <Button bsStyle="primary" onClick={(e) => handleAction(e, "edit", { nid, uuidDeployment, releaseName })} alt="Bearbeiten" name="Bearbeiten"><span className="glyphicon glyphicon-edit" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
@@ -98,14 +98,14 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
         { global.drupalSettings.role !== "ZRML" && ["1", "2"].includes(status) &&
         <span>
           <OverlayTrigger placement="top" overlay={ttFail}>
-            <Button bsStyle="danger" onClick={(e) => handleAction(e, "failed", { nid, uuidDeployment, releaseName })}><span className="glyphicon glyphicon-fire" /></Button>
+            <Button bsStyle="danger" onClick={(e) => handleAction(e, "failed", { nid, uuidDeployment, releaseName })} alt="Fehlmeldung kennzeichnen" name="Fehlmeldung kennzeichnen"><span className="glyphicon glyphicon-fire" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>
         }
         {/* <Button bsStyle="link" href={"/node/" + nid}><span className="glyphicon glyphicon-eye-open" /></Button> */}
           <OverlayTrigger placement="top" overlay={ttView}>
-            <Button bsStyle="primary" onClick={() => handleView(nid)}><span className="glyphicon glyphicon-eye-open" /></Button>
+            <Button bsStyle="primary" onClick={() => handleView(nid)} alt="Einsatzmeldung aufrufen" name="Einsatzmeldung aufrufen"><span className="glyphicon glyphicon-eye-open" /></Button>
           </OverlayTrigger>
       </td>
     </tr>

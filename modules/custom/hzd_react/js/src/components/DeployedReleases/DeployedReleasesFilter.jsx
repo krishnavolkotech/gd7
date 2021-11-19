@@ -86,7 +86,7 @@ export default function DeployedReleasesFilter(props) {
    */
   const populateProductFilter = () => {
     // Product Filter.
-    const defaultProduct = [<option key="product-default" value="0">&lt;Komponente&gt;</option>];
+    const defaultProduct = [<option key="product-default" value="">&lt;Komponente&gt;</option>];
     let optionsProducts = [];
     if (props.filterState.service != "0" && Object.keys(props.releases).length > 0) {
       // Verify that the releases for the selected service are loaded.
@@ -143,7 +143,7 @@ export default function DeployedReleasesFilter(props) {
     props.setFilterState(prev => ({ ...prev, ...val }));
     if (e.target.name == "service") {
       setDisableProductFilter(true);
-      props.setFilterState(prev => ({ ...prev, "product": "0" }));
+      props.setFilterState(prev => ({ ...prev, "product": "" }));
     }
 
     if (e.target.name == "state") {
@@ -304,11 +304,11 @@ export default function DeployedReleasesFilter(props) {
                 </OverlayTrigger>
               &nbsp; */}
               <OverlayTrigger placement="top" overlay={ttReset}>
-                <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
+                <Button onClick={props.handleReset} bsStyle="danger" alt="Filter zurücksetzen"><span className="glyphicon glyphicon-repeat" /></Button>
               </OverlayTrigger>
               &nbsp;
               <OverlayTrigger placement="top" overlay={ttRefresh}>
-                <Button onClick={() => props.setCount(props.count + 1)} bsStyle="primary"><span className="glyphicon glyphicon-refresh" /></Button>
+                <Button onClick={() => props.setCount(props.count + 1)} bsStyle="primary" alt="Tabelle aktualisieren"><span className="glyphicon glyphicon-refresh" /></Button>
               </OverlayTrigger>
               &nbsp;
             </div>

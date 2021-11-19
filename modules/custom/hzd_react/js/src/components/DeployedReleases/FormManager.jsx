@@ -722,7 +722,7 @@ export default function FormManager(props) {
       { props.status == "1" &&
         <div>
           <p />
-          <Button bsStyle="primary" bsSize="large" onClick={handleFirstDeployment}>
+          <Button bsStyle="primary" bsSize="large" onClick={handleFirstDeployment} alt="Ersteinsatz melden">
             <span className="glyphicon glyphicon-plus" /> Ersteinsatz melden
           </Button>
         </div>

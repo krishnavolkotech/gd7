@@ -488,7 +488,7 @@ export default function DeploymentForm(props) {
                   <thead>
                     <tr>
                       <th></th>
-                      <th><ControlLabel>Vorgängerrelease</ControlLabel></th>
+                      <th><ControlLabel bsClass="control-label js-form-required form-required">Vorgängerrelease</ControlLabel></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -497,7 +497,7 @@ export default function DeploymentForm(props) {
                         <tr key={"pr-row-" + i}>
                           <td>
                           { r.release != "0" &&
-                            <Button bsStyle="danger" onClick={() => removePrevReleaseSelector(i)}><span className="glyphicon glyphicon-trash" /></Button>
+                            <Button bsStyle="danger" onClick={() => removePrevReleaseSelector(i)} alt="Vorgängerrelease entfernen"><span className="glyphicon glyphicon-trash" /></Button>
                           }
                           </td>
                           <td>
@@ -513,23 +513,33 @@ export default function DeploymentForm(props) {
                             />
                           {props.formState.action != 'edit' &&
                             <Form inline>
-                              <FormGroup onChange={handleRadio} controlId="5">
-                                <ControlLabel bsClass="control-label js-form-required form-required">Vorgängermeldung archivieren?</ControlLabel>
+                              {/* <ControlLabel bsClass="control-label js-form-required form-required">Archivieren?</ControlLabel> */}
+                              &nbsp;&nbsp;
+                              <FormGroup onChange={handleRadio} controlId={"ja-" + i}>
                                 &nbsp;
-                               <Radio
+                                <Radio
                                   name={i}
                                   value="ja"
                                   checked={props.formState.previousReleases[i].archive === true}
+                                  title="Ja"
+                                  id={"ja-" + i}
                                 >
-                                  &nbsp;Ja
+                                  {/* <ControlLabel bsClass="control-label">Ja</ControlLabel> */}
+                                  &nbsp;Archivieren
                                 </Radio>
+                              </FormGroup>
                                 &nbsp;&nbsp;
+                              <FormGroup onChange={handleRadio} controlId={"nein-" + i}>
+                                &nbsp;
                                 <Radio
                                   name={i}
                                   value="nein"
                                   checked={props.formState.previousReleases[i].archive === false}
+                                  title="Nein"
+                                  id={"nein-" + i}
                                 >
-                                  &nbsp;Nein
+                                  {/* <ControlLabel bsClass="control-label">Nein</ControlLabel> */}
+                                  &nbsp;Nicht archivieren
                                 </Radio>
                               </FormGroup>
                             </Form>
@@ -561,7 +571,7 @@ export default function DeploymentForm(props) {
                     <tr>
                       <td colSpan="3">
                         <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
-                          <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success"><span className="glyphicon glyphicon-plus" /></Button>
+                          <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success" alt="Vorgängerrelease hinzufügen"><span className="glyphicon glyphicon-plus" /></Button>
                         </OverlayTrigger>
                       </td>
                     </tr>
