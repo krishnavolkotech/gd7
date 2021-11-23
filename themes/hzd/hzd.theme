@@ -19,6 +19,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\node\Entity\NodeType;
+use Drupal\Core\Site\Settings;
 
 define('ITSM_PROZESSE', 'ITSM-Prozesse');
 define('VERFAHREN', 'Verfahren');
@@ -1031,6 +1032,48 @@ function hzd_preprocess_user(&$variables) {
 //  $variables['email'] = $variables['user']->getEmail();
 //  $variables['state'] = $state_name;
 //  $variables['group_list'] = hzd_group_list($variables['user']->id());
+
+  // Validate current user page & logged User access
+  $logged_user_id = \Drupal::currentUser()->id();
+  $logged_user_admin = false;
+  $variables['show_legal_info'] = false;
+  $logged_user_roles = \Drupal\user\Entity\User::load($logged_user_id)->getRoles();
+  if (in_array('administrator', $logged_user_roles) || in_array('site_administrator', $logged_user_roles)) {
+    $logged_user_admin = true;
+  }
+
+  // GET user's legal accepted date-time
+  $db = \Drupal::database();
+  $uid = $variables['user']->id();
+  $legal_accepted = $db->select('legal_accepted', 's')
+      ->fields('s', array('accepted'))
+      ->orderBy('version', 'DESC')
+      ->condition('uid', $variables['user']->id(), '=');
+  $legal_accepted_accepted = $legal_accepted->execute()->fetchField();
+  if($legal_accepted_accepted){
+    $variables['legal_accepted_accepted'] = date('d/m/Y H:i:s', $legal_accepted_accepted);
+  }else{
+    $variables['legal_accepted_accepted'] = '';
+  }
+
+  // GET legal version last changed
+  $impressum_nid = Settings::get('privacy_policy_nid', 335);
+  $impressum_node = \Drupal\node\Entity\Node::load($impressum_nid);
+  if($impressum_node){
+    $impressum_changed = $impressum_node->getChangedTime();
+    $variables['legal_last_changed'] = date('d/m/Y H:i:s', $impressum_changed);
+  }else{
+    $variables['legal_last_changed'] = '';
+  }
+
+  // echo '<pre>'; 
+  // echo $logged_user_id;
+  // print_r($impressum_node->getChangedTime()); die;
+  // Show legal info only for OWN or Admin
+  if(($uid == $logged_user_id) || $logged_user_admin){
+    $variables['show_legal_info'] = true;
+  }
+
 }
 
 function hzd_preprocess_menu_local_tasks(&$vars) {

@@ -1,0 +1,24 @@
+uuid: 0da9a3ec-68a6-460a-96fb-df4799582bf4
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_privacy_policy
+  module:
+    - user
+id: user.user.field_privacy_policy
+field_name: field_privacy_policy
+entity_type: user
+bundle: user
+label: 'I accept the data privacy statement'
+description: ''
+required: true
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: An
+  off_label: Aus
+field_type: boolean
