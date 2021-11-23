@@ -9,6 +9,10 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\Core\Link;
 
+if (!defined('PRIVACY_NID')) {
+ define('PRIVACY_NID', Settings::get('privacy_policy_nid', 335));
+}
+
 // development functions
 function __hzd($object) {
     if (empty($object)) {
@@ -70,10 +74,9 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             '#weight' => 150,
             '#markup' => "<a href='/user/login?destination=/' class='btn btn-danger legal-decline-btn'>$reject_button_label</a>",
           );
-        $url_impressum = Url::fromUserInput('/impressum', array('attributes' => array('target' => '_blank')));
-        $link_impressum = Link::fromTextAndUrl(t('Datenschutzerklärung'), $url_impressum)->toString();
+	$link_impressum = legal_impressum_link();
         //legal_accept
-        $form['legal']['legal_accept']['#title'] = t("Ich stimme der $link_impressum zu.");  
+        $form['legal']['legal_accept']['#title'] = t("Ich stimme der @link zu.",  ['@link' => $link_impressum]);
     }
 
     if ($form_id == 'legal_admin_settings') {
@@ -117,10 +120,8 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
 
 
   if ($form_id == 'user_register_form' || $form_id == 'user_form') {
-    $url_impressum = Url::fromUserInput('/impressum', array('attributes' => array('target' => '_blank')));
-    $link_impressum = Link::fromTextAndUrl(t('Datenschutzerklärung'), $url_impressum)->toString();
-
-    $form['legal']['legal_accept']['#title'] = t("Ich stimme der $link_impressum zu.");
+    $link_impressum = legal_impressum_link();
+    $form['legal']['legal_accept']['#title'] = t("Ich stimme der @link zu.",  ['@link' => $link_impressum]);
     $form['field_privacy_policy']['widget']['value']['#title'] = t("Ich stimme der $link_impressum zu.");
     unset($form['field_privacy_policy']);
 $val = [];
@@ -418,4 +419,10 @@ function hzd_group_list($uid, $no_html = false) {
     } else {
         return $val;
     }
+}
+
+function legal_impressum_link() {
+  $url_impressum = Url::fromRoute('entity.node.canonical', ['node' => PRIVACY_NID], ['attributes' => ['target' => '_blank']]);
+  //$url_impressum = Url::fromUserInput('/impressum', array('attributes' => array('target' => '_blank')));
+  return $link_impressum = Link::fromTextAndUrl(t('Datenschutzerklärung'), $url_impressum)->toString();
 }
