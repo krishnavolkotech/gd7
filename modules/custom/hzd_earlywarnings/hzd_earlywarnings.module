@@ -97,15 +97,6 @@ function hzd_earlywarnings_node_insert(EntityInterface $entity) {
   }
 }
 
-function hzd_early_warnings_service_change(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  $service = $form_state->getValue('field_release_service')[0]['value'];
-  $deployed_releses_options = released_deployed_releases($service)['releases'];
-  natcasesort($deployed_releses_options);
-  $form['field_earlywarning_release']['widget']['#options'] = $deployed_releses_options;
-  return $form['field_earlywarning_release']['widget'];
-}
-
-
 /**
  * implements hook_form_alter
  */

@@ -102,7 +102,7 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     $earlyWarnings = $this->entityQuery->get('node')
       ->condition('status', 1)
       ->condition('type', 'early_warnings')
-      ->condition('field_earlywarning_release', $releaseNid)
+      ->condition('field_release_ref', $releaseNid)
       ->execute();
     
     $serviceNid = $context->getField("field_relese_services")->entity->id();
