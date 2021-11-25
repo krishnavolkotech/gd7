@@ -4128,3 +4128,6 @@ fieldset#edit-node-notification-checkbox--wrapper {
 .legal-login .form-item-conditions label.control-label {
     display: none;
 }
+.legal-accept-page-description {
+    margin-bottom: 10px;
+}

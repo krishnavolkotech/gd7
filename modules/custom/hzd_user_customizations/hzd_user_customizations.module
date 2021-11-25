@@ -52,6 +52,7 @@ function _legal_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_s
       ->set('except_roles', $values['except_roles'])
       ->set('user_profile_display', $values['user_profile_display'])
       ->set('accept_every_login', $values['accept_every_login'])
+      ->set('legal_page_description', $values['legal_page_description'])
       ->save();
 
     drupal_flush_all_caches();
@@ -62,14 +63,16 @@ function _legal_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_s
  * implements hook_form_alter
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-
     if ($form_id == 'legal_login') {
         $config = \Drupal::service('config.factory')->getEditable('legal.settings');
         $confirm_button_label = $config->get('confirm_button_label') ? t($config->get('confirm_button_label')) : t('Confirm');
         $reject_button_label = $config->get('reject_button_label') ? t($config->get('reject_button_label')) : t('Decline');
           
         $form['save']['#value'] = $confirm_button_label;
-
+	$legal_classes = $form['legal']['content']['#attributes']['class'];
+	if (in_array('legal-terms-scroll', $legal_classes)) {
+          $form['legal']['content']['#attributes']['class'][] = 'well';
+        }
         $form['legal_decline_button'] = array(
             '#weight' => 150,
             '#markup' => "<a href='/user/login?destination=/' class='btn btn-danger legal-decline-btn'>$reject_button_label</a>",
@@ -108,6 +111,15 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
             '#default_value' => $config->get('legal_page_title'), 
             '#size' => 60,           
         );
+
+        $legal_page_description = $config->get('legal_page_description');
+        $form['legal_page_description'] = [
+            '#type' => 'text_format',
+            '#title' => t('Login - Introduction'),
+            '#format' => $legal_page_description['format'],
+            // '#description' => $this->t('Message display to customer contacts.'),
+            '#default_value' => $legal_page_description['value'],
+          ];
 
         //   $form['actions']['edit']['#submit'][] = '_legal_form_submit';
         $form['actions']['submit']['#submit'][] = '_legal_form_submit'; 
