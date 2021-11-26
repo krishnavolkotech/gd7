@@ -12,7 +12,11 @@ dependencies:
     - field.field.node.problem.field_diagnose
     - field.field.node.problem.field_eroffnet
     - field.field.node.problem.field_function
+    - field.field.node.problem.field_interface_affected
+    - field.field.node.problem.field_orp_nr
+    - field.field.node.problem.field_part_of_lueafp
     - field.field.node.problem.field_priority
+    - field.field.node.problem.field_proactive_creation
     - field.field.node.problem.field_problem_eroffnet
     - field.field.node.problem.field_problem_status
     - field.field.node.problem.field_problem_symptoms
@@ -25,6 +29,7 @@ dependencies:
     - field.field.node.problem.field_task_force
     - field.field.node.problem.field_ticketstore_count
     - field.field.node.problem.field_ticketstore_link
+    - field.field.node.problem.field_unlocated_cause
     - field.field.node.problem.field_version
     - field.field.node.problem.field_work_around
     - field.field.node.problem.upload
@@ -106,12 +111,40 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_interface_affected:
+    weight: 27
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_orp_nr:
+    weight: 30
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
+  field_part_of_lueafp:
+    weight: 29
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
+    region: content
   field_priority:
     label: inline
     weight: 9
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_proactive_creation:
+    weight: 26
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
     region: content
   field_problem_eroffnet:
     label: inline
@@ -205,6 +238,13 @@ content:
     type: basic_string
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_unlocated_cause:
+    weight: 28
+    label: above
+    settings: {  }
+    third_party_settings: {  }
+    type: basic_string
     region: content
   field_version:
     label: inline

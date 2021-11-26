@@ -261,7 +261,9 @@ class HzdStorage {
 
     if (isset($filter_parameter['string']) && t($filter_parameter['string']) != t('Search Title, Description, Cause, Workaround, Solution')) {
       $group = $problem_node_ids->orConditionGroup()
-        ->condition('field_s_no', $filter_parameter['string'], 'LIKE')
+        //changed from old field_s_no to new field_orp_nr
+        ->condition('field_orp_nr', '%' . $filter_parameter['string'], 'LIKE')	     
+        //->condition('field_s_no', $filter_parameter['string'], 'LIKE')
         ->condition('title', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('body', '%' . $filter_parameter['string'] . '%', 'LIKE')
         ->condition('field_work_around', '%' . $filter_parameter['string'] . '%', 'LIKE');
@@ -280,10 +282,14 @@ class HzdStorage {
       $ids = [-1];
     }
     $conn = \Drupal::database()->select('node_field_data', 'nfd');
-    $conn->innerJoin('node__field_s_no', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
+   //changed from old field_s_no to new field_orp_nr
+    $conn->innerJoin('node__field_orp_nr', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
+    //$conn->innerJoin('node__field_s_no', 'nfs', 'nfd.nid = nfs.entity_id'); //cclaus: Verknüpfung mit SDCallID-Tabelle
     $conn->addField('nfd', 'nid', 'dsa');
     $conn->addField('nfd', 'changed', 'cha'); //cclaus: eingefügt zum Sortieren nach Updatedatum
-    $conn->addField('nfs', 'field_s_no_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
+    //changed from old field_s_no to new field_orp_nr
+    $conn->addField('nfs', 'field_orp_nr_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
+    //$conn->addField('nfs', 'field_s_no_value', 'sdc'); //cclaus: eingefügt zum Sortieren nach SDCallID
     $conn = $conn->condition('nfd.nid', $ids, 'IN')
       ->orderBy('unix_order', 'desc')
       ->orderBy('cha', 'desc')
@@ -322,7 +328,9 @@ class HzdStorage {
         current($node_problem_group_id));
       $groupContentItemUrl = NULL;
       if ($groupContentEntity instanceof \Drupal\group\Entity\GroupContent) {
-        $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
+	//changed from old field_s_no to new field_orp_nr
+	$groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_orp_nr->value, $problems_node->toUrl('canonical', [
+        //$groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
           'absolute' => 1,
           'query' => $exposedFilterData
         ]));
@@ -336,14 +344,16 @@ class HzdStorage {
         $query = \Drupal::request()->query;
         if ($query->has('print') && $query->get('print') == 'pdf') {
           unset($exposedFilterData['print']);
-          $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
+	  //changed from old field_s_no to new field_orp_nr
+	  $groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_orp_nr->value, $problems_node->toUrl('canonical', [
+	  //$groupContentItemUrl = Link::fromTextAndUrl($problems_node->field_s_no->value, $problems_node->toUrl('canonical', [
             'absolute' => 1,
             'query' => $exposedFilterData
           ]));
         }
       }
       // redirect to the node view if a specified SDCallID is searched for
-      if (is_numeric($filterData->get('string', NULL)) && count($result) == 1) {
+      if ((is_numeric($filterData->get('string', NULL)) || str_contains(trim(strtolower($filterData->get('string', NULL))), 'orp-')) && count($result) == 1) {
         $response = new RedirectResponse($groupContentEntity->getEntity()
           ->toUrl()
           ->toString());
@@ -376,8 +386,8 @@ class HzdStorage {
     }
 
     $header = array(
-      0 => array('data' => t('Service'), 'class' => 'service'),
-      1 => array('data' => t('Function'), 'class' => 'function'),
+      0 => array('data' => t('Category 1'), 'class' => 'service'),
+      1 => array('data' => t('Category 2'), 'class' => 'function'),
       2 => array('data' => t('Release'), 'class' => 'release'),
       4 => array('data' => t('Title'), 'class' => 'problem_title'),
       5 => array('data' => t('Status'), 'class' => 'status'),
@@ -385,7 +395,7 @@ class HzdStorage {
       7 => array('data' => t('Last Update'), 'class' => 'last_update'),
     );
     $header[] = array(
-      'data' => t('SDCallID'),
+      'data' => t('ProblemID'),
       'class' => 'action',
     );
     if ($string == 'archived_problems') {
