@@ -1257,6 +1257,16 @@ function hzd_preprocess_page_title(&$vars) {
   if ($title instanceof Markup) {
     $vars['title'] = Markup::create(htmlspecialchars_decode($title->__toString()));
   }
+
+  $vars['legal_page_description_display'] = false;
+  $path = \Drupal::service('path.current')->getPath();
+  if ($path == '/legal_accept') {
+    $config = \Drupal::service('config.factory')->getEditable('legal.settings');
+    $legal_page_description = $config->get('legal_page_description') ? $config->get('legal_page_description') : ['value' => ''];
+    $vars['legal_page_description'] = $legal_page_description['value'];
+    $vars['legal_page_description_display'] = true;
+  }
+
 }
 
 function hzd_preprocess_file_link(&$variables) {
