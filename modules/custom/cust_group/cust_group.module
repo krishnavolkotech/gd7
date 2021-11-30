@@ -1049,7 +1049,7 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
       return Drupal\Core\Access\AccessResult::forbidden()->cachePerPermissions()->cachePerUser();
     }
   }
-  $pagesFor_anonymous = [335 => 'impressum', 439 => 'hilfe'];
+  $pagesFor_anonymous = [335 => 'impressum', 439 => 'hilfe', 84888 => 'datenschutz'];
   switch ($op) {
     case 'view':
       if ($account->isAnonymous()) {
