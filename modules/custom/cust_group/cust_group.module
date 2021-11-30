@@ -704,7 +704,7 @@ function cust_group_form_alter(&$form, $form_state, $form_id) {
          $group_alias = get_group_node_alias($parent_group);
 	 if ($alias) {
             if(strpos($alias, $group_alias) === 0) {
-              $alias_new = str_replace($group_alias, "",$alias);
+              $alias_new = str_replace($group_alias."/", "/",$alias);
 	      $form['path']['widget'][0]['alias']['#default_value'] = $alias_new;
             }
 	 }
@@ -1717,15 +1717,24 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
       }
       else {
         if ($group_alias && $node_alias) {
-          if(strpos($node_alias, "/".$group_alias) === 0) {
+	    $new_alias = "/".$group_alias. $node_alias;
+	    
+            $entity->path = [
+              'alias' => $new_alias,
+              'pathauto' => PathautoState::SKIP,
+            ];
+	/*
+	  if(strpos($node_alias, "/".$group_alias) === 0) {
           }
           else {
             $new_alias = "/".$group_alias. $node_alias;
+	    	        dump("IN ELSE ". $new_alias);	
             $entity->path = [
               'alias' => $new_alias,
               'pathauto' => PathautoState::SKIP,
             ];
           }
+	 */
         }
         else {
           $entity->path = [

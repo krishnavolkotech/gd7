@@ -19,6 +19,9 @@ use Drupal\node\Entity\Node;
 use Drupal\group\Entity\Group;
 use Drupal\hzd_customizations\Controller\Inactiveusers;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\legal\Entity\Conditions;
+use Drupal\Core\Link;
+use Drupal\Core\Site\Settings;
 
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 'site_administrator');
@@ -27,6 +30,10 @@ if (!defined('SITE_ADMIN')) {
 if (!defined('KONSONS')) {
   define('KONSONS', \Drupal::config('hzd_release_management.settings')
                   ->get('konsens_service_term_id'));
+}
+
+if (!defined('PRIVACY_NID')) {
+ define('PRIVACY_NID', Settings::get('privacy_policy_nid', 335));
 }
 
 /**
@@ -236,7 +243,20 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
 function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $user = \Drupal::service('current_user');
   $uid = $user->id();
+
+  // module_set_weight('hzd_user_customizations', 101);	
+  //module_set_weight('legal', 100);
+    
   $raw_name = $user->getDisplayName();
+  if ($form_id == 'legal_admin_terms') {
+
+    $privacy_policy = Node::load(PRIVACY_NID);
+    $form['terms_of_use']['conditions']['#value'] = $privacy_policy->get('body')->value;
+
+    $url = Url::fromRoute('entity.node.edit_form', ['node' => PRIVACY_NID]);
+    $link = Link::fromTextAndUrl(t('Update Privacy Policy'), $url)->toString();
+    $form['terms_of_use']['edit_link']['#markup'] = $link;
+  }
   if(strpos($form_id, 'group_membership_group-join_form') !== FALSE) {
     $form['actions']['submit']['#submit'][] = 'custom_redirect_member_add';
   }
@@ -967,6 +987,21 @@ function hzd_customizations_node_insert(EntityInterface $entity) {
  * @param \Drupal\Core\Entity\EntityInterface $entity
  */
 function hzd_customizations_node_update(EntityInterface $entity) {
+  if($entity->id() == PRIVACY_NID) {
+    $version = legal_version('version', 'de');
+    Conditions::create([
+        'version'    => $version['version'],
+        'revision'   => $version['revision'],
+        'language'   => 'de',
+        'conditions' => $entity->get('body')->value,
+        'format'     => $entity->get('body')->format,
+        'date'       => time(),
+        'extras'     => serialize([ "extras-1" => "", "extras-2" => "", "extras-3" => "", "extras-4" => "", "extras-5" => "", "extras-6" => "", "extras-7" => "", "extras-8" => "", "extras-9" => "", "extras-10" => ""]),
+        'changes'    => '',
+      ])->save();
+
+  }
+  
   //Whenever a new news node is updated assign it to bpk group if not already.
   if ($entity->getType() == 'news') {
     $BPKGroup = \Drupal\group\Entity\Group::load(BETRIEBSPORTAL_KONSENS);

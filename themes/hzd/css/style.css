@@ -4121,3 +4121,13 @@ table.released tr th:last-child {
 fieldset#edit-node-notification-checkbox--wrapper {
     clear: both;
 }
+#edit-field-privacy-policy-wrapper, .user-register-form .form-item-legal-accept {
+    margin-left: 16px !important;
+}
+
+.legal-login .form-item-conditions label.control-label {
+    display: none;
+}
+.legal-accept-page-description {
+    margin-bottom: 10px;
+}
