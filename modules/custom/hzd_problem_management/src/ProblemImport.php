@@ -177,7 +177,7 @@ class ProblemImport {
       $strDateUpdate = strval($DateUpdate[0]);
 //      $UpdateDate = date_create_from_format('d.m.y', $strDateUpdate);
 //      $values['last_update'] = date_format($UpdateDate, 'd.m.Y');
-      $values['last_update'] = $DateUpdate;
+      $values['last_update'] = $strDateUpdate;
     }
 
     $query = \Drupal::entityQuery('node')
