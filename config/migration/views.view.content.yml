@@ -31,8 +31,8 @@ display:
         options:
           submit_button: Filter
           reset_button: true
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
+          reset_button_label: Reset
+          exposed_sorts_label: 'Sort by'
           expose_sort_order: true
           sort_asc_label: Asc
           sort_desc_label: Desc
@@ -41,10 +41,10 @@ display:
         options:
           items_per_page: 50
           tags:
-            previous: '‹ Vorherige'
-            next: 'Weiter › '
-            first: '« Anfang'
-            last: 'Ende »'
+            previous: '‹ Previous'
+            next: 'Next ›'
+            first: '« First'
+            last: 'Last »'
       style:
         type: table
         options:
@@ -515,7 +515,7 @@ display:
           exposed: true
           expose:
             operator_id: langcode_op
-            label: Sprache
+            label: Language
             description: ''
             use_operator: false
             operator: langcode_op

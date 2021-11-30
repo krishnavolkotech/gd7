@@ -18,3 +18,10 @@ display:
             next: 'Next ›'
             first: '« First'
             last: 'Last »'
+      fields:
+        accepted:
+          label: 'Zeit der Annahme'
+      title: Akzeptiert
+      empty:
+        area:
+          admin_label: Akzeptiert

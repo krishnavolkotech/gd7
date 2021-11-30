@@ -72,8 +72,6 @@ module:
   hzd_sams: 0
   hzd_services: 0
   hzd_user_customizations: 0
-  legal: 100
-  hzd_user_customizations: 101
   image: 0
   imce: 0
   inactive_user: 0
@@ -138,6 +136,7 @@ module:
   reroute_email: 19
   queue_mail: 20
   hzd_release_management: 21
+  legal: 100
   standard: 1000
 theme:
   stable: 0
