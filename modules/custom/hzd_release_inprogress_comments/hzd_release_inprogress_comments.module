@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_help().
@@ -30,20 +31,14 @@ function hzd_release_inprogress_comments_form_alter(&$form, \Drupal\Core\Form\Fo
   if ($form_id == 'node_release_comments_form') {
     $service = \Drupal::request()->query->get('services');
     $rel = \Drupal::request()->query->get('releases');
-    $form['field_release_service']['widget']['#default_value'] = $service;
-    $form['field_earlywarning_release']['widget']['#default_value'] = $rel;
+    $form['field_service']['widget'][0]['target_id']['#default_value'] = Node::load($service);
+    $form['field_release_ref']['widget'][0]['target_id']['#default_value'] = Node::load($rel);
     if ($rel && $service) {
-      $form['field_release_service']['#attributes']['readonly'] = 'readonly';
-      $form['field_earlywarning_release']['#attributes']['readonly'] = 'readonly';
-      $form['field_release_service']['#disabled'] = TRUE;
-      $form['field_earlywarning_release']['#disabled'] = TRUE;
+      $form['field_service']['#attributes']['readonly'] = 'readonly';
+      $form['field_release_ref']['#attributes']['readonly'] = 'readonly';
+      $form['field_service']['#disabled'] = TRUE;
+      $form['field_release_ref']['#disabled'] = TRUE;
     }
-    $form['field_release_service']['widget']['#ajax'] = [
-      'callback' => 'hzd_early_warnings_service_change',
-      'wrapper' => 'hzd-release-early-warnings',
-    ];
-    $form['field_earlywarning_release']['widget']['#prefix'] = '<div id="hzd-release-early-warnings">';
-    $form['field_earlywarning_release']['widget']['#sufix'] = '</div>';
   }
 
   return $form;
