@@ -123,7 +123,9 @@ class TokenHandler implements EventSubscriberInterface {
           /** @var \Drupal\User\UserInterface $user */
           $user = $this->entityManager->getStorage('user')
             ->load($this->token->getUid());
-          user_login_finalize($user);
+           if(!is_legel_conditions_modified($user->id())) {
+             user_login_finalize($user);
+           }
         }
       }
     }
