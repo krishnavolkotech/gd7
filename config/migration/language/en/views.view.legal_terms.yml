@@ -18,3 +18,12 @@ display:
             next: 'Next ›'
             first: '« First'
             last: 'Last »'
+      fields:
+        conditions:
+          label: 'Allgemeine Geschäftsbedingungen'
+        extras:
+          label: 'Zusätzliche Kontrollkästchen'
+        changes:
+          label: Änderungen
+        date:
+          label: 'Hinzugefügt am'

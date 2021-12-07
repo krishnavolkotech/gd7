@@ -1,0 +1,19 @@
+uuid: 20da4c76-68cf-46be-8a22-0c201cbe2128
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_orp_nr
+    - node.type.problem
+id: node.problem.field_orp_nr
+field_name: field_orp_nr
+entity_type: node
+bundle: problem
+label: ORP-Nr
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long

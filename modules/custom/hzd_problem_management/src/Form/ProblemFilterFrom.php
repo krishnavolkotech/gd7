@@ -43,7 +43,7 @@ class ProblemFilterFrom extends FormBase
          * service relalted problems is to be displayed in result and service
          * filter.
          */
-        $default_services[0] = '<' . t("Select Service")->render() . '>';
+        $default_services[0] = '<' . t("Select Category 1")->render() . '>';
         $query = \Drupal::database()->select('node_field_data', 'nfd');
         $query->join('group_problems_view', 'gpv', 'nfd.nid = gpv.service_id');
         $query->Fields('nfd', array('nid', 'title'));
@@ -63,7 +63,7 @@ class ProblemFilterFrom extends FormBase
          $default_services[$services->nid] = $serviceEntity->get('field_problem_name')->value;
         }
         // default functions
-        $default_function[0] = '<' . t("Select Function")->render() . '>';
+        $default_function[0] = '<' . t("Select Category 2")->render() . '>';
     
         // default releases
         $default_release[0] = '<' . t("Select Release")->render() . '>';

@@ -17,8 +17,10 @@ use Drupal\node\Entity\Node;
 use Drupal\problem_management\Exception\CustomException;
 use Drupal\problem_management\Exception\ProblemImportException;
 
+//Anpassungen für Import der csv Datei von ORBIT
+//4 neue Felder
 class ProblemImport {
-
+//header of csv-file from ORBIT: "SDCallID";"Status";"Kategorie1";"Kategorie2";"Kategorie3";"Betroffene Releases";"Titel";"Beschreibung";"Ursache";"Lösung";"Workaround";"Behoben mit Release";"Priorität";"TaskForce";"Anmerkungen";"Letztes Update";"Erstellerland";"Eröffnet";"Anhang";"Anzahl Anhänge";"Proaktive Eröffnung";"Schnittstelle betroffen";"Ursache nicht gefunden";"Teilnahme am LÜAFP"
   protected $headers = [
     'sno',
     'status',
@@ -40,7 +42,10 @@ class ProblemImport {
     'created',
     'ticketstore_link',
     'ticketstore_count',
-    'timezone',
+    'proactive_creation',
+    'interface_affected',
+    'unlocated_cause',
+    'part_of_lueafp',
   ];
 
   protected $importPath = NULL;
@@ -66,13 +71,13 @@ class ProblemImport {
       throw new ProblemImportException("file_unable_to_read", 0, ['%path' => $this->importPath]);
     }
     $count = 1;
-    $data = fgetcsv($this->fileHandle, 5000, ";");
+    $data = fgetcsv($this->fileHandle, 5000, ';', '"', '"' );
     if (!$data) {
       throw new ProblemImportException("empty_file", 0, ['%path' => $this->importPath]);
     }
     $this->failedNodes = [];
     $newservices = [];
-    while (($data = fgetcsv($this->fileHandle, 5000, ";")) !== FALSE) {
+    while (($data = fgetcsv($this->fileHandle, 5000, ';', '"', '"' )) !== FALSE) {
       foreach ($data as $key => $value) {
         $values[$this->headers[$key]] = $data[$key];
       }
@@ -119,11 +124,66 @@ class ProblemImport {
     if (($values['title'] == '') || ($values['status'] == '')) {
       throw new ProblemImportException('invalid_data');
     }
-    $values['sno'] = (int) $values['sno'];
+ //field_s_no ist out of use. New field_orp_nr is string.
+ //   $values['sno'] = (int) $values['sno'];
+
+
+    //Formatierung/Anpassung von Feldinhalten aus CSV
+    if ($values['taskforce'] == 'true'){
+      $values['taskforce'] = 'JA';
+    } 
+    elseif ($values['taskforce'] == 'false'){
+      $values['taskforce'] = 'NEIN';
+    }
+
+    if ($values['proactive_creation'] == 'true'){
+      $values['proactive_creation'] = 'JA';
+    }
+    elseif ($values['proactive_creation'] == 'false'){
+      $values['proactive_creation'] = 'NEIN';
+    }
+
+    if ($values['interface_affected'] == 'true'){
+      $values['interface_affected'] = 'JA';
+    }
+    elseif ($values['interface_affected'] == 'false'){
+      $values['interface_affected'] = 'NEIN';
+    }
+
+    if ($values['unlocated_cause'] == 'true'){
+      $values['unlocated_cause'] = 'JA';
+    }
+    elseif ($values['unlocated_cause'] == 'false'){
+      $values['unlocated_cause'] = 'NEIN';
+    }
+
+    if ($values['part_of_lueafp'] == 'true'){
+      $values['part_of_lueafp'] = 'JA';
+    }
+    elseif ($values['part_of_lueafp'] == 'false'){
+      $values['part_of_lueafp'] = 'NEIN';
+    }
+
+    if ($values['created']){
+      $DateCreated = explode(' ', $values['created'], -1);
+      $strDateCreated = strval($DateCreated[0]);
+//      $CreatedDate = date_create_from_format('d.m.y', $strDateCreated);
+//      $values['created'] = date_format($CreatedDate, 'd.m.Y'); 
+      $values['created'] = $strDateCreated;
+    }
+
+    if ($values['last_update']){
+      $DateUpdate=explode(' ', $values['last_update'], -1);
+      $strDateUpdate = strval($DateUpdate[0]);
+//      $UpdateDate = date_create_from_format('d.m.y', $strDateUpdate);
+//      $values['last_update'] = date_format($UpdateDate, 'd.m.Y');
+      $values['last_update'] = $strDateUpdate;
+    }
 
     $query = \Drupal::entityQuery('node')
       ->condition('type', 'problem')
-      ->condition('field_s_no', $values['sno'])
+      ->condition('field_orp_nr', $values['sno'])
+     // ->condition('field_s_no', $values['sno'])
       ->accessCheck(FALSE)
       ->execute();
     $node = null;
@@ -131,6 +191,7 @@ class ProblemImport {
     if($query){
       $node = Node::load(reset($query));
     }
+    //funktioniert vermutlich nicht und $eroffnet wird mit time gefüllt
     $replace = array('/' => '.', '-' => '.');
     $formatted_date = strtr($values['created'], $replace);
 
@@ -155,7 +216,8 @@ class ProblemImport {
     if ($node) {
 //      $created = $node->getCreatedTime();
       unset($values['sno']);
-      unset($values['timezone']);
+// field timezone is no longer in csv-export from ORBIT
+//   unset($values['timezone']);
 
       $existing_node_vals = array();
 
@@ -178,6 +240,10 @@ class ProblemImport {
       $existing_node_vals['created'] = $node->field_eroffnet->value;
       $existing_node_vals['ticketstore_link'] = $node->field_ticketstore_link->value;
       $existing_node_vals['ticketstore_count'] = $node->field_ticketstore_count->value;
+      $existing_node_vals['proactive_creation'] = $node->field_proactive_creation->value;
+      $existing_node_vals['interface_affected'] = $node->field_interface_affected->value;
+      $existing_node_vals['unlocated_cause'] = $node->field_unlocated_cause->value;
+      $existing_node_vals['part_of_lueafp'] = $node->field_part_of_lueafp->value;
 
       $diff = TRUE;
       $basic_html_fileds = ['body', 'solution', 'taskforce', 'workaround', 'comment', 'field_comments'];
@@ -200,7 +266,9 @@ class ProblemImport {
         }
       }
       if ($diff) {
-        $this->ignored[] = $node->get('field_s_no')->value;
+	//changed from old field_s_no to new field_orp_nr      
+	$this->ignored[] = $node->get('field_orp_nr')->value;
+        //$this->ignored[] = $node->get('field_s_no')->value;
         // Nothing to do when there are no changes for the node. so skipping the node.
         return TRUE;
       }
@@ -212,7 +280,9 @@ class ProblemImport {
         'uid' => 1,
         'type' => 'problem',
         'created' => \Drupal::time()->getRequestTime(),
-        'field_s_no' => $values['sno'],
+  //changed from old field_s_no to new field_orp_nr
+	'field_orp_nr' => $values['sno'],       
+	//'field_s_no' => $values['sno'],
       ]);
 
     }
@@ -262,6 +332,10 @@ class ProblemImport {
       'value' => check_markup($values['taskforce'],'plain_text'),
       'format' => 'plain_text',
     ));
+    $problem_node->set('field_proactive_creation', $values['proactive_creation']);
+    $problem_node->set('field_interface_affected', $values['interface_affected']);
+    $problem_node->set('field_unlocated_cause', $values['unlocated_cause']);
+    $problem_node->set('field_part_of_lueafp', $values['part_of_lueafp']);
     // $problem_node->set('field_release', $values['release']);
     // $problem_node->set('field_ticketstore_count', $values['ticketstore_count']);
     // $problem_node->set('field_release', $values['release']);

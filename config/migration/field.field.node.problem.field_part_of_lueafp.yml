@@ -1,0 +1,19 @@
+uuid: 9d0980c1-9394-42a9-ae77-686ad6e80e39
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_part_of_lueafp
+    - node.type.problem
+id: node.problem.field_part_of_lueafp
+field_name: field_part_of_lueafp
+entity_type: node
+bundle: problem
+label: part_of_lueafp
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string_long
