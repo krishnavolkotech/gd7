@@ -3,7 +3,6 @@
 namespace Drupal\search_api\Plugin\views\filter;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\search_api\Entity\Index;
 use Drupal\search_api\ParseMode\ParseModePluginManager;
 use Drupal\views\Plugin\views\filter\FilterPluginBase;
@@ -19,6 +18,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class SearchApiFulltext extends FilterPluginBase {
 
   use SearchApiFilterTrait;
+
+  /**
+   * The list of fields selected for the search.
+   *
+   * @var array
+   */
+  public $searchedFields = [];
 
   /**
    * The parse mode manager.
@@ -127,8 +133,19 @@ class SearchApiFulltext extends FilterPluginBase {
     $options['min_length'] = ['default' => ''];
     $options['fields'] = ['default' => []];
     $options['expose']['contains']['placeholder'] = ['default' => ''];
+    $options['expose']['contains']['expose_fields'] = ['default' => FALSE];
+    $options['expose']['contains']['searched_fields_id'] = ['default' => ''];
 
     return $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function defaultExposeOptions() {
+    parent::defaultExposeOptions();
+
+    $this->options['expose']['searched_fields_id'] = $this->options['id'] . '_searched_fields';
   }
 
   /**
@@ -204,6 +221,58 @@ class SearchApiFulltext extends FilterPluginBase {
       '#size' => 40,
       '#description' => $this->t('Hint text that appears inside the field when empty.'),
     ];
+
+    $form['expose']['expose_fields'] = [
+      '#type' => 'checkbox',
+      '#default_value' => $this->options['expose']['expose_fields'],
+      '#title' => $this->t('Expose searched fields'),
+      '#description' => $this->t('Expose the list of searched fields. This allows users to narrow the search to the desired fields.'),
+    ];
+    $form['expose']['searched_fields_id'] = [
+      '#type' => 'textfield',
+      '#default_value' => $this->options['expose']['searched_fields_id'],
+      '#title' => $this->t('Searched fields identifier'),
+      '#size' => 40,
+      '#description' => $this->t('This will appear in the URL after the ? to identify this searched fields form element.'),
+      '#states' => [
+        'visible' => [
+          ':input[name="options[expose][expose_fields]"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function buildExposedForm(&$form, FormStateInterface $form_state) {
+    parent::buildExposedForm($form, $form_state);
+
+    if (empty($this->options['exposed'])) {
+      return;
+    }
+
+    if ($this->options['expose']['expose_fields']) {
+      $fields = $this->getFulltextFields();
+      $configured_fields = $this->options['fields'];
+      // Only keep the configured fields.
+      if (!empty($configured_fields)) {
+        $configured_fields = array_flip($configured_fields);
+        $fields = array_intersect_key($fields, $configured_fields);
+      }
+
+      $searched_fields_identifier = $this->options['id'] . '_searched_fields';
+      if (!empty($this->options['expose']['searched_fields_id'])) {
+        $searched_fields_identifier = $this->options['expose']['searched_fields_id'];
+      }
+      $form[$searched_fields_identifier] = [
+        '#type' => 'select',
+        '#title' => $this->t('Search fields'),
+        '#options' => $fields,
+        '#multiple' => TRUE,
+        '#size' => min(count($fields), 5),
+      ];
+    }
   }
 
   /**
@@ -244,6 +313,13 @@ class SearchApiFulltext extends FilterPluginBase {
       return;
     }
 
+    // Store searched fields.
+    $searched_fields_identifier = $this->options['id'] . '_searched_fields';
+    if (!empty($this->options['expose']['searched_fields_id'])) {
+      $searched_fields_identifier = $this->options['expose']['searched_fields_id'];
+    }
+    $this->searchedFields = $form_state->getValue($searched_fields_identifier, []);
+
     $identifier = $this->options['expose']['identifier'];
     $input = &$form_state->getValue($identifier, '');
 
@@ -282,7 +358,7 @@ class SearchApiFulltext extends FilterPluginBase {
     if (!$words) {
       $vars['@count'] = $this->options['min_length'];
       $msg = $this->t('You must include at least one positive keyword with @count characters or more.', $vars);
-      $form_state->setError($form[$identifier], $msg);
+      $form_state->setErrorByName($identifier, $msg);
     }
     $input = implode(' ', $words);
   }
@@ -299,11 +375,12 @@ class SearchApiFulltext extends FilterPluginBase {
       return;
     }
     $fields = $this->options['fields'];
-    $fields = $fields ? $fields : array_keys($this->getFulltextFields());
-    $query = $this->getQuery();
-    if ($query->shouldAbort()) {
-      return;
+    $fields = $fields ?: array_keys($this->getFulltextFields());
+    // Override the search fields, if exposed.
+    if (!empty($this->searchedFields)) {
+      $fields = array_intersect($fields, $this->searchedFields);
     }
+    $query = $this->getQuery();
 
     // Save any keywords that were already set.
     $old = $query->getKeys();
@@ -376,8 +453,11 @@ class SearchApiFulltext extends FilterPluginBase {
           // Otherwise, just add all individual words from the old keys to the
           // new ones.
           else {
-            foreach (Element::children($old) as $i) {
-              $keys[] = $old[$i];
+            foreach ($old as $key => $value) {
+              if (substr($key, 0, 1) === '#') {
+                continue;
+              }
+              $keys[] = $value;
             }
           }
         }

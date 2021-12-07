@@ -16,20 +16,17 @@
  */
 #}
 {% spaceless %}
-    <div class="faqfield-anchor-list">
-
+  <div class="faqfield-anchor-list">
     <{{ list_type }}>
     {% for item in items %}
-        <li><a href="#{{ item.name }}">{{ item.question }}</a></li>
+      <li><a href="#{{ item.name }}">{{ item.question }}</a></li>
     {% endfor %}
     </{{ list_type }}>
-
     {% for item in items %}
-        <h3 class="faqfield-question"><a href="#{{ item.name }}"
-                                         name="{{ item.name }}">{{ item.question }}</a>
-        </h3>
-        <div class="faqfield-answer">{{ item.answer }}</div>
+      <h3 class="faqfield-question">
+        <a href="#{{ item.name }}" name="{{ item.name }}">{{ item.question }}</a>
+      </h3>
+      <div class="faqfield-answer">{{ item.answer }}</div>
     {% endfor %}
-
-    </div>
+  </div>
 {% endspaceless %}

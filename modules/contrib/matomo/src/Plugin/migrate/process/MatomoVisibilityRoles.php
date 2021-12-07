@@ -17,6 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @MigrateProcessPlugin(
  *   id = "matomo_visibility_roles"
  * )
+ *  TODO update with new migrate process:
+ *   @see https://www.drupal.org/node/3047268
  */
 class MatomoVisibilityRoles extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
@@ -28,8 +30,9 @@ class MatomoVisibilityRoles extends ProcessPluginBase implements ContainerFactor
   protected $moduleHandler;
 
   /**
-   * The migration process plugin, configured for lookups in the d6_user_role
-   * and d7_user_role migrations.
+   * The migration process plugin.
+   *
+   * Configured for lookups in the d6_user_role and d7_user_role migrations.
    *
    * @var \Drupal\migrate\Plugin\MigrateProcessInterface
    */

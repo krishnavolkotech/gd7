@@ -4131,3 +4131,24 @@ fieldset#edit-node-notification-checkbox--wrapper {
 .legal-accept-page-description {
     margin-bottom: 10px;
 }
+
+/************************CODE for menu expanded issue**********************/
+.region-sidebar-first .menu .expanded .dropdown-menu{
+    display:block !important;
+    border: unset;
+}
+.region-sidebar-first .menu .expanded .dropdown-menu li{
+    padding: 10px 0px 0px 14px !important;
+}
+.region-sidebar-first .menu .expanded .dropdown-menu li a{
+    background: none;
+}
+.region-sidebar-first .menu .expanded span.caret {
+    display: none;
+}
+.region-sidebar-first .menu .expanded > a{
+    background: url("../images/blue-list-expand-arrow.png") left 6px no-repeat !important; 
+    padding-left: 16px !important;
+} 
+/************************END CODE for menu expanded issue**********************/
+>>>>>>> d659322310fca4f3170a858748396c781933a89c

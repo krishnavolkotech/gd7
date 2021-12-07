@@ -115,7 +115,7 @@ class DowntimessettingForm extends FormBase {
       $menu_link->save();
     }
     \Drupal::service("router.builder")->rebuild();
-    drupal_set_message($this->t('Downtime Settings Updated'));
+    \Drupal::messenger()->addMessage($this->t('Downtime Settings Updated'));
   }
 
 }

@@ -56,7 +56,7 @@ class UpdateMigratedNotificationOverridesForm extends FormBase {
   
   public static function finishedCallBack($success, $results, $operations) {
     if ($success) {
-      drupal_set_message(\Drupal::translation()->translate('Updating Notification overrides completed'));
+      \Drupal::messenger()->addMessage(\Drupal::translation()->translate('Updating Notification overrides completed'));
     }
   }
   

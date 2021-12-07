@@ -26,7 +26,12 @@ function hook_entity_postsave(EntityInterface $entity, $op) {
   $entity_type = $entity->getEntityTypeId();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The {$op}d entity {$entity_type} id is {$id} from " . __FUNCTION__);
+    ->info('The @op entity @entity_type id is @id from @function.', [
+      '@op' => t($op . 'd'),
+      '@id' => $id,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -46,7 +51,11 @@ function hook_entity_postinsert(EntityInterface $entity) {
   $entity_type = $entity->getEntityTypeId();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The inserted entity {$entity_type} id is {$id} from " . __FUNCTION__);
+    ->info('The inserted entity @entity_type id is @id from @function.', [
+      '@id' => $id,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -66,7 +75,11 @@ function hook_entity_postupdate(EntityInterface $entity) {
   $entity_type = $entity->getEntityTypeId();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The updated entity {$entity_type} id is {$id} from " . __FUNCTION__);
+    ->info('The updated entity @entity_type id is @id from @function.', [
+      '@id' => $id,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -86,7 +99,11 @@ function hook_entity_postdelete(EntityInterface $entity) {
   $entity_type = $entity->getEntityTypeId();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The deleted entity {$entity_type} id is {$id} from " . __FUNCTION__);
+    ->info('The deleted entity @entity_type id is @id from @function.', [
+      '@id' => $id,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -109,7 +126,13 @@ function hook_ENTITY_TYPE_postsave(EntityInterface $entity, $op) {
   $bundle = $entity->bundle();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The {$op}d {$entity_type} {$bundle} id is {$id} from " . __FUNCTION__);
+    ->info('The @op @entity_type @bundle id is @id from @function.', [
+      '@op' => t($op . 'd'),
+      '@id' => $id,
+      '@bundle' => $bundle,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -130,7 +153,12 @@ function hook_ENTITY_TYPE_postinsert(EntityInterface $entity) {
   $bundle = $entity->bundle();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The inserted {$entity_type} {$bundle} id is {$id} from " . __FUNCTION__);
+    ->info('The inserted @entity_type @bundle id is @id from @function.', [
+      '@id' => $id,
+      '@bundle' => $bundle,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -151,7 +179,12 @@ function hook_ENTITY_TYPE_postupdate(EntityInterface $entity) {
   $bundle = $entity->bundle();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The updated {$entity_type} {$bundle} id is {$id} from " . __FUNCTION__);
+    ->info('The updated @entity_type @bundle id is @id from @function.', [
+      '@id' => $id,
+      '@bundle' => $bundle,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }
 
 /**
@@ -172,5 +205,10 @@ function hook_ENTITY_TYPE_postdelete(EntityInterface $entity) {
   $bundle = $entity->bundle();
 
   \Drupal::logger('hook_post_action_test')
-    ->info("The deleted {$entity_type} {$bundle} id is {$id} from " . __FUNCTION__);
+    ->info('The deleted @entity_type @bundle id is @id from @function.', [
+      '@id' => $id,
+      '@bundle' => $bundle,
+      '@function' => __FUNCTION__,
+      '@entity_type' => $entity_type,
+    ]);
 }

@@ -225,7 +225,8 @@ class ProblemFilterFrom extends FormBase
             '#value' => t('Reset'),
             '#weight' => 100,
             '#attributes' => array(
-                'onclick' => 'reset_form_elements(); return false;'
+                'onclick' => 'reset_form_elements(); return false;',
+		'class'=> ['button','btn-default','btn']
             ),
         );
       $form['#exclude_from_print']=1;

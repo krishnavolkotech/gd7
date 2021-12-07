@@ -2,6 +2,7 @@
 
 namespace Drupal\block_upload;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\file\Entity\File;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
@@ -80,7 +81,7 @@ class BlockUploadBuild {
       $uri_scheme = 'public';
     }
     $destination = $uri_scheme . '://' . $destination;
-    file_prepare_directory($destination, FILE_CREATE_DIRECTORY);
+    \Drupal::service('file_system')->prepareDirectory($destination, FileSystemInterface::CREATE_DIRECTORY);
     return $destination;
   }
 
@@ -93,14 +94,16 @@ class BlockUploadBuild {
     foreach ($node->get($field_name)->getValue() as $file_field) {
       if (in_array($file_field['target_id'], $delete_files)) {
         $node->get($field_name)->removeItem($count);
-        file_delete($file_field['target_id']);
+        $storage = \Drupal::entityTypeManager()->getStorage('file');
+        $entities = $storage->load($file_field['target_id']);
+        $storage->delete([$entities]);
       }
       else {
         $count++;
       }
 
     }
-    drupal_set_message(t('File(s) was successfully deleted!'));
+    \Drupal::messenger()->addMessage(t('File(s) was successfully deleted!'));
   }
 
   /**

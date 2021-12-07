@@ -2,4 +2,5 @@ name: HZD Notifications
 type: module
 description: HZD Notifications
 core: 8.x
+core_version_requirement: ^8 || ^9
 package: "HZD Custom"

@@ -76,7 +76,7 @@ class PackageController implements ContainerInjectionInterface {
     if (!composer_manager_initialized()) {
       $path = drupal_get_path('module', 'composer_manager');
       $message = t("Composer Manager needs to be initialized before usage. Run <code>php %path/scripts/init.php</code> from the command line.", ['%path' => $path]);
-      drupal_set_message($message, 'warning');
+      \Drupal::messenger()->addMessage($message, 'warning');
       return [];
     }
 
@@ -84,7 +84,7 @@ class PackageController implements ContainerInjectionInterface {
       $packages = $this->packageManager->getRequiredPackages();
     }
     catch (\RuntimeException $e) {
-      drupal_set_message(Xss::filterAdmin($e->getMessage()), 'error');
+      \Drupal::messenger()->addMessage(Xss::filterAdmin($e->getMessage()), 'error');
       return [];
     }
 
@@ -160,7 +160,7 @@ class PackageController implements ContainerInjectionInterface {
     $this->moduleHandler->loadInclude('composer_manager', 'install');
     $requirements = composer_manager_requirements('runtime');
     if ($requirements['composer_manager']['severity'] == REQUIREMENT_ERROR) {
-      drupal_set_message($requirements['composer_manager']['description'], 'warning');
+      \Drupal::messenger()->addMessage($requirements['composer_manager']['description'], 'warning');
     }
 
     return $build;

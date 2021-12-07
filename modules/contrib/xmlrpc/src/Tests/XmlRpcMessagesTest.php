@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\xmlrpc\Tests\XmlRpcMessagesTest.
- */
-
 namespace Drupal\xmlrpc\Tests;
 
 use Drupal\Component\Render\FormattableMarkup;
@@ -22,11 +17,16 @@ class XmlRpcMessagesTest extends XmlRpcTestBase {
   use XmlRpcTrait;
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = array('xmlrpc', 'xmlrpc_test');
+  public static $modules = ['xmlrpc', 'xmlrpc_test'];
 
   /**
    * Make sure that XML-RPC can transfer large messages.
@@ -64,7 +64,7 @@ class XmlRpcMessagesTest extends XmlRpcTestBase {
    * Ensure that XML-RPC client sets correct encoding in request http headers.
    */
   public function testRequestContentTypeDefinition() {
-    $headers = xmlrpc($this->getEndpoint(), array('test.headerEcho' => array()));
+    $headers = xmlrpc($this->getEndpoint(), ['test.headerEcho' => []]);
     $this->assertIdentical($headers['Content-Type'], 'text/xml; charset=utf-8');
   }
 
@@ -84,7 +84,7 @@ class XmlRpcMessagesTest extends XmlRpcTestBase {
     // We can't use the xmlrpc() function here, because we have to access the
     // full Guzzle response.
     module_load_include('inc', 'xmlrpc');
-    $xmlrpc_request = xmlrpc_request('system.listMethods', array());
+    $xmlrpc_request = xmlrpc_request('system.listMethods', []);
 
     $headers = ['Content-Type' => 'text/xml; charset=utf-8'];
     $request = new Request('POST', $url, $headers, $xmlrpc_request->xml);

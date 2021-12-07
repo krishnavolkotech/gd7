@@ -15,7 +15,7 @@ class HzdArtifactCommentStorage {
       ->execute()
       ->fetchField();
 
-      // $cmt_query = db_select('node_field_data', 'n');
+      // $cmt_query = \Drupal::database()->select('node_field_data', 'n');
       // $cmt_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
       // $cmt_query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
       // $cmt_query->condition('n.type', 'release_comments', '=')
@@ -97,7 +97,7 @@ class HzdArtifactCommentStorage {
     $release_comments_intro_text_nid = NULL;
     $release_comments_intro_text_nid = \Drupal::config('hzd_release_management.settings')->get('release_comments_intro_text_nid');
     if($release_comments_intro_text_nid) {
-      $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => $release_comments_intro_text_nid))->fetchField();
+      $body = \Drupal::database()->query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => $release_comments_intro_text_nid))->fetchField();
     }
     $output = "<div class = 'earlywarnings_text'>" . $body;
     $build['#markup'] = $output;
@@ -182,7 +182,7 @@ class HzdArtifactCommentStorage {
       $responses['uid'] = $last_comment->uid->value;
       $responses['last_posted'] = date('d.m.Y', $last_comment->created->value);
       if ($responses['last_posted']) {
-        $user_query = db_select('cust_profile', 'cp');
+        $user_query = \Drupal::database()->select('cust_profile', 'cp');
         $user_query->condition('cp.uid', $last_comment->getOwnerId(), '=')
           ->fields('cp', array('firstname', 'lastname'));
         $author = $user_query->execute()->fetchAssoc();

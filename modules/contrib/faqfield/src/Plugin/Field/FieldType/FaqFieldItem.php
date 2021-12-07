@@ -1,20 +1,11 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\faqfield\Plugin\Field\FieldType\FaqFieldItem.
- */
-
 namespace Drupal\faqfield\Plugin\Field\FieldType;
 
-use Drupal\Component\Utility\Random;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemBase;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\DataDefinition;
-use Drupal\Core\TypedData\MapDataDefinition;
-use Drupal\Core\Field\FieldItemInterface;
 
 /**
  * Plugin implementation of the 'faqfield' field type.
@@ -34,8 +25,8 @@ class FaqFieldItem extends FieldItemBase {
    */
   public static function defaultFieldSettings() {
     return [
-        'default_format' => 'plain_text',
-      ] + parent::defaultFieldSettings();
+      'default_format' => 'plain_text',
+    ] + parent::defaultFieldSettings();
   }
 
   /**
@@ -43,13 +34,10 @@ class FaqFieldItem extends FieldItemBase {
    */
   public static function propertyDefinitions(FieldStorageDefinitionInterface $field_definition) {
     $properties = [];
-
     $properties['question'] = DataDefinition::create('string')
       ->setLabel(t('Question value'));
-
     $properties['answer'] = DataDefinition::create('string')
       ->setLabel(t('Answer value'));
-
     $properties['answer_format'] = DataDefinition::create('string')
       ->setLabel(t('Answer text format'));
 
@@ -89,14 +77,12 @@ class FaqFieldItem extends FieldItemBase {
    */
   public function fieldSettingsForm(array $form, FormStateInterface $form_state) {
     $element = [];
-
     // Get a list of formats that the current user has access to.
     $formats = filter_formats();
     $filter_options = [];
     foreach ($formats as $format) {
       $filter_options[$format->get('format')] = $format->get('name');
     }
-
     // Format select input for field settings.
     $element['default_format'] = [
       '#type' => 'select',
@@ -117,9 +103,7 @@ class FaqFieldItem extends FieldItemBase {
   public function isEmpty() {
     $answer = $this->get('answer')->getValue();
     $question = $this->get('question')->getValue();
-
     $answer_value = is_array($answer) ? $answer['value'] : $answer;
-
     // Return TRUE only if both are empty.
     return (empty($question) && empty($answer_value));
   }
@@ -135,7 +119,7 @@ class FaqFieldItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public function setValue($values, $notify = TRUE) {
-    if (isset($values['answer']) && is_array($values['answer'])) {
+    if (is_array($values) && isset($values['answer']) && is_array($values['answer'])) {
       // Normal textarea's and textfields put their values simply in by
       // array($name => $value); Unfortunately text_format textareas put
       // them into an array so also the format gets saved: array($name

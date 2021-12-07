@@ -53,7 +53,7 @@ class HzdNotifications extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'notifications_title'>" . $this->t('Add new notification request') . "</div>");
     $output[] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_notifications\Form\ServiceSpecificNotificationsUserForm', $user, $rel_type);
-    $notifications_priority = db_query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
+    $notifications_priority = \Drupal::database()->query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
       ":uid" => $user,
       ":rel_type" => $rel_type
     ))->fetchAll();
@@ -77,7 +77,7 @@ class HzdNotifications extends ControllerBase {
     $output[] = array('#markup' => "<div class = 'notifications_title'>" . $this->t('Add new notification request') . "</div>");
     $output[] = \Drupal::formBuilder()
       ->getForm('Drupal\hzd_notifications\Form\ServiceSpecificNotificationsUserForm', $user, $rel_type);
-    $notifications_priority = db_query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
+    $notifications_priority = \Drupal::database()->query("SELECT sid, service_id, type, send_interval FROM {service_notifications_override} WHERE uid = :uid AND rel_type = :rel_type", array(
       ":uid" => $user,
       ":rel_type" => $rel_type
     ))->fetchAll();
@@ -191,9 +191,9 @@ class HzdNotifications extends ControllerBase {
     $this->setAllDefaultNotifications($user, -1);
 
     // Remove Subscription from AL-EDV
-    db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $user));
+    \Drupal::database()->query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $user));
 
-    drupal_set_message($this->t('Preferrences Saved Successfully'));
+    \Drupal::messenger()->addMessage($this->t('Preferrences Saved Successfully'));
     $url = Url::fromRoute('hzd_notifications.notifications', ['user' => $user])
       ->toString();
     return \Symfony\Component\HttpFoundation\RedirectResponse::create($url);
@@ -677,8 +677,7 @@ class HzdNotifications extends ControllerBase {
   }
   
   function hzd_get_default_interval($uid, $rel_type) {
-    $default_intval_per_user = db_query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval} 
-                               WHERE uid = :uid and rel_type = :type", array(
+    $default_intval_per_user = \Drupal::database()->query("SELECT service_type, default_send_interval FROM {service_notifications_user_default_interval}  WHERE uid = :uid and rel_type = :type", array(
       ":uid" => $uid,
       ":type" => $rel_type
     ))->fetchAll();
@@ -690,7 +689,7 @@ class HzdNotifications extends ControllerBase {
   }
   
   function hzd_get_all_services($rel_type) {
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
     $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
     $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');

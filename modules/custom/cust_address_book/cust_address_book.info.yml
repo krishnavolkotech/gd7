@@ -2,5 +2,6 @@ name: "Hzd Manage User List"
 description: "manage user listing view"
 package: "HZD Custom"
 core: "8.x"
+core_version_requirement: ^8 || ^9
 type: module
 

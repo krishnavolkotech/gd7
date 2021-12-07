@@ -1,13 +1,12 @@
 <?php
-/**
- * @file
- * Contains \Drupal\xmlrpc\XmlRpcTrait.
- */
 
 namespace Drupal\xmlrpc;
 
 use Drupal\Core\Url;
 
+/**
+ * XmlRpcTrait provides the getEndpoint() method used in tests and examples.
+ */
 trait XmlRpcTrait {
 
   /**

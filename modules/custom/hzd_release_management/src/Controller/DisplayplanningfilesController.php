@@ -22,7 +22,7 @@ class DisplayplanningfilesController extends ControllerBase {
     $link = Link::fromTextAndUrl(t('Home'), $url);
     $breadcrumb[] = $link;
     $url = Url::fromUserInput('/release-management');
-    $link = \Drupal::l(t('Deployed Releases'), $url);
+    $link = Link::fromTextAndUrl(t('Deployed Releases'), $url);
     $breadcrumb[] = $link;
     $breadcrumb[] = t('Deployed Releases');
     $request = \Drupal::request();
@@ -44,11 +44,17 @@ class DisplayplanningfilesController extends ControllerBase {
         $oNewFile = File::load($files);
         $filename = $oNewFile->getFilename();
       }
+
+      $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $nid]);
+      $edit_link = Link::fromTextAndUrl(t('Edit'), $url);
+
+      $delete_url = Url::fromRoute('entity.node.delete_form', ['node' => $nid]);
+      $delete_link = Link::fromTextAndUrl(t('Delete'), $delete_url);
       $elements = array(
         'title' => $title,
         'filename' => $filename,
-        'edit' => \Drupal::l(t('Edit'), Url::fromRoute('entity.node.edit_form', ['node' => $nid])),
-        'delete' => \Drupal::l(t('Delete'), Url::fromRoute('entity.node.delete_form', ['node' => $nid])),
+        'edit' => $edit_link,
+        'delete' => $delete_link,
       );
       $rows[] = $elements;
     }

@@ -73,6 +73,9 @@ matomo.settings:
         donottrack:
           type: boolean
           label: 'Universal web tracking opt-out'
+        disablecookies:
+          type: boolean
+          label: 'Disable cookies'
     custom:
       type: mapping
       label: 'Custom variables'

@@ -90,13 +90,18 @@ class HzdReleases extends ControllerBase {
    */
   public function getTitle($service_id, $release_id) {
     if (is_numeric($release_id)) {
-      $release_name = db_query("SELECT title FROM {node_field_data} "
+      $release_name = \Drupal::database()->query("SELECT title FROM {node_field_data} "
                                  . "where nid= :nid", array(":nid" => $release_id))->fetchField();
       $releases_title = '';
+      $release_versions = [];
       if (!empty($release_name)) {
         $release_product = explode("_", $release_name);
-        $release_versions = explode("-", $release_product[1]);
-        $releases_title = $release_product[0] . "_" . $release_versions[0];
+        if(isset($release_product[1])){
+          $release_versions = explode("-", $release_product[1]);
+        }
+        if(isset($release_versions[0])){
+          $releases_title = $release_product[0] . "_" . $release_versions[0];
+        }
       }
       return $this->t("Documentation for @title", ['@title' => $releases_title]);
     }
@@ -297,7 +302,7 @@ class HzdReleases extends ControllerBase {
   public function documentation_page_link($group, $service_id, $release_id) {
     $query_explode_search = NULL;
     if (is_numeric($release_id)) {
-      $query = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid and field_documentation_link_value <> 'NULL'", array(":eid" => $release_id))->fetchField();
+      $query = \Drupal::database()->query("SELECT field_documentation_link_value FROM {node__field_documentation_link} where entity_id = :eid and field_documentation_link_value <> 'NULL'", array(":eid" => $release_id))->fetchField();
       $query_explode = explode('/', $query);
       $query_explode_search_old = array_search('secure-downloads', $query_explode);
       $query_explode_search_new = array_search('Portal.aspx?download=secure-downloads', $query_explode);
@@ -314,12 +319,16 @@ class HzdReleases extends ControllerBase {
 
       if (is_numeric($release_id)) {  
           $doc_values = HzdreleasemanagementHelper::get_document_args($service_id, $release_id);
-          $arr = $doc_values['arr'];
-          $files = $doc_values['files'];
+          if(isset($doc_values['arr'])){
+            $arr = $doc_values['arr'];
+          }
+          if(isset($doc_values['files'])){
+            $files = $doc_values['files'];
+            // $major_directory = $release_product . "_" . max($arr);
+            unset($files[0]);
+            unset($files[1]);
+          }
         
-          // $major_directory = $release_product . "_" . max($arr);
-          unset($files[0]);
-          unset($files[1]);
       }
       // Check the documentation link download or not. if not failed download link will display.
       if (!empty($files)) {
@@ -428,7 +437,7 @@ class HzdReleases extends ControllerBase {
       $query->condition('id', $user_state, '=');
       $state = $query->execute()->fetchField();
 
-      // $user_state = db_result(db_query("SELECT state FROM {states} where id = %d", $user->user_state));.
+      // $user_state = \Drupal::database()->result(\Drupal::database()->query("SELECT state FROM {states} where id = %d", $user->user_state));.
       if ((CustNodeController::isGroupAdmin(zrml) == TRUE) || in_array($user_role, array('site_administrator','administrator'))) {
 //                $output['#title'] = $this->t("Deployed Releases");
       } else {
@@ -445,7 +454,9 @@ class HzdReleases extends ControllerBase {
       
       $output['deploy_release_form']['#prefix'] = "<div id = 'deployedreleases_posting'>";
       $url = Url::fromRoute('hzd_release_management.extended_deployed_releases', ['group' => Zentrale_Release_Manager_Lander], ['attributes' => ['class' => ['button', 'btn-default', 'btn']]]);
-      $link = \Drupal::l(t('Enter a new deployed release:'), $url);
+      //$link = \Drupal::l(t('Enter a new deployed release:'), $url);
+       $link = Link::fromTextAndUrl(t('Enter a new deployed release:'), $url)->toString();      
+
       $output['deploy_release_form']['#markup'] = $link;
       $output['deploy_release_form']['#suffix'] = '</div>';
 

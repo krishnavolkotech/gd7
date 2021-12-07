@@ -84,9 +84,9 @@ class RedirectToLoginSubscriber implements EventSubscriberInterface {
 	if($currentPath == '/system/files'){
 	  $currentPath .= '/'.$event->getRequest()->query->get('file');
 	}
-        $resultPath = \Drupal::service('path.alias_manager')->getAliasByPath($currentPath);
+        $resultPath = \Drupal::service('path_alias.manager')->getAliasByPath($currentPath);
         $loginPath = '/user/login?destination=' . $resultPath;
-        drupal_set_message(t('Please login to access the page.'), 'error');
+        \Drupal::messenger()->addMessage(t('Please login to access the page.'), 'error');
         header('Location: ' . $base_url . $loginPath);
         exit;
       }

@@ -45,6 +45,7 @@ module:
   entity_print_views: 0
   entity_reference_exposed_filters: 0
   facets: 0
+  fakeobjects: 0
   faq: 0
   faqfield: 0
   field: 0
@@ -75,7 +76,10 @@ module:
   image: 0
   imce: 0
   inactive_user: 0
-  kint: 0
+  jquery_ui: 0
+  jquery_ui_accordion: 0
+  jquery_ui_datepicker: 0
+  jquery_ui_effects: 0
   l10n_client_contributor: 0
   l10n_client_ui: 0
   language: 0

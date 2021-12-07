@@ -3,7 +3,7 @@
   "type": "drupal-module",
   "description": "Adds the Panel Button plugin to CKEditor. This plugin is a utility plugin that is required by certain user-facing CKEditor plugins.",
   "keywords": ["Drupal"],
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "homepage": "http://drupal.org/project/panelbutton",
   "minimum-stability": "dev",
   "authors": [

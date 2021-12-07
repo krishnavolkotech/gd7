@@ -13,7 +13,7 @@ class HzdservicesStorage
         $service_names = array();
         switch ($type) {
             case 'problems':
-                $query = db_select('node_field_data', 'n');
+                $query = \Drupal::database()->select('node_field_data', 'n');
                 $query->join('node__field_problem_name', 'nfpn', 'nfpn.entity_id = n.nid');
                 $query->Fields('n', array('nid'));
                 // ->Fields('nfpn', array('field_problem_name_value as service'))
@@ -23,7 +23,7 @@ class HzdservicesStorage
                 // $this->condition($field, $function, NULL, 'IS NOT NULL', $langcode);
                 break;
             case 'releases':
-                $query = db_select('node', 'n');
+                $query = \Drupal::database()->select('node', 'n');
                 $query->Fields('n', array('nid'));
                 $query->join('node__field_release_name', 'nfrn', 'nfrn.entity_id = n.nid');
                 $query->addField('nfrn', 'field_release_name_value', 'service');
@@ -33,7 +33,7 @@ class HzdservicesStorage
                 break;
             
             case 'downtimes' :
-                $query = db_select('node_field_data', 'n');
+                $query = \Drupal::database()->select('node_field_data', 'n');
                 $query->join('node__field_enable_downtime', 'nfed', 'nfed.entity_id = n.nid');
                 $query->Fields('n', array('nid'));
                 $query->addField('n', 'title', 'service');
@@ -42,7 +42,7 @@ class HzdservicesStorage
                 break;
             
             case 'service_profile' :
-                $query = db_select('node_field_data', 'n');
+                $query = \Drupal::database()->select('node_field_data', 'n');
                 $query->join('node__field_service_type', 'nfst', 'nfst.entity_id = n.nid');
                 $query->Fields('n', array('nid'));
                 $query->addField('nfrn', 'title', 'service');
@@ -74,7 +74,7 @@ class HzdservicesStorage
             $group_id = $group;
         }
         
-        $query = db_select('group_problems_view', 'gpv');
+        $query = \Drupal::database()->select('group_problems_view', 'gpv');
         $query->Fields('gpv', array('service_id'));
         $query->condition('group_id', $group_id, '=');
         
@@ -92,7 +92,7 @@ class HzdservicesStorage
             $group_id = $group;
         }
         
-        $query = db_select('group_downtimes_view', 'gdv');
+        $query = \Drupal::database()->select('group_downtimes_view', 'gdv');
         $query->Fields('gdv', array('service_id'));
         $query->condition('group_id', $group_id, '=');
         
@@ -175,7 +175,7 @@ class HzdservicesStorage
     }
     
     static public function services_query() {
-        $query = db_select('node_field_data', 'n');
+        $query = \Drupal::database()->select('node_field_data', 'n');
         $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
         $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
         $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
@@ -192,19 +192,19 @@ class HzdservicesStorage
     function default_services_insert($node) {
         $query = "SELECT nid FROM {node_field_data} WHERE type = :type AND title like :title";
         
-        $release_management_group_id = db_query($query, array(':type' => 'group', ':title' => 'release management'))->fetchField();
+        $release_management_group_id = \Drupal::database()->query($query, array(':type' => 'group', ':title' => 'release management'))->fetchField();
         if ($release_management_group_id) {
             $table = 'group_releases_view';
             self::service_update($node->nid, $release_management_group_id, $node->field_release_name->value, $table);
         }
         
-        $problem_management_group_id = db_query($sql, array(':type' => 'group', ':title' => 'problem management'))->fetchField();
+        $problem_management_group_id = \Drupal::database()->query($sql, array(':type' => 'group', ':title' => 'problem management'))->fetchField();
         if ($problem_management_group_id) {
             $table = 'group_problems_view';
             self::service_update($node->nid, $problem_management_group_id, $node->field_problem_name->value, $table);
         }
         
-        $incident_management_group_id = db_query($sql, array(':type' => 'group', ':title' => 'incident management'))->fetchField();
+        $incident_management_group_id = \Drupal::database()->query($sql, array(':type' => 'group', ':title' => 'incident management'))->fetchField();
         if ($incident_management_group_id) {
             $table = 'group_downtimes_view';
             self::service_update($node->nid, $incident_management_group_id, $node->field_enable_downtime->value, $table);
@@ -212,13 +212,13 @@ class HzdservicesStorage
     }
     
     function service_update($node_id, $group_id, $service_name, $table) {
-        $count = db_query("SELECT count(*) as count FROM {" . $table . "} WHERE group_id = :gid AND service_id = :sid", array(":gid" => $group_id, ":sid" => $node_id))->fetchField();
+        $count = \Drupal::database()->query("SELECT count(*) as count FROM {" . $table . "} WHERE group_id = :gid AND service_id = :sid", array(":gid" => $group_id, ":sid" => $node_id))->fetchField();
         
         if (!$count && $service_name) {
             $service_record = array('group_id' => $group_id, 'service_id' => $node_id);
-            db_insert($table)->fields($service_record)->execute();
+            \Drupal::database()->insert($table)->fields($service_record)->execute();
         } else if ($count && !$service_name) {
-            db_delete($table)->condition('group_id', $group_id, '=')->condition('service_id', $node_id, '=')->execute();
+            \Drupal::database()->delete($table)->condition('group_id', $group_id, '=')->condition('service_id', $node_id, '=')->execute();
         }
     }
     

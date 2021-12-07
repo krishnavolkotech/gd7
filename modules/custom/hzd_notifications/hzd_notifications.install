@@ -262,7 +262,7 @@ function hzd_notifications_schema() {
 }
 
 function hzd_notifications_update_8008() {
-  $query = db_select('node_field_data', 'n');
+  $query = \Drupal::database()->select('node_field_data', 'n');
   $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
   $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
   $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
@@ -280,17 +280,17 @@ function hzd_notifications_update_8008() {
     }
     if ($services_info->field_problem_name_value && $services_info->release_type_target_id == 459) {
       //$problem_record = array('service_id' => $services_info->nid, 'type' => 'problem', 'send_interval' => 0, 'uids' => 0);
-      //db_insert('service_immediate_notifications')->fields($problem_record)->execute();
+      //\Drupal::database()->insert('service_immediate_notifications')->fields($problem_record)->execute();
       insert_service_notifications('problem', $services_info->nid);
     }
     if ($services_info->field_release_name_value) {
       //$release_record = array('service_id' => $services_info->nid, 'type' => 'release', 'send_interval' => 0, 'uids' => 0);
-      //db_insert('service_immediate_notifications')->fields($release_record)->execute();
+      //\Drupal::database()->insert('service_immediate_notifications')->fields($release_record)->execute();
       insert_service_notifications('release', $services_info->nid);
     }
     insert_service_notifications('early_warnings', $services_info->nid);
     //$early_warnings_record = array('service_id' => $services_info->nid, 'type' => 'early_warnings', 'send_interval' => 0, 'uids' => 0);
-    //db_insert('service_immediate_notifications')->fields($early_warnings_record)->execute();
+    //\Drupal::database()->insert('service_immediate_notifications')->fields($early_warnings_record)->execute();
   }
 }
 
@@ -304,7 +304,7 @@ function insert_service_notifications($type, $nid) {
       'send_interval' => $vals,
       'uids' => 0
     );
-    db_insert('service_notifications')->fields($record)->execute();
+    \Drupal::database()->insert('service_notifications')->fields($record)->execute();
   }
 }
 
@@ -313,7 +313,7 @@ function insert_service_notifications($type, $nid) {
   $interval = array('-1', 0, 86400, 604800);
   foreach($interval as $vals) {
     $record = array('send_interval' => $vals, 'uids' => 0);
-	  db_insert('planning_files_notifications')->fields($record)->execute();
+	  \Drupal::database()->insert('planning_files_notifications')->fields($record)->execute();
   }
 }*/
 
@@ -321,13 +321,13 @@ function hzd_notifications_update_8010() {
   // migrate quickinfo notifications.
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach ($interval as $vals) {
-    $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(
+    $uids = \Drupal::database()->query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val AND send_interval = :intval", array(
       ":val" => 'planning_files',
       "intval" => $vals
     ))->fetchCol();
     $serialized_uids = serialize($uids);
     $record = array('send_interval' => $vals, 'uids' => $serialized_uids);
-    db_insert('planning_files_notifications')->fields($record)->execute();
+    \Drupal::database()->insert('planning_files_notifications')->fields($record)->execute();
   }
 }
 
@@ -338,7 +338,7 @@ function hzd_notifications_update_8012() {
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
   foreach ($options as $content_key => $content) {
     foreach ($interval as $vals) {
-      $uids = db_query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(
+      $uids = \Drupal::database()->query("SELECT n.uid FROM {notifications} n, {notifications_fields} nf WHERE n.sid = nf.sid and nf.value = :val and n.send_interval = :intval", array(
         ":val" => $content,
         ":intval" => $vals
       ))->fetchCol();
@@ -348,18 +348,17 @@ function hzd_notifications_update_8012() {
         'send_interval' => $vals,
         'uids' => $serialized_uids
       );
-      db_insert('quickinfo_notifications')->fields($record)->execute();
+      \Drupal::database()->insert('quickinfo_notifications')->fields($record)->execute();
     }
   }
 }
 
 // update user group notifications default interval
 function hzd_notifications_update_8015() {
-  $user_ids = db_query("SELeCT uid FROM users where uid <>0")->fetchCol();
+  $user_ids = \Drupal::database()->query("SELeCT uid FROM users where uid <>0")->fetchCol();
   foreach ($user_ids as $uid) {
     $default_groups_send_interval = array();
-    $default_groups_query = db_query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf 
-                             WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(
+    $default_groups_query = \Drupal::database()->query("SELECT DISTINCT value , send_interval FROM {notifications} s, {notifications_fields} nf  WHERE s.sid = nf.sid and  field = :field and uid = :uid", array(
       ":field" => 'group',
       ":uid" => $uid
     ))->fetchAll();
@@ -367,7 +366,7 @@ function hzd_notifications_update_8015() {
       $default_groups_send_interval[$default_groups_info->value] = $default_groups_info->send_interval;
     }
 
-    $user_groups_query = db_query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
+    $user_groups_query = \Drupal::database()->query("SELECT gfd.id, gfd.label FROM {groups_field_data} gfd, {group_content_field_data} gcfd 
                    WHERE gfd.id = gcfd.gid AND gcfd.entity_id = :eid", array(":eid" => $uid))->fetchAll();
     $user_groups = array();
     foreach ($user_groups_query as $groups_list) {
@@ -377,7 +376,7 @@ function hzd_notifications_update_8015() {
     if (count($user_groups) > 0) {
       foreach ($user_groups as $gid => $label) {
         // old ref
-        $old_ref = db_query("SELECT field_old_reference_value FROM {group__field_old_reference} 
+        $old_ref = \Drupal::database()->query("SELECT field_old_reference_value FROM {group__field_old_reference} 
                    WHERE entity_id = :eid", array(":eid" => $gid))->fetchField();
         if ($old_ref && $default_groups_send_interval[$old_ref]) {
           $int_val = $default_groups_send_interval[$old_ref] ? $default_groups_send_interval[$old_ref] : 0;
@@ -387,7 +386,7 @@ function hzd_notifications_update_8015() {
             'group_name' => $label,
             'default_send_interval' => $int_val
           );
-          db_insert('group_notifications_user_default_interval')
+          \Drupal::database()->insert('group_notifications_user_default_interval')
             ->fields($record)
             ->execute();
         }
@@ -480,7 +479,7 @@ function hzd_notifications_update_8017(&$sandbox) {
     'primary key' => ['id'],
   ];
   $schema->createTable($table_name, $table_schema);
-  drupal_set_message('Module hzd_notifications Update # 8017 () was executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_notifications Update # 8017 () was executed successfully.');
 }
 
 /**
@@ -492,7 +491,7 @@ function hzd_notifications_update_8018(&$sandbox) {
   foreach ($migrate_tables as $mig_table) {
     $connection->schema()->dropTable($mig_table);
   }
-  drupal_set_message('Migration tables deleted successfully.');
+  \Drupal::messenger()->addMessage('Migration tables deleted successfully.');
 }
 
 /**
@@ -539,5 +538,5 @@ function hzd_notifications_update_8019(&$sandbox) {
     'primary key' => array('id'),
   ];
   $schema->createTable($table_name, $table_schema);
-  drupal_set_message('Module hzd_notifications Update # 8019 () was executed successfully.');
+  \Drupal::messenger()->addMessage('Module hzd_notifications Update # 8019 () was executed successfully.');
 }

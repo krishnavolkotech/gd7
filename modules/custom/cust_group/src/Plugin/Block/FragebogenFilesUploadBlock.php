@@ -108,7 +108,7 @@ class FragebogenFilesUploadBlock extends BlockBase {
         closedir($dh);
       }
       else {
-        drupal_set_message($this->t('Fragebogen Upload Directory Does Not Exists.'), 'error');
+        \Drupal::messenger()->addMessage($this->t('Fragebogen Upload Directory Does Not Exists.'), 'error');
       }
     }
 
@@ -141,7 +141,7 @@ class FragebogenFilesUploadBlock extends BlockBase {
         usort($files, 'filesCompareByName');
       }
       else {
-        drupal_set_message($this->t('Fragebogen Unzip Directory Does Not Exists.'), 'error');
+        \Drupal::messenger()->addMessage($this->t('Fragebogen Unzip Directory Does Not Exists.'), 'error');
       }
       return $files;
     }

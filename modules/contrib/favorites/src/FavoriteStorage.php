@@ -13,7 +13,7 @@ class FavoriteStorage {
      * {@inheritdoc}
      */
     static function delete($fid) {
-        db_delete('favorites')
+      \Drupal::database()->delete('favorites')
                 ->condition('fid', $fid)
                 ->execute();
     }
@@ -22,7 +22,7 @@ class FavoriteStorage {
      * {@inheritdoc}
      */
     static function getFavorites($uid) {
-        $result = db_query('select * from {favorites} where uid = :uip order by timestamp DESC', array(':uip' => $uid));
+        $result = \Drupal::database()->query('select * from {favorites} where uid = :uip order by timestamp DESC', array(':uip' => $uid));
         return $result;
     }
 
@@ -30,14 +30,14 @@ class FavoriteStorage {
      * {@inheritdoc}
      */
     static function getFav($fid) {
-        return db_query('select * from {favorites} where fid=:fid', array(':fid' => $fid))->fetchObject();
+        return \Drupal::database()->query('select * from {favorites} where fid=:fid', array(':fid' => $fid))->fetchObject();
     }
 
     /**
      * {@inheritdoc}
      */
     static function deleteFavorite($fid) {
-        db_delete('favorites')
+        \Drupal::database()->delete('favorites')
                 ->condition('fid', $fid)
                 ->execute();
     }
@@ -46,7 +46,7 @@ class FavoriteStorage {
      * {@inheritdoc}
      */
     static function deleteFav($uid, $path, $query) {
-        db_delete('favorites')
+        \Drupal::database()->delete('favorites')
                 ->condition('uid', $uid)
                 ->condition('path', $path)
                 ->condition('query', $query)
@@ -57,7 +57,7 @@ class FavoriteStorage {
      * {@inheritdoc}
      */
     static function addFav($uid, $path, $query, $title) {
-        db_insert('favorites')
+        \Drupal::database()->insert('favorites')
                 ->fields(array(
                     'uid' => $uid,
                     'path' => $path,

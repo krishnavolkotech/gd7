@@ -35,7 +35,7 @@ class DowntimesettingsForm extends FormBase {
       drupal_set_breadcrumb($breadcrumb);
      */
     /**
-      $query = db_query("select service_id from {group_downtimes_view} where group_id = %d", $_SESSION['Group_id']);
+      $query = \Drupal::database()->query("select service_id from {group_downtimes_view} where group_id = %d", $_SESSION['Group_id']);
 
       while ($services = db_fetch_array($query)) {
       $default_services[$services['service_id']] = $services['service_id'];
@@ -69,20 +69,20 @@ class DowntimesettingsForm extends FormBase {
    */
 
   function downtimes_setting_submit($form, &$form_state) {
-    db_query("delete from {group_downtimes_view} where group_id = %d ", $_SESSION['Group_id']);
+    \Drupal::database()->query("delete from {group_downtimes_view} where group_id = %d ", $_SESSION['Group_id']);
     $selected_services = $form['services']['#post']['services'];
     $sql = 'insert into {group_downtimes_view} (group_id, service_id) values (%d, %d)';
     $counter = 0;
     if ($selected_services) {
       foreach ($selected_services as $service) {
         $counter++;
-        db_query($sql, $_SESSION['Group_id'], $service);
+        \Drupal::database()->query($sql, $_SESSION['Group_id'], $service);
       }
     }
     $gid = $_SESSION['Group_id'];
     $menu_name = 'menu-' . $gid;
     reset_menu_link($counter, 'Downtimes', 'downtimes', $menu_name, $gid);
-    drupal_set_message(t('Downtime Settings Updated'));
+    \Drupal::messenger()->addMessage(t('Downtime Settings Updated'));
   }
 
 }

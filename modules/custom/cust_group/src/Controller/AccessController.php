@@ -162,7 +162,7 @@ class AccessController extends ControllerBase
             }
             $groupMembersCount = count($group->getMembers($group->bundle() . '-admin'));
             if($groupMembersCount < 2) {
-                drupal_set_message(t('You cannot remove admin for this group. There should be at least one admin in the group.'), 'error');
+                \Drupal::messenger()->addMessage(t('You cannot remove admin for this group. There should be at least one admin in the group.'), 'error');
                 return AccessResult::forbidden();
             }
         }
@@ -396,7 +396,7 @@ class AccessController extends ControllerBase
         $uid = $user->id();
         $user_role = $user->getRoles();
         if (!in_array(SITE_ADMIN_ROLE, $user_role)) {
-            $group_members_query = db_query("SELECT gcfd.* FROM group_content_field_data gcfd, group_content__group_roles gcgr WHERE gcgr.entity_id = gcfd.id AND gcgr.group_roles_target_id like '%admin%' AND gcfd.entity_id = $uid")->fetchAllKeyed();
+            $group_members_query = \Drupal::database()->query("SELECT gcfd.* FROM group_content_field_data gcfd, group_content__group_roles gcgr WHERE gcgr.entity_id = gcfd.id AND gcgr.group_roles_target_id like '%admin%' AND gcfd.entity_id = $uid")->fetchAllKeyed();
             if (empty($group_members_query)) {
                 return AccessResult::forbidden();
             }

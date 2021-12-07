@@ -7,7 +7,7 @@ class AddressBookHelper {
     if($sql == NULL) {
       $sql = "SELECT DISTINCT UCASE(LEFT(lastname,1)) as alphabet FROM {cust_profile} ORDER BY alphabet";
     }
-    $result = db_query($sql)->fetchAll();
+    $result = \Drupal::database()->query($sql)->fetchAll();
     $alphabets = '';
     foreach($result as $alpha) {
       $users_list[] = $alpha->alphabet; 
