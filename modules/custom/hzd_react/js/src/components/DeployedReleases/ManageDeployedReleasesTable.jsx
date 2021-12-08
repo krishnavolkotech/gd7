@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {Table, Button, Pagination, Pager} from 'react-bootstrap';
-import DeployedReleasesTableRow from "./DeployedReleasesTableRow";
+import ManageDeployedReleasesTableRow from "./ManageDeployedReleasesTableRow";
 
-export default function DeployedReleasesTable(props) {
+export default function ManageDeployedReleasesTable(props) {
   const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
@@ -170,7 +170,7 @@ export default function DeployedReleasesTable(props) {
             highlight = "success";
           }
           return (
-            <DeployedReleasesTableRow
+            <ManageDeployedReleasesTableRow
               key={"row-" + deployment.nid}
               deployment={deployment}
               handleAction={props.handleAction}

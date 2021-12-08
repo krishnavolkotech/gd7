@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import DeployedReleasesTable from './DeployedReleasesTable';
+import ManageDeployedReleasesTable from './ManageDeployedReleasesTable';
 import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import DeployedReleasesFilter from './DeployedReleasesFilter';
@@ -432,7 +432,7 @@ export default function DeploymentManager() {
         setTriggerAction={setTriggerAction}
         setError={setError}
       />
-      <DeployedReleasesTable
+      <ManageDeployedReleasesTable
         data={data}
         timeout={timeout}
         setTimeout={setTimeout}
