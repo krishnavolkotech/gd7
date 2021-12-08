@@ -34,7 +34,7 @@ class FrontPageController extends ControllerBase {
           $resultall[] = $nid->nid;
         }
       }
-      $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
+      $tempstore = \Drupal::service('tempstore.private')->get('problem_management');
       $tempstore->set('problem_paginations', implode(',', $resultall));
       return [
         '#type' => 'markup',

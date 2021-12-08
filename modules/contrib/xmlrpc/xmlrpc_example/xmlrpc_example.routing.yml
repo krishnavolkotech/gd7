@@ -8,6 +8,7 @@ xmlrpc_example.info:
     _controller: '\Drupal\xmlrpc_example\Controller\XmlRpcExampleController::info'
     _title: 'XML-RPC Example'
   requirements:
+    # XML-RPC is by design open to the world, and using its own access control.
     _access: 'TRUE'
 
 xmlrpc_example.server:
@@ -16,6 +17,7 @@ xmlrpc_example.server:
     _form: '\Drupal\xmlrpc_example\Form\XmlRpcExampleServerForm'
     _title: 'XML-RPC Server configuration'
   requirements:
+    # XML-RPC is by design open to the world, and using its own access control.
     _access: 'TRUE'
 
 xmlrpc_example.client:
@@ -24,6 +26,7 @@ xmlrpc_example.client:
     _form: '\Drupal\xmlrpc_example\Form\XmlRpcExampleClientForm'
     _title: 'XML-RPC Client form'
   requirements:
+    # XML-RPC is by design open to the world, and using its own access control.
     _access: 'TRUE'
 
 xmlrpc_example.alter:
@@ -32,4 +35,5 @@ xmlrpc_example.alter:
     _form: '\Drupal\xmlrpc_example\Form\XmlRpcExampleAlterForm'
     _title: 'XML-RPC Alterations'
   requirements:
+    # XML-RPC is by design open to the world, and using its own access control.
     _access: 'TRUE'

@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\xmlrpc\Tests\XmlRpcBasicTest.
- */
-
 namespace Drupal\xmlrpc\Tests;
 
 use GuzzleHttp\Exception\ClientException;
@@ -17,24 +12,29 @@ use GuzzleHttp\Exception\ClientException;
 class XmlRpcBasicTest extends XmlRpcTestBase {
 
   /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * Modules to enable.
    *
    * @var array
    */
-  public static $modules = array('xmlrpc');
+  public static $modules = ['xmlrpc'];
 
   /**
    * Ensure that a basic XML-RPC call with no parameters works.
    */
   public function testListMethods() {
     // Minimum list of methods that should be included.
-    $minimum = array(
+    $minimum = [
       'system.multicall',
       'system.methodSignature',
       'system.getCapabilities',
       'system.listMethods',
       'system.methodHelp',
-    );
+    ];
 
     // Invoke XML-RPC call to get list of methods.
     $methods = $this->xmlRpcGet(['system.listMethods' => []]);
@@ -63,24 +63,25 @@ class XmlRpcBasicTest extends XmlRpcTestBase {
    * Ensure that XML-RPC correctly handles invalid messages when parsing.
    */
   public function testInvalidMessageParsing() {
-    $invalid_messages = array(
-      array(
+    module_load_include('inc', 'xmlrpc');
+    $invalid_messages = [
+      [
         'message' => xmlrpc_message(''),
         'assertion' => 'Empty message correctly rejected during parsing.',
-      ),
-      array(
+      ],
+      [
         'message' => xmlrpc_message('<?xml version="1.0" encoding="ISO-8859-1"?>'),
         'assertion' => 'Empty message with XML declaration correctly rejected during parsing.',
-      ),
-      array(
+      ],
+      [
         'message' => xmlrpc_message('<?xml version="1.0"?><params><param><value><string>value</string></value></param></params>'),
         'assertion' => 'Non-empty message without a valid message type is rejected during parsing.',
-      ),
-      array(
+      ],
+      [
         'message' => xmlrpc_message('<methodResponse><params><param><value><string>value</string></value></param></methodResponse>'),
         'assertion' => 'Non-empty malformed message is rejected during parsing.',
-      ),
-    );
+      ],
+    ];
 
     foreach ($invalid_messages as $assertion) {
       $this->assertFalse(xmlrpc_message_parse($assertion['message']), $assertion['assertion']);
@@ -91,17 +92,19 @@ class XmlRpcBasicTest extends XmlRpcTestBase {
    * Ensure that XML-RPC correctly handles XML Accept headers.
    */
   public function testAcceptHeaders() {
-    $request_header_sets = array(
+    $request_header_sets = [
       // Default.
       'implicit' => [],
       'text/xml' => ['Accept' => 'text/xml'],
       'application/xml' => ['Accept' => 'application/xml'],
-    );
+    ];
 
     foreach ($request_header_sets as $accept => $headers) {
       try {
         $methods = $this->xmlRpcGet(['system.listMethods' => []], $headers);
-        $this->assertTrue(is_array($methods), strtr('@accept accept header is accepted', array('@accept' => $accept)));
+        $this->assertTrue(is_array($methods), strtr('@accept accept header is accepted', [
+          '@accept' => $accept,
+        ]));
       }
       catch (ClientException $e) {
         $this->fail($e);

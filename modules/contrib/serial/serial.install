@@ -14,7 +14,7 @@ function serial_schema() {
   /** @var \Drupal\serial\SerialStorageInterface $serialStorage */
   $serialStorage = \Drupal::getContainer()->get('serial.sql_storage');
   $tableSchema = $serialStorage->getSchema();
-  $schema = array();
+  $schema = [];
   foreach ($serialStorage->getAllFields() as $entityTypeId => $entry) {
     foreach ($entry as $fieldKey => $fieldInstance) {
       foreach ($fieldInstance['bundles'] as $bundle) {

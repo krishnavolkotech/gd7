@@ -48,7 +48,7 @@ class PathAlias extends ControllerBase {
         if ($entity->getEntity()) {
           $contentLabel = $entity->getEntity()->label();
           $path_alias = '/' . $aliasCleaner->cleanString($groupTitle) . '/' . $aliasCleaner->cleanString($contentLabel);
-          \Drupal::service('path.alias_storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
+          \Drupal::service('path_alias.storage')->save('/' . $entity->toUrl()->getInternalPath(), $path_alias, 'de');
         }
       } catch (Exception $excp) {
         error_log($entity->id());
@@ -61,7 +61,7 @@ class PathAlias extends ControllerBase {
   }
 
   static function batchFinished($success, $results, $operations) {
-    drupal_set_message(t('Done.'));
+    \Drupal::messenger()->addMessage(t('Done.'));
   }
 
 }

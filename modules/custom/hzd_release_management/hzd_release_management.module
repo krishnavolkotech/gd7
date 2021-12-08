@@ -33,14 +33,14 @@ function hzd_get_deployed_serivces_list() {
   $current_path = explode("/", $path);
   $type = NULL;
   if (is_numeric($current_path[2])) {
-    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
+    $type = \Drupal::database()->query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $current_path[2]))->fetchField();
   }
   if ($type == 'deployed_releases') {
     $services_releases = released_deployed_releases();
     return $services_data = $services_releases['services'];
   }
   $group_id = ($group_id ? $group_id : RELEASE_MANAGEMENT);
-  $services_obj = db_query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
+  $services_obj = \Drupal::database()->query("SELECT n.title , n.nid FROM {node_field_data} n, {group_releases_view} grv  WHERE n.nid = grv.service_id and grv.group_id = :gid ORDER by title", array(":gid" => $group_id))->fetchAll();
   $services['none'] = " < " . t('Service') . ' > ';
 
   foreach ($services_obj as $services_data) {
@@ -63,7 +63,7 @@ function released_deployed_releases($service = NULL) {
   $order = " ORDER BY n.title ";
   $sql = $select . $from . $where . $order;
   $services = array();
-  $query = db_query($sql, array(":gid" => RELEASE_MANAGEMENT))->fetchAll();
+  $query = \Drupal::database()->query($sql, array(":gid" => RELEASE_MANAGEMENT))->fetchAll();
   $releases = [];
   foreach ($query as $releases_info) {
     if (!in_array($releases_info->service, $services)) {
@@ -75,7 +75,7 @@ function released_deployed_releases($service = NULL) {
   $deployed_services[] = '<' . t('Service') . '>';
   if (!empty($services)) {
     $list = implode(", ", $services);
-    $sql = db_query("SELECT nid, title FROM {node_field_data} WHERE nid in ($list) ORDER BY title")->fetchAll();
+    $sql = \Drupal::database()->query("SELECT nid, title FROM {node_field_data} WHERE nid in ($list) ORDER BY title")->fetchAll();
     foreach ($sql as $services_info) {
       $deployed_services[$services_info->nid] = $services_info->title;
     }
@@ -122,7 +122,7 @@ function hzd_user_state($uid = NULL) {
     $account = \Drupal::currentUser();
     $uid = $account->id();
   }
-  $state = db_query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+  $state = \Drupal::database()->query("SELECT state_id FROM {cust_profile} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
   return $state;
 }
 
@@ -133,7 +133,7 @@ function hzd_earlywarning_release() {
   $type = Drupal::request()->get('type');
   // $nid = $node->id();
   //  if(isset($nid) && is_numeric($nid)) {
-  //    $type = db_query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
+  //    $type = \Drupal::database()->query("SELECT type FROM {node_field_data} WHERE nid = :nid", array(":nid" => $nid))->fetchField();
   //  }
   $current_path = \Drupal::service('path.current')->getPath();
   $path_args = explode('/', $current_path);
@@ -198,7 +198,7 @@ function get_earlywarning_release($service = NULL) {
    * field_relese_services_target_id  where group_id = 32 ;
    *
    */
-  $query = db_select('node_field_data', 'nfd');
+  $query = \Drupal::database()->select('node_field_data', 'nfd');
   $query->join('node__field_relese_services', 'nfrs', 'nfd.nid = nfrs.entity_id');
   $query->join('group_releases_view', 'grv',
     'nfrs.field_relese_services_target_id = grv.service_id');
@@ -248,7 +248,7 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
     $releaseData[$entity] = $entity;
   }
 
-  /*$query = db_select('node_field_data', 'n');
+  /*$query = \Drupal::database()->select('node_field_data', 'n');
   $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
   $query->join('node__field_user_state', 'nfus', 'nfus.entity_id = n.nid');
   $query->join('node__field_environment', 'nfe', 'nfe.entity_id = n.nid');
@@ -274,12 +274,12 @@ function get_undeployed_dependent_release($service = NULL, $environment = NULL, 
   }
   // print_r($undeployed_releases); exit;.
   if ($release) {
-    $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(
+    $deployed_nid = \Drupal::database()->query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(
       ":env" => $environment,
       ":eid" => $release
     ))->fetchField();
     if ($deployed_nid) {
-      $title = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
+      $title = \Drupal::database()->query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
       $undeployed_releases[$deployed_nid] = $title;
     }
   }
@@ -327,12 +327,12 @@ function get_deployed_dependent_release($service = NULL, $environment = NULL, $r
   }
   // print_r($undeployed_releases); exit;.
   if ($release) {
-    $deployed_nid = db_query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(
+    $deployed_nid = \Drupal::database()->query("SELECT field_earlywarning_release_value FROM {node__field_earlywarning_release} nfer, {node__field_environment} nfe WHERE nfe.entity_id = nfer.entity_id and nfe.field_environment_value = :env and nfe.entity_id = :eid", array(
       ":env" => $environment,
       ":eid" => $release
     ))->fetchField();
     if ($deployed_nid) {
-      $title = db_query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
+      $title = \Drupal::database()->query("SELECT title FROM {node_field_data} WHERE nid = :nid", array(":nid" => $deployed_nid))->fetchField();
       $deployed_releases[$deployed_nid] = $title;
     }
   }
@@ -354,7 +354,7 @@ function get_deployed_dependent_release($service = NULL, $environment = NULL, $r
  */
 function get_release($string = NULL, $service = NULL) {
   $release_type = get_release_type($string);
-  $query = db_query("SELECT n.nid, n.title from {node_field_data} n, {node__field_relese_services} nfrs, 
+  $query = \Drupal::database()->query("SELECT n.nid, n.title from {node_field_data} n, {node__field_relese_services} nfrs, 
          {group_releases_view} GRV, {node__field_release_type} nfrt 
          WHERE n.nid = nfrs.entity_id and nfrt.entity_id = n.nid 
          and nfrs.field_relese_services_target_id = GRV.service_id 
@@ -423,7 +423,7 @@ function get_all_user_state($active = 0) {
   else {
     $sql_active = "";
   }
-  $user_states = db_query("select id, concat(state,' (',abbr,')') as state from {states} $sql_active ORDER BY weight ASC")->fetchAll();
+  $user_states = \Drupal::database()->query("select id, concat(state,' (',abbr,')') as state from {states} $sql_active ORDER BY weight ASC")->fetchAll();
   foreach ($user_states as $states_values) {
     // When we concat, when no abbr value is present, then it returns NULL. As of now it returns NULL for please select. so adding that value back to show in drop down.
     if ($states_values->state == NULL || $states_values->id == 1) {
@@ -447,7 +447,7 @@ function get_environment_options($state = 1) {
   $environment_lists[0] = t('All');
   $environment_lists[1] = t('Produktion');
   if ($state != 1) {
-    $non_productions_lists = db_query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfns WHERE n.nid = nfns.entity_id and nfns.field_non_production_state_value = :val and n.type = :type", array(
+    $non_productions_lists = \Drupal::database()->query("SELECT n.nid, n.title FROM {node_field_data} n, {node__field_non_production_state} nfns WHERE n.nid = nfns.entity_id and nfns.field_non_production_state_value = :val and n.type = :type", array(
       ":val" => $state,
       "type" => 'non_production_environment'
     ))->fetchAll();
@@ -876,7 +876,7 @@ function hzd_get_immediate_notification_user_mails($service_id, $type) {
  *
  */
 function hzd_get_immediate_pf_notification_user_mails() {
-  $get_pf_immediate_notifications_users = db_query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
+  $get_pf_immediate_notifications_users = \Drupal::database()->query("SELECT uids FROM {planning_files_notifications} WHERE send_interval = :intval", array(":intval" => 0))->fetchField();
   $unserialized_user_array = unserialize($get_pf_immediate_notifications_users);
   /*if (is_array($unserialized_user_array) && (count($unserialized_user_array) > 0)) {
     return hzd_user_mails($unserialized_user_array);
@@ -890,7 +890,7 @@ function hzd_get_immediate_pf_notification_user_mails() {
  * Get user mail ids.
  */
 function hzd_user_mails($uids) {
-  $query = db_select('users_field_data', 'u');
+  $query = \Drupal::database()->select('users_field_data', 'u');
   $query->leftjoin('user__field_message_preference', 'ufmp', 'u.uid = ufmp.entity_id');
   $query->leftjoin('user__field_notifications_status', 'ufns', 'ufns.entity_id = u.uid');
   $query->leftjoin('inactive_users', 'iu', 'iu.uid = u.uid');
@@ -929,7 +929,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
     }
   }
   /*if ($result['result'] != TRUE) {
-    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    \Drupal::messenger()->addMessage(t('There was a problem sending your message and it was not sent.'), 'error');
   }*/
 }
 
@@ -937,7 +937,7 @@ function send_immediate_notifications($subject, $message_text, $to, $preference,
  * Check whether user is inactive or not
  */
 function hzd_user_inactive_status_check($uid = NULL) {
-  $result = db_select('inactive_users', 'iu')
+  $result = \Drupal::database()->select('inactive_users', 'iu')
     ->fields('iu', array('uid'))
     ->condition('iu.uid', $uid)
     ->range(0, 1)
@@ -981,7 +981,7 @@ function hzd_release_management_mail($key, &$message, $params) {
 function hzd_release_management_node_delete($entity) {
   if ($entity->getType() == 'services') {
     $nid = $entity->id();
-    db_delete('service_notifications')
+    \Drupal::database()->delete('service_notifications')
       ->condition('service_id', $nid)
       ->execute();
   }
@@ -1046,7 +1046,7 @@ function hzd_service_update_notifications($type, $nid) {
   foreach ($service_notifications as $vals) {
     $result[$vals->uid] = $vals->default_send_interval;
   }
-  $override = db_query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(
+  $override = \Drupal::database()->query("SELECT uid, send_interval FROM {service_notifications_override} WHERE service_id = :sid AND type = :type", array(
     ":sid" => $nid,
     ":type" => $type
   ))->fetchAll();
@@ -1068,7 +1068,7 @@ function hzd_service_update_notifications($type, $nid) {
       'send_interval' => $key,
       'uids' => $serialized_uids
     );
-    db_insert('service_notifications')->fields($record)->execute();
+    \Drupal::database()->insert('service_notifications')->fields($record)->execute();
   }
 }
 
@@ -1076,11 +1076,11 @@ function hzd_service_update_notifications($type, $nid) {
  *
  */
 function hzd_notifications_delete_subscriptions($type, $nid) {
-  db_delete('service_notifications')
+  \Drupal::database()->delete('service_notifications')
     ->condition('service_id', $nid, '=')
     ->condition('type', $type, '=')
     ->execute();
-  db_delete('service_notifications_override')
+  \Drupal::database()->delete('service_notifications_override')
     ->condition('service_id', $nid, '=')
     ->condition('type', $type, '=')
     ->execute();
@@ -1091,7 +1091,7 @@ function hzd_notifications_delete_subscriptions($type, $nid) {
  */
 function insert_new_service_notifications($type, $nid) {
   $interval = HzdNotificationsHelper::hzd_notification_send_interval();
-  $service_notifications = db_query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
+  $service_notifications = \Drupal::database()->query("SELECT uid, default_send_interval FROM {service_notifications_user_default_interval} WHERE service_type = :type AND uid <> 0 ORDER BY uid ASC", array(":type" => $type))->fetchAll();
   $result = array();
   foreach ($service_notifications as $vals) {
     $result[$vals->default_send_interval][$vals->uid] = $vals->uid;
@@ -1107,7 +1107,7 @@ function insert_new_service_notifications($type, $nid) {
       'send_interval' => $key,
       'uids' => $serialized_uids
     );
-    db_insert('service_notifications')->fields($record)->execute();
+    \Drupal::database()->insert('service_notifications')->fields($record)->execute();
   }
 }
 
@@ -1173,7 +1173,7 @@ function insert_new_service_notifications($type, $nid) {
  * dpm($type);
  * $arg  = explode('/',$path);
  * if ((is_numeric($arg['1'])) && ($arg['2'] == 'edit')) {
- * drupal_set_message("<pre>".print_r($form['field_release_update_status'][0]['#default_value']['value'],1));
+ * \Drupal::messenger()->addMessage("<pre>".print_r($form['field_release_update_status'][0]['#default_value']['value'],1));
  * $form['field_release_update_status'][0]['#default_value']['value'] = 1;
  * }.
  *
@@ -1299,7 +1299,7 @@ function earlywarning_service_dependent_releases() {
   $form = form_builder($_POST['form_id'], $form, $form_state);
 
   $output = '';
-  $output .= drupal_render($form['field_earlywarning_release']);
+  $output .= \Drupal::service('renderer')->render($form['field_earlywarning_release']);
 
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
   exit();
@@ -1335,7 +1335,7 @@ function deployed_environment_service_dependent_releases() {
   $form = form_builder($_POST['form_id'], $form, $form_state);
 
   $output = '';
-  $output .= drupal_render($form['field_earlywarning_release']);
+  $output .= \Drupal::service('renderer')->render($form['field_earlywarning_release']);
   print drupal_to_js(array('data' => $output, 'status' => TRUE));
   exit();
 }

@@ -25,7 +25,7 @@ class Releases extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $wrapper = 'released_results_wrapper';
     $container = \Drupal::getContainer();
-    $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
+    $terms = $container->get('entity_type.manager')->getStorage('taxonomy_term')->loadTree('release_type');
     $default_type = 459;
     foreach ($terms as $key => $value) {
       $release_type[$value->tid] = $value->name;
@@ -49,7 +49,7 @@ class Releases extends FormBase {
     );
 
     $services[] = '<' . $this->t('Service') . '>';
-    $services_obj = db_query("SELECT n.title, n.nid 
+    $services_obj = \Drupal::database()->query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id and grv.group_id = :gid and nrt.release_type_target_id = :tid 
                      ORDER BY n.title asc", array(":gid" => RELEASE_MANAGEMENT, ":tid" => $default_type))->fetchAll();

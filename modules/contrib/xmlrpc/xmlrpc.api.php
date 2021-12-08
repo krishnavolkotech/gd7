@@ -41,15 +41,15 @@
  * @ingroup third_party
  */
 function hook_xmlrpc() {
-  return array(
+  return [
     'drupal.login' => 'drupal_login',
-    array(
+    [
       'drupal.site.ping',
       'drupal_directory_ping',
-      array('boolean', 'string', 'string', 'string', 'string', 'string'),
+      ['boolean', 'string', 'string', 'string', 'string', 'string'],
       t('Handling ping request'),
-    ),
-  );
+    ],
+  ];
 }
 
 /**

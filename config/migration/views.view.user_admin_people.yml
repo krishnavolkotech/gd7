@@ -470,7 +470,16 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: "{% if uid == 1 and status__value == 1 %}\nInaktiv\n{% elseif uid == 0 and status__value == 1 %}\nAktiv\n{% elseif uid == 1 and status__value == 0 %}\nGesperrt\n{% elseif uid == 0 and status__value == 0 %}\nGesperrt\n{% endif %}\n"
+            text: |
+              {% if uid == 1 and status__value == 1 %}
+              Inaktiv
+              {% elseif uid == 0 and status__value == 1 %}
+              Aktiv
+              {% elseif uid == 1 and status__value == 0 %}
+              Gesperrt
+              {% elseif uid == 0 and status__value == 0 %}
+              Gesperrt
+              {% endif %}
             make_link: false
             path: ''
             absolute: false
@@ -1395,7 +1404,11 @@ display:
           empty: false
           tokenize: false
           content:
-            value: "<style>\n.user-admin-people-count { color:#ff0000; }\n.user-group-list.active a { color: #ff3333; text-decoration: underline; cursor: default; }\n</style>"
+            value: |-
+              <style>
+              .user-admin-people-count { color:#ff0000; }
+              .user-group-list.active a { color: #ff3333; text-decoration: underline; cursor: default; }
+              </style>
             format: full_html
           plugin_id: text
     cache_metadata:

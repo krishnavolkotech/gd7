@@ -12,6 +12,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\file\Entity\File;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\Component\Utility\Html;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Datetime\DateTimePlus;
@@ -20,7 +21,6 @@ use Drupal\group\Entity\Group;
 use Drupal\hzd_customizations\Controller\Inactiveusers;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\legal\Entity\Conditions;
-use Drupal\Core\Link;
 use Drupal\Core\Site\Settings;
 
 if (!defined('SITE_ADMIN')) {
@@ -109,10 +109,10 @@ function get_related_downtime_services($type) {
  * Get related file attachments of planning files.
  */
 function get_related_files($planning_filename) {
-  $fids = db_query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
+  $fids = \Drupal::database()->query("SELECT field_upload_planning_file_target_id fid, field_upload_planning_file_display display FROM {node__field_upload_planning_file} WHERE entity_id in (SELECT entity_id FROM {node__field_planning_file_type} WHERE field_planning_file_type_value =  :planning_filename)", array(':planning_filename' => $planning_filename));
   $files_details = '';
   foreach ($fids as $fid) {
-    $fileObject = db_query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
+    $fileObject = \Drupal::database()->query("SELECT * FROM {file_managed} WHERE fid = :fid", array(':fid' => $fid->fid))->fetchAll();
     if ($fid->display == 1) {
       // $icon = theme('filefield_icon', $fileObject);.
       $files_heading = "<p><b>Dateien:</b></p>";
@@ -140,8 +140,8 @@ function hzd_customizations_entity_display_build_alter(&$build, $context) {
   if ($entity->getEntityTypeId() == 'node' && $entity->getType() == 'quickinfo') {
     /** @var \Drupal\Core\Entity\Display\EntityViewDisplayInterface $display */
     $display = $context['display'];
-    $entityManager = Drupal::service('entity.manager');
-    $fields = $entityManager->getFieldDefinitions('node', 'quickinfo');
+    $entityManager = Drupal::service('entity_type.manager');
+    $fields = \Drupal::service('entity_field.manager')->getFieldDefinitions('node', 'quickinfo');
     foreach ($fields as $field_name => $definition) {
       if (in_array($field_name, [
                   'field_business_impact',
@@ -378,14 +378,18 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
           $active = 'active';
       }
       $url = Url::fromUserInput('/admin/people/list/' . strtolower($gloss->lname));
-      $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l($gloss->lname, $url) . '</span>';
+      $link = Link::fromTextAndUrl($gloss->lname, $url)->toString();
+      //$glossarydata[] = '<span class="user-group-list ' . $active .'">'. \Drupal::l($gloss->lname, $url) . '</span>';
+       $glossarydata[] = '<span class="user-group-list ' . $active .'">' . $link . '</span>';
       $active = '';
     }
     if('all' == $lastElement) {
         $active = 'active';
     }
     $allurl = Url::fromUserInput('/admin/people/list/all');
-    $glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l(t('All'), $allurl) . '</span>';
+    $link = Link::fromTextAndUrl(t('All'), $allurl)->toString();
+    //$glossarydata[] = '<span class="user-group-list ' . $active .'">' . \Drupal::l(t('All'), $allurl) . '</span>';
+    $glossarydata[] = '<span class="user-group-list ' . $active .'">' . $link . '</span>';
     $glossary = implode(' | ', $glossarydata);
     $form['glossarylist'] = array(
         '#markup' => $glossary,
@@ -664,6 +668,7 @@ function hzd_customizations_quickinfo_save($node) {
       if (!file_exists('private://rz-schnellinfos/' . $quickinfoId . "/RZ-Schnellinfo-Nr-{$quickinfoId}.pdf")) {
         \Drupal::service('file_system')
           ->mkdir('private://rz-schnellinfos/' . $quickinfoId, NULL, TRUE);
+        /*  
         $node->save();
         $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
                 ->createSelectedInstance('pdf');
@@ -682,6 +687,7 @@ function hzd_customizations_quickinfo_save($node) {
             'description' => '',
         ]);
         $node->save();
+        */
         $print_engine = \Drupal::service('plugin.manager.entity_print.print_engine')
           ->createSelectedInstance('pdf');
         $print_builder = \Drupal::service('entity_print.print_builder');
@@ -692,7 +698,7 @@ function hzd_customizations_quickinfo_save($node) {
           'uid' => \Drupal::currentUser()->id(),
         ]);
         $file_new->save();
-        file_delete($file->id());
+        //\Drupal::service('file_system')->delete($file->id());
         $node->upload->appendItem([
           'target_id' => $file_new->id(),
           'display' => 1,
@@ -741,14 +747,15 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
   if ( $triggeredButton == "edit-publish"  ) {
     $path = 'private://rz-schnellinfos/';
     // Check $path directory can allow creating sub directory.
-    if (!file_prepare_directory($path, FILE_CREATE_DIRECTORY)) {
+    $file_service = \Drupal::service('file_system');
+    if (!$file_service->prepareDirectory($path,  \Drupal\Core\File\FileSystemInterface::CREATE_DIRECTORY)) {
       $form_state->setError($form['upload'], t("Not able to create a subdirectory in the file system. Please contact the administrator."));
     }
     // Check $path directory allow creating files.
-    if (!file_prepare_directory($path)) {
+    if (!$file_service->prepareDirectory($path)) {
       $form_state->setError($form['upload'], t("Note able to create a file. Please contact the administrator."));
     }
-    $directory = \Drupal::service('file_system')->realpath($path );
+    $directory = $file_service->realpath($path);
     if (!is_writable($directory)) {
       $form_state->setError($form['upload'], t("Not able to create a directory or file. Please contact the administrator."));
     }
@@ -760,6 +767,26 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
  */
 function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
   if ($view->id() == 'my_groups') {
+    $member = \Drupal::currentUser();
+    $user_groups = \Drupal\cust_group\CustGroupHelper::hzd_user_groups_list($member->id());
+    $gids = array_keys($user_groups);
+    if($gids){
+      $query->where[1]['conditions'][] = [
+        "field"    => 'groups_field_data.id',
+        "value"    => $gids,
+        "operator" => 'IN',
+      ];
+    }else{
+      $query->where[1]['conditions'][] = [
+        "field"    => 'groups_field_data.id',
+        "value"    => NULL,
+        "operator" => 'IN',
+      ];
+    }
+    if (!isset($query->where[1]['type'])) {
+      $query->where[1]['type'] = 'AND';
+    }
+/*
     // Traverse through the 'where' part of the query.
     foreach ($query->where as &$condition_group) {
       foreach ($condition_group['conditions'] as &$condition) {
@@ -774,6 +801,7 @@ function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
         }
       }
     }
+*/
   }
 
   // Altering the problems block on front page
@@ -871,11 +899,13 @@ function hzd_customizations_views_pre_render(\Drupal\views\ViewExecutable $view)
         if(!in_array('site_administrator', $user->getRoles())) {
             foreach ($view -> result as $key => &$result) {
                 $groupMember = $result->_entity->getMember($user);
-                $roles = $groupMember->getRoles();
-                if(!$result->_entity->isPublished() && $groupMember
-                && group_request_status($groupMember)
-                && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
-                    unset($view -> result[$key]);
+                if($groupMember){
+                  $roles = $groupMember->getRoles();
+                  if(!$result->_entity->isPublished() && $groupMember
+                  && group_request_status($groupMember)
+                  && !in_array($result->_entity->bundle() . '-admin', array_keys($roles))) {
+                      unset($view -> result[$key]);
+                  }
                 }
             }
         }

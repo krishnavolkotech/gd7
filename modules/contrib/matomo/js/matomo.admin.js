@@ -128,12 +128,15 @@
       $('#edit-privacy').drupalSetSummary(function (context) {
         var vals = [];
         if ($('input#edit-matomo-privacy-donottrack', context).is(':checked')) {
-          vals.push(Drupal.t('Universal web tracking opt-out'));
+          vals.push(Drupal.t('Universal web tracking opt-out enabled'));
+        }
+        if ($('input#edit-matomo-privacy-disablecookies', context).is(':checked')) {
+          vals.push(Drupal.t('Cookies disabled'));
         }
         if (!vals.length) {
           return Drupal.t('No privacy');
         }
-        return Drupal.t('@items enabled', {'@items': vals.join(', ')});
+        return Drupal.t('@items', {'@items': vals.join(', ')});
       });
     }
   };

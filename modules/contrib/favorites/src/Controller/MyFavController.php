@@ -15,8 +15,9 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\favorites\FavoriteStorage;
 use Drupal\Core\Url;
-use Drupal\Core\Render\Element\Link;
+// use Drupal\Core\Render\Element\Link;
 use Drupal\Core\Ajax\InvokeCommand;
+use \Drupal\Core\Link;
 
 /**
  * Class MyFavController.
@@ -53,7 +54,7 @@ class MyFavController extends ControllerBase {
     $result = FavoriteStorage::getFavorites($uid);
     $message = '<ul>';
     foreach ($result as $favorite) {
-      $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/' . trim($favorite->path, '/'));
+      $favorite->path = \Drupal::service('path_alias.manager')->getAliasByPath('/' . trim($favorite->path, '/'));
       if ($favorite->query != '') {
         $url = $base_url . $favorite->path . '?' . $favorite->query;
       }
@@ -62,7 +63,7 @@ class MyFavController extends ControllerBase {
       }
       $url = Url::fromUri($url);
       $url_delete = Url::fromRoute('favorites.remove', ['fid' => $favorite->fid]);
-      $message .= '<li>' . \Drupal::l($favorite->title, $url) . ' <span id="del-' . $favorite->fid . '">' . \Drupal::l('X', $url_delete) . '</span></li>';
+      $message .= '<li>' . Link::fromTextAndUrl($favorite->title, $url)->toString() . ' <span id="del-' . $favorite->fid . '">' . Link::fromTextAndUrl('X', $url_delete)->toString() . '</span></li>';
     }
     $message .= '</ul>';
 

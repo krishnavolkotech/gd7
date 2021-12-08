@@ -2,6 +2,7 @@
 
 namespace Drupal\block_upload\Form;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\block_upload\BlockUploadBuild;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -10,6 +11,7 @@ use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\node\Entity\Node;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\file\Entity\File;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 
 /**
  * Block upload form.
@@ -117,12 +119,11 @@ class BlockUploadPluploadForm extends FormBase {
     if (isset($values['block_upload_file'])) {
       $uid = \Drupal::currentUser();
       $destination = \Drupal::config('system.file')->get('default_scheme') . '://plupload';
-      file_prepare_directory($destination, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+      \Drupal::service('file_system')->prepareDirectory($destination, FileSystemInterface::CREATE_DIRECTORY | FileSystemInterface::MODIFY_PERMISSIONS);
       foreach ($values['block_upload_file'] as $uploaded_file) {
-        $file_uri = file_stream_wrapper_uri_normalize($destination . '/' . $uploaded_file['name']);
-
+        $file_uri = StreamWrapperManagerInterface::normalizeUri($destination . '/' . $uploaded_file['name']);
         // Move file without creating a new 'file' entity.
-        $uri = file_unmanaged_move($uploaded_file['tmppath'], $file_uri);
+        $uri = \Drupal::service('file_system')->move($uploaded_file['tmppath'], $file_uri);
 
         $file = File::Create([
           'uri' => $uri,
@@ -132,7 +133,7 @@ class BlockUploadPluploadForm extends FormBase {
         // @todo: When https://www.drupal.org/node/2245927 is resolved,
         // use a helper to save file to file_managed table
         $node->get($field_name)->appendItem($file);
-        drupal_set_message(t('File was successfully uploaded!'));
+        $this->messenger()->addMessage(t('File was successfully uploaded!'));
       }
     }
     $node->save();

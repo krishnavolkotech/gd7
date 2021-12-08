@@ -1662,3 +1662,16 @@ a.btn.btn-danger.legal-decline-btn {
   margin-left: 5px;
   background-color: #999;
 }
+.cust-flex-center-items {
+  display: flex;
+  align-items: center;
+}
+
+.right.group_name {
+    width: 65%;
+    margin-left: 2%;
+}
+
+.messages__wrapper p {
+    display: inline !important;
+}

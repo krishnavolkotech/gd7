@@ -4,6 +4,16 @@ namespace Drupal\queue_mail\Plugin\QueueWorker;
 
 use Drupal\Core\Queue\QueueWorkerBase;
 use Drupal\Component\Render\PlainTextOutput;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Theme\ThemeManagerInterface;
+use Drupal\Core\Theme\ThemeInitializationInterface;
+use Drupal\Core\Mail\MailManagerInterface;
+use Drupal\Core\Logger\LoggerChannelFactoryInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 
 /**
  * Sends emails form queue.
@@ -14,33 +24,132 @@ use Drupal\Component\Render\PlainTextOutput;
  *   cron = {"time" = 60}
  * )
  */
-class SendMailQueueWorker extends QueueWorkerBase {
+class SendMailQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
+
+  use StringTranslationTrait;
+
+  /**
+   * Theme manager.
+   *
+   * @var \Drupal\Core\Theme\ThemeManagerInterface
+   */
+  protected $themeManager;
+
+  /**
+   * Theme initialization.
+   *
+   * @var \Drupal\Core\Theme\ThemeInitializationInterface
+   */
+  protected $themeInitialization;
+
+  /**
+   * Active theme.
+   *
+   * @var \Drupal\Core\Theme\ActiveTheme
+   */
+  protected $activeTheme;
+
+  /**
+   * Mail manager.
+   *
+   * @var \Drupal\Core\Mail\MailManagerInterface
+   */
+  protected $mailManager;
+
+  /**
+   * Logger.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
+   * Queue mail configuration.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $config;
+
+  /**
+   * Queue for sending mails.
+   *
+   * @var \Drupal\Core\Queue\QueueInterface
+   */
+  protected $queue;
+
+  /**
+   * The module handler to invoke the alter hook.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $container->get('theme.manager'),
+      $container->get('theme.initialization'),
+      $container->get('plugin.manager.mail'),
+      $container->get('logger.factory'),
+      $container->get('config.factory'),
+      $container->get('queue'),
+      $container->get('module_handler')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(ThemeManagerInterface $theme_manager, ThemeInitializationInterface $theme_init, MailManagerInterface $mail_manager, LoggerChannelFactoryInterface $logger_factory, ConfigFactoryInterface $config_factory, ContainerAwareInterface $queue_factory, ModuleHandlerInterface $module_handler) {
+    $this->themeManager = $theme_manager;
+    $this->themeInitialization = $theme_init;
+    $this->activeTheme = $this->themeManager->getActiveTheme();
+    $this->mailManager = $mail_manager;
+    $this->logger = $logger_factory->get('mail');
+    $this->config = $config_factory->get('queue_mail.settings');
+    $this->queue = $queue_factory->get('queue_mail', TRUE);
+    $this->moduleHandler = $module_handler;
+  }
+
   /**
    * {@inheritdoc}
    */
   public function processItem($message) {
+    $original_message = $message;
+    $interval = $this->config->get('requeue_interval');
+
+    // Prevent retrying until specified interval has elapsed.
+    if (isset($message['last_attempt']) && ($message['last_attempt'] + $interval) > time()) {
+      // Skip item.
+      throw new \RuntimeException(sprintf('Sending of mail "%s" is skipped in the mail queue due to requeue interval.', $message['id']));
+    }
+
+    // Invoke hook_queue_mail_send_alter() to allow all modules to alter the
+    // email before sending.
+    $this->moduleHandler->alter('queue_mail_send', $message);
+
+    // The caller requested sending. Sending was canceled by one or more
+    // hook_queue_mail_send_alter() implementations. We set 'result' to NULL,
+    // because FALSE indicates an error in sending.
+    if (empty($message['send'])) {
+      $message['result'] = NULL;
+
+      return $message;
+    }
+
     // Retrieve the responsible implementation for this message.
-    $system = \Drupal::service('plugin.manager.mail')
-      ->getInstance(array('module' => $message['module'], 'key' => $message['key']));
+    $system = $this->mailManager->getInstance([
+      'module' => $message['module'],
+      'key' => $message['key'],
+    ]);
 
     // Set theme that was used to generate mail body.
-    $theme_manager = \Drupal::service('theme.manager');
-    $current_active_theme = $theme_manager->getActiveTheme();
-
-    if ($message['theme'] && $message['theme'] != $current_active_theme->getName()) {
-      $theme_manager->setActiveTheme(\Drupal::service('theme.initialization')->initTheme($message['theme']));
-    }
+    $this->setMailTheme($message);
 
     // Set mail's language as active.
-    $language_manager = \Drupal::languageManager();
-    $language_negotiator = \Drupal::service('queue_mail.language_negotiator');
-    $current_language = $language_manager->getCurrentLanguage()->getId();
-    if ($message['langcode'] != $current_language) {
-      $language_manager->setNegotiator($language_negotiator);
-      // Needed to re-run language negotiation.
-      $language_manager->reset();
-      $language_manager->getNegotiator()->setLanguageCode($message['langcode']);
-    }
+    $current_langcode = $this->setMailLanguage($message);
 
     try {
       // Format the message body.
@@ -49,46 +158,139 @@ class SendMailQueueWorker extends QueueWorkerBase {
     finally {
       // Revert the active theme, this is done inside a finally block so it is
       // executed even if an exception is thrown during sending a mail.
-      if ($message['theme'] != $current_active_theme->getName()) {
-        $theme_manager->setActiveTheme($current_active_theme);
-      }
+      $this->setActiveTheme($message);
 
       // Revert the active language.
-      if ($message['langcode'] != $current_language) {
-        $language_manager->reset();
-        $language_manager->getNegotiator()->setLanguageCode($current_language);
-      }
+      $this->setActiveLanguage($message, $current_langcode);
     }
 
-    // The original caller requested sending. Sending was canceled by one or
-    // more hook_mail_alter() implementations. We set 'result' to NULL,
-    // because FALSE indicates an error in sending.
-    if (empty($message['send'])) {
-      $message['result'] = NULL;
+    // Ensure that subject is plain text. By default translated and
+    // formatted strings are prepared for the HTML context and email
+    // subjects are plain strings.
+    if ($message['subject']) {
+      $message['subject'] = PlainTextOutput::renderFromHtml($message['subject']);
     }
-    // Sending was originally requested and was not canceled.
-    else {
-      // Ensure that subject is plain text. By default translated and
-      // formatted strings are prepared for the HTML context and email
-      // subjects are plain strings.
-      if ($message['subject']) {
-        $message['subject'] = PlainTextOutput::renderFromHtml($message['subject']);
-      }
-      $message['result'] = $system->mail($message);
-      // Log errors.
-      if (!$message['result']) {
-        \Drupal::logger('mail')
-          ->error('Error sending email (from %from to %to with reply-to %reply).', array(
-            '%from' => $message['from'],
-            '%to' => $message['to'],
-            '%reply' => $message['reply-to'] ? $message['reply-to'] : t('not set'),
-          ));
+    $message['result'] = $system->mail($message);
 
-        throw new \Exception(t('Error sending e-mail (from %from to %to).',
-          array('%from' => $message['from'], '%to' => $message['to'])));
-      }
+    // Log errors.
+    if (!$message['result']) {
+      $this->logger->error('Error sending email (from %from to %to with reply-to %reply).', [
+        '%from' => $message['from'],
+        '%to' => $message['to'],
+        '%reply' => $message['reply-to'] ? $message['reply-to'] : $this->t('not set'),
+      ]);
+
+      $this->processRetryLimit($original_message);
     }
+
+    $this->waitBetweenSending();
 
     return $message;
   }
+
+  /**
+   * Sets language from the message.
+   *
+   * @param array $message
+   *   Mail message.
+   *
+   * @return string
+   *   The negotiated language code.
+   */
+  protected function setMailLanguage(array $message) {
+    return $message['langcode'];
+  }
+
+  /**
+   * Restores back the negotiated language.
+   *
+   * @param array $message
+   *   Mail message.
+   * @param string $langcode
+   *   The negotiated language code.
+   */
+  protected function setActiveLanguage(array $message, $langcode) {
+  }
+
+  /**
+   * Set theme from the theme.
+   *
+   * @param array $message
+   *   Mail message.
+   */
+  protected function setMailTheme(array $message) {
+    if ($this->messageHasAnotherTheme($message)) {
+      $theme = $this->themeInitialization->initTheme($message['theme']);
+      $this->themeManager->setActiveTheme($theme);
+    }
+  }
+
+  /**
+   * Restore back theme that is used by default.
+   *
+   * @param array $message
+   *   Mail message.
+   */
+  protected function setActiveTheme(array $message) {
+    if ($this->messageHasAnotherTheme($message)) {
+      $this->themeManager->setActiveTheme($this->activeTheme);
+    }
+  }
+
+  /**
+   * Checks if message has been generated using another theme.
+   *
+   * @param array $message
+   *   Mail message.
+   *
+   * @return bool
+   *   TRUE if message has theme that is not an active theme, FALSE otherwise.
+   */
+  protected function messageHasAnotherTheme(array $message) {
+    return !empty($message['theme']) && $message['theme'] != $this->activeTheme->getName();
+  }
+
+  /**
+   * Wait between items processing.
+   *
+   * Wait if "Wait time per item" configuration is enabled.
+   */
+  protected function waitBetweenSending() {
+    if ($wait_time = $this->config->get('queue_mail_queue_wait_time')) {
+      sleep($wait_time);
+    }
+  }
+
+  /**
+   * Retry limit handler.
+   *
+   * Counts number of attempts and removes mails from queue after
+   * reaching threshold.
+   *
+   * @param array $original_message
+   *   Original message.
+   */
+  protected function processRetryLimit(array $original_message) {
+    $original_message['last_attempt'] = time();
+
+    if (!isset($original_message['fail_count'])) {
+      $original_message['fail_count'] = 0;
+    }
+    $original_message['fail_count']++;
+
+    $threshold = $this->config->get('threshold');
+
+    // Add back to the queue with an updated fail count.
+    if ($original_message['fail_count'] < $threshold) {
+      $this->queue->createItem($original_message);
+    }
+    else {
+      $this->logger->error('Attempt sending email (from %from to %to with reply-to %reply) exceeded retry threshold and was deleted.', [
+        '%from' => $original_message['from'],
+        '%to' => $original_message['to'],
+        '%reply' => $original_message['reply-to'] ? $original_message['reply-to'] : $this->t('not set'),
+      ]);
+    }
+  }
+
 }

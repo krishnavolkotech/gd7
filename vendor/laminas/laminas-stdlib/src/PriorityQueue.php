@@ -1,6 +1,10 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @see       https://github.com/laminas/laminas-stdlib for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-stdlib/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-stdlib/blob/master/LICENSE.md New BSD License
+ */
 
 namespace Laminas\Stdlib;
 
@@ -29,13 +33,12 @@ use function unserialize;
  */
 class PriorityQueue implements Countable, IteratorAggregate, Serializable
 {
-    public const EXTR_DATA     = 0x00000001;
-    public const EXTR_PRIORITY = 0x00000002;
-    public const EXTR_BOTH     = 0x00000003;
+    const EXTR_DATA     = 0x00000001;
+    const EXTR_PRIORITY = 0x00000002;
+    const EXTR_BOTH     = 0x00000003;
 
     /**
      * Inner queue class to use for iteration
-     *
      * @var string
      */
     protected $queueClass = SplPriorityQueue::class;
@@ -43,14 +46,12 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
     /**
      * Actual items aggregated in the priority queue. Each item is an array
      * with keys "data" and "priority".
-     *
      * @var array
      */
-    protected $items = [];
+    protected $items      = [];
 
     /**
      * Inner queue object
-     *
      * @var SplPriorityQueue
      */
     protected $queue;
@@ -66,7 +67,7 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
      */
     public function insert($data, $priority = 1)
     {
-        $priority      = (int) $priority;
+        $priority = (int) $priority;
         $this->items[] = [
             'data'     => $data,
             'priority' => $priority,
@@ -122,7 +123,7 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
      */
     public function isEmpty()
     {
-        return 0 === $this->count();
+        return (0 === $this->count());
     }
 
     /**
@@ -154,7 +155,7 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
     {
         $value = $this->getQueue()->extract();
 
-        $keyToRemove     = null;
+        $keyToRemove = null;
         $highestPriority = null;
         foreach ($this->items as $key => $item) {
             if ($item['data'] !== $value) {
@@ -163,7 +164,7 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
 
             if (null === $highestPriority) {
                 $highestPriority = $item['priority'];
-                $keyToRemove     = $key;
+                $keyToRemove = $key;
                 continue;
             }
 
@@ -172,7 +173,7 @@ class PriorityQueue implements Countable, IteratorAggregate, Serializable
             }
 
             $highestPriority = $item['priority'];
-            $keyToRemove     = $key;
+            $keyToRemove = $key;
         }
 
         if ($keyToRemove !== null) {

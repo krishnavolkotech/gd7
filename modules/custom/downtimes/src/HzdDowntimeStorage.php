@@ -23,7 +23,7 @@ class HzdDowntimeStorage {
                 'group_id' => $group_id,
                 'service_id' => $service
               ))->execute();
-          // db_query($sql, $_SESSION['Group_id'], $service);
+          // \Drupal::database()->query($sql, $_SESSION['Group_id'], $service);
         }
       }
     }

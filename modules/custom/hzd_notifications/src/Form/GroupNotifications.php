@@ -84,9 +84,8 @@ class GroupNotifications extends FormBase {
    */
   
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_set_message(t('Group mail preferences saved successfully'));
+    \Drupal::messenger()->addMessage(t('Group mail preferences saved successfully'));
     $uid = $form_state->getValue('account');
-    //db_delete('group_notifications_user_default_interval')->condition('uid', $uid)->execute();
     $user_groups = HzdNotificationsHelper::hzd_user_groups_list($uid);
     $subscriptions = $form_state->getValue('subscription');
     //foreach($user_groups as $gid => $label) {

@@ -23,7 +23,7 @@ class SerialDefaultWidget extends WidgetBase {
    * {@inheritdoc}
    */
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
-    $element['value'] = array(
+    $element['value'] = [
     // Understand number (integer)
       '#type' => 'hidden',
       // Default value cannot be NULL,
@@ -31,7 +31,7 @@ class SerialDefaultWidget extends WidgetBase {
       // @see https://www.drupal.org/node/2220381
       // so the serial is defaulted to a positive int.
       '#default_value' => isset($items[$delta]->value) ? $items[$delta]->value : 1,
-    );
+    ];
     return $element;
   }
 

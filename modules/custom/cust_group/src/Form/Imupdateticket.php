@@ -75,7 +75,7 @@ class Imupdateticket extends FormBase {
           $imfile = \Drupal\cust_group\Entity\ImAttachmentsData::load($attachment_id);
           $imfile->set('ticket_id', $ticket_id);
           $imfile->save();
-          drupal_set_message($this->t("Updated Ticket @ticket successfully.", ['@ticket' => $ticket_id]));
+          \Drupal::messenger()->addMessage($this->t("Updated Ticket @ticket successfully.", ['@ticket' => $ticket_id]));
         }
       }
     }

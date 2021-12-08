@@ -33,13 +33,13 @@ class HzdAddressBook extends ControllerBase {
     $limit = \Drupal::request()->get('no_rows');
     $limit = $limit ? $limit : DEFAULT_DISPLAY_ROWS;
     if($_SESSION['Group_name']) {
-      $total_count = db_query('SELECT COUNT(*) as count FROM {group_content_field_data} gcfd, {users_field_data} u 
+      $total_count = \Drupal::database()->query('SELECT COUNT(*) as count FROM {group_content_field_data} gcfd, {users_field_data} u 
                      WHERE u.uid = gcfd.entity_id AND gcfd.gid = :gid AND u.status = 1 AND u.uid <> 0', 
                      array(":gid" => $_SESSION['Group_id']))->fetchField();
       $output[]['#attached']['library']['drupalSettings']['Group_id'] = $_SESSION['Group_id'];
     }
     else {
-      $total_count = db_query('SELECT COUNT(*) as count FROM {cust_profile} cp, {users_field_data} u WHERE u.uid = cp.uid and u.uid <> 0 
+      $total_count = \Drupal::database()->query('SELECT COUNT(*) as count FROM {cust_profile} cp, {users_field_data} u WHERE u.uid = cp.uid and u.uid <> 0 
                      and u.status = 1')->fetchField();
     }
     $output[]  = array('#markup' => '<div class="addressbook_totalcount">'. $total_count ." ". t('members total') .'</div>');
@@ -83,7 +83,7 @@ class HzdAddressBook extends ControllerBase {
     }
     $limit = $_SESSION['address_book_rows'] ? $_SESSION['address_book_rows'] : DEFAULT_DISPLAY_ROWS;
 
-    $query = db_select('cust_profile', 'cp');
+    $query = \Drupal::database()->select('cust_profile', 'cp');
     $query->join('users_field_data', 'u', 'u.uid = cp.uid');
     $query->join('states', 's', 'cp.state_id = s.id');
     $query->condition('u.uid', 0, '<>')

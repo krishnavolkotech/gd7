@@ -30,11 +30,14 @@ abstract class RerouteEmailTestBase extends BrowserTestBase {
   protected $rerouteConfig;
 
   /**
-   * An array of helper modules for the reroute email tests.
-   *
-   * @var array
+   * {@inheritdoc}
    */
-  public static $modules = ['reroute_email'];
+  protected static $modules = ['reroute_email'];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * User object to perform site browsing.
@@ -76,7 +79,7 @@ abstract class RerouteEmailTestBase extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
     $this->rerouteConfig = $this->config('reroute_email.settings');
 
@@ -127,8 +130,9 @@ abstract class RerouteEmailTestBase extends BrowserTestBase {
     ];
 
     // Submit Reroute Email Settings form and check if it was successful.
-    $this->drupalPostForm('admin/config/development/reroute_email', $post, t('Save configuration'));
-    $this->assertText(t('The configuration options have been saved.'));
+    $this->drupalGet('admin/config/development/reroute_email');
+    $this->submitForm($post, t('Save configuration'));
+    $this->assertSession()->pageTextContains(t('The configuration options have been saved.'));
 
     // Rebuild config values after form submit.
     $this->rerouteConfig = $this->config('reroute_email.settings');
@@ -145,7 +149,7 @@ abstract class RerouteEmailTestBase extends BrowserTestBase {
     // Check most recent email.
     $mails = $this->getMails();
     if (empty($mails)) {
-      $this->assert(FALSE, 'Email was not sent.');
+      $this->assertTrue(FALSE, 'Email was not sent.');
       return;
     }
 
@@ -157,7 +161,7 @@ abstract class RerouteEmailTestBase extends BrowserTestBase {
     // Search in $mailbody for "Originally to: $original_destination".
     $mail_body = end($mails)['body'];
     $search_for = t('Originally to: @to', ['@to' => $original_destination]);
-    $has_info = preg_match("/{$search_for}/", $mail_body);
+    $has_info = (bool) preg_match("/{$search_for}/", $mail_body);
 
     // Asserts whether searched text was found.
     $this->assertTrue($has_info, 'Found the correct "Originally to" line in the body.');

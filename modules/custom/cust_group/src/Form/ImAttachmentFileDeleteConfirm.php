@@ -88,7 +88,8 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
         foreach ($node->get('field_im_upload_page_files')->getValue() as $file_field) {
           if ($file_field['target_id'] == $fid) {
             $node->get('field_im_upload_page_files')->removeItem($count);
-            file_delete($file_field['target_id']);
+	    //            file_delete($file_field['target_id']);
+	    \Drupal::service('file_system')->delete($file_field['target_id']);
             $entity = \Drupal::entityTypeManager()->getStorage('cust_group_imattachments_data')->loadByProperties(['fid' => $fid]);
             $entity = reset($entity);
             if($entity) {
@@ -101,7 +102,7 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
         $node->save();
         $exposedFilterData = \Drupal::request()->query->all();
         $form_state->setRedirect('entity.node.canonical', ['node' => 826],['query' => $exposedFilterData]);
-        drupal_set_message('File was successfully deleted!');
+        \Drupal::messenger()->addMessage('File was successfully deleted!');
     }
 }
 

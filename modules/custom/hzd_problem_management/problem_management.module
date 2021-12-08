@@ -104,11 +104,11 @@ function problem_management_run_importcsv($job) {
 /**
 function default_problem_no($nid = NULL) {
   if ($nid) {
-    $sno = db_result(db_query("select max(field_s_no_value) from {content_type_problem} where nid = %d", $nid));
+    $sno =  \Drupal::database()->result( \Drupal::database()->query("select max(field_s_no_value) from {content_type_problem} where nid = %d", $nid));
     return $sno;
   }
   else {
-    $sno = db_result(db_query("select max(field_s_no_value) from {content_type_problem} "));
+    $sno =  \Drupal::database()->result( \Drupal::database()->query("select max(field_s_no_value) from {content_type_problem} "));
   }
   if (!$sno) {
     return 1;

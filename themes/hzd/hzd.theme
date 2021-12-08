@@ -330,7 +330,9 @@ function hzd_preprocess_node(&$variables) {
   if ($variables['node']->getType() == 'quickinfo') {
     $variables['base_url'] = 'http://' . \Drupal::request()->getHost();
     /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-      $urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
+      $link =  Link::fromTextAndUrl("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url)->toString();
+      $urldata = '<span class="user-group-list">' . $link . '</span>';
+//$urldata = '<span class="user-group-list">' . \Drupal::l("RZ-Schnellinfo-Nr-" . $variables['node']->field_unique_id->value . ".pdf", $url) . '</span>';
       if ($variables['node']->isPublished()) {
       $variables['printfile'] = array('#markup' => '<span class="file file--mime-pdf-plain file--pdf icon-before"><span class="file-icon"><span aria-hidden="true" class="icon glyphicon glyphicon-file pdf-primary"></span></span><span class="file-link">' . $urldata . '</span><span class="file-size"></span></span>');
       } */
@@ -342,7 +344,9 @@ function hzd_preprocess_node(&$variables) {
   if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished() && $viewMode == 'full') {
 
     $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
-    $urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
+    $link =  Link::fromTextAndUrl('Edit', $url)->toString();
+    $urldata = '<span class="user-group-list">' . $link . '</span>';
+    //$urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
 
     $pdfLink = [
@@ -364,7 +368,9 @@ function hzd_preprocess_node(&$variables) {
     //$url = Url::fromUserInput('/entityprint/node/' . $nid);
 
     /* $url = Url::fromUserInput('/printable/pdf/node/' . $nid);
-      $urldata = \Drupal::l("PDF preview", $url);
+      $link =  Link::fromTextAndUrl('PDF preview', $url)->toString();
+      $urldata = $link;
+      //$urldata = \Drupal::l("PDF preview", $url);
       $variables['pdf_priview'] = array('#markup' => $urldata); */
   }
   elseif ($variables['node']->getType() == 'quickinfo' && $viewMode == 'mail' && $variables['node']->hasField('field_unique_id')) {
@@ -440,8 +446,8 @@ function hzd_preprocess_node(&$variables) {
     //$incident_data->state = $states[$result->state_id];
     $incident_data->state_id = isset($result->state_id) ? $result->state_id : NULL;
     $incident_data->description = isset($result->description) ? $result->description : NULL;
-    $reporter_uid = isset($result->downtime_id) ? db_query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField() : NULL;
-    $name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
+    $reporter_uid = isset($result->downtime_id) ? \Drupal::database()->query("SELECT uid FROM {node_field_data} WHERE nid = ?", array($result->downtime_id))->fetchField() : NULL;
+    $name = \Drupal::database()->query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($reporter_uid))->fetchField();
     $incident_data->reported_by = $name;
     $incident_data->downtimes_type = (isset($result->scheduled_p) && $result->scheduled_p == 0 ? t('Incident') : t('Maintenance'));
     $incident_data->enddate_planned = (!empty($result->enddate_planned) ? date('d.m.Y - H:i', $result->enddate_planned) . " " . t('Uhr') : '');
@@ -453,10 +459,10 @@ function hzd_preprocess_node(&$variables) {
 //    if (isset($result->enddate_reported) && $result->enddate_reported != '') {
 //      $incident_data->enddate_planned = ($result->enddate_reported ? date('d.m.Y - H:i', $result->enddate_reported) . " " . t('Uhr') : '');
 //    }
-    $resolved_data = isset($result->downtime_id) ? db_query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject() : NULL;
+    $resolved_data = isset($result->downtime_id) ? \Drupal::database()->query("select * from {resolve_cancel_incident} where downtime_id = ? ", array($result->downtime_id))->fetchObject() : NULL;
 // dpm($resolved_data->end_date);
     if (!empty($resolved_data)) {
-      $resolved_name = db_query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
+      $resolved_name = \Drupal::database()->query("select concat(firstname,' ',lastname) as name from {cust_profile} where uid = ? ", array($resolved_data->uid))->fetchField();
       $incident_data->resolved_data = $resolved_data;
       $incident_data->resolved_data->name = $resolved_name;
     }
@@ -475,7 +481,7 @@ function hzd_preprocess_node(&$variables) {
     $statesArray = $statesArray->condition('s.id', explode(',', $result->state_id), 'IN')
       ->execute()
       ->fetchCol();
-    //$state_ids = db_query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchAssoc();
+    //$state_ids = \Drupal::database()->query("SELECT Group_concat(DISTINCT state SEPARATOR', ') FROM {states} WHERE id IN (?)", array($result->state_id))->fetchAssoc();
 //    $incident_data->state = [
 //      '#items' => $statesArray,
 //      '#theme' => 'item_list',
@@ -530,7 +536,7 @@ function hzd_preprocess_node(&$variables) {
     $variables['back_to_search'] = \Drupal::service('link_generator')
       ->generate(t('Back To Search'), $url);
 
-    $tempstore = \Drupal::service('user.private_tempstore')->get('problem_management');
+    $tempstore = \Drupal::service('tempstore.private')->get('problem_management');
     $problem_paginations = explode(',', $tempstore->get('problem_paginations'));
     //$filterData = \Drupal::request()->query;
     $current = array_search($variables['node']->id(), $problem_paginations, TRUE);
@@ -739,7 +745,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
 
   if (\Drupal::currentUser()->isAuthenticated()) {
     $block = \Drupal\block\Entity\Block::load('addtofavorites');
-    $block_view = \Drupal::entityManager()
+    $block_view = \Drupal::entityTypeManager()
       ->getViewBuilder('block')
       ->view($block);
     $block_view['#weight'] = 1;
@@ -803,7 +809,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
 
 function custom_user_fullname($uid) {
   $query = "select concat(firstname, ' ', lastname) from {cust_profile} where uid = ?";
-  $user_fullname = db_query($query, array($uid))->fetchField();
+  $user_fullname = \Drupal::database()->query($query, array($uid))->fetchField();
   return $user_fullname;
 }
 
@@ -834,7 +840,7 @@ function downtimes_revisions($node) {
     ->orderBy('id', 'DESC')
     ->execute()
     ->fetchAll();
-//  $query = db_query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
+//  $query = \Drupal::database()->query("SELECT * FROM {downtimes_logs} WHERE downtime_id = ? ORDER BY id DESC", array($node))->fetchAll();
 //  if (empty($query)) {
 //    return;
 //  }
@@ -1090,11 +1096,12 @@ function hzd_preprocess_views_view_summary_unformatted(&$variables) {
   if (($view->id() == 'group_members_lists' && $view->current_display == 'attachment_1') || ($view->id() == 'user_list' && $view->current_display == 'attachment_1')) {
     // Adding the all link to glossary
 
+    $current =  Url::fromRoute('<current>')->setOptions(['alias' => TRUE])->toString();
     $active_urls = array(
       // Force system path.
-      \Drupal::url('<current>', [], ['alias' => TRUE]),
+      $current,
       // Could be an alias.
-      \Drupal::url('<current>'),
+      Url::fromRoute('<current>')->toString(),
     );
     $active_urls = array_combine($active_urls, $active_urls);
 
@@ -1238,7 +1245,7 @@ function hzd_getmenucontent_menuid($node) {
     $result = $query->execute();
     $id = (!empty($result)) ? reset($result) : FALSE;
     if (!$id) {
-      $urlalias = \Drupal::service('path.alias_manager')
+      $urlalias = \Drupal::service('path_alias.manager')
         ->getAliasByPath('/node/' . $node->id());
 
       $query = \Drupal::entityQuery('menu_link_content')
@@ -1271,7 +1278,7 @@ function hzd_preprocess_page_title(&$vars) {
 
 function hzd_preprocess_file_link(&$variables) {
   $file = $variables['file'];
-  $variables['file_created'] = format_date($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
+  $variables['file_created'] = \Drupal::service('date.formatter')->format($file->getCreatedTime(), 'hzd_date', '', NULL, NULL);
   $variables['node_view_mode'] = $file->node_view_mode;
 
   $variables['file_owner'] = '';

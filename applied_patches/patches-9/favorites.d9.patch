@@ -1,0 +1,46 @@
+diff --git a/modules/contrib/favorites/src/Controller/MyFavController.php b/modules/contrib/favorites/src/Controller/MyFavController.php
+index aa1d249e0..d191e6a1c 100644
+--- a/modules/contrib/favorites/src/Controller/MyFavController.php
++++ b/modules/contrib/favorites/src/Controller/MyFavController.php
+@@ -53,7 +53,7 @@ public function addFavJS() {
+     $result = FavoriteStorage::getFavorites($uid);
+     $message = '<ul>';
+     foreach ($result as $favorite) {
+-      $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/' . trim($favorite->path, '/'));
++      $favorite->path = \Drupal::service('path_alias.manager')->getAliasByPath('/' . trim($favorite->path, '/'));
+       if ($favorite->query != '') {
+         $url = $base_url . $favorite->path . '?' . $favorite->query;
+       }
+diff --git a/modules/contrib/favorites/src/Form/StarFavAddForm.php b/modules/contrib/favorites/src/Form/StarFavAddForm.php
+index 7686f0040..398a6f572 100644
+--- a/modules/contrib/favorites/src/Form/StarFavAddForm.php
++++ b/modules/contrib/favorites/src/Form/StarFavAddForm.php
+@@ -48,7 +48,7 @@ public function buildForm(array $form, FormStateInterface $form_state) {
+         }
+         if ($title == '') {
+             $current_path = \Drupal::service('path.current')->getPath();
+-            $title = \Drupal::service('path.alias_manager')->getAliasByPath($current_path);
++            $title = \Drupal::service('path_alias.manager')->getAliasByPath($current_path);
+         }
+         if (is_string($title)) {
+             $title = strip_tags($title);
+diff --git a/modules/contrib/favorites/src/Plugin/Block/FavBlock.php b/modules/contrib/favorites/src/Plugin/Block/FavBlock.php
+index c0fa3d8fc..f77b998fa 100644
+--- a/modules/contrib/favorites/src/Plugin/Block/FavBlock.php
++++ b/modules/contrib/favorites/src/Plugin/Block/FavBlock.php
+@@ -42,7 +42,7 @@ public function build() {
+             $result = FavoriteStorage::getFavorites($uid);
+             $i = 0;
+             foreach ($result as $favorite) {
+-                    $favorite->path = \Drupal::service('path.alias_manager')->getAliasByPath('/'.trim($favorite->path,'/'));
++                    $favorite->path = \Drupal::service('path_alias.manager')->getAliasByPath('/'.trim($favorite->path,'/'));
+                     if($favorite->query != ''){
+                         $url = $base_url.$favorite->path.'?'.$favorite->query;    
+                     }
+@@ -77,4 +77,4 @@ public function build() {
+     
+   
+   
+-}
+\ No newline at end of file
++}

@@ -1,20 +1,20 @@
 <?php
-/**
- * @file
- * Contains \Drupal\xmlrpc\Tests\XmlRpcTestBase.
- */
 
 namespace Drupal\xmlrpc\Tests;
 
-use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
-use Drupal\simpletest\WebTestBase;
-use Symfony\Component\Routing\Generator\UrlGenerator;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * A base class simplifying xmlrpc() calls testing.
  */
-abstract class XmlRpcTestBase extends WebTestBase {
+abstract class XmlRpcTestBase extends BrowserTestBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Provides detailed response information if verbose is enabled.
@@ -23,13 +23,8 @@ abstract class XmlRpcTestBase extends WebTestBase {
    *   A XML-RPC result.
    */
   protected function verboseResult($result) {
-    // Skip evaluating the response information if it is not needed.
-    if (!$this->verbose) {
-      return;
-    }
-
     if ($result === FALSE) {
-      $this->verbose(SafeMarkup::format('Result: <pre>@result</pre><br />Errno: @errno<br />Message: @message', [
+      $this->verbose(new FormattableMarkup('Result: <pre>@result</pre><br />Errno: @errno<br />Message: @message', [
         '@result' => var_export($result, TRUE),
         '@errno' => xmlrpc_errno(),
         '@message' => xmlrpc_error_msg(),

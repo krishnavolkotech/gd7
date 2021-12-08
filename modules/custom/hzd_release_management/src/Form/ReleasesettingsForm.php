@@ -47,7 +47,7 @@ class ReleasesettingsForm extends FormBase {
     // $breadcrumb[] = drupal_get_title() ;
     // drupal_set_breadcrumb($breadcrumb);
     // Getting the default Services
-    //  $query = db_query("select service_id from {group_releases_view} where group_id = %d", $_SESSION['Group_id']);.
+    //  $query =  \Drupal::database()->query("select service_id from {group_releases_view} where group_id = %d", $_SESSION['Group_id']);.
     $services = HzdreleasemanagementStorage::get_default_release_services_current_session();
     foreach ($services as $service) {
       $default_services[$service->service_id] = $service->service_id;
@@ -82,7 +82,7 @@ class ReleasesettingsForm extends FormBase {
     //  $terms = \Drupal::entityManager()->getStorage('taxonomy_term')->loadTree($vid, $parent, $max_depth, $load_entities);.
     $container = \Drupal::getContainer();
     // $release_vocabulary_id = \Drupal::config('hzd_release_management.settings')->get('release_type');.
-    $terms = $container->get('entity.manager')->getStorage('taxonomy_term')->loadTree('release_type');
+    $terms = $container->get('entity_type.manager')->getStorage('taxonomy_term')->loadTree('release_type');
     // Echo '<pre>';  print_r($terms);  exit;.
     foreach ($terms as $key => $value) {
       $release_type[$value->tid] = $value->name;
@@ -170,7 +170,7 @@ class ReleasesettingsForm extends FormBase {
       $menu_link->save();
     }
     \Drupal::service("router.builder")->rebuild();
-    drupal_set_message(t('Releases Settings Updated'), 'status');
+    \Drupal::messenger()->addMessage(t('Releases Settings Updated'), 'status');
   }
 
 }

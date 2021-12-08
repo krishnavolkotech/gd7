@@ -21,11 +21,18 @@ class ColorButton extends CKEditorPluginBase implements CKEditorPluginConfigurab
    * Get path to library folder.
    */
   public function getLibraryPath() {
-    $path = 'libraries/colorbutton';
-    if (\Drupal::moduleHandler()->moduleExists('libraries')) {
+    // @todo Remove backward compatibility conditions when we bump Drupal
+    //   requirement to 8.9.0. See https://www.drupal.org/node/3099614
+    if (\Drupal::hasService('library.libraries_directory_file_finder')) {
+      /** @var \Drupal\Core\Asset\LibrariesDirectoryFileFinder $library_file_finder */
+      $path = \Drupal::service('library.libraries_directory_file_finder')->find('colorbutton');
+    }
+    elseif (\Drupal::moduleHandler()->moduleExists('libraries')) {
       $path = libraries_get_path('colorbutton');
     }
-
+    else {
+      $path = 'libraries/colorbutton';
+    }
     return $path;
   }
 

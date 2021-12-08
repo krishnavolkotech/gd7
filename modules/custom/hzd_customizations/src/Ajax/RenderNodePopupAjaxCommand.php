@@ -30,7 +30,7 @@ class RenderNodePopupAjaxCommand extends ControllerBase {
       if ($node_id) {
           $response = new AjaxResponse();
           $deployed_releases = views_embed_view('deployed_popup_content', 'page_1', $node_id);
-          $variables = drupal_render($deployed_releases);
+          $variables = \Drupal::service('renderer')->render($deployed_releases);
           $response->addCommand(new HtmlCommand($selector, $variables));
           return $response;
       }

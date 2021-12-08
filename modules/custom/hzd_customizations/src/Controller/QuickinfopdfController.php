@@ -69,7 +69,7 @@ a {
     $published_on = $node->status ? date('d.m.Y', $node->changed) : t("PREVIEW");
     $output .= '<td class="padding-5" style="min-width:110px;">' . t("Published on") . ': <br>' . $published_on . '</td></tr>';
     if ($node->status) {
-      $published_by = db_result(db_query("SELECT CONCAT(firstname, ' ', lastname) FROM {cust_profile} WHERE uid = %d", $node->revision_uid));
+      $published_by = db_result(\Drupal::database()->query("SELECT CONCAT(firstname, ' ', lastname) FROM {cust_profile} WHERE uid = %d", $node->revision_uid));
     }
     else {
       $published_by = "<br/>";

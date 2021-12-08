@@ -330,7 +330,7 @@ class Inactiveusers extends ControllerBase {
         $query->range(0, 1);
         $donot_block = $query->execute()->fetchField();
 
-        // $inactive_flag = db_result(db_query("SELECT value from {inactive_user_flag} WHERE user_id = %d", $user->uid));.
+        // $inactive_flag = db_result(\Drupal::database()->query("SELECT value from {inactive_user_flag} WHERE user_id = %d", $user->uid));.
         $query = \Drupal::database()->select('inactive_users', 'iu');
         $query->addField('iu', 'warned_user_block_timestamp');
         $query->condition('iu.uid', $user->uid, '=');
@@ -574,7 +574,7 @@ class Inactiveusers extends ControllerBase {
                 $update_result = $query->execute();
 
                 if (!$update_result) {
-                  // @db_query('INSERT INTO {inactive_users} (uid, notified_user) VALUES (%d, 1)', $user->uid);
+                  // @\Drupal::database()->query('INSERT INTO {inactive_users} (uid, notified_user) VALUES (%d, 1)', $user->uid);
                   \Drupal::database()->insert('inactive_users')
                     ->fields(array(
                       'uid' => $user->uid,
@@ -644,7 +644,7 @@ class Inactiveusers extends ControllerBase {
                 $update_result = $query->execute();
 
                 if (!$update_result) {
-                  // @db_query('INSERT INTO {inactive_users} (uid, notified_user) VALUES (%d, 1)', $user->uid);
+                  // @\Drupal::database()->query('INSERT INTO {inactive_users} (uid, notified_user) VALUES (%d, 1)', $user->uid);
                   \Drupal::database()->insert('inactive_users')
                     ->fields(array(
                       'uid' => $user->uid,

@@ -75,7 +75,7 @@ class GroupContentViewController extends ControllerBase {
   function editGroupContent(GroupInterface $group, $type, GroupContentInterface $group_content = null){
     $typeMappings = ['problems'=>'problem','rz-schnellinfos'=>'quickinfo','downtimes'=>'downtimes'];
     if ($group_content->getEntity()->bundle() == $typeMappings[$type]) {
-      $form = \Drupal::service('entity.manager')
+      $form = \Drupal::service('entity_type.manager')
         ->getFormObject('node', 'edit')
         ->setEntity($group_content->getEntity());
 //      $build[] = \Drupal::formBuilder()->getForm($form);

@@ -162,7 +162,7 @@ class MigrateGroupForm extends FormBase {
 
 
     if (empty($uri) or ! is_file($uri)) {
-      drupal_set_message(t('The file "%uri" does not exist', array('%uri' => $uri)), 'error');
+      \Drupal::messenger()->addMessage(t('The file "%uri" does not exist', array('%uri' => $uri)), 'error');
       return;
     }
   }
@@ -174,7 +174,7 @@ class MigrateGroupForm extends FormBase {
  */
   public function create_groups($filedata) {
     $num_operations = count($filedata);
-    drupal_set_message(t('Creating an array of @num operations', array('@num' => $num_operations)));
+    \Drupal::messenger()->addMessage(t('Creating an array of @num operations', array('@num' => $num_operations)));
 
     $operations = array();
     foreach ($filedata as $key => $row) {
@@ -202,7 +202,7 @@ class MigrateGroupForm extends FormBase {
  */
   public function add_members($filedata) {
     $num_operations = count($filedata);
-    drupal_set_message(t('Creating an array of @num operations', array('@num' => $num_operations)));
+    \Drupal::messenger()->addMessage(t('Creating an array of @num operations', array('@num' => $num_operations)));
 
     $operations = array();
     foreach ($filedata as $key => $row) {
@@ -230,7 +230,7 @@ class MigrateGroupForm extends FormBase {
  */
   public function add_group_content($filedata) {
     $num_operations = count($filedata);
-    drupal_set_message(t('Creating an array of @num operations', array('@num' => $num_operations)));
+    \Drupal::messenger()->addMessage(t('Creating an array of @num operations', array('@num' => $num_operations)));
 
     $operations = array();
     foreach ($filedata as $key => $row) {
