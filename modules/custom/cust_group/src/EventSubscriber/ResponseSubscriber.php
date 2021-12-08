@@ -52,9 +52,10 @@ class ResponseSubscriber implements EventSubscriberInterface {
    */
   public function alterResponse(GetResponseEvent $event) {
     $exception = $event->getException();                                                                                                       
-    if ($exception instanceof HttpException) {
-      if ($exception->getStatusCode() == 403) {
-
+    if (!$exception instanceof HttpException) {
+			return;
+		}
+    if ($exception->getStatusCode() == 403) {
       if (\Drupal::currentUser()->isAuthenticated()) {
         $currentPath = \Drupal::service('path.current')->getPath();
         $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
