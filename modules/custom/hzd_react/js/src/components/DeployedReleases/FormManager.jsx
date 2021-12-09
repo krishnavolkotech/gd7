@@ -519,8 +519,8 @@ export default function FormManager(props) {
     // const product = releaseName.substring(0, releaseName.indexOf('_'));
 
     // UUID des Verfahrens.
-    // @todo Support für BestFakt
-    const allServices = global.drupalSettings.serviceUuids["459"];
+    // @todo Support für BestFakt -> TESTEN
+    const allServices = global.drupalSettings.serviceUuids[props.type];
     if (formState.service in allServices) {
       var uuidService = allServices[formState.service];
     }
@@ -750,6 +750,7 @@ export default function FormManager(props) {
         handleSave={handleSave}
         submitMessage={submitMessage}
         setSubmitMessage={setSubmitMessage}
+        type={props.type}
       />
       <ArchiveDeploymentForm
         showArchiveForm={showArchiveForm}

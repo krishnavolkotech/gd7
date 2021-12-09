@@ -109,8 +109,7 @@ export default function DeploymentForm(props) {
   }, [props.formState.state])
 
   //Verfahren Drop Down
-  // @todo Add support for BestFakt (08.12.2021)
-  const services = global.drupalSettings.services["459"];
+  const services = global.drupalSettings.services[props.type];
   
   let servicesArray = Object.entries(services);
   servicesArray.sort(function (a, b) {

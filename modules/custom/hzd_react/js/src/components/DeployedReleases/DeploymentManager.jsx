@@ -76,6 +76,7 @@ export default function DeploymentManager() {
   initialState = global.drupalSettings.role === "ZRML" ? global.drupalSettings.userstate : initialState;
 
   const initialFilterState = {
+    "type": query.has("type") ? query.get("type") : "459",
     "state": initialState,
     "environment": query.has("environment") ? query.get("environment") : "0",
     "service": query.has("service") ? query.get("service") : "0",
@@ -87,6 +88,7 @@ export default function DeploymentManager() {
   /**
    * The filter state object.
    * @property {Object} filterState - The object holding the filter state.
+   * @property {string} filterState.type - The service type.
    * @property {string} filterState.state - The state id.
    * @property {string} filterState.environment - The environment id.
    * @property {string} filterState.service - The service id.
@@ -126,7 +128,7 @@ export default function DeploymentManager() {
     // if (filterState.service !== "0") {
     //   preloadDeploymentData(filterState);
     // }
-  }, [filterState.status, filterState.state, filterState.environment, filterState.service, count]);
+  }, [filterState.type, filterState.status, filterState.state, filterState.environment, filterState.service, count]);
 
   /**
    * Changes URL-Params depending on Nav / Filters, resets Pagination.
@@ -150,6 +152,11 @@ export default function DeploymentManager() {
     
     // Change URL Params.
     const params = new URLSearchParams();
+    if (filterState.type !== "459" && filterState.type) {
+      params.append("type", filterState.type);
+    } else {
+      params.delete("type");
+    }
     if (filterState.state !== "1" && filterState.state) {
       params.append("state", filterState.state);
     } else {
@@ -219,6 +226,10 @@ export default function DeploymentManager() {
     // Status-Filter
     url += '?status[]=' + filterState.status;
 
+    if (filterState.type) {
+      url += '&type=' + filterState.type;
+    }
+    
     // Landes-Filter (nur für Gruppen- und Site-Admins)
     if (filterState.state && filterState.state !== "1") {
       url += '&states=' + filterState.state;
@@ -327,6 +338,7 @@ export default function DeploymentManager() {
   const handleReset = () => {
     setPage(1);
     setFilterState({
+      "type": filterState.type,
       "state": global.drupalSettings.userstate,
       "environment": "0",
       "service": "0",
@@ -421,6 +433,7 @@ export default function DeploymentManager() {
       <FormManager
         releases={releases}
         fetchReleases={fetchReleases}
+        type={filterState.type}
         state={filterState.state}
         status={filterState.status}
         count={count}
