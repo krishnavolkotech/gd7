@@ -519,9 +519,10 @@ export default function FormManager(props) {
     // const product = releaseName.substring(0, releaseName.indexOf('_'));
 
     // UUID des Verfahrens.
-    const allServices = global.drupalSettings.services;
+    // @todo Support für BestFakt
+    const allServices = global.drupalSettings.serviceUuids["459"];
     if (formState.service in allServices) {
-      var uuidService = allServices[formState.service][1];
+      var uuidService = allServices[formState.service];
     }
     const deploymentTitle = formState.state + "_" + formState.environment + "_" + formState.service + "_" + releaseName;
 

@@ -66,11 +66,12 @@ export default function DeployedReleasesFilter(props) {
   const optionsStates = statesArray.map(state => <option key={"state-" + state[0]} value={state[0]}>{state[1]}</option>)
 
   // Verfahren Filter
-  const services = global.drupalSettings.services;
+  // @todo Add support for BestFakt
+  const services = global.drupalSettings.services["459"];
   let servicesArray = Object.entries(services);
-  servicesArray.sort(function(a,b) {
-    const serviceA = a[1][0].toUpperCase();
-    const serviceB = b[1][0].toUpperCase();
+  servicesArray.sort(function (a, b) {
+    const serviceA = a[1].toUpperCase();
+    const serviceB = b[1].toUpperCase();
     if (serviceA < serviceB) {
       return -1;
     }
@@ -79,7 +80,7 @@ export default function DeployedReleasesFilter(props) {
     }
     return 0;
   });
-  const optionsServices = servicesArray.map(service => <option key={"service-" + service[0]} value={service[0]}>{service[1][0]}</option>)
+  const optionsServices = [<option key="service-0" value="0">&lt;Verfahren&gt;</option>, servicesArray.map(service => <option key={"service-" + service[0]} value={service[0]}>{service[1]}</option>)];
 
   /**
    * Populates the product filter based on the selected service and releases.

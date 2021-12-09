@@ -109,22 +109,23 @@ export default function DeploymentForm(props) {
   }, [props.formState.state])
 
   //Verfahren Drop Down
-  const services = global.drupalSettings.services;
+  // @todo Add support for BestFakt (08.12.2021)
+  const services = global.drupalSettings.services["459"];
   
   let servicesArray = Object.entries(services);
-  servicesArray.sort(function(a,b) {
-    var serviceA = a[1][0].toUpperCase();
-    var serviceB = b[1][0].toUpperCase();
+  servicesArray.sort(function (a, b) {
+    const serviceA = a[1].toUpperCase();
+    const serviceB = b[1].toUpperCase();
     if (serviceA < serviceB) {
       return -1;
     }
     if (serviceA > serviceB) {
       return 1;
     }
-      return 0;
+    return 0;
   });
+  let optionsServices = [<option key="form-service-0" value="0">&lt;Verfahren&gt;</option>, servicesArray.map(service => <option key={"form-service-" + service[0]} value={service[0]}>{service[1]}</option>)];
 
-  let optionsServices = servicesArray.map(service => <option key={"form-service-" + service[0]} value={service[0]}>{service[1][0]}</option>)
 
   // Tooltip für Button "Neue Einsatzmeldung".
   // const ttNewReport = (

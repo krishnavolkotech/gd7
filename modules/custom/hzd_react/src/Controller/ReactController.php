@@ -105,13 +105,14 @@ class ReactController extends ControllerBase {
       // '#attached' => ['library' => 'hzd_react/react_app_dev'],
       '#attached' => ['library' => 'hzd_react/react_app'],
     ];
+    $database = \Drupal::database();
 
     // In Zukunft noch um Geschäftsservice und Sonstiges Projekt ergänzen.
     $serviceTypes = [459, 460];
   
     $services = [];
     foreach ($serviceTypes as $value) {
-      $serviceQuery = db_query("SELECT n.title, n.nid
+      $serviceQuery = $database->query("SELECT n.title, n.nid
         FROM {node_field_data} n, {group_releases_view} grv, 
         {node__release_type} nrt 
         WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -131,8 +132,18 @@ class ReactController extends ControllerBase {
     // Rolle: site-admin, zrmk, zrml?
     $role = $this->getRole();
 
+    $states = $database->query("SELECT id, state, abbr FROM states WHERE id < 19")
+      ->fetchAll();
+
+    $finalStates = [];
+    foreach ($states as $state) {
+      $finalStates[intval($state->id)] = $state->state;
+      $finalStates[intval($state->id)] .= $state->abbr ? ' (' . $state->abbr . ')' : '';
+    }
+
     $build['#attached']['drupalSettings']['role'] = $role;
     $build['#attached']['drupalSettings']['services'] = $services;
+    $build['#attached']['drupalSettings']['states'] = $finalStates;
 
     return $build;
   }
@@ -144,6 +155,7 @@ class ReactController extends ControllerBase {
    *   Return markup array.
    */
   public function deployedReleases($group ) {
+    $database = \Drupal::database();
     // Get environments(0.0579s).
     $startTime = microtime(true);
     $query = \Drupal::service('entity.query');
@@ -165,22 +177,31 @@ class ReactController extends ControllerBase {
 
     // Get KONSENS Service names (0.0489s).
     $startTime = microtime(true);
-    $services = [
-      0 => ['<Verfahren>', 0],
-    ];
+    $serviceTypes = [459, 460];
+    $services = [];
+    $serviceUuids = [];
 
-    $query = \Drupal::service('entity.query');
-    $result = $query->get('node')
-      ->condition('type', 'services')
-      // ->condition('release_type' , 459)
-      ->condition('field_release_name', '', '!=')
-      ->execute();
-
-    foreach ($result as $element => $nid) {
-      $node = $this->entityTypeManager->getStorage('node')->load($nid);
-      $services[$nid][] = $node->title->value;
-      $services[$nid][] = $node->uuid();
+    foreach ($serviceTypes as $value) {
+      $serviceQuery = $database->query("SELECT {n}.uuid, {n}.nid, {nfd}.title
+        FROM {node n}
+        JOIN {node_field_data nfd} ON {nfd}.nid={n}.nid
+        JOIN {group_releases_view grv} ON {grv}.service_id={n}.nid
+        JOIN {node__release_type nrt} ON {nrt}.entity_id={n}.nid
+        WHERE {grv}.group_id=:gid
+        AND {nrt}.release_type_target_id=:tid
+        ORDER BY {nfd}.title ASC", [
+          ":gid" => 1,
+          ":tid" => $value,
+        ]
+      )->fetchAll();
+      
+      foreach ($serviceQuery as $services_data) {
+        $serviceNode = $services_data->nid;
+        $services[$value][$services_data->nid] = node_get_title_fast([$serviceNode])[$serviceNode];
+        $serviceUuids[$value][$services_data->nid] = $services_data->uuid;
+      }
     }
+
     $srvTime = number_format(( microtime(true) - $startTime), 4);
     
     $user_state = hzd_user_state($uid = NULL);
@@ -258,7 +279,6 @@ class ReactController extends ControllerBase {
 */
     // Get states from database (0.0005s)
     $startTime = microtime(true);
-    $database = \Drupal::database();
     $states = $database->query("SELECT id, state, abbr FROM states WHERE id < 19")
       ->fetchAll();
 
@@ -271,7 +291,6 @@ class ReactController extends ControllerBase {
 
     // Rolle: site-admin, zrmk, zrml?
     $role = $this->getRole();
-
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
@@ -282,6 +301,7 @@ class ReactController extends ControllerBase {
           'environments' => $environments,
           'states' => $finalStates,
           'services' => $services,
+          'serviceUuids' => $serviceUuids,
           // 'releases' => $releases,
           // 'prevReleases' => $prevReleases,
           'userstate' => $user_state,
