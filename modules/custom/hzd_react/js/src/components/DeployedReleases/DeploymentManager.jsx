@@ -81,6 +81,7 @@ export default function DeploymentManager() {
     "environment": query.has("environment") ? query.get("environment") : "0",
     "service": query.has("service") ? query.get("service") : "0",
     "product": query.has("product") ? query.get("product") : "",
+    "release": query.has("release") ? query.get("release") : "0",
     "status": status,
     "sortBy": query.has("sortBy") ? query.get("sortBy") : "field_date_deployed_value",
     "sortOrder": query.has("sortOrder") ? query.get("sortOrder") : "DESC",
@@ -93,6 +94,7 @@ export default function DeploymentManager() {
    * @property {string} filterState.environment - The environment id.
    * @property {string} filterState.service - The service id.
    * @property {string} filterState.product - The product name.
+   * @property {string} filterState.release - The release id.
    * @property {string} filterState.status - The deployment status.
    * @property {string} filterState.sortBy - Field name for sorting.
    * @property {string} filterState.sortOrder - The sorting direction ('ASC', 'DESC').
@@ -128,7 +130,7 @@ export default function DeploymentManager() {
     // if (filterState.service !== "0") {
     //   preloadDeploymentData(filterState);
     // }
-  }, [filterState.type, filterState.status, filterState.state, filterState.environment, filterState.service, count]);
+  }, [filterState.type, filterState.status, filterState.state, filterState.environment, filterState.service, filterState.release, count]);
 
   /**
    * Changes URL-Params depending on Nav / Filters, resets Pagination.
@@ -173,6 +175,12 @@ export default function DeploymentManager() {
       params.append("service", filterState.service);
     } else {
       params.delete("service");
+    }
+
+    if (filterState.release !== "0") {
+      params.append("release", filterState.release);
+    } else {
+      params.delete("release");
     }
 
     if (filterState.product !== "") {
@@ -243,6 +251,11 @@ export default function DeploymentManager() {
     // Verfahren.
     if (filterState.service !== "0") {
       url += '&service=' + filterState.service;
+    }
+
+    // Verfahren.
+    if (filterState.release !== "0") {
+      url += '&release=' + filterState.release;
     }
 
     // Nur im Status "im Einsatz" sollen alle Einsatzmeldungen auf einmal geladen
@@ -342,6 +355,7 @@ export default function DeploymentManager() {
       "state": global.drupalSettings.userstate,
       "environment": "0",
       "service": "0",
+      "release": "0",
       "product": "",
       "status": filterState.status,
       "sortBy": "field_date_deployed_value",

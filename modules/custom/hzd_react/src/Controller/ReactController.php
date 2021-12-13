@@ -107,9 +107,26 @@ class ReactController extends ControllerBase {
     ];
     $database = \Drupal::database();
 
+    // Environments.
+    $query = \Drupal::service('entity.query');
+    $result = $query->get('node')
+    ->condition('type', 'non_production_environment')
+    ->execute();
+    
+    $environments = [
+      0 => '<Umgebung>',
+      1 => 'Produktion',
+      2 => 'Pilot',
+    ];
+
+    foreach ($result as $element => $nid) {
+      $node = $this->entityTypeManager->getStorage('node')->load($nid);
+      $environments[$nid] = $node->title->value;
+    }
+
+    // Services.
     // In Zukunft noch um Geschäftsservice und Sonstiges Projekt ergänzen.
     $serviceTypes = [459, 460];
-  
     $services = [];
     foreach ($serviceTypes as $value) {
       $serviceQuery = $database->query("SELECT n.title, n.nid
@@ -132,6 +149,7 @@ class ReactController extends ControllerBase {
     // Rolle: site-admin, zrmk, zrml?
     $role = $this->getRole();
 
+    // States.
     $states = $database->query("SELECT id, state, abbr FROM states WHERE id < 19")
       ->fetchAll();
 
@@ -144,6 +162,7 @@ class ReactController extends ControllerBase {
     $build['#attached']['drupalSettings']['role'] = $role;
     $build['#attached']['drupalSettings']['services'] = $services;
     $build['#attached']['drupalSettings']['states'] = $finalStates;
+    $build['#attached']['drupalSettings']['environments'] = $environments;
 
     return $build;
   }

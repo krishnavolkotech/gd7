@@ -22,6 +22,7 @@ export default function DeployedReleasesFilter(props) {
 
   /** @const {Object[]} productOptions - The product option components array. */
   const [productOptions, setProductOptions] = useState(<option key="product-0" value="0">&lt;Komponente&gt;</option>);
+  const [releaseOptions, setReleaseOptions] = useState([<option key="select-release-0" value="0">&lt;Release&gt;</option>]);
 
   const defaultEnvironments = [
     <option key="env-0" value="0">&lt;Umgebung&gt;</option>,
@@ -68,7 +69,76 @@ export default function DeployedReleasesFilter(props) {
     setDisableProductFilter(true);
     populateProductFilter();
   }, [props.releases[props.filterState.service], props.filterState.service])
-  
+
+  // Befüllt Release Releaseoptionen basierend auf newReleases (prop).
+  useEffect(() => {
+    //Release Drop Down
+    // setReleaseOptions([<option value="0">&lt;Release&gt;</option>]);
+    let defaultRelease = [<option key="select-release-0" value="0">&lt;Release&gt;</option>];
+    let optionsReleases = [];
+    // Dropdown deaktivieren, bevor die Optionen gefüllt sind..
+    // if (typeof props.releases !== 'object') {
+    //   setIsLoading(false);
+    //   return;
+    // }
+    // Options befüllen.
+    // console.log(props.releases);
+    // console.log();
+    if (props.filterState.service in props.releases) {
+      var releaseArray = props.releases[props.filterState.service];
+    }
+    // Objekte müssen "geklont" werden.
+    let spreadReleases = { ...releaseArray };
+    // Vorbereitung für Liste von Release Objekten. Release-Objekte benötigen
+    // die Eigenschaften "nid" und "title".
+    let selectReleases = [];
+    // console.log(spreadReleases);
+    for (const release in spreadReleases) {
+      // Erzeugt Liste mit Release-Objekten.
+      selectReleases.push(spreadReleases[release]);
+    }
+    selectReleases.sort(function (a, b) {
+      const productA = a.title.substring(0, a.title.indexOf('_') + 1);
+      const productB = b.title.substring(0, b.title.indexOf('_') + 1);
+      const versionA = a.title.substring(a.title.indexOf('_') + 1);
+      const versionB = b.title.substring(b.title.indexOf('_') + 1);
+      // Product should be alphabetically.
+      if (productA < productB) {
+        return -1;
+      }
+      if (productA > productB) {
+        return 1;
+      }
+      // Version should be descending.
+      const partsA = versionA.split('.')
+      const partsB = versionB.split('.')
+      for (var i = 0; i < partsB.length; i++) {
+        const vA = ~~partsA[i] // parse int
+        const vB = ~~partsB[i] // parse int
+        if (vA > vB) return -1;
+        if (vA < vB) return 1;
+      }
+      if (versionA < versionB) {
+        return 1;
+      }
+      if (versionA > versionB) {
+        return -1;
+      }
+      return 0;
+    });
+
+    if (selectReleases.length > 0) {
+      optionsReleases = selectReleases.map(option => {
+        for (const nid in option) {
+          return <option key={"select-release-" + option.nid} value={option.nid}>{option.title}</option>;
+        }
+      });
+    }
+    optionsReleases = [...defaultRelease, ...optionsReleases];
+    setReleaseOptions(optionsReleases);
+
+  }, [props.releases])
+
   // States Filter
   const statesObject = global.drupalSettings.states;
   const statesArray = Object.entries(statesObject);
@@ -159,6 +229,7 @@ export default function DeployedReleasesFilter(props) {
         break;
       case "service":
         val["service"] = e.target.value;
+        val["release"] = "0";
         val["product"] = "";
         props.setFilterState(prev => ({ ...prev, ...val }));
         setDisableProductFilter(true);
@@ -294,6 +365,19 @@ export default function DeployedReleasesFilter(props) {
               value={props.filterState.product}
             >
               {productOptions}
+            </FormControl>
+          </FormGroup>
+        </Col>
+        <Col sm={4}>
+          <FormGroup bsClass="select-wrapper hzd-form-element" controlId="release-filter" >
+            <FormControl
+              name="release"
+              disabled={disableProductFilter}
+              componentClass="select"
+              onChange={handleFilterSelect}
+              value={props.filterState.release}
+            >
+              {releaseOptions}
             </FormControl>
           </FormGroup>
         </Col>
