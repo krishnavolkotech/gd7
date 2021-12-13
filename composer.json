@@ -32,7 +32,7 @@
         "drupal/config_direct_save": "^2.1",
         "drupal/core-composer-scaffold": "^9",
         "drupal/core-project-message": "^9",
-        "drupal/core-recommended": "^9",
+        "drupal/core-recommended": "9.2.10",
         "drupal/core-vendor-hardening": "^9",
         "drupal/ctools": "^3.7",
         "drupal/date_popup": "^1.1",

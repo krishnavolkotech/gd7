@@ -1,0 +1,19 @@
+diff --git a/core/modules/user/src/EntityOwnerTrait.php b/core/modules/user/src/EntityOwnerTrait.php
+index ad55d0f3d..caa803c26 100644
+--- a/core/modules/user/src/EntityOwnerTrait.php
++++ b/core/modules/user/src/EntityOwnerTrait.php
+@@ -87,4 +87,14 @@ public static function getDefaultEntityOwner() {
+     return \Drupal::currentUser()->id();
+   }
+ 
++  /**
++   * Default value callback for 'owner' base field.
++   *
++   * @return mixed
++   *   A default value for the owner field.
++   */
++  public static function getCurrentUserId() {
++    return \Drupal::currentUser()->id();
++  }
++
+ }
