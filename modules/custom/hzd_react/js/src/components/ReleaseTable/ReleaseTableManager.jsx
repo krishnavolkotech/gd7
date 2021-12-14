@@ -12,38 +12,9 @@ export default function ReleaseTableManager(props) {
   /** @const {array} filterReleases - Array mit Releases zur Release-Filter-Befüllung. */
  const [filterReleases, setFilterReleases] = useState([]);
 
-  const initialFilterState = {
-    "type": "459",
-    "service": "0",
-    "release": "0",
-    "status": props.activeKey,
-    "sortBy": "field_date",
-    "sortOrder": "-",
-    "items_per_page": "20",
-  };
-
-  /**
-   * The filter state object.
-   * @property {Object} filterState - The object holding the filter state.
-   * @property {string} filterState.type - The release type.
-   * @property {string} filterState.service - The service id.
-   * @property {string} filterState.release - The release id.
-   * @property {string} filterState.status - The release status.
-   * @property {string} filterState.sortBy - The release status.
-   * @property {string} filterState.sortOrder - The release status.
-   * @property {string} filterState.items_per_page - The items per page.
-   */
-  const [filterState, setFilterState] = useState(initialFilterState);
-
   const [disableReleaseFilter, setDisableReleaseFilter] = useState(true);
 
   const [loadingReleases, setLoadingReleases] = useState(true);
-
-  const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    setFilterState(prev => ({ ...prev, "status": props.activeKey}))
-  }, [props.activeKey])
 
   /**
    * Fetches new releases if the filter or page is changed.
@@ -52,55 +23,55 @@ export default function ReleaseTableManager(props) {
     setLoadingReleases(true);
     setReleases([]);
     fetchReleases();
-    // setPage(1);
-  }, [filterState, page]);
+    // props.setPage(1);
+  }, [props.filterState, props.page]);
 
   /**
    * Fetches the releases for the release filter, if a service is selected.
    */
   useEffect(() => {
     setDisableReleaseFilter(true);
-    if (filterState.service != "0") {
+    if (props.filterState.service != "0") {
       fetchReleasesForFilter();
     }
-  }, [filterState.service])
+  }, [props.filterState.service])
 
   /**
    * Fetch the releases for the release table.
    */
   function fetchReleases() {
     let url = '/jsonapi/node/release';
-    url += '?sort=' + filterState.sortOrder + filterState.sortBy;
+    url += '?sort=' + props.filterState.releaseSortOrder + props.filterState.releaseSortBy;
     url += '&include=field_relese_services';
 
-    url += '&filter[field_release_type]=' + filterState.type;
+    url += '&filter[field_release_type]=' + props.filterState.type;
 
-    const limit = filterState.items_per_page;
-    url += '&page[offset]=' + ((page - 1) * limit);
+    const limit = props.filterState.items_per_page;
+    url += '&page[offset]=' + ((props.page - 1) * limit);
     url += '&page[limit]=' + limit;
 
 
 
     // Apply group specific service filter.
     // @todo Unterscheidung KONSENS / BestFakt
-    if (filterState.type in global.drupalSettings.services && filterState.service == "0") {
+    if (props.filterState.type in global.drupalSettings.services && props.filterState.service == "0") {
       url += '&filter[service-filter][condition][path]=field_relese_services.drupal_internal__nid';
       url += '&filter[service-filter][condition][operator]=IN';
       let count = 0;
-      for (const key in global.drupalSettings.services[filterState.type]) {
+      for (const key in global.drupalSettings.services[props.filterState.type]) {
         count++;
         url += '&filter[service-filter][condition][value]['+ count + ']=' + key;
       }
     }
     else {
-      url += '&filter[field_relese_services.drupal_internal__nid]=' + filterState.service;
+      url += '&filter[field_relese_services.drupal_internal__nid]=' + props.filterState.service;
     }
 
-    if (filterState.release != "0") {
-      url += '&filter[drupal_internal__nid]=' + filterState.release;
+    if (props.filterState.release != "0") {
+      url += '&filter[drupal_internal__nid]=' + props.filterState.release;
     }
 
-    url += '&filter[field_release_type]=' + filterState.status;
+    url += '&filter[field_release_type]=' + props.filterState.releaseStatus;
 
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
@@ -129,7 +100,7 @@ export default function ReleaseTableManager(props) {
      * Fetches the releases for the release filter.
      */
   function fetchReleasesForFilter() {
-    let url = "/api/v1/releases/" + filterState.service;
+    let url = "/api/v1/releases/" + props.filterState.service;
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
@@ -161,15 +132,23 @@ export default function ReleaseTableManager(props) {
    * Resets the filter state.
    */
   function handleReset() {
-    setFilterState(initialFilterState);
+    let val = {};
+    val["service"] = "0";
+    val["product"] = "";
+    val["release"] = "0";
+    val["releaseSortBy"] = "field_date";
+    val["releaseSortOrder"] = "-";
+    val["items_per_page"] = props.filterState.items_per_page;
+    props.setFilterState(prev => ({ ...prev, ...val }));
+
   }
 
   return (
     <div>
       <p><a href="/release-management/beschreibung-des-status-der-dsl-konsens" target="_blank"><span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status</a></p>
       <ReleaseFilter
-        filterState={filterState}
-        setFilterState={setFilterState}
+        filterState={props.filterState}
+        setFilterState={props.setFilterState}
         handleReset={handleReset}
         filterReleases={filterReleases}
         disableReleaseFilter={disableReleaseFilter}
@@ -177,9 +156,9 @@ export default function ReleaseTableManager(props) {
       <ReleaseTable 
         releases={releases}
         loadingReleases={loadingReleases}
-        page={page}
-        setPage={setPage}
-        filterState={filterState}
+        page={props.page}
+        setPage={props.setPage}
+        filterState={props.filterState}
       />
     </div>
   );

@@ -248,25 +248,25 @@ export default function DeployedReleasesFilter(props) {
     }
 
 
-    // Product filtering should trigger fetch only when status is "2".
-    if (props.filterState.status === "2" && e.target.name === "product") {
+    // Product filtering should trigger fetch only when deploymentStatus is "2".
+    if (props.filterState.deploymentStatus === "2" && e.target.name === "product") {
       props.setCount(props.count + 1);
       return;
     }
 
-    if (e.target.name === "sortOrder") {
-      if (props.filterState.status === "2") {
+    if (e.target.name === "deploymentSortOrder") {
+      if (props.filterState.deploymentStatus === "2") {
         props.setCount(props.count + 1);
         return;
       }
-      // if (props.filterState.sortBy !== "title") {
+      // if (props.filterState.deploymentSortBy !== "title") {
       //   props.setCount(props.count + 1);
       //   return;
       // }
     }
 
-    if (e.target.name === "sortBy") {
-      if (props.filterState.status === "2") {
+    if (e.target.name === "deploymentSortBy") {
+      if (props.filterState.deploymentStatus === "2") {
         props.setCount(props.count + 1);
         return;
       }
@@ -387,14 +387,14 @@ export default function DeployedReleasesFilter(props) {
       <Row>
         <Col sm={8}>
           <Form inline>
-                <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortBy">
+                <FormGroup bsClass="select-wrapper hzd-form-element" controlId="deploymentSortBy">
                   <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
                   <FormControl
-                    name="sortBy"
+                    name="deploymentSortBy"
                     componentClass="select"
                     placeholder="select"
                     onChange={handleFilterSelect}
-                    value={props.filterState.sortBy}
+                    value={props.filterState.deploymentSortBy}
                   >
                     <option key="sort-1" value="field_date_deployed_value">Einsatzdatum</option>
                     <option key="sort-2" value="field_environment_value">Umgebung</option>
@@ -405,13 +405,13 @@ export default function DeployedReleasesFilter(props) {
                     }
                   </FormControl>
                 </FormGroup>
-                <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">
+                <FormGroup bsClass="select-wrapper hzd-form-element" controlId="deploymentSortOrder">
                   <FormControl
-                    name="sortOrder"
+                    name="deploymentSortOrder"
                     componentClass="select"
                     placeholder="select"
                     onChange={handleFilterSelect}
-                    value={props.filterState.sortOrder}
+                    value={props.filterState.deploymentSortOrder}
                   >
                     <option key="order-asc" value="ASC">Aufsteigend</option>
                     <option key="order-desc" value="DESC">Absteigend</option>

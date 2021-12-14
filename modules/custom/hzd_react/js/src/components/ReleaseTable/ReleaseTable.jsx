@@ -15,13 +15,13 @@ export default function ReleaseTable(props) {
             <th>Release</th>
             <th>Status</th>
             <th>Datum</th>
-            {props.filterState.status !== "3" &&
+            {props.filterState.releaseStatus !== "3" &&
             <th>Early Warnings</th>
             }
-            {props.filterState.status !== "3" &&
+            {props.filterState.releaseStatus !== "3" &&
             <th>Ei/D/L</th>
             }
-            {props.filterState.status === "3" &&
+            {props.filterState.releaseStatus === "3" &&
             <th>Kommentar</th>
             }
           </tr>

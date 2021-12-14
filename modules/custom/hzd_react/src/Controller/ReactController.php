@@ -102,8 +102,8 @@ class ReactController extends ControllerBase {
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
-      // '#attached' => ['library' => 'hzd_react/react_app_dev'],
-      '#attached' => ['library' => 'hzd_react/react_app'],
+      '#attached' => ['library' => 'hzd_react/react_app_dev'],
+      // '#attached' => ['library' => 'hzd_react/react_app'],
     ];
     $database = \Drupal::database();
 
@@ -159,10 +159,13 @@ class ReactController extends ControllerBase {
       $finalStates[intval($state->id)] .= $state->abbr ? ' (' . $state->abbr . ')' : '';
     }
 
+    $userState = hzd_user_state();
+
     $build['#attached']['drupalSettings']['role'] = $role;
     $build['#attached']['drupalSettings']['services'] = $services;
     $build['#attached']['drupalSettings']['states'] = $finalStates;
     $build['#attached']['drupalSettings']['environments'] = $environments;
+    $build['#attached']['drupalSettings']['userstate'] = $userState;
 
     return $build;
   }
@@ -223,7 +226,7 @@ class ReactController extends ControllerBase {
 
     $srvTime = number_format(( microtime(true) - $startTime), 4);
     
-    $user_state = hzd_user_state($uid = NULL);
+    $user_state = hzd_user_state();
     // Get previous releases' names (4.2647s !!!)
     // @todo performance verbessern
     /*
@@ -314,8 +317,8 @@ class ReactController extends ControllerBase {
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
       '#attached' => [
-        // 'library' => 'hzd_react/react_app_dev',
-        'library' => 'hzd_react/react_app',
+        'library' => 'hzd_react/react_app_dev',
+        // 'library' => 'hzd_react/react_app',
         'drupalSettings' => [
           'environments' => $environments,
           'states' => $finalStates,

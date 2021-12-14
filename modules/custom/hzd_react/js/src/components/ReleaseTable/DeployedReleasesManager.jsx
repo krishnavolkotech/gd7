@@ -5,7 +5,7 @@ import useQuery from '../../hooks/hooks';
 import DeployedReleasesTable from './DeployedReleasesTable';
 import { ButtonToolbar, ToggleButtonGroup, ToggleButton, Nav, NavItem } from 'react-bootstrap';
 
-export default function DeployedReleasesManager() {
+export default function DeployedReleasesManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
 
@@ -15,8 +15,6 @@ export default function DeployedReleasesManager() {
   /** @const {bool} timeout - True triggers display of "No data found.". */
   const [timeout, setTimeout] = useState(false);
 
-  /** @const {URLSearchParams} query - Read URL Params. */
-  const query = useQuery();
 
   /** @const {number} count - Changing this triggers fetch of deployed releases. */
   const [count, setCount] = useState(0);
@@ -27,38 +25,6 @@ export default function DeployedReleasesManager() {
   // if (history.location.pathname.indexOf('archiviert') > 0) {
   //   status = "2";
   // }
-
-  const initialFilterState = {
-    "type": query.has("type") ? query.get("type") : "459",
-    "state": query.has("state") ? query.get("state") : "1",
-    "environment": query.has("environment") ? query.get("environment") : "0",
-    "service": query.has("service") ? query.get("service") : "0",
-    "product": query.has("product") ? query.get("product") : "",
-    "release": query.has("release") ? query.get("release") : "0",
-    "status": query.has("status") ? query.get("status") : "1",
-    "sortBy": query.has("sortBy") ? query.get("sortBy") : "field_date_deployed_value",
-    "sortOrder": query.has("sortOrder") ? query.get("sortOrder") : "DESC",
-    "items_per_page": query.has("items_per_page") ? query.get("items_per_page") : "20",
-  };
-
-  /**
-   * The filter state object.
-   * @property {Object} filterState - The object holding the filter state.
-   * @property {string} filterState.type - The service type.
-   * @property {string} filterState.state - The state id.
-   * @property {string} filterState.environment - The environment id.
-   * @property {string} filterState.service - The service id.
-   * @property {string} filterState.product - The product name.
-   * @property {string} filterState.release - The release id.
-   * @property {string} filterState.status - The deployment status.
-   * @property {string} filterState.sortBy - Field name for sorting.
-   * @property {string} filterState.sortOrder - The sorting direction ('ASC', 'DESC').
-   * @property {string} filterState.items_per_page - The items per page.
-   */
-  const [filterState, setFilterState] = useState(initialFilterState);
-
-  // Pagination.
-  const [page, setPage] = useState(1);
 
   /**
    * @typedef {{
@@ -103,86 +69,10 @@ export default function DeployedReleasesManager() {
    */
   useEffect(() => {
     fetchDeployments();
-    // if (filterState.service !== "0") {
-    //   preloadDeploymentData(filterState);
+    // if (props.filterState.service !== "0") {
+    //   preloadDeploymentData(props.filterState);
     // }
-  }, [filterState.type, filterState.status, filterState.state, filterState.environment, filterState.service, filterState.release, filterState.items_per_page, count]);
-
-  /**
-   * Changes URL-Params depending on Nav / Filters, resets Pagination.
-   * 
-   * Implements hook useEffect().
-   */
-  useEffect(() => {
-    // Change URL Params.
-    const params = new URLSearchParams();
-    if (filterState.type !== "459" && filterState.type) {
-      params.append("type", filterState.type);
-    // } else {
-    //   params.delete("type");
-    }
-    if (filterState.state !== "1" && filterState.state) {
-      params.append("state", filterState.state);
-    // } else {
-    //   params.delete("state");
-    }
-
-    if (filterState.environment !== "0") {
-      params.append("environment", filterState.environment);
-    // } else {
-    //   params.delete("environment");
-    }
-
-    if (filterState.service !== "0") {
-      params.append("service", filterState.service);
-    // } else {
-    //   params.delete("service");
-    }
-
-    if (filterState.product !== "") {
-      params.append("product", filterState.product);
-    // } else {
-    //   params.delete("product");
-    }
-
-    if (filterState.release !== "0") {
-      params.append("release", filterState.release);
-    // } else {
-    //   params.delete("release");
-    }
-
-    if (filterState.status !== "0") {
-      params.append("status", filterState.status);
-    // } else {
-    //   params.delete("status");
-    }
-
-
-    if (filterState.sortBy !== "") {
-      params.append("sortBy", filterState.sortBy);
-    // } else {
-    //   params.delete("sortBy");
-    }
-
-    if (filterState.sortOrder !== "") {
-      params.append("sortOrder", filterState.sortOrder);
-    // } else {
-    //   params.delete("sortOrder");
-    }
-    
-    if (filterState.items_per_page !== "20") {
-      params.append("items_per_page", filterState.items_per_page);
-    // } else {
-    //   params.delete("items_per_page");
-    }
-
-    history.push({
-      search: params.toString(),
-    });
-
-    // Reset Pagination.
-    setPage(1);
-  }, [filterState]);
+  }, [props.filterState.type, props.filterState.deploymentStatus, props.filterState.state, props.filterState.environment, props.filterState.service, props.filterState.release, props.filterState.items_per_page, count]);
 
   /**
    * Fetcht alle Releases, dient zur Befüllung von:
@@ -195,8 +85,8 @@ export default function DeployedReleasesManager() {
   useEffect(() => {
     // Prevent multiple fetches for the same serviceFilter.
     // setLoadingMessage(<p>Bereitgestellte Releases werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
-    fetchReleases(filterState.service);
-  }, [filterState.service])
+    fetchReleases(props.filterState.service);
+  }, [props.filterState.service])
 
   /**
    * Fetches and appends release deployments (as state).
@@ -205,32 +95,37 @@ export default function DeployedReleasesManager() {
     let url = '/api/v1/deployments';
 
     // Status-Filter
-    url += '?status[]=' + filterState.status;
+    if (props.filterState.deploymentStatus == "all") {
+      url += '?status[]=1&status[]=2';
+    }
+    else {
+      url += '?status[]=' + props.filterState.deploymentStatus;
+    }
 
     // Landes-Filter (nur für Gruppen- und Site-Admins)
-    if (filterState.state && filterState.state !== "1") {
-      url += '&states=' + filterState.state;
+    if (props.filterState.state && props.filterState.state !== "1") {
+      url += '&states=' + props.filterState.state;
     }
 
     // Umgebung.
-    if (filterState.environment !== "0") {
-      url += '&environment=' + filterState.environment;
+    if (props.filterState.environment !== "0") {
+      url += '&environment=' + props.filterState.environment;
     }
 
     // Verfahren.
-    if (filterState.service !== "0") {
-      url += '&service=' + filterState.service;
+    if (props.filterState.service !== "0") {
+      url += '&service=' + props.filterState.service;
     }
 
-    url += '&items_per_page=' + filterState.items_per_page;
+    url += '&items_per_page=' + props.filterState.items_per_page;
 
     // Apply product filtering, if not on page "deployed".
-    url += '&page=' + (page - 1);
-    url += '&releaseTitle=' + filterState.product;
+    url += '&page=' + (props.page - 1);
+    url += '&releaseTitle=' + props.filterState.product;
 
     // Apply sorting.
-    url += '&sort_by=' + filterState.sortBy;
-    url += '&sort_order=' + filterState.sortOrder;
+    url += '&sort_by=' + props.filterState.deploymentSortBy;
+    url += '&sort_order=' + props.filterState.deploymentSortOrder;
 
     setData([]);
     setTimeout(false);
@@ -305,39 +200,46 @@ export default function DeployedReleasesManager() {
       });
   }
 
+  // Resets the deployment filters.
   const handleReset = () => {
-    setPage(1);
-    setFilterState({
-      "type": filterState.type,
-      "state": global.drupalSettings.userstate,
-      "environment": "0",
-      "service": "0",
-      "release": "0",
-      "product": "",
-      "status": filterState.status,
-      "sortBy": "field_date_deployed_value",
-      "sortOrder": "DESC",
-      "items_per_page": filterState.items_per_page,
-    });
+    props.setPage(1);
+    let val = {};
+    val["type"] = props.filterState.type;
+    val["state"] = global.drupalSettings.userstate;
+    val["environment"] = "0";
+    val["service"] = "0";
+    val["release"] = "0";
+    val["product"] = "";
+    val["deploymentStatus"] = props.filterState.deploymentStatus;
+    val["deploymentSortBy"] = "field_date_deployed_value";
+    val["deploymentSortOrder"] = "DESC";
+    val["items_per_page"] = props.filterState.items_per_page;
+    props.setFilterState(prev => ({ ...prev, ...val }));
+  }
+
+  const handlePill = (k) => {
+    let val = {};
+    val["deploymentStatus"] = k;
+    props.setFilterState(prev => ({ ...prev, ...val }));
   }
 
   return (
     <div>
-      <Nav bsStyle="pills" activeKey={1}>
-        <NavItem eventKey={1}>
+      <Nav bsStyle="pills" activeKey={props.filterState.deploymentStatus}>
+        <NavItem onSelect={handlePill} eventKey={"1"}>
           Im Einsatz
         </NavItem>
-        <NavItem eventKey={2}>
+        <NavItem onSelect={handlePill} eventKey={"2"}>
           Archiviert
         </NavItem>
-        <NavItem eventKey={3}>
+        <NavItem onSelect={handlePill} eventKey={"all"}>
           Alle
         </NavItem>
       </Nav>
       <p></p>
       <DeployedReleasesFilter
-        filterState={filterState}
-        setFilterState={setFilterState}
+        filterState={props.filterState}
+        setFilterState={props.setFilterState}
         handleReset={handleReset}
         count={count}
         setCount={setCount}
@@ -349,11 +251,11 @@ export default function DeployedReleasesManager() {
         data={data}
         timeout={timeout}
         setTimeout={setTimeout}
-        page={page}
-        setPage={setPage}
+        page={props.page}
+        setPage={props.setPage}
         count={count}
         setCount={setCount}
-        filterState={filterState}
+        filterState={props.filterState}
       />
     </div>
   )

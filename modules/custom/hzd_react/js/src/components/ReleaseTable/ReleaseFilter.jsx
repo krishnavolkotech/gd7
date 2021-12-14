@@ -114,14 +114,14 @@ export default function ReleaseFilter(props) {
       <Row>
         <Col sm={6}>
           <Form inline>
-            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortBy">
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="releaseSortBy">
               <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
               <FormControl
-                name="sortBy"
+                name="releaseSortBy"
                 componentClass="select"
                 placeholder="select"
                 onChange={handleFilterSelect}
-                value={props.filterState.sortBy}
+                value={props.filterState.releaseSortBy}
               >
                 <option key="sort-1" value="field_date">Datum</option>
                 <option key="sort-2" value="field_relese_services.title">Verfahren</option>
@@ -129,13 +129,13 @@ export default function ReleaseFilter(props) {
                 <option key="sort-4" value="field_status">Status</option>
               </FormControl>
             </FormGroup>
-            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="releaseSortOrder">
               <FormControl
-                name="sortOrder"
+                name="releaseSortOrder"
                 componentClass="select"
                 placeholder="select"
                 onChange={handleFilterSelect}
-                value={props.filterState.sortOrder}
+                value={props.filterState.releaseSortOrder}
               >
                 <option key="order-asc" value="">Aufsteigend</option>
                 <option key="order-desc" value="-">Absteigend</option>

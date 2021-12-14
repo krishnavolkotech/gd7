@@ -25,21 +25,21 @@ export default function DeployedReleasesTable(props) {
 
   // Applies javascript based sorting possibly on top of default view sorting.
   const applySorting = (newData) => {
-    const direction = props.filterState.sortOrder == "ASC" ? 1 : -1;
-    if (props.filterState.sortBy == "field_date_deployed_value") {
+    const direction = props.filterState.deploymentSortOrder == "ASC" ? 1 : -1;
+    if (props.filterState.deploymentSortBy == "field_date_deployed_value") {
       newData.sort((a, b) => {
         if (a.date > b.date) return direction;
         if (a.date < b.date) return -direction;
       });
     }
-    if (props.filterState.sortBy == "field_environment_value") {
+    if (props.filterState.deploymentSortBy == "field_environment_value") {
       newData.sort((a, b) => {
         if (a.environment > b.environment) return direction;
         if (a.environment < b.environment) return -direction;
       });
     }
     // Sort by service - sorts releases too.
-    if (props.filterState.sortBy == "title") {
+    if (props.filterState.deploymentSortBy == "title") {
       newData.sort((a, b) => {
         if (a.service > b.service) return direction;
         if (a.service < b.service) return -direction;
@@ -47,12 +47,12 @@ export default function DeployedReleasesTable(props) {
       });
     }
     // Sort by release.
-    if (props.filterState.sortBy == "title_1") {
+    if (props.filterState.deploymentSortBy == "title_1") {
       newData.sort((a, b) => {
         return compareReleases(a, b, direction);
       });
     }
-    if (props.filterState.sortBy == "field_state_list_value") {
+    if (props.filterState.deploymentSortBy == "field_state_list_value") {
       newData.sort((a, b) => {
         if (parseInt(a.state) > parseInt(b.state)) return direction;
         if (parseInt(a.state) < parseInt(b.state)) return -direction;
@@ -145,7 +145,7 @@ export default function DeployedReleasesTable(props) {
               <DeployedReleasesTableRow
                 key={"row-" + deployment.nid}
                 deployment={deployment}
-                status={props.filterState.status}
+                deploymentStatus={props.filterState.deploymentStatus}
               />
             );
           }) : <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr>}
