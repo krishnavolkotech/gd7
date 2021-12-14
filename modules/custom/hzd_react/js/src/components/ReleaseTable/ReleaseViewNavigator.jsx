@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Nav, NavItem } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
+import DeployedReleasesManager from './DeployedReleasesManager';
 import Ers from './Ers';
 import ReleaseTableManager from './ReleaseTableManager';
 
@@ -17,6 +18,9 @@ export default function ReleaseViewNavigator() {
   }
   if (history.location.pathname.indexOf('gesperrt') > 0) {
     active = "3";
+  }
+  if (history.location.pathname.indexOf('eingesetzt') > 0) {
+    active = "4";
   }
   if (history.location.pathname.indexOf('archiviert') > 0) {
     active = "5";
@@ -96,8 +100,11 @@ export default function ReleaseViewNavigator() {
           Eingesetzt(Übersicht)
         </NavItem>
       </Nav>
-      { activeKey != "6" &&
+      { ["1", "2", "3", "5"].includes(activeKey) &&
         <ReleaseTableManager activeKey={activeKey} />
+      }
+      { activeKey == "4" &&
+        <DeployedReleasesManager />
       }
       { activeKey == "6" &&
         <Ers />

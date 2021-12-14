@@ -38,6 +38,9 @@ class App extends React.Component {
             <Route exact path="/:group/r/releases/archiviert">
               <ReleaseViewNavigator />
             </Route>
+            <Route exact path="/:group/r/releases/eingesetzt">
+              <ReleaseViewNavigator />
+            </Route>
             <Route exact path="/:group/r/releases/eingesetzt-uebersicht">
               <ReleaseViewNavigator />
             </Route>
