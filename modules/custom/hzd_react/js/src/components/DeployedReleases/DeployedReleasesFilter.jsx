@@ -35,10 +35,12 @@ export default function DeployedReleasesFilter(props) {
   const history = useHistory();
 
   var disabledState = global.drupalSettings.role === "ZRML" ? true : false;
-  
+  /** @var {bool} manage - Indicates, if filter is used in manage (tool) context. */ 
+  var manage = true;
   // @todo Landesauswahl nur dann verhindern, wenn Einsatzmeldungs-Tool verwendet wird -> TESTEN
   if (history.location.pathname.indexOf('releases') > 0) {
     disabledState = false;
+    manage = false;
   }
 
   useEffect(() => {
@@ -383,10 +385,8 @@ export default function DeployedReleasesFilter(props) {
         </Col>
       </Row>
       <Row>
-        <Col sm={4}>
+        <Col sm={8}>
           <Form inline>
-            <Row>
-              <Col sm={8}>
                 <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortBy">
                   <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
                   <FormControl
@@ -405,8 +405,6 @@ export default function DeployedReleasesFilter(props) {
                     }
                   </FormControl>
                 </FormGroup>
-              </Col>
-              <Col sm={4}>
                 <FormGroup bsClass="select-wrapper hzd-form-element" controlId="sortOrder">
                   <FormControl
                     name="sortOrder"
@@ -419,8 +417,23 @@ export default function DeployedReleasesFilter(props) {
                     <option key="order-desc" value="DESC">Absteigend</option>
                   </FormControl>
                 </FormGroup>
-              </Col>
-            </Row>
+              { !manage &&
+                <FormGroup bsClass="select-wrapper hzd-form-element" controlId="items_per_page">
+                  <ControlLabel>Elemente pro Seite&nbsp;</ControlLabel>
+                  <FormControl
+                    name="items_per_page"
+                    componentClass="select"
+                    placeholder="select"
+                    onChange={handleFilterSelect}
+                    value={props.filterState.items_per_page}
+                  >
+                    <option key="items_per_page-1" value="20">20</option>
+                    <option key="items_per_page-2" value="50">50</option>
+                    <option key="items_per_page-3" value="100">100</option>
+                    <option key="items_per_page-4" value="All">Alle</option>
+                  </FormControl>
+                </FormGroup>
+            }
           </Form>
         </Col>
       </Row>

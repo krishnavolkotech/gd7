@@ -1,22 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table } from 'react-bootstrap';
 import ReleaseRow from './ReleaseRow';
 import SimplePager from '../SimplePager';
 
 export default function ReleaseTable(props) {
+  const [count, setCount] = useState(1);
   
-  const handlePagination = (e) => {
-    if (e.target.name == "next") {
-      props.setPage(props.page + 1);
-      // props.setCount(props.count + 1);
-    }
-
-    if (e.target.name == "previous") {
-      props.setPage(props.page - 1);
-      // props.setCount(props.count + 1);
-    }
-  }
-
   return (
     <div>
       <Table>
@@ -44,11 +33,15 @@ export default function ReleaseTable(props) {
           {props.releases.map(release => <ReleaseRow key={"row-" + release.attributes.drupal_internal__nid} release={release} filterState={props.filterState} />)}
         </tbody>
       </Table>
+      {props.filterState.items_per_page !== "All" &&
       <SimplePager
         page={props.page}
+        setPage={props.setPage}
         count={props.releases.length}
-        handlePagination={handlePagination}
+        setCount={setCount}
+        items_per_page={props.filterState.items_per_page}
       />
+      }
     </div>
   )
 }

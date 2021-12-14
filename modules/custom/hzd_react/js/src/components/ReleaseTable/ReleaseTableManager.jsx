@@ -19,6 +19,7 @@ export default function ReleaseTableManager(props) {
     "status": props.activeKey,
     "sortBy": "field_date",
     "sortOrder": "-",
+    "items_per_page": "20",
   };
 
   /**
@@ -30,6 +31,7 @@ export default function ReleaseTableManager(props) {
    * @property {string} filterState.status - The release status.
    * @property {string} filterState.sortBy - The release status.
    * @property {string} filterState.sortOrder - The release status.
+   * @property {string} filterState.items_per_page - The items per page.
    */
   const [filterState, setFilterState] = useState(initialFilterState);
 
@@ -50,7 +52,7 @@ export default function ReleaseTableManager(props) {
     setLoadingReleases(true);
     setReleases([]);
     fetchReleases();
-    setPage(1);
+    // setPage(1);
   }, [filterState, page]);
 
   /**
@@ -73,7 +75,7 @@ export default function ReleaseTableManager(props) {
 
     url += '&filter[field_release_type]=' + filterState.type;
 
-    const limit = 50;
+    const limit = filterState.items_per_page;
     url += '&page[offset]=' + ((page - 1) * limit);
     url += '&page[limit]=' + limit;
 
