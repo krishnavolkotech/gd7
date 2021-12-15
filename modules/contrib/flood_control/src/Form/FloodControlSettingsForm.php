@@ -4,6 +4,7 @@ namespace Drupal\flood_control\Form;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -22,18 +23,19 @@ class FloodControlSettingsForm extends ConfigFormBase {
   protected $dateFormatter;
 
   /**
-   * The config factory.
+   * The module handler.
    *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
-  protected $configFactory;
+  protected $moduleHandler;
 
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, DateFormatterInterface $dateFormatter) {
+  public function __construct(ConfigFactoryInterface $config_factory, DateFormatterInterface $dateFormatter, ModuleHandlerInterface $module_handler) {
+    parent::__construct($config_factory);
     $this->dateFormatter = $dateFormatter;
-    $this->configFactory = $config_factory;
+    $this->moduleHandler = $module_handler;
   }
 
   /**
@@ -42,7 +44,8 @@ class FloodControlSettingsForm extends ConfigFormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('config.factory'),
-      $container->get('date.formatter')
+      $container->get('date.formatter'),
+      $container->get('module_handler')
     );
   }
 
@@ -118,32 +121,34 @@ class FloodControlSettingsForm extends ConfigFormBase {
     ];
 
     // Contact module flood events.
-    $contact_config = $this->config('contact.settings');
-    $contact_settings = $contact_config->get();
-    $form['contact'] = [
-      '#type' => 'fieldset',
-      '#title' => $this->t('Contact forms'),
-    ];
-    $form['contact']['intro'] = [
-      '#markup' => $this->t('The website blocks contact form submissions when the limit within a particular time window has been reached.'),
-    ];
-    $form['contact']['contact_threshold_limit'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Sending e-mails limit'),
-      '#options' => array_combine($counterOptions, $counterOptions),
-      '#default_value' => $contact_settings['flood']['limit'],
-      '#description' => $this->t('The allowed number of submissions within the allowed time window.'),
-    ];
-    $form['contact']['contact_threshold_window'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Sending e-mails window'),
-      '#options' => [0 => $this->t('None (disabled)')] + array_map([
-        $this->dateFormatter,
-        'formatInterval',
-      ], array_combine($timeOptions, $timeOptions)),
-      '#default_value' => $contact_settings['flood']['interval'],
-      '#description' => $this->t('The allowed time window for contact form submissions.'),
-    ];
+    if ($this->moduleHandler->moduleExists('contact')) {
+      $contact_config = $this->config('contact.settings');
+      $contact_settings = $contact_config->get();
+      $form['contact'] = [
+        '#type' => 'fieldset',
+        '#title' => $this->t('Contact forms'),
+      ];
+      $form['contact']['intro'] = [
+        '#markup' => $this->t('The website blocks contact form submissions when the limit within a particular time window has been reached.'),
+      ];
+      $form['contact']['contact_threshold_limit'] = [
+        '#type' => 'select',
+        '#title' => $this->t('Sending e-mails limit'),
+        '#options' => array_combine($counterOptions, $counterOptions),
+        '#default_value' => $contact_settings['flood']['limit'],
+        '#description' => $this->t('The allowed number of submissions within the allowed time window.'),
+      ];
+      $form['contact']['contact_threshold_window'] = [
+        '#type' => 'select',
+        '#title' => $this->t('Sending e-mails window'),
+        '#options' => [0 => $this->t('None (disabled)')] + array_map([
+          $this->dateFormatter,
+          'formatInterval',
+        ], array_combine($timeOptions, $timeOptions)),
+        '#default_value' => $contact_settings['flood']['interval'],
+        '#description' => $this->t('The allowed time window for contact form submissions.'),
+      ];
+    }
 
     return parent::buildForm($form, $form_state);
   }
@@ -152,7 +157,6 @@ class FloodControlSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-
     $flood_config = $this->configFactory->getEditable('user.flood');
     $flood_config
       ->set('ip_limit', $form_state->getValue('ip_limit'))
@@ -161,11 +165,13 @@ class FloodControlSettingsForm extends ConfigFormBase {
       ->set('user_window', $form_state->getValue('user_window'))
       ->save();
 
-    $contact_config = $this->configFactory->getEditable('contact.settings');
-    $contact_config
-      ->set('flood.limit', $form_state->getValue('contact_threshold_limit'))
-      ->set('flood.interval', $form_state->getValue('contact_threshold_window'))
-      ->save();
+    if ($this->moduleHandler->moduleExists('contact')) {
+      $contact_config = $this->configFactory->getEditable('contact.settings');
+      $contact_config
+        ->set('flood.limit', $form_state->getValue('contact_threshold_limit'))
+        ->set('flood.interval', $form_state->getValue('contact_threshold_window'))
+        ->save();
+    }
 
     parent::submitForm($form, $form_state);
   }

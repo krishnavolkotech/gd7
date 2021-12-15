@@ -37,6 +37,13 @@ class FloodUnblockAdminForm extends FormBase {
   protected $dateFormatter;
 
   /**
+   * User flood config object.
+   *
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  protected $userFloodConfig;
+
+  /**
    * FloodUnblockAdminForm constructor.
    *
    * @param \Drupal\flood_control\FloodUnblockManager $floodUnblockManager
@@ -50,6 +57,7 @@ class FloodUnblockAdminForm extends FormBase {
     $this->floodUnblockManager = $floodUnblockManager;
     $this->database = $database;
     $this->dateFormatter = $date_formatter;
+    $this->userFloodConfig = $this->configFactory()->get('user.flood');
   }
 
   /**
@@ -159,13 +167,7 @@ class FloodUnblockAdminForm extends FormBase {
       // Fetches user names or location string for identifiers.
       $identifiers = $this->floodUnblockManager->fetchIdentifiers(array_unique($results_identifiers));
 
-      // Gets list of all events.
-      $events = $this->floodUnblockManager->getEvents();
-
       foreach ($results as $result) {
-
-        // Gets event type and label.
-        $event = $events[$result->event];
 
         // Gets status of identifier.
         $is_blocked = $this->floodUnblockManager->isBlocked($result->identifier, $result->event);
@@ -174,7 +176,7 @@ class FloodUnblockAdminForm extends FormBase {
         $options[$result->fid] = [
           'identifier' => $identifiers[$result->identifier],
           'blocked' => $is_blocked ? $this->t('Blocked') : $this->t('Not blocked'),
-          'event' => $event['label'],
+          'event' => $this->floodUnblockManager->getEventLabel($result->event),
           'timestamp' => $this->dateFormatter->format($result->timestamp, 'short'),
           'expiration' => $this->dateFormatter->format($result->expiration, 'short'),
         ];
@@ -204,6 +206,9 @@ class FloodUnblockAdminForm extends FormBase {
       '#type' => 'pager',
     ];
 
+    $form['#cache'] = [
+      'tags' => $this->userFloodConfig->getCacheTags(),
+    ];
     return $form;
   }
 
