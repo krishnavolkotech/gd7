@@ -11,13 +11,11 @@ use Drupal\pdf_api\Plugin\PdfGeneratorBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\pdf_api\Annotation\PdfGenerator;
 use Drupal\Core\Annotation\Translation;
-use \DOMPDF;
+use Dompdf\Dompdf;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 // Disable DOMPDF's internal autoloader if you are using Composer.
 define('DOMPDF_ENABLE_AUTOLOAD', FALSE);
-// Include the DOMPDF config file (required).
-require __DIR__ . "../../../../vendor/dompdf/dompdf/dompdf_config.inc.php";
 
 /**
  * A PDF generator plugin for the dompdf library.
@@ -30,13 +28,6 @@ require __DIR__ . "../../../../vendor/dompdf/dompdf/dompdf_config.inc.php";
  * )
  */
 class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * The global options for TCPDF.
-   *
-   * @var array
-   */
-  protected $options = array();
 
   /**
    * Instance of the DOMPDF class library.
@@ -73,18 +64,6 @@ class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPlugin
     $this->setPageOrientation($paper_orientation);
     $this->addPage($pdf_content);
     $this->setHeader($header_content);
-    if ($save_pdf) {
-      $filename = $pdf_location;
-      if (empty($filename)) {
-        // If no user's choice, PDF name should be made from its current path.
-        $filename = str_replace('/', '_', \Drupal::service('path.current')->getPath());
-        $filename = substr($filename, 1);
-      }
-      $this->stream($filename);
-    }
-    else {
-      $this->send("");
-    }
   }
 
   /**
@@ -99,7 +78,7 @@ class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPlugin
    */
   public function setHeader($text) {
     $canvas = $this->generator->get_canvas();
-    $canvas->page_text(72, 18, "Header: {PAGE_COUNT}", "", 11, array(0, 0, 0));
+    $canvas->page_text(72, 18, $text, "", 11, array(0, 0, 0));
   }
 
   /**
@@ -138,15 +117,15 @@ class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPlugin
    * {@inheritdoc}
    */
   public function save($location) {
-    $this->preGenerate();
-    $this->generator->send($location);
+    $content = $this->generator->output([]);
+    file_put_contents($location, $content);
   }
 
   /**
    * {@inheritdoc}
    */
   public function send() {
-    $this->generator->stream("sample.pdf", array('Attachment' => 0));
+    $this->generator->stream("pdf", array('Attachment' => 0));
   }
 
   /**

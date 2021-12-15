@@ -27,13 +27,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class TcpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The global options for TCPDF.
-   *
-   * @var array
-   */
-  protected $options = array();
-
-  /**
    * Instance of the TCPDF class library.
    *
    * @var \TCPDF
@@ -68,17 +61,6 @@ class TcpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginI
     $this->setPageOrientation($paper_orientation);
     $this->addPage($pdf_content);
     $this->setFooter("");
-    if ($save_pdf) {
-      $filename = $pdf_location;
-      if (empty($filename)) {
-        $filename = str_replace("/", "_", \Drupal::service('path.current')->getPath());
-        $filename = substr($filename, 1);
-      }
-      $this->stream($filename . '.pdf');
-    }
-    else {
-      $this->send("");
-    }
   }
 
   /**
@@ -136,7 +118,7 @@ class TcpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginI
    * {@inheritdoc}
    */
   public function save($location) {
-    $this->generator->send($location);
+    $this->generator->Output($location, 'F');
   }
 
   /**
