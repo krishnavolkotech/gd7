@@ -53,7 +53,7 @@ abstract class DisplayPluginBase extends PluginBase implements DisplayPluginInte
    *
    * @var \Drupal\views\Plugin\views\display_extender\DisplayExtenderPluginBase[]
    */
-  protected $extenders = [];
+  public $extenders = [];
 
   /**
    * {@inheritdoc}
