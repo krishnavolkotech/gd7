@@ -351,9 +351,10 @@ class HzdReleases extends ControllerBase {
           $groupid = $group->id();
          }
         $doc_url = Url::fromUserInput('/group/' . $groupid . '/documentation_link_zip/' . $service_id . '/' . $release_id, $doc_options);
-        $output = \Drupal::l(t("Please click here to download all documents for this release as a ZIP file."), $doc_url);
+        $output = \Drupal\Core\Link::fromTextAndUrl(t("Please click here to download all documents for this release as a ZIP file."), $doc_url);
         if (!$cache) {
           // Display documentation table for specific release.
+          $output = $output->toString()->__toString();	
           $output .= "<table border='1'><tr><th>" . t('Folder') . "</th><th>" . t('Documents') . "</th></tr>";
           $sub_doc_folders = array("afb", "benutzerhandbuch", "betriebshandbuch", "releasenotes", "sonstige", "zertifikat");
           foreach ($sub_doc_folders as $values) {

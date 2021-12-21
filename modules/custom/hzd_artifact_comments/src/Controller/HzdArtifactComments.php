@@ -29,7 +29,7 @@ class HzdArtifactComments extends ControllerBase {
       // \Drupal\node\Entity\NodeType::load() implementieren, da node_type_load deprecated ist
       $type = NodeType::load("artefakt_kommentar");
       // @todo Most of the time static::entityTypeManager() is supposed to be used
-      $samplenode = $this->entityManager()->getStorage('node')->create([
+      $samplenode = $this->entityTypeManager()->getStorage('node')->create([
         'type' => $type->id(),
       ]);
       $output = $this->entityFormBuilder()->getForm($samplenode);

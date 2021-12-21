@@ -459,6 +459,13 @@ function get_environment_options($state = 1) {
 }
 
 /**
+  * Implements computed_field_field_calculated_title_compute().
+  */
+function computed_field_field_calculated_title_compute($entity_type_manager, $entity, $fields, $delta){
+  return $entity->label();
+}
+
+/**
  * Send immediate release notifications.
  */
 function send_release_notifications($entity, $action = 'update') {

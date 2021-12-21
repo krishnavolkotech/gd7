@@ -20,6 +20,7 @@ use Drupal\Core\Link;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 use Drupal\node\Entity\NodeType;
 use Drupal\Core\Site\Settings;
+use Drupal\Core\Utility\TableSort;
 
 define('ITSM_PROZESSE', 'ITSM-Prozesse');
 define('VERFAHREN', 'Verfahren');
@@ -90,7 +91,7 @@ function hzd_preprocess_mailbody(&$variables) {
   $ts = [];
   $header_columns = 0;
   if (!empty($variables['header'])) {
-    $ts = tablesort_init($variables['header']);
+    $ts = TableSort::getContextFromRequest($variables['header'],\Drupal::request());
 
     // Use a separate index with responsive classes as headers
     // may be associative.
