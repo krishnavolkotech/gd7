@@ -1,14 +1,50 @@
 
-import React from 'react'
-import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import React, { useRef, useState, useEffect } from 'react'
+import { Popover, Overlay } from 'react-bootstrap';
 
-export default function DeployedReleasesTableRow({ deployment, handleAction, highlight, handleArchive, handleEdit, deploymentStatus, handleView }) {
+export default function DeployedReleasesTableRow({ deployment }) {
+  // Holds the popover text.
+  const [info, setInfo] = useState(false);
+  // Toggles the popover.
+  const [show, setShow] = useState(false);
+  // Target for the popover.
+  const target = useRef(null);
+
+  // Convert Unixtime to readable format.
   const date = new Date(deployment.date);
   const localeDate = date.toLocaleDateString('de-DE', {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   });
+
+  // Show popover after ajax call finished loading data.
+  useEffect(() => {
+    if (info) {
+      setShow(true);
+    }
+  }, [info])
+
+const handleInfo = () => {
+  if (show) {
+    setShow(false);
+  }
+  if (!info) {
+    fetch('/ajaxnode/deployed/' + deployment.nid)
+      .then(response => response.json())
+      .then(result => {
+        setInfo(<div dangerouslySetInnerHTML={{ __html: result[1].data }} />);
+      })
+      .catch(error => console.log(error));
+  }
+  else if (!show) {
+    setShow(true);
+  }
+}
+
+const hide = () => {
+  setShow(false);
+}
 
   return (
     <tr>
@@ -18,7 +54,32 @@ export default function DeployedReleasesTableRow({ deployment, handleAction, hig
       <td>{deployment.release}</td>
       <td>{localeDate}</td>
       <td>
-        Aktion
+        <img
+          ref={target}
+          title="Einsatzinformationen anzeigen"
+          className="deployed-info-icon deployed-tooltip"
+          src="/modules/custom/hzd_release_management/images/notification-icon.png"
+          onClick={handleInfo}>
+        </img>
+        <Overlay
+          show={show}
+          target={target.current}
+          placement="left"
+          rootClose
+          onHide={hide}
+        >
+          <Popover id="popover-contained" title="Einsatzinformationen" className="margin-popover">
+            {info}
+          </Popover>
+        </Overlay>
+        <div className="other-links">
+        {deployment.downloadLink &&
+          <a href={deployment.downloadLink}><img title="Release herunterladen" src="/modules/custom/hzd_release_management/images/download_icon.png" />&nbsp;</a> 
+        }
+        {deployment.docuLink &&
+          <a href={"/release-management/releases/documentation/" + deployment.serviceNid + "/" + deployment.releaseNid }><img title="Dokumentation ansehen" src="/modules/custom/hzd_release_management/images/document-icon.png" /></a>
+        }
+        </div>
       </td>
     </tr>
   );

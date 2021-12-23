@@ -92,7 +92,7 @@ export default function DeployedReleasesManager(props) {
    * Fetches and appends release deployments (as state).
    */
   const fetchDeployments = () => {
-    let url = '/api/v1/deployments';
+    let url = '/api/v2/deployments';
 
     // Status-Filter
     if (props.filterState.deploymentStatus == "all") {
