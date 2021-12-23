@@ -2,7 +2,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Popover, Overlay } from 'react-bootstrap';
 
-export default function DeployedReleasesTableRow({ deployment }) {
+export default function DeployedReleasesTableRow({ deployment, detail }) {
   // Holds the popover text.
   const [info, setInfo] = useState(false);
   // Toggles the popover.
@@ -20,6 +20,9 @@ export default function DeployedReleasesTableRow({ deployment }) {
 
   // Show popover after ajax call finished loading data.
   useEffect(() => {
+    if (detail) {
+      return;
+    }
     if (info) {
       setShow(true);
     }
@@ -46,6 +49,7 @@ const hide = () => {
   setShow(false);
 }
 
+if (!detail) {
   return (
     <tr>
       <td>{global.drupalSettings.states[deployment.state]}</td>
@@ -83,4 +87,24 @@ const hide = () => {
       </td>
     </tr>
   );
+}
+else {
+  return (
+    <tr>
+      <td>{global.drupalSettings.states[deployment.state]}</td>
+      <td>{global.drupalSettings.environments[deployment.environment]}</td>
+      <td>{deployment.release}</td>
+      <td>{localeDate}</td>
+      <td>{deployment.previousRelease}</td>
+      {deployment.installationTime && 
+        <td>{deployment.installationTime} Min</td>
+      }
+      {!deployment.installationTime &&
+        <td></td>
+      }
+      <td>{["Nein", "Ja"][deployment.automatedDeployment]}</td>
+      <td>{deployment.abnormalityDescription}</td>
+    </tr>
+  );
+}
 }

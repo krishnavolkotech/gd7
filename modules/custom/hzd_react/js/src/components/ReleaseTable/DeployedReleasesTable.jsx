@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Table, Button, Pagination, Pager } from 'react-bootstrap';
 import DeployedReleasesTableRow from './DeployedReleasesTableRow';
 import SimplePager from '../SimplePager';
+import { useHistory } from 'react-router-dom';
 
 export default function DeployedReleasesTable(props) {
   const [filteredData, setFilteredData] = useState([]);
-
+  
   useEffect(() => {
     let newData = props.data;
     if (props.filterState.product.length > 1) {
@@ -102,6 +103,7 @@ export default function DeployedReleasesTable(props) {
 
   const tableHead = (
     <thead>
+    {!props.detail &&
       <tr>
         <th>Land</th>
         <th>Umgebung</th>
@@ -110,6 +112,19 @@ export default function DeployedReleasesTable(props) {
         <th>Eingesetzt am</th>
         <th>Aktion</th>
       </tr>
+      }
+      {props.detail &&
+        <tr>
+          <th>Land</th>
+          <th>Umgebung</th>
+          <th>Release</th>
+          <th>Eingesetzt am</th>
+          <th>Vorgängerrelease</th>
+          <th>ID</th>
+          <th>AD</th>
+          <th>Auffälligkeiten</th>
+        </tr>
+      }
     </thead>
   );
 
@@ -135,6 +150,11 @@ export default function DeployedReleasesTable(props) {
     );
   }
 
+  let span = 6;
+  if (props.detail) {
+    span = 8;
+  }
+
   return (
     <div>
       <Table hover>
@@ -146,9 +166,10 @@ export default function DeployedReleasesTable(props) {
                 key={"row-" + deployment.nid}
                 deployment={deployment}
                 deploymentStatus={props.filterState.deploymentStatus}
+                detail={props.detail}
               />
             );
-          }) : <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr>}
+          }) : <tr><td colSpan={span}><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr>}
         </tbody>
       </Table>
       {props.filterState.items_per_page !== "All" &&

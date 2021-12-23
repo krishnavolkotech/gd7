@@ -95,4 +95,11 @@ hzd_react.deployed_overview:
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
+hzd_react.deployed_releases_info:
+  path: '/group/{group}/r/releases/einsatzinformationen'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'Release Management'
+  requirements:
+    _permission: 'access content'
 

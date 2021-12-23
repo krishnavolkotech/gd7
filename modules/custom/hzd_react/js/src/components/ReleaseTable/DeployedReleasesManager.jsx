@@ -256,6 +256,7 @@ export default function DeployedReleasesManager(props) {
         count={count}
         setCount={setCount}
         filterState={props.filterState}
+        detail={props.detail}
       />
     </div>
   )

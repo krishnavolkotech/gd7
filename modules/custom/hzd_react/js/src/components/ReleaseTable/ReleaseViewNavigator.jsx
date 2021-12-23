@@ -32,6 +32,9 @@ export default function ReleaseViewNavigator() {
   if (history.location.pathname.indexOf('eingesetzt-uebersicht') > 0) {
     active = "6";
   }
+  if (history.location.pathname.indexOf('einsatzinformationen') > 0) {
+    active = "7";
+  }
 
   const [activeKey, setActiveKey] = useState(active);
 
@@ -103,6 +106,9 @@ export default function ReleaseViewNavigator() {
         break;
       case "6":
         explodedPath[explodedPath.length - 1] = "eingesetzt-uebersicht";
+        break;
+      case "7":
+        explodedPath[explodedPath.length - 1] = "einsatzinformationen";
         break;
       default:
         explodedPath[explodedPath.length - 1] = "bereitgestellt";
@@ -196,6 +202,9 @@ export default function ReleaseViewNavigator() {
         <NavItem eventKey="6" onSelect={handleNav}>
           Eingesetzt(Übersicht)
         </NavItem>
+        <NavItem eventKey="7" onSelect={handleNav}>
+          Einsatzinformationen
+        </NavItem>
       </Nav>
       { ["1", "2", "3", "5"].includes(activeKey) &&
         <ReleaseTableManager
@@ -206,12 +215,22 @@ export default function ReleaseViewNavigator() {
           activeKey={activeKey}
         />
       }
-      { activeKey == "4" &&
+      {activeKey == "4" &&
         <DeployedReleasesManager
           filterState={filterState}
           setFilterState={setFilterState}
           page={page}
           setPage={setPage}
+          detail={false}
+        />
+      }
+      {activeKey == "7" &&
+        <DeployedReleasesManager
+          filterState={filterState}
+          setFilterState={setFilterState}
+          page={page}
+          setPage={setPage}
+          detail={true}
         />
       }
       { activeKey == "6" &&

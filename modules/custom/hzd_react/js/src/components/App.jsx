@@ -44,6 +44,9 @@ class App extends React.Component {
             <Route exact path="/:group/r/releases/eingesetzt-uebersicht">
               <ReleaseViewNavigator />
             </Route>
+            <Route exact path="/:group/r/releases/einsatzinformationen">
+              <ReleaseViewNavigator />
+            </Route>
             <Route exact path="/zrml/r/einsatzmeldungen">
               <ReleaseDeploymentHome />
             </Route>
