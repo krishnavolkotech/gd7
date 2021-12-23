@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table } from 'react-bootstrap';
 import ReleaseRow from './ReleaseRow';
 import SimplePager from '../SimplePager';
 
 export default function ReleaseTable(props) {
   const [count, setCount] = useState(1);
-  
+
   return (
     <div>
-      <Table>
+      <Table className="releases">
         <thead>
           <tr>
             <th>Verfahren</th>
@@ -27,10 +27,17 @@ export default function ReleaseTable(props) {
           </tr>
         </thead>
         <tbody>
-          { props.loadingReleases &&
-          <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr>
-          }
           {props.releases.map(release => <ReleaseRow key={"row-" + release.attributes.drupal_internal__nid} release={release} filterState={props.filterState} />)}
+          { props.loadingReleases &&
+            <tr>
+              <td colSpan="6">
+                <center>
+                  <span>Releases werden geladen ... </span>
+                  <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span>
+                </center>
+              </td>
+            </tr>
+          }
         </tbody>
       </Table>
       {props.filterState.items_per_page !== "All" &&

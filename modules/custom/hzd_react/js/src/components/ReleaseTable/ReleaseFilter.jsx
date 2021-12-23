@@ -4,7 +4,11 @@ import { Row, Col, FormGroup, FormControl, Button, OverlayTrigger, Tooltip, Form
 export default function ReleaseFilter(props) {
 
   const defaultReleaseOption = <option value="0">&lt;Release&gt;</option>;
+  /** @const {Object[]} productOptions - The product option components array. */
+  const [productOptions, setProductOptions] = useState(<option key="product-0" value="0">&lt;Komponente&gt;</option>);
   const [releaseOptions, setReleaseOptions] = useState(defaultReleaseOption);
+  /** @const {bool} disableProductFilter - Enable / Disable the product filter. */
+  const [disableProductFilter, setDisableProductFilter] = useState(true);
 
   /**
    * Handles the filter selection events.
@@ -20,6 +24,7 @@ export default function ReleaseFilter(props) {
     }
     if (e.target.name == "service") {
       val["release"] = "0";
+      val["product"] = "";
       setReleaseOptions(defaultReleaseOption);
     }
     props.setFilterState(prev => ({ ...prev, ...val }));
@@ -63,7 +68,58 @@ export default function ReleaseFilter(props) {
       options.push(<option key={"release-" + props.filterReleases[i].nid} value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
     }
     setReleaseOptions(options);
+    populateProductFilter();
   }, [props.filterReleases])
+
+  /**
+   * Populates the product filter based on the selected service and releases.
+   */
+  const populateProductFilter = () => {
+    // Product Filter.
+    const defaultProduct = [<option key="product-default" value="">&lt;Komponente&gt;</option>];
+    let optionsProducts = [];
+    if (props.filterState.service != "0" && Object.keys(props.filterReleases).length > 0) {
+      // Verify that the releases for the selected service are loaded.
+      let serviceReleases = {};
+      serviceReleases = props.filterReleases;
+      // Enable filter input.
+      setDisableProductFilter(false);
+
+      // Extract product names.
+      let products = [];
+      for (const key in serviceReleases) {
+        const [product] = serviceReleases[key].title.split("_");
+        products.push(product);
+      }
+
+      // Remove duplicate products.
+      products = products.filter((value, index, self) => {
+        return self.indexOf(value) === index;
+      });
+
+      // Sort products.
+      products = products.sort((a, b) => {
+        var nameA = a.toUpperCase(); // Groß-/Kleinschreibung ignorieren
+        var nameB = b.toUpperCase(); // Groß-/Kleinschreibung ignorieren
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        // Namen müssen gleich sein
+        return 0;
+      });
+
+      // Populate options for selected input.
+      optionsProducts = products.map(product => {
+        return <option key={"product-" + product} value={product}>{product}</option>;
+      });
+
+    }
+
+    setProductOptions([...defaultProduct, ...optionsProducts]);
+  }
 
   const ttReset = (
     <Tooltip id="ttReset">
@@ -73,7 +129,7 @@ export default function ReleaseFilter(props) {
   return (
     <div>
       <Row>
-        <Col sm={3}>
+        <Col sm={4}>
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="type-filter">
             <FormControl
               name="type"
@@ -85,7 +141,9 @@ export default function ReleaseFilter(props) {
             </FormControl>
           </FormGroup>
         </Col>
-        <Col sm={3}>
+      </Row>
+      <Row>
+        <Col sm={4}>
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="service-filter" >
             <FormControl
               name="service"
@@ -97,7 +155,20 @@ export default function ReleaseFilter(props) {
             </FormControl>
           </FormGroup>
         </Col>
-        <Col sm={3}>
+        <Col sm={4}>
+          <FormGroup bsClass="select-wrapper hzd-form-element" controlId="product-filter" >
+            <FormControl
+              name="product"
+              disabled={disableProductFilter}
+              componentClass="select"
+              onChange={handleFilterSelect}
+              value={props.filterState.product}
+            >
+              {productOptions}
+            </FormControl>
+          </FormGroup>
+        </Col>
+        <Col sm={4}>
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="release-filter" >
             <FormControl
               name="release"
@@ -139,6 +210,20 @@ export default function ReleaseFilter(props) {
               >
                 <option key="order-asc" value="">Aufsteigend</option>
                 <option key="order-desc" value="-">Absteigend</option>
+              </FormControl>
+            </FormGroup>
+            <FormGroup bsClass="select-wrapper hzd-form-element" controlId="items_per_page">
+              <ControlLabel>Elemente pro Seite&nbsp;</ControlLabel>
+              <FormControl
+                name="items_per_page"
+                componentClass="select"
+                placeholder="select"
+                onChange={handleFilterSelect}
+                value={props.filterState.items_per_page}
+              >
+                <option key="items_per_page-1" value="20">20</option>
+                <option key="items_per_page-2" value="50">50</option>
+                <option key="items_per_page-4" value="All">Alle</option>
               </FormControl>
             </FormGroup>
           </Form>

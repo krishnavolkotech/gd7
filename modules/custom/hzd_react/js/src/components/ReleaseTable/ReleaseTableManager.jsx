@@ -22,7 +22,7 @@ export default function ReleaseTableManager(props) {
   useEffect(() => {
     setLoadingReleases(true);
     setReleases([]);
-    fetchReleases();
+    fetchReleases(0);
     // props.setPage(1);
   }, [props.filterState, props.page]);
 
@@ -39,22 +39,25 @@ export default function ReleaseTableManager(props) {
   /**
    * Fetch the releases for the release table.
    */
-  function fetchReleases() {
+  function fetchReleases(counter = 0) {
     let url = '/jsonapi/node/release';
     url += '?sort=' + props.filterState.releaseSortOrder + props.filterState.releaseSortBy;
     url += '&include=field_relese_services';
 
     url += '&filter[field_release_type]=' + props.filterState.type;
 
-    const limit = props.filterState.items_per_page;
-    url += '&page[offset]=' + ((props.page - 1) * limit);
-    url += '&page[limit]=' + limit;
+    if (props.filterState.items_per_page === "All") {
+      url += '&page[offset]=' + counter * 50;
+      url += '&page[limit]=' + 50;
+    }
+    else {
+      const limit = props.filterState.items_per_page;
+      url += '&page[offset]=' + ((props.page - 1) * limit);
+      url += '&page[limit]=' + limit;
+    }
 
-
-
-    // Apply group specific service filter.
-    // @todo Unterscheidung KONSENS / BestFakt
     if (props.filterState.type in global.drupalSettings.services && props.filterState.service == "0") {
+      // Apply group specific service filter.
       url += '&filter[service-filter][condition][path]=field_relese_services.drupal_internal__nid';
       url += '&filter[service-filter][condition][operator]=IN';
       let count = 0;
@@ -65,6 +68,13 @@ export default function ReleaseTableManager(props) {
     }
     else {
       url += '&filter[field_relese_services.drupal_internal__nid]=' + props.filterState.service;
+    }
+
+    if (props.filterState.product !== "") {
+      // Apply the product filter (substring).
+      url += '&filter[product-filter][condition][path]=title';
+      url += '&filter[product-filter][condition][operator]=CONTAINS';
+      url += '&filter[product-filter][condition][value]=' + props.filterState.product;
     }
 
     if (props.filterState.release != "0") {
@@ -86,8 +96,21 @@ export default function ReleaseTableManager(props) {
         // console.log(response);
         if (runner === fetchCount.current) {
           const result = addRelationshipData(response);
-          setLoadingReleases(false);
-          setReleases(result);
+          setReleases(prev => [...prev, ...result]);
+          if (props.filterState.items_per_page === "All") {
+            if ('next' in response.links) {
+              counter++;
+              fetchReleases(counter);
+            }
+            else {
+              // Stop spinner once all releases finished loading.
+              setLoadingReleases(false);
+            }
+          }
+          else {
+            // Stop spinner on single fetch finish.
+            setLoadingReleases(false);
+          }
         }
       })
       .catch(error => {

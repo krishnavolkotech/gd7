@@ -165,11 +165,12 @@ export default function ReleaseViewNavigator() {
   // Changes active tab and sets releaseStatus accordingly.
   const handleNav = (k) => {
     setActiveKey(k);
+    let val = {};
+    val["items_per_page"] = "20";
     if (["1", "2", "3", "5"].includes(k)) {
-      let val = {};
       val["releaseStatus"] = k;
-      setFilterState(prev => ({ ...prev, ...val }));
     }
+    setFilterState(prev => ({ ...prev, ...val }));
   }
 
   return (

@@ -72,7 +72,7 @@ export default function DeployedReleasesManager(props) {
     // if (props.filterState.service !== "0") {
     //   preloadDeploymentData(props.filterState);
     // }
-  }, [props.filterState.type, props.filterState.deploymentStatus, props.filterState.state, props.filterState.environment, props.filterState.service, props.filterState.release, props.filterState.items_per_page, count]);
+  }, [props.filterState, count]);
 
   /**
    * Fetcht alle Releases, dient zur Befüllung von:

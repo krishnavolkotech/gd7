@@ -26,16 +26,16 @@ export default function ReleaseRow(props) {
   let comments = [];
   if ("early-warnings" in props.release.links) {
     // Add link to early warnings.
-    comments.push(<a key={"ew-" + props.release.attributes.drupal_internal__nid} href={props.release.links["early-warnings"].href} className="view-earlywarning" title="Early Warnings für dieses Release anzeigen"><span className="warningcount">{props.release.links["early-warnings"].meta.linkParams.earlyWarningCount}</span>&nbsp;</a>);
+    comments.push(<a key={"ew-" + props.release.attributes.drupal_internal__nid} href={props.release.links["early-warnings"].href} className="view-earlywarning" title="Early Warnings für dieses Release anzeigen"><span className="warningcount">{props.release.links["early-warnings"].meta.linkParams.earlyWarningCount}</span></a>);
   }
   else {
     // Adds placeholder for early warnings.
-    comments.push(<a key={"no-ew-" + props.release.attributes.drupal_internal__nid}><span className="nonecommentcount"></span></a>);
+    comments.push(<a key={"no-ew-" + props.release.attributes.drupal_internal__nid}><span className="nonewarningcount"></span></a>);
   }
   // Adds link to create new early warnings.
-  comments.push(<a key={"ew-add" + props.release.attributes.drupal_internal__nid} href={'/release-management/add/early-warnings?services=' + props.release.serviceNid + '&releases=' + props.release.attributes.drupal_internal__nid + '&type=progress&release_type=459'} className="create_earlywarning" title="Early Warning für dieses Release erstellen"><img src="/modules/custom/hzd_release_management/images/create-icon.png" height="15" />&nbsp;</a>);
+  comments.push(<a key={"ew-add" + props.release.attributes.drupal_internal__nid} href={'/release-management/add/early-warnings?services=' + props.release.serviceNid + '&releases=' + props.release.attributes.drupal_internal__nid + '&type=progress&release_type=459'} className="create_earlywarning" title="Early Warning für dieses Release erstellen"><img src="/modules/custom/hzd_release_management/images/create-icon.png" height="15" /></a>);
 
-  if ("release-comments" in props.release.links && props.filterState.status === "2") {
+  if ("release-comments" in props.release.links && props.filterState.releaseStatus === "2") {
     // Add link to create new release comments.
     comments.push(<a key={"rc-add-" + props.release.attributes.drupal_internal__nid} href={'/release-management/add/release-comments?services=' + props.release.serviceNid + '&releases=' + props.release.attributes.drupal_internal__nid + '&type=progress&release_type=459'} className="create_comment" title="Release kommentieren"><img src="/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png" height="15" />&nbsp;</a>);
     if (props.release.links["release-comments"].meta.linkParams.releaseCommentCount > 0) {
@@ -69,14 +69,14 @@ export default function ReleaseRow(props) {
       <td>{props.release.attributes.title}</td>
       <td>{props.release.attributes.field_status}</td>
       <td>{humanDateFormat}</td>
-      {props.filterState.status !== "3" &&
-      <td>{comments}</td>
+      {props.filterState.releaseStatus !== "3" &&
+      <td className="earlywarnings-cell inprogress-comment-cell">{comments}</td>
       }
-      {props.filterState.status !== "3" &&
-      <td>{actions}</td>
+      {props.filterState.releaseStatus !== "3" &&
+      <td className="earlywarnings-cell inprogress-comment-cell">{actions}</td>
       }
-      { props.filterState.status === "3" &&
-        <td>{comment}</td>
+      { props.filterState.releaseStatus === "3" &&
+      <td className="earlywarnings-cell inprogress-comment-cell">{comment}</td>
       }
     </tr>
   );
