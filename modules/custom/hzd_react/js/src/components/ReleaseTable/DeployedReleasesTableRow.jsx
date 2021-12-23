@@ -95,7 +95,12 @@ else {
       <td>{global.drupalSettings.environments[deployment.environment]}</td>
       <td>{deployment.release}</td>
       <td>{localeDate}</td>
-      <td>{deployment.previousRelease}</td>
+      {deployment.previousRelease &&
+        <td>{deployment.previousRelease}</td>
+      }
+      {!deployment.previousRelease &&
+        <td>Ersteinsatz</td>
+      }
       {deployment.installationTime && 
         <td>{deployment.installationTime} Min</td>
       }
