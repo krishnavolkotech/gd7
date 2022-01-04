@@ -253,7 +253,7 @@ export default function DeploymentManager() {
       url += '&service=' + filterState.service;
     }
 
-    // Verfahren.
+    // Release.
     if (filterState.release !== "0") {
       url += '&release=' + filterState.release;
     }

@@ -132,14 +132,20 @@ export default function DeployedReleasesFilter(props) {
     if (selectReleases.length > 0) {
       optionsReleases = selectReleases.map(option => {
         for (const nid in option) {
-          return <option key={"select-release-" + option.nid} value={option.nid}>{option.title}</option>;
+          if (props.filterState.product) {
+            if (option.title.indexOf(props.filterState.product) !== -1) {
+              return <option key={"select-release-" + option.nid} value={option.nid}>{option.title}</option>;
+            }
+          } else {
+            return <option key={"select-release-" + option.nid} value={option.nid}>{option.title}</option>;
+          }
         }
       });
     }
     optionsReleases = [...defaultRelease, ...optionsReleases];
     setReleaseOptions(optionsReleases);
 
-  }, [props.releases])
+  }, [props.releases, props.filterState.product])
 
   // States Filter
   const statesObject = global.drupalSettings.states;
@@ -239,6 +245,11 @@ export default function DeployedReleasesFilter(props) {
       case "state":
         val["state"] = e.target.value;
         val["environment"] = "0";
+        props.setFilterState(prev => ({ ...prev, ...val }));
+        break;
+      case "product":
+        val["product"] = e.target.value;
+        val["release"] = "0";
         props.setFilterState(prev => ({ ...prev, ...val }));
         break;
       default:

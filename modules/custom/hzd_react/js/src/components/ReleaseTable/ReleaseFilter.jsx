@@ -27,6 +27,10 @@ export default function ReleaseFilter(props) {
       val["product"] = "";
       setReleaseOptions(defaultReleaseOption);
     }
+    if (e.target.name == "product") {
+      val["release"] = "0";
+      // setReleaseOptions(defaultReleaseOption);
+    }
     props.setFilterState(prev => ({ ...prev, ...val }));
     // if (e.target.name == "service") {
     //   // @todo Releasefilter deaktivieren, wenn Verfahren gewählt wird
@@ -59,17 +63,26 @@ export default function ReleaseFilter(props) {
   });
   const optionsServices = [<option key="service-0" value="0">&lt;Verfahren&gt;</option>, servicesArray.map(service => <option key={"service-" + service[0]} value={service[0]}>{service[1]}</option>)];
 
-
+  /**
+   * Populates the release filter based on the selected service and product.
+   */
   useEffect(() => {
     let options = [
       <option key="release-0" value="0">&lt;Release&gt;</option>,
     ];
     for (let i = 0; i < props.filterReleases.length; i++) {
-      options.push(<option key={"release-" + props.filterReleases[i].nid} value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
+      if (props.filterState.product) {
+        if (props.filterReleases[i].title.indexOf(props.filterState.product) !== -1) {
+          options.push(<option key={"release-" + props.filterReleases[i].nid} value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
+        }
+      }
+      else {
+        options.push(<option key={"release-" + props.filterReleases[i].nid} value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
+      }
     }
     setReleaseOptions(options);
     populateProductFilter();
-  }, [props.filterReleases])
+  }, [props.filterReleases, props.filterState.product])
 
   /**
    * Populates the product filter based on the selected service and releases.
