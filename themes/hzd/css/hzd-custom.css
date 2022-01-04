@@ -1774,10 +1774,13 @@ table.deployed_overview_table {
   table-layout: fixed;
 }
 
-thead.sticky-row {
+thead tr th.sticky-row {
   position: sticky;
   top: 0;
+  z-index:1;
+  background-color: rgb(245, 245, 245);
 }
+
 table.deployed_overview_table th:last-child {
   width: 100%;
 }
