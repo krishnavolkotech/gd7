@@ -135,7 +135,7 @@ export default function ReleaseViewNavigator() {
     // } else {
     //   params.delete("type");
     }
-    if (filterState.state !== "1" && filterState.state) {
+    if (filterState.state) {
       params.append("state", filterState.state);
     // } else {
     //   params.delete("state");
@@ -241,6 +241,7 @@ export default function ReleaseViewNavigator() {
           page={page}
           setPage={setPage}
           detail={false}
+          activeKey={activeKey}
         />
       }
       {activeKey == "7" &&
@@ -250,6 +251,7 @@ export default function ReleaseViewNavigator() {
           page={page}
           setPage={setPage}
           detail={true}
+          activeKey={activeKey}
         />
       }
       { activeKey == "6" &&

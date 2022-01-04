@@ -82,7 +82,6 @@ function FilterableReleaseTable() {
     setTimeout(false);
     fetchCount.current++;
     const runner = fetchCount.current;
-    console.log("Läufer: " + runner);
     fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
@@ -96,7 +95,6 @@ function FilterableReleaseTable() {
           release.serviceNid = relatedServiceNid;
           return release;
         });
-        console.log('Läufer angekommen: ' + runner + ". Insgesamt: " + fetchCount.current);
         if (runner === fetchCount.current) {
           if (releaseData.length === 0) setTimeout(true);
           setData(releaseData);

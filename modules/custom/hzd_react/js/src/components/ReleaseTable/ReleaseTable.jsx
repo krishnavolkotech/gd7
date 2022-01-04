@@ -38,6 +38,11 @@ export default function ReleaseTable(props) {
               </td>
             </tr>
           }
+          { props.releases.length === 0 && !props.loadingReleases &&
+            <tr>
+              <td colSpan="6"><center>Keine Daten gefunden.</center></td>
+            </tr>
+          }
         </tbody>
       </Table>
       {props.filterState.items_per_page !== "All" &&

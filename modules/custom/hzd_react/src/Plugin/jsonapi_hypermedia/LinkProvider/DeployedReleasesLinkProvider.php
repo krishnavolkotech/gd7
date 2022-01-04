@@ -123,9 +123,11 @@ final class DeployedReleasesLinkProvider extends LinkProviderBase implements Con
     // ]);
     $serviceNid = $context->getField("field_relese_services")->entity->id();
 
-    $url = Url::fromRoute('view.release_views.page_6',[],['query' => [
-      'services' => $serviceNid,
-      'releases' => $releaseNid,
+    $url = Url::fromUri('base:/release-management/releases/einsatzinformationen',['query' => [
+      'service' => $serviceNid,
+      'release' => $releaseNid,
+      'deploymentStatus' => 'all',
+      'state' => 1,
     ]]);
 
     // Provide cacheability.

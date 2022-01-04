@@ -58,12 +58,12 @@ function ERTable({ eingesetzte, landGefiltert, verfahrenGefiltert}) {
     ids2[18] = ['BU'];
 
   const tableHeader = (
-    <thead  class="sticky-row">
+    <thead>
       <tr>
-        <th>Verfahren</th>
+        <th className="sticky-row">Verfahren</th>
           { landKurz.map((land) => {
             return (
-              <th>{ids2[land]}</th>
+              <th className="sticky-row">{ids2[land]}</th>
             );
           })}
       </tr>

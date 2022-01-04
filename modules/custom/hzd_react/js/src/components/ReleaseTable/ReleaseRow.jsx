@@ -1,7 +1,13 @@
 import React from 'react'
+import { useHistory } from 'react-router-dom';
 
 export default function ReleaseRow(props) {
 
+  /** @const {object} history - The history object (URL modifications). */
+  const history = useHistory()
+  const pathname = history.location.pathname;
+  const explodedPath = pathname.split("/");
+  
   const unixTimestamp = props.release.attributes.field_date;
 
   const milliseconds = unixTimestamp * 1000;
@@ -61,7 +67,7 @@ export default function ReleaseRow(props) {
   }
   if (props.release.attributes.field_documentation_link) {
      // Add link for documentation download.
-   actions.push(<a key={"dl-" + props.release.attributes.drupal_internal__nid} href={'/release-management/releases/documentation/' + props.release.serviceNid + '/' + props.release.attributes.drupal_internal__nid}><img src="/modules/custom/hzd_release_management/images/document-icon.png" title="Dokumentation ansehen" /></a>);
+    actions.push(<a key={"dl-" + props.release.attributes.drupal_internal__nid} href={'/' + explodedPath[1] + '/releases/documentation/' + props.release.serviceNid + '/' + props.release.attributes.drupal_internal__nid}><img src="/modules/custom/hzd_release_management/images/document-icon.png" title="Dokumentation ansehen" /></a>);
   }
   return (
     <tr>
