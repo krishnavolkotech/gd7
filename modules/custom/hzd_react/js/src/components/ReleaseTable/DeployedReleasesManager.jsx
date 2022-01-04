@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import useQuery from '../../hooks/hooks';
 import DeployedReleasesTable from './DeployedReleasesTable';
 import { ButtonToolbar, ToggleButtonGroup, ToggleButton, Nav, NavItem } from 'react-bootstrap';
+import ReleaseLegend from './ReleaseLegend';
 
 export default function DeployedReleasesManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
@@ -115,6 +116,16 @@ export default function DeployedReleasesManager(props) {
     // Verfahren.
     if (props.filterState.service !== "0") {
       url += '&service=' + props.filterState.service;
+    }
+
+    // Release.
+    if (props.filterState.release !== "0") {
+      url += '&release=' + props.filterState.release;
+    }
+
+    // Typ.
+    if (props.filterState.type) {
+      url += '&type=' + props.filterState.type;
     }
 
     url += '&items_per_page=' + props.filterState.items_per_page;
@@ -247,6 +258,7 @@ export default function DeployedReleasesManager(props) {
         fetchDeployments={fetchDeployments}
         loadingReleasesSpinner={loadingReleasesSpinner}
       />
+      <ReleaseLegend activeKey={props.activeKey} />
       <DeployedReleasesTable
         data={data}
         timeout={timeout}

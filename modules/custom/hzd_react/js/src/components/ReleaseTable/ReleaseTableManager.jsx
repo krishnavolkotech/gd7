@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import ReleaseFilter from './ReleaseFilter';
+import ReleaseLegend from './ReleaseLegend';
 import ReleaseTable from './ReleaseTable';
 
 export default function ReleaseTableManager(props) {
@@ -176,6 +177,7 @@ export default function ReleaseTableManager(props) {
         filterReleases={filterReleases}
         disableReleaseFilter={disableReleaseFilter}
       />
+      <ReleaseLegend activeKey={props.activeKey} />
       <ReleaseTable 
         releases={releases}
         loadingReleases={loadingReleases}
