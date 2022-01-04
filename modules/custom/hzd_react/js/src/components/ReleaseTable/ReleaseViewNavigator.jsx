@@ -78,6 +78,12 @@ export default function ReleaseViewNavigator() {
    */
   const [filterState, setFilterState] = useState(initialFilterState);
 
+  // Removes the PDF Export Button.
+  useEffect(() => {
+    const pdf = jQuery('a').filter(function (index) { return jQuery(this).text() === "PDF"; });
+    pdf.remove();
+  }, []);
+
   /**
    * Changes URL-Params depending on Nav / Filters, resets Pagination.
    * 
@@ -169,6 +175,13 @@ export default function ReleaseViewNavigator() {
       pathname: pathname,
       search: params.toString(),
     });
+
+    // Compatiblity with favourite button.
+    jQuery("#star-favorites-add").attr("action", pathname + "?" + params.toString());
+    jQuery("input[name=path]").val(pathname);
+    jQuery("input[name=query]").val(params.toString());
+    // @todo Set Title correctly.
+    // jQuery("input[name=title]").val("XYZ");
 
     // Reset Pagination.
     setPage(1);
