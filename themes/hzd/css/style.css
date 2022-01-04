@@ -761,6 +761,20 @@ form.release-filter-form .hzd-form-element,
     color: #027596 !important;
     background: #fff !important;
 }
+div#react-app ul.nav.nav-pills li.active a, div#react-app ul.nav.nav-pills li.active a:hover {
+    color: #fff !important;
+    background-color: #027596 !important;
+    border: 1px solid #fff !important;
+    padding: 6px 15px;
+}
+div#react-app ul.nav.nav-pills li a {
+    border: 1px solid #fff !important;
+    padding: 6px 15px;
+}
+div#react-app ul.nav.nav-pills li a:hover {
+    border: 1px solid rgb(204,204,204) !important;
+    padding: 6px 15px;
+}
 .nav-tabs > li > a {
     color: #333333 !important;
     background: #f5f5f5 !important;
