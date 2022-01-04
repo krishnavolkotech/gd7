@@ -26,34 +26,37 @@ class App extends React.Component {
             <Route path="/r/home">
               <Home />
             </Route>
-            <Route exact path="/:group/r/releases/bereitgestellt">
+            <Route exact path="/:group/releases">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/r/releases/in-bearbeitung">
+            <Route exact path="/:group/releases/bereitgestellt">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/r/releases/gesperrt">
+            <Route exact path="/:group/releases/in-bearbeitung">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/r/releases/archiviert">
+            <Route exact path="/:group/releases/gesperrt">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/r/releases/eingesetzt">
+            <Route exact path="/:group/releases/archiviert">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/r/releases/eingesetzt-uebersicht">
+            <Route exact path="/:group/releases/eingesetzt">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/r/releases/einsatzinformationen">
+            <Route exact path="/:group/releases/eingesetzt-uebersicht">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/zrml/r/einsatzmeldungen">
+            <Route exact path="/:group/releases/einsatzinformationen">
+              <ReleaseViewNavigator />
+            </Route>
+            <Route exact path="/zrml/einsatzmeldungen">
               <ReleaseDeploymentHome />
             </Route>
-            <Route exact path="/zrml/r/einsatzmeldungen/eingesetzt">
+            <Route exact path="/zrml/einsatzmeldungen/eingesetzt">
               <DeploymentManager />
             </Route>
-            <Route exact path="/zrml/r/einsatzmeldungen/archiviert">
+            <Route exact path="/zrml/einsatzmeldungen/archiviert">
               <DeploymentManager />
             </Route>
           </Switch>

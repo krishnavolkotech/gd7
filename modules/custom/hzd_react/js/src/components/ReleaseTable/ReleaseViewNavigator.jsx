@@ -86,7 +86,13 @@ export default function ReleaseViewNavigator() {
   useEffect(() => {
     let pathname = history.location.pathname;
     let explodedPath = pathname.split("/");
-    explodedPath[explodedPath.length - 1] = "in-bearbeitung";
+    if (explodedPath.length === 3) {
+      // If path ends on ".../releases", push.
+      explodedPath.push("bereitgestellt");
+    }
+    else {
+      explodedPath[explodedPath.length - 1] = "bereitgestellt";
+    }
 
     switch (activeKey) {
       case "1":

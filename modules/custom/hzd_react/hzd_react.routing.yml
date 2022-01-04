@@ -5,6 +5,8 @@ hzd_react.entry:
     _title: 'React'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    group: '5'
 hzd_react.page:
   path: '/r/{reactPage}'
   defaults:
@@ -12,6 +14,8 @@ hzd_react.page:
     _title: 'React'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    group: '5'
 hzd_react.sub_page:
   path: '/r/{reactPage}/{subPage}'
   defaults:
@@ -19,6 +23,8 @@ hzd_react.sub_page:
     _title: 'React'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+    group: '5'
 hzd_react.ajax:
   path: '/r/ajax'
   defaults:
@@ -26,8 +32,9 @@ hzd_react.ajax:
     _title: 'Ajax'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.deployed_releases_home:
-  path: '/group/{group}/r/einsatzmeldungen'
+  path: '/group/{group}/einsatzmeldungen'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
     _title: 'ZRML'
@@ -36,7 +43,7 @@ hzd_react.deployed_releases_home:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.deployed_releases_list:
-  path: '/group/{group}/r/einsatzmeldungen/eingesetzt'
+  path: '/group/{group}/einsatzmeldungen/eingesetzt'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
     _title: 'Einsatzmeldungen verwalten'
@@ -45,7 +52,7 @@ hzd_react.deployed_releases_list:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.archived_deployments:
-  path: '/group/{group}/r/einsatzmeldungen/archiviert'
+  path: '/group/{group}/einsatzmeldungen/archiviert'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
     _title: 'Einsatzmeldungen verwalten'
@@ -53,53 +60,69 @@ hzd_react.archived_deployments:
     _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
+hzd_react.releases:
+  # path: '/group/{group}/releases/bereitgestellt'
+  path: '/group/{group}/releases'
+  defaults:
+    _controller: '\Drupal\hzd_react\Controller\ReactController::content'
+    _title: 'Release Management'
+  requirements:
+    _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.released:
-  path: '/group/{group}/r/releases/bereitgestellt'
+  path: '/group/{group}/releases/bereitgestellt'
+  # path: '/group/{group}/releases'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.releases_in_progress:
-  path: '/group/{group}/r/releases/in-bearbeitung'
+  path: '/group/{group}/releases/in-bearbeitung'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.locked:
-  path: '/group/{group}/r/releases/gesperrt'
+  path: '/group/{group}/releases/gesperrt'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
-hzd_react.locked:
-  path: '/group/{group}/r/releases/archiviert'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+hzd_react.archived:
+  path: '/group/{group}/releases/archiviert'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.deployed_releases:
-  path: '/group/{group}/r/releases/eingesetzt'
+  path: '/group/{group}/releases/eingesetzt'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.deployed_overview:
-  path: '/group/{group}/r/releases/eingesetzt-uebersicht'
+  path: '/group/{group}/releases/eingesetzt-uebersicht'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.deployed_releases_info:
-  path: '/group/{group}/r/releases/einsatzinformationen'
+  path: '/group/{group}/releases/einsatzinformationen'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'
   requirements:
     _permission: 'access content'
-
+    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
