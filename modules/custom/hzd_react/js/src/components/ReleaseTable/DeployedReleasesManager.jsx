@@ -95,6 +95,20 @@ export default function DeployedReleasesManager(props) {
   const fetchDeployments = () => {
     let url = '/api/v2/deployments';
 
+    // console.log(services);
+    if (props.filterState.service === "0") {
+      // Add group-contextual service filter, if no service is selected.
+      const services = Object.keys(global.drupalSettings.services[props.filterState.type]);
+      if (services.length > 0) {
+        url += '/';
+        for (let key of services) {
+          // Adds each service as contextual parameter.
+          url += key + ','
+        }
+        // Removes final comma.
+        url = url.slice(0, -1);
+      }
+    }
     // Status-Filter
     if (props.filterState.deploymentStatus == "all") {
       url += '?status[]=1&status[]=2';
@@ -117,7 +131,7 @@ export default function DeployedReleasesManager(props) {
     if (props.filterState.service !== "0") {
       url += '&service=' + props.filterState.service;
     }
-
+    
     // Release.
     if (props.filterState.release !== "0") {
       url += '&release=' + props.filterState.release;

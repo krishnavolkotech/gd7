@@ -160,10 +160,10 @@ export default function DeployedReleasesTable(props) {
       <Table hover>
         {tableHead}
         <tbody>
-          {filteredData.length ? filteredData.map(deployment => {
+          {filteredData.length ? filteredData.map((deployment, index) => {
             return (
               <DeployedReleasesTableRow
-                key={"row-" + deployment.nid}
+                key={"row-" + index}
                 deployment={deployment}
                 deploymentStatus={props.filterState.deploymentStatus}
                 detail={props.detail}
