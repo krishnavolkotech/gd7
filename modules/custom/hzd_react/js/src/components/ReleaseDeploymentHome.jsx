@@ -29,7 +29,7 @@ function ReleaseDeploymentHome() {
             <Panel.Body>Einsatzmeldungen zu <b>KONSENS</b>-Releases</Panel.Body>
             <br />
             <Panel.Body>
-              <Link to="/zrml/r/einsatzmeldungen/eingesetzt">
+              <Link to="/zrml/einsatzmeldungen/eingesetzt">
                 <Button bsStyle="primary"><span className="glyphicon glyphicon-arrow-right" /> Zu den Einsatzmeldungen</Button>
               </Link>
             </Panel.Body>

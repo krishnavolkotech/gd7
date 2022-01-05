@@ -83,8 +83,8 @@ export default function DeploymentManager() {
     "product": query.has("product") ? query.get("product") : "",
     "release": query.has("release") ? query.get("release") : "0",
     "status": status,
-    "sortBy": query.has("sortBy") ? query.get("sortBy") : "field_date_deployed_value",
-    "sortOrder": query.has("sortOrder") ? query.get("sortOrder") : "DESC",
+    "deploymentSortBy": query.has("deploymentSortBy") ? query.get("deploymentSortBy") : "field_date_deployed_value",
+    "deploymentSortOrder": query.has("deploymentSortOrder") ? query.get("deploymentSortOrder") : "DESC",
   };
   /**
    * The filter state object.
@@ -96,8 +96,8 @@ export default function DeploymentManager() {
    * @property {string} filterState.product - The product name.
    * @property {string} filterState.release - The release id.
    * @property {string} filterState.status - The deployment status.
-   * @property {string} filterState.sortBy - Field name for sorting.
-   * @property {string} filterState.sortOrder - The sorting direction ('ASC', 'DESC').
+   * @property {string} filterState.deploymentSortBy - Field name for sorting.
+   * @property {string} filterState.deploymentSortOrder - The sorting direction ('ASC', 'DESC').
    */
   const [filterState, setFilterState] = useState(initialFilterState);
 
@@ -142,13 +142,13 @@ export default function DeploymentManager() {
     let pathname;
     switch (filterState.status) {
       case "1":
-        pathname = '/zrml/r/einsatzmeldungen/eingesetzt';
+        pathname = '/zrml/einsatzmeldungen/eingesetzt';
         break;
       case "2":
-        pathname = '/zrml/r/einsatzmeldungen/archiviert';
+        pathname = '/zrml/einsatzmeldungen/archiviert';
         break;
       default:
-        pathname = '/zrml/r/einsatzmeldungen/eingesetzt';
+        pathname = '/zrml/einsatzmeldungen/eingesetzt';
         break;
     }
     
@@ -189,16 +189,16 @@ export default function DeploymentManager() {
       params.delete("product");
     }
 
-    if (filterState.sortBy !== "") {
-      params.append("sortBy", filterState.sortBy);
+    if (filterState.deploymentSortBy !== "") {
+      params.append("deploymentSortBy", filterState.deploymentSortBy);
     } else {
-      params.delete("sortBy");
+      params.delete("deploymentSortBy");
     }
 
-    if (filterState.sortOrder !== "") {
-      params.append("sortOrder", filterState.sortOrder);
+    if (filterState.deploymentSortOrder !== "") {
+      params.append("deploymentSortOrder", filterState.deploymentSortOrder);
     } else {
-      params.delete("sortOrder");
+      params.delete("deploymentSortOrder");
     }
 
     history.push({
@@ -271,8 +271,8 @@ export default function DeploymentManager() {
     }
 
     // Apply sorting.
-    url += '&sort_by=' + filterState.sortBy;
-    url += '&sort_order=' + filterState.sortOrder;
+    url += '&sort_by=' + filterState.deploymentSortBy;
+    url += '&sort_order=' + filterState.deploymentSortOrder;
 
     setData([]);
     setTimeout(false);
@@ -358,8 +358,8 @@ export default function DeploymentManager() {
       "release": "0",
       "product": "",
       "status": filterState.status,
-      "sortBy": "field_date_deployed_value",
-      "sortOrder": "DESC",
+      "deploymentSortBy": "field_date_deployed_value",
+      "deploymentSortOrder": "DESC",
     });
   }
 
