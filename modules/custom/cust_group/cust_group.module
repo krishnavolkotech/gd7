@@ -939,6 +939,7 @@ function cust_group_views_pre_render($view) {
 
 function cust_group_file_validate(Drupal\file\FileInterface $file) {
 //  drupal_get_messages(null, TRUE);
+  \Drupal::messenger()->deleteAll();
   $errors = [];
   $fileName = $file->getFilename();
 
