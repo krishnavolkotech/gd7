@@ -837,6 +837,14 @@ $('.dropdown-toggle').on('click', function(e) {
     //}
   });
 
+  var a = document.getElementById('block-hzdheaderlinks').getElementsByTagName('a');
+  for (var i = 0; i < a.length; i++) {
+      var elem = a[i],
+      hr = elem.getAttribute('href');
+      if(hr == '/user/login'){
+          elem.href = elem.href + '?destination=/';
+        }
+  }
 	
     }
 }

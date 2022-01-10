@@ -1659,6 +1659,9 @@ span.field-content::first-letter {
   color: rgb(31, 31, 31);
 }
 
+a.btn.btn-danger.legal-decline-btn {
+  margin-left: 5px;
+  background-color: #999;
 .cust-flex-center-items {
   display: flex;
   align-items: center;

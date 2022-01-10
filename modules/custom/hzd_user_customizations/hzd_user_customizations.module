@@ -31,11 +31,108 @@ function prk($data) {
 }
 
 /**
+ * Submit handler for 'legal_admin_settings'
+ */
+function _legal_form_submit(&$form, \Drupal\Core\Form\FormStateInterface $form_state){
+    $values = $form_state->getValues();
+
+    $config = \Drupal::service('config.factory')->getEditable('legal.settings');
+
+    $messenger = \Drupal::messenger();
+    $messenger->addMessage(t('Configuration changes have been saved.'));
+
+    $config
+      ->set('legal_page_title', $values['legal_page_title'])
+      ->set('confirm_button_label', $values['confirm_button_label'])
+      ->set('reject_button_label', $values['reject_button_label'])
+      ->set('except_roles', $values['except_roles'])
+      ->set('user_profile_display', $values['user_profile_display'])
+      ->set('accept_every_login', $values['accept_every_login'])
+      ->set('legal_page_description', $values['legal_page_description'])
+      ->save();
+
+    drupal_flush_all_caches();
+
+}
+
+/**
  * implements hook_form_alter
  */
 function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+    if ($form_id == 'legal_login') {
+        $config = \Drupal::service('config.factory')->getEditable('legal.settings');
+        $confirm_button_label = $config->get('confirm_button_label') ? t($config->get('confirm_button_label')) : t('Confirm');
+        $reject_button_label = $config->get('reject_button_label') ? t($config->get('reject_button_label')) : t('Decline');
+          
+        $form['save']['#value'] = $confirm_button_label;
+	$legal_classes = $form['legal']['content']['#attributes']['class'];
+	if (in_array('legal-terms-scroll', $legal_classes)) {
+          $form['legal']['content']['#attributes']['class'][] = 'well';
+        }
+        $form['legal_decline_button'] = array(
+            '#weight' => 150,
+            '#markup' => "<a href='/user/login?destination=/' class='btn btn-danger legal-decline-btn'>$reject_button_label</a>",
+          );
+	$link_impressum = legal_impressum_link();
+        //legal_accept
+        $form['legal']['legal_accept']['#title'] = t("Ich stimme der @link zu.",  ['@link' => $link_impressum]);
+    }
+
+    if ($form_id == 'legal_admin_settings') {
+        $config = \Drupal::service('config.factory')->getEditable('legal.settings');
+
+        $role_options = user_role_names(TRUE);
+        $form['except_legal']['except_roles']['#options'] = $role_options;
+
+        $form['confirm_button_label'] = array(
+            '#type' => 'textfield', 
+            '#title' => t("Label for 'Confirm' button"),
+            // '#value' => 'abcd',
+            '#default_value' => $config->get('confirm_button_label'), 
+            '#size' => 60,           
+          );
+
+        $form['reject_button_label'] = array(
+            '#type' => 'textfield', 
+            '#title' => t("Label for 'Decline' button"),
+            // '#value' => 'abcd',
+            '#default_value' => $config->get('reject_button_label'), 
+            '#size' => 60,           
+        );
+        //legal_page_title
+        $form['legal_page_title'] = array(
+            '#type' => 'textfield', 
+            '#title' => t("Login-Legal page title"),
+            // '#value' => 'abcd',
+            '#default_value' => $config->get('legal_page_title'), 
+            '#size' => 60,           
+        );
+
+        $legal_page_description = $config->get('legal_page_description');
+        $form['legal_page_description'] = [
+            '#type' => 'text_format',
+            '#title' => t('Login - Introduction'),
+            '#format' => $legal_page_description['format'],
+            // '#description' => $this->t('Message display to customer contacts.'),
+            '#default_value' => $legal_page_description['value'],
+          ];
+
+        //   $form['actions']['edit']['#submit'][] = '_legal_form_submit';
+        $form['actions']['submit']['#submit'][] = '_legal_form_submit'; 
+
+    }
+
+    if ($form_id == 'legal_admin_terms'){
+        $form['#attached']['library'][] = 'hzd/legal-custom';
+    }
+
+
   if ($form_id == 'user_register_form' || $form_id == 'user_form') {
-    	$val = [];
+    $link_impressum = legal_impressum_link();
+    $form['legal']['legal_accept']['#title'] = t("Ich stimme der @link zu.",  ['@link' => $link_impressum]);
+    $form['field_privacy_policy']['widget']['value']['#title'] = t("Ich stimme der $link_impressum zu.");
+    unset($form['field_privacy_policy']);
+    $val = [];
 	$user_states = hzd_states();
 	asort($user_states);
 	//sort($user_states);
@@ -331,4 +428,10 @@ function hzd_group_list($uid, $no_html = false) {
     } else {
         return $val;
     }
+}
+
+function legal_impressum_link() {
+  $url_impressum = Url::fromRoute('entity.node.canonical', ['node' => PRIVACY_NID], ['attributes' => ['target' => '_blank']]);
+  //$url_impressum = Url::fromUserInput('/impressum', array('attributes' => array('target' => '_blank')));
+  return $link_impressum = Link::fromTextAndUrl(t('Datenschutzerklärung'), $url_impressum)->toString();
 }

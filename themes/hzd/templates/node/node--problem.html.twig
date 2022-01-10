@@ -89,18 +89,18 @@
     <table class='problem_info'>
 
         <tr class='even'>
-            <td class='problem_titles'> {{ 'Service'|trans }}</td>
+            <td class='problem_titles'> {{ 'Category 1'|trans }}</td>
             <td class='problem_content'>
                 {{ node.field_services.0.entity.field_problem_name.value }} </td>
         </tr>
 
         <tr class='odd'>
-            <td class='problem_titles'>{{ 'Function'|trans }}</td>
+            <td class='problem_titles'>{{ 'Category 2'|trans }}</td>
             <td class='problem_content'>{{ node.field_function.value }}</td>
         </tr>
 
         <tr class='odd'>
-            <td class='problem_titles'>{{ 'Symptoms'|trans }}</td>
+            <td class='problem_titles'>{{ 'Category 3'|trans }}</td>
             <td class='problem_content'>{{ node.field_problem_symptoms.value }}</td>
         </tr>
 
@@ -131,7 +131,7 @@
         </tr>
 
         <tr class='odd'>
-            <td class='problem_titles'>{{ 'Diagnose'|trans }}</td>
+            <td class='problem_titles'>{{ 'Cause'|trans }}</td>
             <td class='problem_content problem_content_pdf problem_content_web'>{{ node.field_diagnose.value }}</td>
         </tr>
 
@@ -184,8 +184,28 @@
         </tr>
 
         <tr class='even'>
-            <td class='problem_titles'>{{ 'SDCallID'|trans }}</td>
-            <td class='problem_content'>{{ node.field_s_no.value }}</td>
+            <td class='problem_titles'>{{ 'Proactive Creation'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_proactive_creation.value |raw }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Interface affected'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_interface_affected.value |raw }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'Unlocated Cause'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_unlocated_cause.value |raw }}</td>
+        </tr>
+
+        <tr class='odd'>
+            <td class='problem_titles'>{{ 'Part of LUEAFP'|trans }}</td>
+            <td class='problem_content' style="white-space: pre-wrap;">{{ node.field_part_of_lueafp.value |raw }}</td>
+        </tr>
+
+        <tr class='even'>
+            <td class='problem_titles'>{{ 'ProblemID'|trans }}</td>
+            <td class='problem_content'>{{ node.field_orp_nr.value }}</td>
         </tr>
 
         <tr class='odd'>

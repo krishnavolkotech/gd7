@@ -1,0 +1,15 @@
+diff --git a/modules/contrib/persistent_login/src/EventSubscriber/TokenHandler.php b/modules/contrib/persistent_login/src/EventSubscriber/TokenHandler.php
+index 944dd775a..b90e15b34 100644
+--- a/modules/contrib/persistent_login/src/EventSubscriber/TokenHandler.php
++++ b/modules/contrib/persistent_login/src/EventSubscriber/TokenHandler.php
+@@ -123,7 +123,9 @@ public function loadTokenOnRequestEvent(GetResponseEvent $event) {
+           /** @var \Drupal\User\UserInterface $user */
+           $user = $this->entityManager->getStorage('user')
+             ->load($this->token->getUid());
+-          user_login_finalize($user);
++           if(!is_legel_conditions_modified($user->id())) {
++             user_login_finalize($user);
++           }
+         }
+       }
+     }

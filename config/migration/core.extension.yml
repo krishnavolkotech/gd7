@@ -89,7 +89,6 @@ module:
   mailsystem: 0
   masquerade: 0
   mass_contact: 0
-  matomo: 0
   menu_link_clone: 0
   menu_ui: 0
   migrate: 0
@@ -141,6 +140,7 @@ module:
   reroute_email: 19
   queue_mail: 20
   hzd_release_management: 21
+  legal: 100
   standard: 1000
 theme:
   stable: 0

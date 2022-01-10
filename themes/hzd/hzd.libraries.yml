@@ -43,3 +43,9 @@ theme:
   dependencies:
     - bootstrap/drupal.bootstrap
     - bootstrap/attributes
+
+legal-custom:
+  version: 1.x
+  css:
+    base:
+      css/legal-custom.css: {}    

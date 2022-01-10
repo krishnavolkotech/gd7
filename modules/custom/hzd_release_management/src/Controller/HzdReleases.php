@@ -40,6 +40,17 @@ class HzdReleases extends ControllerBase {
     $type = 'released';
     # $output['#title'] = $this->t('@type Releases', ['@type' => 'Released']);
     $output['#title'] = $this->t('Available Releases');
+    $output['status-link'] = [
+      '#type' => 'link',
+      '#title' => ['#markup' => '<span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status'],
+      '#url' => Url::fromUri('entity:node/83516'),
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#attributes' => [
+        'target' => '_blank'
+      ],
+    ];
+
     $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
 
@@ -122,6 +133,16 @@ class HzdReleases extends ControllerBase {
     global $base_url;
     $type = 'archived';
     $output['#title'] = $this->t('Archived Releases');
+    $output['status-link'] = [
+      '#type' => 'link',
+      '#title' => ['#markup' => '<span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status'],
+      '#url' => Url::fromUri('entity:node/83516'),
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#attributes' => [
+        'target' => '_blank'
+      ],
+    ];
     $hzdReleaseManageStorage = new HzdreleasemanagementStorage();
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
 
@@ -152,6 +173,16 @@ class HzdReleases extends ControllerBase {
     $type = 'progress';
     # $output['#title'] = $this->t('@type Releases', ['@type' => 'In progress']);
     $output['#title'] = $this->t('In progress Releases');
+    $output['status-link'] = [
+      '#type' => 'link',
+      '#title' => ['#markup' => '<span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status'],
+      '#url' => Url::fromUri('entity:node/83516'),
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#attributes' => [
+        'target' => '_blank'
+      ],
+    ];
     $output[] = HzdreleasemanagementStorage::release_info($type);
     $output[] = array('#markup' => '<div id = "released_results_wrapper">');
     $output[]['#attached']['library'] = array('locale/translations',
@@ -187,6 +218,16 @@ class HzdReleases extends ControllerBase {
     $type = 'locked';
     # $output['#title'] = $this->t('@type Releases', ['@type' => 'Locked']);
     $output['#title'] = $this->t('Locked Releases');
+    $output['status-link'] = [
+      '#type' => 'link',
+      '#title' => ['#markup' => '<span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status'],
+      '#url' => Url::fromUri('entity:node/83516'),
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#attributes' => [
+        'target' => '_blank'
+      ],
+    ];
     global $base_url;
     //   $output[] = array('#markup' => '<div id = "released_results_wrapper">');
     $output[]['#attached']['library'] = array('locale/translations',

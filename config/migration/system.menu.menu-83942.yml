@@ -1,0 +1,8 @@
+uuid: 99f03160-a176-453c-a3de-f18880d5c930
+langcode: de
+status: true
+dependencies: {  }
+id: menu-83942
+label: 'Elektronischer Rechtsverkehr (ERV)'
+description: ''
+locked: false

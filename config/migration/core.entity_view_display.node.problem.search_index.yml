@@ -12,9 +12,14 @@ dependencies:
     - field.field.node.problem.field_diagnose
     - field.field.node.problem.field_eroffnet
     - field.field.node.problem.field_function
+    - field.field.node.problem.field_interface_affected
+    - field.field.node.problem.field_orp_nr
+    - field.field.node.problem.field_part_of_lueafp
     - field.field.node.problem.field_priority
+    - field.field.node.problem.field_proactive_creation
     - field.field.node.problem.field_problem_eroffnet
     - field.field.node.problem.field_problem_status
+    - field.field.node.problem.field_problem_symptoms
     - field.field.node.problem.field_processing
     - field.field.node.problem.field_release
     - field.field.node.problem.field_s_no
@@ -24,6 +29,7 @@ dependencies:
     - field.field.node.problem.field_task_force
     - field.field.node.problem.field_ticketstore_count
     - field.field.node.problem.field_ticketstore_link
+    - field.field.node.problem.field_unlocated_cause
     - field.field.node.problem.field_version
     - field.field.node.problem.field_work_around
     - field.field.node.problem.upload
@@ -164,10 +170,15 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_interface_affected: true
+  field_orp_nr: true
+  field_part_of_lueafp: true
+  field_proactive_creation: true
   field_problem_status: true
   field_problem_symptoms: true
   field_s_no: true
   field_sdcallid: true
   field_services: true
+  field_unlocated_cause: true
   langcode: true
   upload: true

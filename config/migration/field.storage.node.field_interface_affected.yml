@@ -1,0 +1,19 @@
+uuid: 0605477d-5964-4f62-9535-c54d05a44940
+langcode: de
+status: true
+dependencies:
+  module:
+    - node
+id: node.field_interface_affected
+field_name: field_interface_affected
+entity_type: node
+type: string_long
+settings:
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false
