@@ -66,34 +66,34 @@ class ResponseSubscriber implements EventSubscriberInterface {
           if ($group->getMember(\Drupal::currentUser())) {
             return;
           }
-        }
-
-        if ($group and in_array($groupType, ['open', 'moderate'])) {
-
-          // Generates Link to FAQ.
-          $link = \Drupal\Core\Link::fromTextAndUrl(
-            'FAQ',
-             \Drupal\Core\Url::fromUri('internal:/betriebsportal-konsens/faq/mitgliedschaft')
-             )->toString();
-
-          if ($groupType === 'open') {
-            $url = \Drupal\Core\Url::fromRoute('entity.group.join', ['group' => $group->id()]);
-            // 'Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
-            $message = t('Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
-          }
-
-          if ($groupType === 'moderate') {
-            $url = \Drupal\Core\Url::fromRoute('entity.group.group_request_membership', ['group' => $group->id()]);
-            // 'Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
-            $message = t('Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
-          }
-
-          $joinPath = $url->toString();
-          drupal_set_message($message, 'warning');
           
-          global $base_url;
-          header('Location: ' . $base_url . $joinPath);
-          exit;
+          if (in_array($groupType, ['open', 'moderate'])) {
+
+            // Generates Link to FAQ.
+            $link = \Drupal\Core\Link::fromTextAndUrl(
+              'FAQ',
+              \Drupal\Core\Url::fromUri('internal:/betriebsportal-konsens/faq/mitgliedschaft')
+              )->toString();
+              
+            if ($groupType === 'open') {
+              $url = \Drupal\Core\Url::fromRoute('entity.group.join', ['group' => $group->id()]);
+              // 'Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
+              $message = t('Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
+            }
+            
+            if ($groupType === 'moderate') {
+              $url = \Drupal\Core\Url::fromRoute('entity.group.group_request_membership', ['group' => $group->id()]);
+              // 'Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
+              $message = t('Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
+            }
+
+            $joinPath = $url->toString();
+            drupal_set_message($message, 'warning');
+            
+            global $base_url;
+            header('Location: ' . $base_url . $joinPath);
+            exit;
+          }
         }
       }
     }
