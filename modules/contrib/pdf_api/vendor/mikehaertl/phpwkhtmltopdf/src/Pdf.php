@@ -269,7 +269,7 @@ class Pdf
         $command->addArg($fileName, null, true);    // Always escape filename
         if (!$command->execute()) {
             $this->_error = $command->getError();
-            drupal_set_message($command->getError(), 'error');
+            \Drupal::messenger()->addError($command->getError());
             if (!(file_exists($fileName) && filesize($fileName)!==0 && $this->ignoreWarnings)) {
                 return false;
             }

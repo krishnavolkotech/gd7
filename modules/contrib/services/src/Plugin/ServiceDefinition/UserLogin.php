@@ -128,7 +128,7 @@ class UserLogin extends ServiceDefinitionBase implements ContainerFactoryPluginI
             $this->flood->clear('services.failed_login_user', $identifier);
             $this->session->start();
             user_login_finalize($account);
-            drupal_set_message(t('User succesffully logged in'), 'status', FALSE);
+            \Drupal::messenger()->addStatus(t('User succesffully logged in'));
             return [
               'id' => $this->session->getId(),
               'name' => $this->session->getName(),

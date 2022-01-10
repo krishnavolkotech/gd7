@@ -258,7 +258,8 @@ function gforum_container_groups($root_tid) {
 
     if (in_array('administrator', $roles)) {
       $txt = t('You must create a Group type before you can use Group Forum.');
-      drupal_set_message($txt, 'status');
+      //drupal_set_message($txt, 'status');
+      \Drupal::messenger()->addStatus($txt);
     }
 
     return array();
@@ -286,7 +287,8 @@ function gforum_container_groups($root_tid) {
     \Drupal::logger('my_module')->warning($txt);
 
     if (in_array('administrator', $roles)) {
-      drupal_set_message($txt, 'warning');
+      //drupal_set_message($txt, 'warning');
+      \Drupal::messenger()->addWarning($txt);
     }
     $gids = [];
   }
