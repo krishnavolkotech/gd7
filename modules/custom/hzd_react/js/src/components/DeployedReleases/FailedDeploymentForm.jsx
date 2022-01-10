@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Form, FormGroup, FormControl, ControlLabel, Checkbox, Button, Modal, OverlayTrigger, Tooltip, Radio } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Button, Modal } from 'react-bootstrap';
 import { fetchWithCSRFToken } from "../../utils/fetch";
 
 export default function FailedDeploymentForm(props) {

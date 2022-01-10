@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { FormGroup, FormControl } from 'react-bootstrap';
 
 export default function SelectPreviousRelease({ formState, setFormState, handleChange, prevReleases, isLoading, setIsLoading, disabled, index }) {
   const [releaseOptions, setReleaseOptions] = useState([<option key="select-pr-0" value="0">&lt;Release&gt;</option>]);

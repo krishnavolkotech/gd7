@@ -1,10 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react'
 import ManageDeployedReleasesTable from './ManageDeployedReleasesTable';
-import { Nav, NavItem, NavDropdown, MenuItem, Alert, Button } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { Nav, NavItem, Alert, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 import DeployedReleasesFilter from './DeployedReleasesFilter';
-import DeploymentForm from './DeploymentForm';
-import ArchiveForm from './ArchiveDeploymentForm';
 import useQuery from '../../hooks/hooks';
 import FormManager from './FormManager';
 import NodeView from './NodeView';
@@ -404,6 +402,7 @@ export default function DeploymentManager() {
       <div className="skeleton-textbody loading"></div>
       <div className="skeleton-textbody loading"></div>
       <div className="skeleton-textbody loading"></div> */}
+      <p>Dev-Build 1.0-1</p>
       <Nav bsStyle="tabs" activeKey={filterState.status} onSelect={handleNav}>
         <NavItem eventKey="1">
           Eingesetzt
@@ -474,7 +473,6 @@ export default function DeploymentManager() {
         filterState={filterState}
         handleView={handleView}
       />
-      <p>WIP v0.9</p>
     </div>
   )
 }

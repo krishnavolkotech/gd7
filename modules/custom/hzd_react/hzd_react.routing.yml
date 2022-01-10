@@ -61,7 +61,6 @@ hzd_react.archived_deployments:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.releases:
-  # path: '/group/{group}/releases/bereitgestellt'
   path: '/group/{group}/releases'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
@@ -71,7 +70,6 @@ hzd_react.releases:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 hzd_react.released:
   path: '/group/{group}/releases/bereitgestellt'
-  # path: '/group/{group}/releases'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::content'
     _title: 'Release Management'

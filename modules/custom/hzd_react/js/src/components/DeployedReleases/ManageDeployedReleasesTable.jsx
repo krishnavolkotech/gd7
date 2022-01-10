@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Table, Button, Pagination, Pager} from 'react-bootstrap';
+import {Table, Pagination, Pager} from 'react-bootstrap';
 import ManageDeployedReleasesTableRow from "./ManageDeployedReleasesTableRow";
 
 export default function ManageDeployedReleasesTable(props) {

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Button, Pagination, Pager } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 import DeployedReleasesTableRow from './DeployedReleasesTableRow';
 import SimplePager from '../SimplePager';
-import { useHistory } from 'react-router-dom';
 
 export default function DeployedReleasesTable(props) {
   const [filteredData, setFilteredData] = useState([]);

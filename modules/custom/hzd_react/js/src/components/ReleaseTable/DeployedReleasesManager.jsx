@@ -1,17 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react'
 import DeployedReleasesFilter from '../DeployedReleases/DeployedReleasesFilter'
-import { useHistory } from 'react-router-dom';
-import useQuery from '../../hooks/hooks';
 import DeployedReleasesTable from './DeployedReleasesTable';
-import { ButtonToolbar, ToggleButtonGroup, ToggleButton, Nav, NavItem } from 'react-bootstrap';
+import { Nav, NavItem } from 'react-bootstrap';
 import ReleaseLegend from './ReleaseLegend';
 
 export default function DeployedReleasesManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
-
-  /** @const {object} history - The history object (URL modifications). */
-  const history = useHistory();
 
   /** @const {bool} timeout - True triggers display of "No data found.". */
   const [timeout, setTimeout] = useState(false);

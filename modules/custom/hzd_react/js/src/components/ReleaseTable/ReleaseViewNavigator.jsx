@@ -200,6 +200,7 @@ export default function ReleaseViewNavigator() {
 
   return (
     <div>
+      <p>Dev-Build 1.0-1</p>
       <Nav bsStyle="tabs" activeKey={activeKey}>
         <NavItem eventKey="1" onSelect={handleNav}>
           Bereitgestellt
