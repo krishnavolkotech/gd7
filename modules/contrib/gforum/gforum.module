@@ -273,10 +273,10 @@ function gforum_container_groups($root_tid) {
 
   try {
     // Get the groups associated with the forum container.
-    $query = \Drupal::service('entity.query')
-      ->get('group')
-      ->condition($field, $root_tid);
-    $gids = $query->execute();
+    $storage = \Drupal::entityTypeManager()->getStorage('group');
+    $gids = $storage->getQuery()
+      ->condition($field, $root_tid)
+      ->execute();
   }
   catch (Exception $e) {
     $roles = \Drupal::currentUser()->getRoles();
@@ -287,7 +287,6 @@ function gforum_container_groups($root_tid) {
     \Drupal::logger('my_module')->warning($txt);
 
     if (in_array('administrator', $roles)) {
-      //drupal_set_message($txt, 'warning');
       \Drupal::messenger()->addWarning($txt);
     }
     $gids = [];
