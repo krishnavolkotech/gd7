@@ -4,3 +4,4 @@ description: 'Allows site admins setup custom front pages for the site.'
 package: Administration
 version: VERSION
 core: 8.x
+core_version_requirement: ^8 || ^9
