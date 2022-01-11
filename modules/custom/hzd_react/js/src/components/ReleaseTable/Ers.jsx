@@ -4,7 +4,7 @@ import ERFilter from './ERFilter';
 
 const loading = <p>Daten werden geladen. Bitte haben Sie einen Moment Geduld ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></p>;
 
-function Ers() {
+function Ers(props) {
 
    /** @const {array} eingesetzte - Array that contains all deployed releases as ob. */
   const [eingesetzte, setEingesetzte] = useState([]);
@@ -22,7 +22,7 @@ function Ers() {
   const [verfahrenGefiltert, setVerfahrenGefiltert] = useState([]);
 
   /** @const {string} typeFilter - Default value for the Type Filter is (459 = KONSENS) */
-  const [typeFilter, setTypeFilter] = useState("459");
+  const [typeFilter, setTypeFilter] = useState(props.filterState.type);
 
   /** @const {object} checkedLand - Object with an property for each Land. Default = no Land is selected in the Filter &all properties = false */
   const [checkedLand, setCheckedLand] = useState({
@@ -133,19 +133,19 @@ function Ers() {
 
   return (
     <div>
-      <h1>Eingesetzte Releases</h1>
-        <ERFilter
-          eingesetzte={eingesetzte} 
-          landFilter={landFilter} setLandFilter={setLandFilter} 
-          verfahrenFilter={verfahrenFilter} setVerfahrenFilter={setVerfahrenFilter}
-          checkedLand={checkedLand} setCheckedLand={setCheckedLand}
-          checkedServices={checkedServices} setCheckedServices={setCheckedServices}
-          show={show} setShow={setShow}
-          typeFilter={typeFilter} setTypeFilter={setTypeFilter}
-          isLoading={isLoading}
-        />
-        <p></p>
-        { isLoading ? loading : <ERTable eingesetzte={eingesetzte} landGefiltert={landGefiltert} verfahrenGefiltert={verfahrenGefiltert} /> }
+      <ERFilter
+        eingesetzte={eingesetzte} 
+        landFilter={landFilter} setLandFilter={setLandFilter} 
+        verfahrenFilter={verfahrenFilter} setVerfahrenFilter={setVerfahrenFilter}
+        checkedLand={checkedLand} setCheckedLand={setCheckedLand}
+        checkedServices={checkedServices} setCheckedServices={setCheckedServices}
+        show={show} setShow={setShow}
+        typeFilter={typeFilter} setTypeFilter={setTypeFilter}
+        isLoading={isLoading}
+        setFilterState={props.setFilterState}
+      />
+      <p></p>
+      { isLoading ? loading : <ERTable eingesetzte={eingesetzte} landGefiltert={landGefiltert} verfahrenGefiltert={verfahrenGefiltert} /> }
         
     </div>
   );

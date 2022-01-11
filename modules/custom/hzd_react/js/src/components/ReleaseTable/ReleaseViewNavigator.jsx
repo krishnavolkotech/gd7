@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Nav, NavItem } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import DeployedReleasesManager from './DeployedReleasesManager';
 import Ers from './Ers';
 import ReleaseTableManager from './ReleaseTableManager';
@@ -36,12 +36,12 @@ export default function ReleaseViewNavigator() {
     active = "7";
   }
 
+  const groupPath = history.location.pathname.split("/")[1];
   const [activeKey, setActiveKey] = useState(active);
-
   // Pagination.
   const [page, setPage] = useState(1);
 
-  const initialState = query.has("state") ? query.get("state") : global.drupalSettings.userstate;
+  const initialState = query.has("state") ? query.get("state") : "1";
 
   const initialFilterState = {
     "type": query.has("type") ? query.get("type") : "459",
@@ -90,43 +90,44 @@ export default function ReleaseViewNavigator() {
    * Implements hook useEffect().
   */
   useEffect(() => {
+    console.log("Filterstate HOOK")
     let pathname = history.location.pathname;
-    let explodedPath = pathname.split("/");
-    if (explodedPath.length === 3) {
-      // If path ends on ".../releases", push.
-      explodedPath.push("bereitgestellt");
-    }
-    else {
-      explodedPath[explodedPath.length - 1] = "bereitgestellt";
-    }
+    // let explodedPath = pathname.split("/");
+    // if (explodedPath.length === 3) {
+    //   // If path ends on ".../releases", push.
+    //   explodedPath.push("bereitgestellt");
+    // }
+    // else {
+    //   explodedPath[explodedPath.length - 1] = "bereitgestellt";
+    // }
 
-    switch (activeKey) {
-      case "1":
-        explodedPath[explodedPath.length - 1] = "bereitgestellt";
-        break;
-      case "2":
-        explodedPath[explodedPath.length - 1] = "in-bearbeitung";
-        break;
-      case "3":
-        explodedPath[explodedPath.length - 1] = "gesperrt";
-        break;
-      case "5":
-        explodedPath[explodedPath.length - 1] = "archiviert";
-        break;
-      case "4":
-        explodedPath[explodedPath.length - 1] = "eingesetzt";
-        break;
-      case "6":
-        explodedPath[explodedPath.length - 1] = "eingesetzt-uebersicht";
-        break;
-      case "7":
-        explodedPath[explodedPath.length - 1] = "einsatzinformationen";
-        break;
-      default:
-        explodedPath[explodedPath.length - 1] = "bereitgestellt";
-        break;
-    }
-    pathname = explodedPath.join("/");
+    // switch (activeKey) {
+    //   case "1":
+    //     explodedPath[explodedPath.length - 1] = "bereitgestellt";
+    //     break;
+    //   case "2":
+    //     explodedPath[explodedPath.length - 1] = "in-bearbeitung";
+    //     break;
+    //   case "3":
+    //     explodedPath[explodedPath.length - 1] = "gesperrt";
+    //     break;
+    //   case "5":
+    //     explodedPath[explodedPath.length - 1] = "archiviert";
+    //     break;
+    //   case "4":
+    //     explodedPath[explodedPath.length - 1] = "eingesetzt";
+    //     break;
+    //   case "6":
+    //     explodedPath[explodedPath.length - 1] = "eingesetzt-uebersicht";
+    //     break;
+    //   case "7":
+    //     explodedPath[explodedPath.length - 1] = "einsatzinformationen";
+    //     break;
+    //   default:
+    //     explodedPath[explodedPath.length - 1] = "bereitgestellt";
+    //     break;
+    // }
+    // pathname = explodedPath.join("/");
 
     // Change URL Params. 
     const params = new URLSearchParams();
@@ -172,7 +173,7 @@ export default function ReleaseViewNavigator() {
     }
 
     history.push({
-      pathname: pathname,
+      // pathname: pathname,
       search: params.toString(),
     });
 
@@ -185,7 +186,50 @@ export default function ReleaseViewNavigator() {
 
     // Reset Pagination.
     setPage(1);
-  }, [filterState, activeKey]);
+  }, [filterState.type, filterState.state, filterState.environment, filterState.service, filterState.product, filterState.release, filterState.deploymentStatus]);
+
+  useEffect(() => {
+    console.log("Pathname HOOK")
+    let active = "1";
+    if (history.location.pathname.indexOf('bereitgestellt') > 0) {
+      active = "1";
+    }
+    if (history.location.pathname.indexOf('in-bearbeitung') > 0) {
+      active = "2";
+    }
+    if (history.location.pathname.indexOf('gesperrt') > 0) {
+      active = "3";
+    }
+    if (history.location.pathname.indexOf('eingesetzt') > 0) {
+      active = "4";
+    }
+    if (history.location.pathname.indexOf('archiviert') > 0) {
+      active = "5";
+    }
+    if (history.location.pathname.indexOf('eingesetzt-uebersicht') > 0) {
+      active = "6";
+    }
+    if (history.location.pathname.indexOf('einsatzinformationen') > 0) {
+      active = "7";
+    }
+    setActiveKey(active);
+
+    let val = {};
+    val["items_per_page"] = "20";
+    if (["1", "2", "3", "5"].includes(active)) {
+      val["releaseStatus"] = active;
+    }
+    // val["type"] = query.has("type") ? query.get("type") : "459";
+    // val["state"] = query.has("state") ? query.get("state") : "1";
+    // val["environment"] = query.has("environment") ? query.get("environment") : "0";
+    // val["service"] = query.has("service") ? query.get("service") : "0";
+    // val["product"] = query.has("product") ? query.get("product") : "";
+    // val["release"] = query.has("release") ? query.get("release") : "0";
+    // val["deploymentStatus"] = query.has("deploymentStatus") ? query.get("deploymentStatus") : "1";
+    setFilterState(prev => ({ ...prev, ...val }));
+    // Reset Pagination.
+    setPage(1);
+  }, [history.location.pathname])
 
   // Changes active tab and sets releaseStatus accordingly.
   const handleNav = (k) => {
@@ -201,12 +245,23 @@ export default function ReleaseViewNavigator() {
   return (
     <div>
       <p>Dev-Build 1.0-1</p>
-      <Nav bsStyle="tabs" activeKey={activeKey}>
+      <ul className="nav nav-tabs">
+        <li className={activeKey==="1" ? "active" : ""}><Link to={"/" + groupPath + "/releases/bereitgestellt?" + query.toString()}>Bereitgestellt</Link></li>
+        <li className={activeKey==="2" ? "active" : ""}><Link to={"/" + groupPath + "/releases/in-bearbeitung?" + query.toString()}>In Bearbeitung</Link></li>
+        <li className={activeKey==="3" ? "active" : ""}><Link to={"/" + groupPath + "/releases/gesperrt?" + query.toString()}>Gesperrt</Link></li>
+        {["ZRMK", "SITE-ADMIN"].includes(global.drupalSettings.role) && 
+          <li className={activeKey==="5" ? "active" : ""}><Link to={"/" + groupPath + "/releases/archiviert?" + query.toString()}>Archiviert</Link></li>
+        }
+        <li className={activeKey==="4" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt?" + query.toString()}>Eingesetzt</Link></li>
+        <li className={activeKey==="6" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt-uebersicht?" + query.toString()}>Eingesetzt(Übersicht)</Link></li>
+        <li className={activeKey==="7" ? "active" : ""}><Link to={"/" + groupPath + "/releases/einsatzinformationen?" + query.toString()}>Einsatzinformationen</Link></li>
+      </ul>
+      {/* <Nav bsStyle="tabs" activeKey={activeKey}>
         <NavItem eventKey="1" onSelect={handleNav}>
           Bereitgestellt
         </NavItem>
         <NavItem eventKey="2" onSelect={handleNav}>
-          In Bearbeitung
+          <Link to="/release-management/releases/in-bearbeitung">In Bearbeitung</Link>
         </NavItem>
         <NavItem eventKey="3" onSelect={handleNav}>
           Gesperrt
@@ -225,7 +280,7 @@ export default function ReleaseViewNavigator() {
         <NavItem eventKey="7" onSelect={handleNav}>
           Einsatzinformationen
         </NavItem>
-      </Nav>
+      </Nav> */}
       { ["1", "2", "3", "5"].includes(activeKey) &&
         <ReleaseTableManager
           filterState={filterState}
@@ -256,7 +311,10 @@ export default function ReleaseViewNavigator() {
         />
       }
       { activeKey == "6" &&
-        <Ers />
+        <Ers
+          filterState={filterState}
+          setFilterState={setFilterState}
+        />
       }
     </div>
   );

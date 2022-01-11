@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Row, Col, FormGroup, FormControl, Button, Modal, Checkbox, Glyphicon} from 'react-bootstrap';
 
-function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFilter, checkedLand, setCheckedLand, typeFilter, setTypeFilter, setCheckedServices, show, setShow, isLoading}) {
+function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFilter, checkedLand, setCheckedLand, typeFilter, setTypeFilter, setCheckedServices, show, setShow, isLoading, setFilterState}) {
 
   var ids2 = [];
   ids2[2] = ['Baden-Württemberg (BW)'];
@@ -65,6 +65,9 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
 
   function handleTypeSelect(event) {
     setTypeFilter(event.target.value);
+    let val = {};
+    val["type"] = event.target.value;
+    setFilterState(prev => ({ ...prev, ...val }));
     handleReset();
   }
 
@@ -121,7 +124,7 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
 
       {!isLoading && 
       <Row bsClass="reset_form">
-        <Button bsStyle="primary" bsClass="js-form-submit form-submit btn-default btn" bsSize="large" onClick={handleShow}> 
+        <Button bsStyle="primary" onClick={handleShow}>
           <Glyphicon glyph="glyphicon glyphicon-wrench" />
           &nbsp;Anzeige konfigurieren
         </Button> 
@@ -152,7 +155,7 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
               {optionsKurz2.map((verfahren) =>  <Checkbox bsClass="form-item js-form-item form-type-checkbox js-form-type-checkbox form-item-states-2 js-form-item-states-2 checkbox" checked={verfahrenFilter.includes(verfahren)} value={verfahren} onClick={handleSelectVerfahren}> {verfahren} </Checkbox >)}
             </div>
             <Row>
-              <Button bsClass="select" colspan="3"  type="button" onClick={handleReset} >Zurücksetzen</Button>
+              <Button bsStyle="danger" colspan="3"  type="button" onClick={handleReset} >Zurücksetzen</Button>
             </Row>
           </form>
         </Modal.Body>
