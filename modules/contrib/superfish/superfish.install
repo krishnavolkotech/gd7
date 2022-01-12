@@ -12,9 +12,9 @@ use Drupal\Core\Language\Language;
  */
 function superfish_install() {
   if (superfish_library_check()){
-    drupal_set_message(t('In order to use Superfish, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@block' => 'structure/block')));
+    \Drupal::messenger()->addStatus(t('In order to use Superfish, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@block' => 'structure/block')));
   } else {
-    drupal_set_message(t('Superfish library is missing. Please refer to the <a href="@documentation">plugin documentation</a> for how you can fix this issue; Once done, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@documentation' => 'http://drupal.org/node/1125896', '@block' => 'structure/block')), 'warning');
+    \Drupal::messenger()->addStatus(t('Superfish library is missing. Please refer to the <a href="@documentation">plugin documentation</a> for how you can fix this issue; Once done, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@documentation' => 'http://drupal.org/node/1125896', '@block' => 'structure/block')), 'warning');
   }
 }
 

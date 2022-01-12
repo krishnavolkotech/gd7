@@ -40,7 +40,7 @@ class UserLogout extends ServiceDefinitionBase  {
    */
   public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
     user_logout();
-    drupal_set_message(t('User succesffully logged out'), 'status', FALSE);
+    \Drupal::messenger()->addStatus(t('User succesffully logged out'));
     return [];
   }
 

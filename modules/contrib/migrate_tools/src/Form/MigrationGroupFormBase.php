@@ -170,11 +170,11 @@ class MigrationGroupFormBase extends EntityForm {
 
     if ($status == SAVED_UPDATED) {
       // If we edited an existing entity...
-      drupal_set_message($this->t('Migration group %label has been updated.', array('%label' => $migration_group->label())));
+      \Drupal::messenger()->addStatus($this->t('Migration group %label has been updated.', array('%label' => $migration_group->label())));
     }
     else {
       // If we created a new entity...
-      drupal_set_message($this->t('Migration group %label has been added.', array('%label' => $migration_group->label())));
+      \Drupal::messenger()->addStatus($this->t('Migration group %label has been added.', array('%label' => $migration_group->label())));
     }
 
     // Redirect the user back to the listing route after the save operation.

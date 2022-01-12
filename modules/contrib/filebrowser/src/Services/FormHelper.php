@@ -68,6 +68,7 @@ class FormHelper extends ControllerBase {
     $link_options = [
       'attributes' => [
         'class' => [
+          'disabled',
           'use-ajax',
           'button',
           'btn',
@@ -93,6 +94,7 @@ class FormHelper extends ControllerBase {
       '#name' => $action['operation'],
       '#title' => $action['title'],
       '#attributes' => [
+        'disabled' => True,
         'class' => [
           'use-ajax-submit',
         ],
@@ -116,6 +118,9 @@ class FormHelper extends ControllerBase {
       '#value' => $action['title'],
       '#name' => $action['operation'],
       '#title' => $action['title'],
+      '#attributes' => [
+        'disabled' => True,
+      ],
     ];
   }
 

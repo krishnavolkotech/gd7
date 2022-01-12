@@ -124,12 +124,12 @@ class ServiceEndpointForm extends EntityForm {
     $status = $service_endpoint->save();
 
     if ($status) {
-      drupal_set_message($this->t('Saved the %label service endpoint.', array(
+      \Drupal::messenger()->addStatus($this->t('Saved the %label service endpoint.', array(
         '%label' => $service_endpoint->label(),
       )));
     }
     else {
-      drupal_set_message($this->t('The %label service endpoint was not saved.', array(
+      \Drupal::messenger()->addStatus($this->t('The %label service endpoint was not saved.', array(
         '%label' => $service_endpoint->label(),
       )));
     }
