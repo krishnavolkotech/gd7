@@ -67,6 +67,9 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
     setTypeFilter(event.target.value);
     let val = {};
     val["type"] = event.target.value;
+    val["service"] = "0";
+    val["release"] = "0";
+    val["product"] = "";
     setFilterState(prev => ({ ...prev, ...val }));
     handleReset();
   }

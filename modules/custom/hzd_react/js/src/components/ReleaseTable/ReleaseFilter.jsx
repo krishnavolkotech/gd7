@@ -20,6 +20,7 @@ export default function ReleaseFilter(props) {
     if (e.target.name == "type") {
       val["service"] = "0";
       val["release"] = "0";
+      val["product"] = "";
       setReleaseOptions(defaultReleaseOption);
     }
     if (e.target.name == "service") {

@@ -93,15 +93,23 @@ export default function DeployedReleasesManager(props) {
     // console.log(services);
     if (props.filterState.service === "0") {
       // Add group-contextual service filter, if no service is selected.
-      const services = Object.keys(global.drupalSettings.services[props.filterState.type]);
-      if (services.length > 0) {
-        url += '/';
-        for (let key of services) {
-          // Adds each service as contextual parameter.
-          url += key + ','
+      if (props.filterState.type in global.drupalSettings.services) {
+        const services = Object.keys(global.drupalSettings.services[props.filterState.type]);
+        if (services.length > 0) {
+          url += '/';
+          for (let key of services) {
+            // Adds each service as contextual parameter.
+            url += key + ','
+          }
+          // Removes final comma.
+          url = url.slice(0, -1);
         }
-        // Removes final comma.
-        url = url.slice(0, -1);
+      }
+      else {
+        // Must be wrong type for group.
+        setData([]);
+        setTimeout(true);
+        return;
       }
     }
     // Status-Filter

@@ -79,7 +79,7 @@ export default function ReleaseRow(props) {
       <td className="earlywarnings-cell inprogress-comment-cell">{comments}</td>
       }
       {props.filterState.releaseStatus !== "3" &&
-      <td className="earlywarnings-cell inprogress-comment-cell">{actions}</td>
+      <td>{actions}</td>
       }
       { props.filterState.releaseStatus === "3" &&
       <td className="earlywarnings-cell inprogress-comment-cell">{comment}</td>

@@ -13,6 +13,7 @@ use Drupal\jsonapi_hypermedia\Plugin\LinkProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\cust_group\Controller\AccessController;
 
 /**
  * Adds an link to early warnings for releases.
@@ -88,8 +89,6 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
   public function getLink($context) {
     assert($context instanceof JsonApiDocumentTopLevel);
 
-    // @todo Use "is_authenticated" variable.
-    $is_authenticated = $this->currentUser->isAuthenticated();
     /*
       nids?? early_warnings:
       "field_earlywarning_release": 9834,
@@ -128,8 +127,8 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
 
     // For debugging purposes only. Doesn't seem to work.
     // $link_cacheability->setCacheMaxAge(1);
-    // @todo Restrict access to role "release comments" and group admins rm.
-    return AccessRestrictedLink::createLink(AccessResult::allowed(), $link_cacheability, $url, $this->getLinkRelationType(), [
+
+    return AccessRestrictedLink::createLink(AccessController::groupRWCommentsAccess(RELEASE_MANAGEMENT), $link_cacheability, $url, $this->getLinkRelationType(), [
       'releaseComments' => $releaseComments,
       'releaseCommentCount' => count($releaseComments),
     ]);

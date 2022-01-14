@@ -90,7 +90,6 @@ export default function ReleaseViewNavigator() {
    * Implements hook useEffect().
   */
   useEffect(() => {
-    console.log("Filterstate HOOK")
     let pathname = history.location.pathname;
     // let explodedPath = pathname.split("/");
     // if (explodedPath.length === 3) {
@@ -189,7 +188,6 @@ export default function ReleaseViewNavigator() {
   }, [filterState.type, filterState.state, filterState.environment, filterState.service, filterState.product, filterState.release, filterState.deploymentStatus]);
 
   useEffect(() => {
-    console.log("Pathname HOOK")
     let active = "1";
     if (history.location.pathname.indexOf('bereitgestellt') > 0) {
       active = "1";
@@ -244,7 +242,7 @@ export default function ReleaseViewNavigator() {
 
   return (
     <div>
-      <p>Build 0.9</p>
+      <p>Build 0.10</p>
       <ul className="nav nav-tabs">
         <li className={activeKey==="1" ? "active" : ""}><Link to={"/" + groupPath + "/releases/bereitgestellt?" + query.toString()}>Bereitgestellt</Link></li>
         <li className={activeKey==="2" ? "active" : ""}><Link to={"/" + groupPath + "/releases/in-bearbeitung?" + query.toString()}>In Bearbeitung</Link></li>

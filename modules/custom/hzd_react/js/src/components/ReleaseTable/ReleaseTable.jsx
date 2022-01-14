@@ -8,7 +8,7 @@ export default function ReleaseTable(props) {
 
   return (
     <div>
-      <Table className="releases">
+      <Table className="releases released">
         <thead>
           <tr>
             <th>Verfahren</th>
