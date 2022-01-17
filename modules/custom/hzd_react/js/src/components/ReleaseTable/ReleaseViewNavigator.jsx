@@ -242,7 +242,7 @@ export default function ReleaseViewNavigator() {
 
   return (
     <div>
-      <p>Build 0.10</p>
+      <p>Build 0.11</p>
       <ul className="nav nav-tabs">
         <li className={activeKey==="1" ? "active" : ""}><Link to={"/" + groupPath + "/releases/bereitgestellt?" + query.toString()}>Bereitgestellt</Link></li>
         <li className={activeKey==="2" ? "active" : ""}><Link to={"/" + groupPath + "/releases/in-bearbeitung?" + query.toString()}>In Bearbeitung</Link></li>

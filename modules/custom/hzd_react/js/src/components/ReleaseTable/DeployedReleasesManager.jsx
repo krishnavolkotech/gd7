@@ -276,6 +276,7 @@ export default function DeployedReleasesManager(props) {
         loadingReleasesSpinner={loadingReleasesSpinner}
       />
       <ReleaseLegend activeKey={props.activeKey} />
+      <small>Releases, die sich nicht länger im Einsatz befinden, werden <i>kursiv</i> dargestellt.</small>
       <DeployedReleasesTable
         data={data}
         timeout={timeout}
