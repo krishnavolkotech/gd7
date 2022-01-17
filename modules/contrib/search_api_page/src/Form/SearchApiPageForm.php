@@ -278,13 +278,13 @@ class SearchApiPageForm extends EntityForm {
         // the edit form again.
         if ($form_state->getValue('index') == $form_state->getValue('previous_index')) {
           $form_state->setRedirectUrl($search_api_page->toUrl('collection'));
-          drupal_set_message($this->t('Saved the %label Search page.', [
+          \Drupal::messenger()->addStatus($this->t('Saved the %label Search page.', [
             '%label' => $search_api_page->label(),
           ]));
         }
         else {
           $form_state->setRedirectUrl($search_api_page->toUrl('edit-form'));
-          drupal_set_message($this->t('Updated the index for the %label Search page.', [
+          \Drupal::messenger()->addStatus($this->t('Updated the index for the %label Search page.', [
             '%label' => $search_api_page->label(),
           ]));
         }

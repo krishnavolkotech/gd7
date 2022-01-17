@@ -12,7 +12,7 @@ use Drupal\views\ViewExecutable;
 use Drupal\file\Entity\File;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\Core\Link;
+use Drupal\Core\Link;	
 use Drupal\Component\Utility\Html;
 use Drupal\hzd_services\HzdservicesStorage;
 use Drupal\Component\Datetime\DateTimePlus;
@@ -1029,7 +1029,6 @@ function hzd_customizations_node_update(EntityInterface $entity) {
         'extras'     => serialize([ "extras-1" => "", "extras-2" => "", "extras-3" => "", "extras-4" => "", "extras-5" => "", "extras-6" => "", "extras-7" => "", "extras-8" => "", "extras-9" => "", "extras-10" => ""]),
         'changes'    => '',
       ])->save();
-
   }
   
   //Whenever a new news node is updated assign it to bpk group if not already.
@@ -1562,3 +1561,65 @@ function hzd_customizations_form_views_exposed_form_alter(&$form, $form_state, $
   }
 }
 
+function is_legel_conditions_modified($uid) {
+   $account = \Drupal\user\Entity\User::load($uid);
+
+  // Skip T&Cs for user 1 or user with exempt role.
+  $exempt = legal_user_is_exempt($account);
+
+  if ($exempt) {
+    return FALSE;
+  }
+
+  $settings = \Drupal::config('legal.settings');
+
+  // Get last accepted version for this account.
+  $uid           = $account->get('uid')->getString();
+  $legal_account = legal_get_accept($uid);
+
+  // If no version accepted, get version with current language revision.
+  $language = \Drupal::languageManager()->getCurrentLanguage();
+
+  if (empty($legal_account['version'])) {
+
+    $conditions = legal_get_conditions($language->getId());
+
+    // No conditions set yet, skip T&Cs.
+    if (empty($conditions['conditions'])) {
+      return FALSE;
+    }
+
+  }
+  else {
+    // Get version / revision of last accepted language.
+    $conditions = legal_get_conditions($legal_account['language']);
+
+    // No conditions set yet, skip T&Cs.
+    if (empty($conditions['conditions'])) {
+       return FALSE;
+    }
+
+    // Check latest version of T&C has been accepted.
+    $accepted = legal_version_check($uid, $conditions['version'], $conditions['revision'], $legal_account);
+
+    // User has accepted latest T&C.
+    if ($accepted) {
+
+      if ($settings->get('accept_every_login') == 0) {
+         return FALSE;
+      }
+      else {
+
+        $request        = \Drupal::request();
+        $session        = $request->getSession();
+        $newly_accepted = $session->get('legal_login', FALSE);
+
+        if ($newly_accepted) {
+          return FALSE;
+        }
+
+      }
+    }
+  }
+  return TRUE;
+}	

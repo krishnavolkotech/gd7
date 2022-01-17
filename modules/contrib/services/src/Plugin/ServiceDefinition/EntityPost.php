@@ -44,7 +44,7 @@ class EntityPost extends ServiceDefinitionEntityRequestContentBase {
       try {
         $entity->save();
         if ($entity->id()) {
-          drupal_set_message($this->t("Entity of type @type was created.", ['@type' => $entity->getEntityType()->id()]));
+          \Drupal::messenger()->addStatus($this->t("Entity of type @type was created.", ['@type' => $entity->getEntityType()->id()]));
           return $entity->toArray();
         }
       }

@@ -345,7 +345,7 @@ function hzd_preprocess_node(&$variables) {
   if ($variables['node']->getType() == 'quickinfo' && !$variables['node']->isPublished() && $viewMode == 'full') {
 
     $url = URL::fromRoute('entity.node.edit_form', array('node' => $variables['node']->Id()));
-    $link =  Link::fromTextAndUrl('Edit', $url)->toString();
+    $link =  Link::fromTextAndUrl(t('Edit'), $url)->toString();
     $urldata = '<span class="user-group-list">' . $link . '</span>';
     //$urldata = '<span class="user-group-list">' . \Drupal::l(t('Edit'), $url) . '</span>';
     $variables['quickinfo_unpublished_edit_link'] = array('#markup' => $urldata);
@@ -705,8 +705,7 @@ function hzd_preprocess_breadcrumb(&$variables) {
   if($breadcount_cout > 1) {
     if (!is_array($variables['breadcrumb'][$breadcount_cout - 1]['text'])) {
       $variables['breadcrumb'][$breadcount_cout - 1]['text'] =
-  Markup::create(htmlspecialchars_decode($variables['breadcrumb'][$breadcount_cout
-  - 1]['text']));
+  Markup::create(htmlspecialchars_decode($variables['breadcrumb'][$breadcount_cout- 1]['text']));
     }
   }
   // This breadcrumb will apply only for our view at /group/24/address

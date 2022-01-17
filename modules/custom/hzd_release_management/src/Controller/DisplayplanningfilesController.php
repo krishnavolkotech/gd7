@@ -46,7 +46,7 @@ class DisplayplanningfilesController extends ControllerBase {
       }
 
       $edit_url = Url::fromRoute('entity.node.edit_form', ['node' => $nid]);
-      $edit_link = Link::fromTextAndUrl(t('Edit'), $url);
+      $edit_link = Link::fromTextAndUrl(t('Edit'), $edit_url);
 
       $delete_url = Url::fromRoute('entity.node.delete_form', ['node' => $nid]);
       $delete_link = Link::fromTextAndUrl(t('Delete'), $delete_url);
