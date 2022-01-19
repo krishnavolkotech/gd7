@@ -108,9 +108,9 @@ class ReactController extends ControllerBase {
     $database = \Drupal::database();
 
     // Environments.
-    $query = \Drupal::service('entity.query');
-    $result = $query->get('node')
-    ->condition('type', 'non_production_environment')
+    // $query = \Drupal::service('entity.query');
+    $query = $this->entityTypeManager->getStorage('node')->getQuery();
+    $result = $query->condition('type', 'non_production_environment')
     ->execute();
     
     $environments = [
@@ -180,8 +180,9 @@ class ReactController extends ControllerBase {
     $database = \Drupal::database();
     // Get environments(0.0579s).
     $startTime = microtime(true);
-    $query = \Drupal::service('entity.query');
-    $result = $query->get('node')
+    // $query = \Drupal::service('entity.query');
+    $query = $this->entityTypeManager->getStorage('node')->getQuery();
+    $result = $query->condition('type', 'non_production_environment')
     ->condition('type', 'non_production_environment')
     ->execute();
     
@@ -204,14 +205,14 @@ class ReactController extends ControllerBase {
     $serviceUuids = [];
 
     foreach ($serviceTypes as $value) {
-      $serviceQuery = $database->query("SELECT {n}.uuid, {n}.nid, {nfd}.title
-        FROM {node n}
-        JOIN {node_field_data nfd} ON {nfd}.nid={n}.nid
-        JOIN {group_releases_view grv} ON {grv}.service_id={n}.nid
-        JOIN {node__release_type nrt} ON {nrt}.entity_id={n}.nid
-        WHERE {grv}.group_id=:gid
-        AND {nrt}.release_type_target_id=:tid
-        ORDER BY {nfd}.title ASC", [
+      $serviceQuery = $database->query("SELECT n.uuid, n.nid, nfd.title
+        FROM {node} n
+        JOIN {node_field_data} nfd ON nfd.nid=n.nid
+        JOIN {group_releases_view} grv ON grv.service_id=n.nid
+        JOIN {node__release_type} nrt ON nrt.entity_id=n.nid
+        WHERE grv.group_id=:gid
+        AND nrt.release_type_target_id=:tid
+        ORDER BY nfd.title ASC", [
           ":gid" => 1,
           ":tid" => $value,
         ]

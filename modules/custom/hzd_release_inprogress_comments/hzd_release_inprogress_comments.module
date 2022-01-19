@@ -68,15 +68,15 @@ function hzd_release_inprogress_comments_node_insert(\Drupal\Core\Entity\EntityI
 /**
  * Implements hook_form_alter().
  * 
- * Alters the early_warnings_mit_ref view filter form elements.
+ * Alters the release_kommentare_ref view filter form elements.
  */
 function hzd_release_inprogress_comments_form_views_exposed_form_alter(array &$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   $view = $form_state->getStorage('view');
   if (($view['view']->id() == 'release_kommentare_ref') && ($view['view']->current_display == 'page_1')) {
     $releaseType = \Drupal::request()->query->get('release_type') ?: 459;
-    $query = \Drupal::service('entity.query');
+    $query = \Drupal::entityQuery('node');
     // Service query.
-    $result = $query->get('node')
+    $result = $query
       ->condition('type', 'services')
       ->condition('release_type' , $releaseType)
       ->condition('field_release_name', '', '!=')

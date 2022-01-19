@@ -1671,11 +1671,7 @@ a.btn.btn-danger.legal-decline-btn {
 
 .messages__wrapper p {
     display: inline !important;
-
-      /* <div className="skeleton-header"></div>
-      <div className="skeleton-select"></div>
-      <div className="skeleton-textbody"></div>
-      <div className="skeleton-table"></div> */
+}
 
 .skeleton-header {
   background-color: #eaeaea;

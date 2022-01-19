@@ -12,6 +12,7 @@ use Drupal\jsonapi_hypermedia\AccessRestrictedLink;
 use Drupal\jsonapi_hypermedia\Plugin\LinkProviderBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
+use Drupal\Core\Entity\EntityTypeManager;
 
 /**
  * Adds an link to early warnings for releases.
@@ -37,11 +38,11 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
   protected $currentUser;
 
   /**
-   * Drupal\Core\Entity\Query\QueryFactory definition.
+   * The entity type manager.
    *
-   * @var Drupal\Core\Entity\Query\QueryFactory
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
-  protected $entityQuery;
+  protected $entityTypeManager;
 
   /**
    * {@inheritdoc}
@@ -49,19 +50,19 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $provider = new static($configuration, $plugin_id, $plugin_definition);
     $provider->setCurrentUser($container->get('current_user'));
-    $provider->setEntityQuery($container->get('entity.query'));
+    $provider->setEntityTypeManager($container->get('entity_type.manager'));
 
     return $provider;
   }
 
   /**
-   * Sets the Interface for entity queries.
+   * Sets the entityTypeManager.
    *
-   * @param \Drupal\Core\Entity\Query\QueryFactory $entityQuery
-   *   The current account.
+   * @param \Drupal\Core\Entity\EntityTypeManager $entityTypeManager
+   *   The entityTypeManager.
    */
-  public function setEntityQuery(QueryFactory $entityQuery) {
-    $this->entityQuery = $entityQuery;
+  public function setEntityTypeManager(EntityTypeManager $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -99,7 +100,7 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
     $releaseNid = $context->getField("drupal_internal__nid")->value;
 
     // Use nid of the release to find associated Early Warnings.
-    $releaseComments = $this->entityQuery->get('node')
+    $releaseComments = $this->entityTypeManager->getStorage('node')->getQuery()
       ->condition('status', 1)
       ->condition('type', 'release_comments')
       ->condition('field_release_ref', $releaseNid)
@@ -127,7 +128,7 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
 
     // For debugging purposes only. Doesn't seem to work.
     // $link_cacheability->setCacheMaxAge(1);
-
+    // @todo Restrict access to role "release comments" and group admins rm.
     return AccessRestrictedLink::createLink(AccessResult::allowed(), $link_cacheability, $url, $this->getLinkRelationType(), [
       'releaseComments' => $releaseComments,
       'releaseCommentCount' => count($releaseComments),

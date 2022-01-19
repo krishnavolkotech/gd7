@@ -114,9 +114,11 @@ function hzd_earlywarnings_form_views_exposed_form_alter(array &$form, \Drupal\C
   $view = $form_state->getStorage('view');
   if (($view['view']->id() == 'early_warnings_mit_ref') && ($view['view']->current_display == 'page_1')) {
     $releaseType = \Drupal::request()->query->get('release_type') ?: 459;
-    $query = \Drupal::service('entity.query');
+    // Service "entity.query" is deprecated in drupal 9.
+    // $query = \Drupal::service('entity.query');
+    $query = \Drupal::entityQuery('node');
     // Service query.
-    $result = $query->get('node')
+    $result = $query
       ->condition('type', 'services')
       ->condition('release_type' , $releaseType)
       ->condition('field_release_name', '', '!=')
@@ -145,7 +147,7 @@ function hzd_earlywarnings_form_views_exposed_form_alter(array &$form, \Drupal\C
     $selectedService = \Drupal::request()->query->get('services') ?: FALSE;
     if ($selectedService) {
       // Release query.
-      $result = $query->get('node')
+      $result = $query
         ->condition('type', 'release')
         ->condition('field_relese_services', $selectedService)
         ->execute();

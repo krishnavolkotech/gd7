@@ -97,6 +97,5 @@ class ResponseSubscriber implements EventSubscriberInterface {
         }
       }
     }
-    }
   }
 }
