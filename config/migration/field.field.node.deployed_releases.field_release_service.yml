@@ -11,9 +11,9 @@ id: node.deployed_releases.field_release_service
 field_name: field_release_service
 entity_type: node
 bundle: deployed_releases
-label: Verfahren
+label: ALT_Verfahren
 description: ''
-required: true
+required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''

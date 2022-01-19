@@ -9,7 +9,7 @@ id: node.deployed_releases.field_installation_time
 field_name: field_installation_time
 entity_type: node
 bundle: deployed_releases
-label: 'Installationsdauer (Minuten)'
+label: Installationsdauer
 description: ''
 required: false
 translatable: true
@@ -19,5 +19,5 @@ settings:
   min: 0
   max: 59999
   prefix: ''
-  suffix: Minuten
+  suffix: min
 field_type: integer

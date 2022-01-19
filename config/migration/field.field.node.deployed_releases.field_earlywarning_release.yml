@@ -11,9 +11,9 @@ id: node.deployed_releases.field_earlywarning_release
 field_name: field_earlywarning_release
 entity_type: node
 bundle: deployed_releases
-label: Releases
+label: ALT_Releases
 description: ''
-required: true
+required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''

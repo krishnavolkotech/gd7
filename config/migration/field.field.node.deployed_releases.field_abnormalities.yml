@@ -11,7 +11,7 @@ id: node.deployed_releases.field_abnormalities
 field_name: field_abnormalities
 entity_type: node
 bundle: deployed_releases
-label: 'Auffälligkeiten (Veraltet)'
+label: ALT_Auffälligkeiten
 description: ''
 required: false
 translatable: true
