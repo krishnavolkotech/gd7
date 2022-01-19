@@ -584,7 +584,7 @@ $inprogress_nid_values = [];
 
               $dokument_zip = explode("/", $field_documentation_link_value);
               $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
-              $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+              $root_path = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
               $zip_version_path = $root_path . "/releases/downloads/" . $title . "_doku.zip";
               if (!empty($dokument_zip_file_name)) {
                 if (file_exists($zip_version_path)) {
@@ -792,7 +792,7 @@ $inprogress_nid_values = [];
       if (!empty($download_directory[2])) {
         shell_exec("unzip " . $paths . "/" . $compressed_file . " -d " . $paths);
         shell_exec("convmv -f latin1 -t utf8 -r --notest " . $paths);
-        $zip_root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+        $zip_root_path = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
         $zip_lowcaps = strtolower($compressed_file);
         shell_exec("rm -rf " . $paths . "/" . $compressed_file);
 
