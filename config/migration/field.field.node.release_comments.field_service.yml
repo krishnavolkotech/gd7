@@ -10,7 +10,7 @@ id: node.release_comments.field_service
 field_name: field_service
 entity_type: node
 bundle: release_comments
-label: 'Verfahren Ref'
+label: Verfahren
 description: ''
 required: true
 translatable: false
@@ -22,7 +22,7 @@ settings:
     target_bundles:
       services: services
     sort:
-      field: field_eroffnet
+      field: _none
       direction: ASC
     auto_create: false
     auto_create_bundle: ''

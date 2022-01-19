@@ -10,7 +10,7 @@ id: node.release_comments.field_release_ref
 field_name: field_release_ref
 entity_type: node
 bundle: release_comments
-label: 'Release Ref'
+label: Release
 description: ''
 required: true
 translatable: false
@@ -22,7 +22,7 @@ settings:
     target_bundles:
       release: release
     sort:
-      field: field_eroffnet
+      field: _none
       direction: ASC
     auto_create: false
     auto_create_bundle: ''
