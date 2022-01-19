@@ -17,7 +17,6 @@ dependencies:
     - field.storage.node.field_service
     - field.storage.node.field_state_list
     - node.type.deployed_releases
-    - system.menu.primary-links
     - taxonomy.vocabulary.release_type
   module:
     - datetime
@@ -1802,10 +1801,12 @@ display:
     position: 1
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config: {  }
       path: page/einsatzmeldungen2
       menu:
-        type: normal
+        type: none
         title: 'REST Einsatzmeldungen erweitert'
         description: ''
         expanded: false
