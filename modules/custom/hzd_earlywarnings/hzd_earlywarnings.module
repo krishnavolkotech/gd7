@@ -146,6 +146,7 @@ function hzd_earlywarnings_form_views_exposed_form_alter(array &$form, \Drupal\C
 
     $selectedService = \Drupal::request()->query->get('services') ?: FALSE;
     if ($selectedService) {
+      $query = \Drupal::entityQuery('node');
       // Release query.
       $result = $query
         ->condition('type', 'release')

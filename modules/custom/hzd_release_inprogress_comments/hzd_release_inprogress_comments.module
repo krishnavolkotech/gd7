@@ -105,7 +105,8 @@ function hzd_release_inprogress_comments_form_views_exposed_form_alter(array &$f
     $selectedService = \Drupal::request()->query->get('services') ?: FALSE;
     if ($selectedService) {
       // Release query.
-      $result = $query->get('node')
+      $query = \Drupal::entityQuery('node');
+      $result = $query
         ->condition('type', 'release')
         ->condition('field_relese_services', $selectedService)
         ->execute();
