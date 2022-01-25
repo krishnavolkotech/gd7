@@ -12,6 +12,7 @@ dependencies:
     - field.storage.node.field_state_list
     - node.type.deployed_releases
     - taxonomy.vocabulary.release_type
+    - user.role.authenticated
   module:
     - datetime
     - node
@@ -35,9 +36,10 @@ display:
     position: 0
     display_options:
       access:
-        type: perm
+        type: role
         options:
-          perm: 'create deployed_releases content'
+          role:
+            authenticated: authenticated
       cache:
         type: tag
         options: {  }
@@ -1239,21 +1241,6 @@ display:
             group_items: {  }
           plugin_id: numeric
       sorts:
-        changed:
-          id: changed
-          table: node_field_data
-          field: changed
-          relationship: none
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: false
-          expose:
-            label: ''
-          granularity: second
-          entity_type: node
-          entity_field: changed
-          plugin_id: date
         field_date_deployed_value:
           id: field_date_deployed_value
           table: node__field_date_deployed
@@ -1356,7 +1343,7 @@ display:
         - 'url.query_args:sort_order'
         - user
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:field.storage.node.field_date_deployed'
         - 'config:field.storage.node.field_deployed_release'
@@ -1395,7 +1382,7 @@ display:
         - 'url.query_args:sort_order'
         - user
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:field.storage.node.field_date_deployed'
         - 'config:field.storage.node.field_deployed_release'
@@ -1410,7 +1397,9 @@ display:
     position: 2
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config: {  }
       path: api/v1/deployments
       style:
         type: serializer
@@ -1494,7 +1483,7 @@ display:
         - 'url.query_args:sort_order'
         - user
         - 'user.node_grants:view'
-        - user.permissions
+        - user.roles
       tags:
         - 'config:field.storage.node.field_date_deployed'
         - 'config:field.storage.node.field_deployed_release'
