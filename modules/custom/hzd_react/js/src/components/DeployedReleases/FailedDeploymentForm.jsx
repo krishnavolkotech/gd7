@@ -28,7 +28,7 @@ export default function FailedDeploymentForm(props) {
       }
     }
     const csrfUrl = `/session/token?_format=json`;
-    const fetchUrl = '/jsonapi/node/deployed_releases/' + props.prevDeploymentData.uuidDeployment;
+    const fetchUrl = '/jd7kfn9dm32ni/node/deployed_releases/' + props.prevDeploymentData.uuidDeployment;
     const fetchOptions = {
       "method": 'PATCH',
       "headers": new Headers({

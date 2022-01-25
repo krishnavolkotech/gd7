@@ -192,7 +192,7 @@ export default function FormManager(props) {
   }, [props.triggerAction])
 
   const fetchDeployment = (uuid) => {
-    const url = '/jsonapi/node/deployed_releases/'
+    const url = '/jd7kfn9dm32ni/node/deployed_releases/'
       + uuid
       +'?include=field_deployed_release,field_prev_release,field_service&fields[node--release]=id,drupal_internal__nid,title&fields[node--services]=drupal_internal__nid';
     const headers = new Headers({
@@ -588,7 +588,7 @@ export default function FormManager(props) {
       postData["data"]["relationships"] = { ...postData["data"]["relationships"], "field_prev_release": { "data": field_prev_release} };
     }
     
-    let fetchUrl = "/jsonapi/node/deployed_releases";
+    let fetchUrl = "/jd7kfn9dm32ni/node/deployed_releases";
     let method = "POST";
 
     if (formState.action == "edit") {
@@ -665,7 +665,7 @@ export default function FormManager(props) {
         const attributes = {"attributes": {"field_deployment_status": "2"}};
         archiveBody["data"] = { ...archiveBody["data"], ...attributes };
       }
-      fetchUrl = '/jsonapi/node/deployed_releases/' + p.uuidDeployment;
+      fetchUrl = '/jd7kfn9dm32ni/node/deployed_releases/' + p.uuidDeployment;
       fetchOptions = {
         method: 'PATCH',
         headers: new Headers({

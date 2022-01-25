@@ -90,7 +90,7 @@ export default function DeploymentForm(props) {
   // let environmentsArray = Object.entries(environments);
   // let optionsEnvironments = environmentsArray.map(environment => <option value={environment[0]}>{environment[1]}</option>);
   useEffect(() => {
-    let url = '/jsonapi/node/non_production_environment';
+    let url = '/jd7kfn9dm32ni/node/non_production_environment';
     url += '?fields[node--non_production_environment]=drupal_internal__nid,field_non_production_state,title';
     url += '&filter[field_non_production_state]=' + props.formState.state;
     const headers = new Headers({

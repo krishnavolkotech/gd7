@@ -41,7 +41,7 @@ export default function ReleaseTableManager(props) {
    * Fetch the releases for the release table.
    */
   function fetchReleases(counter = 0) {
-    let url = '/jsonapi/node/release';
+    let url = '/jd7kfn9dm32ni/node/release';
     url += '?sort=' + props.filterState.releaseSortOrder + props.filterState.releaseSortBy;
     url += '&include=field_relese_services';
 

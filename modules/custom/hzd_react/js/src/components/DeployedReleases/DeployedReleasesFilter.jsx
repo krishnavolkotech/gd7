@@ -44,7 +44,7 @@ export default function DeployedReleasesFilter(props) {
   }
 
   useEffect(() => {
-    let url = '/jsonapi/node/non_production_environment';
+    let url = '/jd7kfn9dm32ni/node/non_production_environment';
     url += '?fields[node--non_production_environment]=drupal_internal__nid,field_non_production_state,title';
     url += '&filter[field_non_production_state]=' + props.filterState.state;
     const headers = new Headers({

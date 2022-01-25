@@ -62,7 +62,7 @@ function FilterableReleaseTable() {
   }
 
   const fetchData = () => {
-    const fetchUrl = '/jsonapi/node/release';
+    const fetchUrl = '/jd7kfn9dm32ni/node/release';
     const defaultFilter = '?include=field_relese_services,field_relese_services.release_type&page[limit]=20&sort[sort-date][path]=field_date&sort[sort-date][direction]=DESC';
     // Always apply default filter.
     let url = fetchUrl + defaultFilter;
@@ -164,7 +164,7 @@ function FilterableReleaseTable() {
     
   // fetchData() {
   //   var dataArray = [];
-  //   fetch('/jsonapi/node/business_service_release')
+  //   fetch('/jd7kfn9dm32ni/node/business_service_release')
   //     .then(response => response.json())
   //     .then(results => this.setState({ data: results.data }))
   //     // .then(results.map(result => {
