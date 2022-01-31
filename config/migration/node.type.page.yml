@@ -22,8 +22,6 @@ third_party_settings:
       - menu-8454
       - menu-927
       - menu-32768
-      - menu-23176
-      - devel
       - menu-28451
       - menu-23639
       - menu-18770
@@ -37,6 +35,7 @@ third_party_settings:
       - menu-928
       - menu-8452
       - menu-39300
+      - menu-23176
       - menu-24124
       - menu-825
       - menu-339
@@ -56,5 +55,5 @@ type: page
 description: 'Eine Seite ist am besten für statische Inhalte, die sich nicht häufig ändern, geeignet.'
 help: ''
 new_revision: true
-preview_mode: 0
+preview_mode: 1
 display_submitted: false
