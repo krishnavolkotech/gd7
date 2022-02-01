@@ -87,14 +87,7 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
    */
   public function getLink($context) {
     assert($context instanceof JsonApiDocumentTopLevel);
-
-    // @todo Use "is_authenticated" variable.
-    $is_authenticated = $this->currentUser->isAuthenticated();
-    /*
-      nids?? early_warnings:
-      "field_earlywarning_release": 9834,
-      "field_release_service": 1166 
-    */
+    $access = $this->currentUser->isAuthenticated() ? AccessResult::allowed() : AccessResult::forbidden();
 
     // Nid of the release.
     $releaseNid = $context->getField("drupal_internal__nid")->value;
@@ -116,7 +109,6 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
     //     "release_type" => 459,
     //   ],
     // ];
-    // $view_earlywarning_url = Url::fromRoute('hzd_earlywarnings.view_early_warnings', array('group' => 1), $viewOptions);
     $url = Url::fromRoute('view.early_warnings_mit_ref.page_1',[],['query' => [
       'services' => $serviceNid,
       'releases' => $releaseNid,
@@ -124,10 +116,6 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
 
     // Provide cacheability.
     $link_cacheability = new CacheableMetadata();
-    $link_cacheability->addCacheContexts(['session.exists', 'user.roles:anonymous']);
-
-    // For debugging purposes only. Doesn't seem to work.
-    // $link_cacheability->setCacheMaxAge(1);
 
     if (count($earlyWarnings) == 0) {
       return AccessRestrictedLink::createInaccessibleLink($link_cacheability);

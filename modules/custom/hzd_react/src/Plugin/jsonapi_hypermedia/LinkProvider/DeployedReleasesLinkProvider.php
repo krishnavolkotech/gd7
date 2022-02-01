@@ -84,14 +84,7 @@ final class DeployedReleasesLinkProvider extends LinkProviderBase implements Con
    */
   public function getLink($context) {
     assert($context instanceof JsonApiDocumentTopLevel);
-
-    // @todo Use "is_authenticated" variable.
-    $is_authenticated = $this->currentUser->isAuthenticated();
-    /*
-      nids?? early_warnings:
-      "field_earlywarning_release": 9834,
-      "field_release_service": 1166 
-    */
+    $access = $this->currentUser->isAuthenticated() ? AccessResult::allowed() : AccessResult::forbidden();
 
     // Nid of the release.
     $releaseNid = $context->getField("drupal_internal__nid")->value;
@@ -104,21 +97,6 @@ final class DeployedReleasesLinkProvider extends LinkProviderBase implements Con
       ->condition('field_deployed_release', $releaseNid)
       ->execute();
 
-    
-    $deployed_imgpath = drupal_get_path('module', 'hzd_release_management') . '/images/e-icon.png';
-    $deployed_img = "<img title='Einsatzinformationen anzeigen' class = 'e-info-icon' src = '/" . $deployed_imgpath . "'>";
-
-    $groupId = RELEASE_MANAGEMENT;
-    // $options = \Drupal::request()->query->all();
-    // $options['services'] = $releases->field_relese_services->target_id;
-    // $options['releases'] = $releases->id();
-    // unset($options['form_id']);
-    // unset($options['form_build_id']);
-    // unset($options['page']);
-
-    // $url = Url::fromRoute('hzd_release_management.deployedinfo', array('group' => $groupId), [
-    //     'query' => $options
-    // ]);
     $serviceNid = $context->getField("field_relese_services")->entity->id();
 
     $url = Url::fromUri('base:/release-management/releases/einsatzinformationen',['query' => [
@@ -130,16 +108,12 @@ final class DeployedReleasesLinkProvider extends LinkProviderBase implements Con
 
     // Provide cacheability.
     $link_cacheability = new CacheableMetadata();
-    $link_cacheability->addCacheContexts(['session.exists', 'user.roles:anonymous']);
-
-    // For debugging purposes only. Doesn't seem to work.
-    // $link_cacheabili ty->setCacheMaxAge(1);
 
     if (count($deployedReleases) == 0) {
       return AccessRestrictedLink::createInaccessibleLink($link_cacheability);
     }
 
-    return AccessRestrictedLink::createLink(AccessResult::allowed(), $link_cacheability, $url, $this->getLinkRelationType(), [
+    return AccessRestrictedLink::createLink($access, $link_cacheability, $url, $this->getLinkRelationType(), [
       'deployedReleases' => $deployedReleases,
       'deployedReleasesCount' => count($deployedReleases),
     ]);

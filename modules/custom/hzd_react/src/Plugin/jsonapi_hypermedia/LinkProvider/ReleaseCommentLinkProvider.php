@@ -14,6 +14,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\cust_group\Controller\AccessController;
+use Drupal\group\Entity\Group;
+use Drupal\user\UserData;
 
 /**
  * Adds an link to early warnings for releases.
@@ -46,12 +48,20 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
   protected $entityTypeManager;
 
   /**
+   * The user data service.
+   *
+   * @var \Drupal\user\UserData
+   */
+  protected $userData;
+
+  /**
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     $provider = new static($configuration, $plugin_id, $plugin_definition);
     $provider->setCurrentUser($container->get('current_user'));
     $provider->setEntityTypeManager($container->get('entity_type.manager'));
+    $provider->setUserData($container->get('user.data'));
 
     return $provider;
   }
@@ -77,6 +87,16 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
   }
 
   /**
+   * Sets the user data service.
+   *
+   * @param \Drupal\user\UserData $userData
+   *   The user data service.
+   */
+  public function setUserData(UserData $userData) {
+    $this->userData = $userData;
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getLinkRelationType() {
@@ -89,11 +109,27 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
   public function getLink($context) {
     assert($context instanceof JsonApiDocumentTopLevel);
 
-    /*
-      nids?? early_warnings:
-      "field_earlywarning_release": 9834,
-      "field_release_service": 1166 
-    */
+    $link_cacheability = new CacheableMetadata();
+    $link_cacheability->addCacheContexts(['user.release_comments_permissions']);
+
+    $authorized = FALSE;
+    $group = Group::load(RELEASE_MANAGEMENT);
+    $groupMember = $group->getMember($this->currentUser);
+    if (array_intersect(['site_administrator', 'administrator'], $this->currentUser->getRoles())) {
+      $authorized = TRUE;
+    }
+    $roles = $groupMember->getRoles();
+    if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
+      $authorized = TRUE;
+    }
+    $rw_comments_permission = $this->userData->get('cust_group', $this->currentUser->id(), 'rw_comments_permission');
+    if ($rw_comments_permission) {
+      $authorized = TRUE;
+    }
+
+    if ($authorized === FALSE) {
+      return AccessRestrictedLink::createInaccessibleLink($link_cacheability);
+    }
 
     // Nid of the release.
     $releaseNid = $context->getField("drupal_internal__nid")->value;
@@ -107,26 +143,10 @@ final class ReleaseCommentLinkProvider extends LinkProviderBase implements Conta
     
     $serviceNid = $context->getField("field_relese_services")->entity->id();
 
-    // @todo Identify correct release type (459 = KONSENS, 460 = Best/Fakt)
-    // $viewOptions = [
-    //   "query" => [
-    //     "services" => $serviceNid,
-    //     "releases" => $releaseNid,
-    //     "release_type" => 459,
-    //   ],
-    // ];
-    // $view_earlywarning_url = Url::fromRoute('hzd_releaseComments.view_early_warnings', array('group' => 1), $viewOptions);
     $url = Url::fromRoute('view.release_kommentare_ref.page_1',[],['query' => [
       'services' => $serviceNid,
       'releases' => $releaseNid,
     ]]);
-
-    // Provide cacheability.
-    $link_cacheability = new CacheableMetadata();
-    $link_cacheability->addCacheContexts(['session.exists', 'user.roles:anonymous']);
-
-    // For debugging purposes only. Doesn't seem to work.
-    // $link_cacheability->setCacheMaxAge(1);
 
     return AccessRestrictedLink::createLink(AccessController::groupRWCommentsAccess(RELEASE_MANAGEMENT), $link_cacheability, $url, $this->getLinkRelationType(), [
       'releaseComments' => $releaseComments,
