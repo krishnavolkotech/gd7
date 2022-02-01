@@ -31,7 +31,7 @@ class ResourceTypeBuildEventSubscriber implements EventSubscriberInterface {
   public function disableResourceType(ResourceTypeBuildEvent $event) {
     $enabledResources = [
       'node--release',
-      'node--deployed_release',
+      'node--deployed_releases',
       'node--services',
       'node--non_production_environment',
     ];
