@@ -1115,7 +1115,7 @@ class ViewExecutable {
         $substitutions["{{ arguments.$id }}"] = $arg_title;
         // Since argument validator plugins can potentially transform the value,
         // use whatever value the argument handler now has, not the raw value.
-        $substitutions["{{ raw_arguments.$id }}"] = strip_tags(Html::decodeEntities($argument->getValue()));
+        $substitutions["{{ raw_arguments.$id }}"] = !is_array($argument->getValue())?strip_tags(Html::decodeEntities($argument->getValue())):'';
 
         // Test to see if we should use this argument's title
         if (!empty($argument->options['title_enable']) && !empty($argument->options['title'])) {
@@ -1842,6 +1842,7 @@ class ViewExecutable {
     if ($this->initStyle()) {
       $title = $this->style_plugin->tokenizeValue($title, 0);
     }
+
     return $title;
   }
 

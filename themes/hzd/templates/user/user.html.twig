@@ -1,0 +1,38 @@
+{#
+/**
+ * @file
+ * Default theme implementation to present all user data.
+ *
+ * This template is used when viewing a registered user's page,
+ * e.g., example.com/user/123. 123 being the user's ID.
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ *   print a subset such as 'content.field_example'. Fields attached to a user
+ *   such as 'user_picture' are available as 'content.user_picture'.
+ * - attributes: HTML attributes for the container element.
+ * - user: A Drupal User entity.
+ *
+ * @see template_preprocess_user()
+ *
+ * @ingroup themeable
+ */
+#}
+<article{{ attributes }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+  {% if show_legal_info %}
+    <div class="legal-accept-wrapper">
+      <div class="legal-version-changed">
+        <span class="legal-version-changed-label"><strong>Legal version last updated:</strong></span>
+        <span class="legal-version-changed-value">{{ legal_last_changed }}</span>
+      </div>
+
+      <div class="legal-accept">
+        <span class="legal-accept-label"><strong>Zeit der Annahme:</strong></span>
+        <span class="legal-accept-value">{{ legal_accepted_accepted }}</span>
+      </div>
+    </div>
+  {% endif %}
+</article>
