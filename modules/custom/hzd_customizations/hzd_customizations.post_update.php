@@ -63,6 +63,17 @@ function hzd_customizations_post_update_problems_1(&$sandbox) {
 
 /**
  * Deployed Releases post update 1.
+ * 
+ * Sets the following new fields:
+ *  - field_deployment_status
+ *  - field_abnormalities_bool
+ *  - field_automated_deployment_bool
+ *  - field_installation_time
+ *  - field_deployed_release
+ *  - field_service
+ *  - field_prev_release
+ *  - field_first_deployment
+ *  - field_state_list
  */
 function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
 
@@ -162,7 +173,7 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
 
     // Creates new revision.
     $node->setNewRevision(TRUE);
-    $node->revision_log = 'Update der Einsatzmeldung.';
+    $node->revision_log = 'Feldaktualisierung.';
     $node->setRevisionCreationTime(REQUEST_TIME);
     $node->setRevisionUserId(1);
 
@@ -170,10 +181,6 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
   }
 
   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
-
-  // if ($sandbox['current_id'] == $sandbox['final_id']) {
-  //   $sandbox['#finished'] = 1;
-  // }
 
   // To display a message to the user when the update is completed, return it.
   // If you do not want to display a completion message, return nothing.
@@ -224,6 +231,13 @@ function hzd_customizations_post_update_early_warnings_1(&$sandbox) {
 
     $sandbox['progress']++;
     $sandbox['current_id'] = $result;
+
+    // Creates new revision.
+    $node->setNewRevision(TRUE);
+    $node->revision_log = 'Feldaktualisierung.';
+    $node->setRevisionCreationTime(REQUEST_TIME);
+    $node->setRevisionUserId(1);
+
     $node->save();
   }
 
@@ -277,6 +291,13 @@ function hzd_customizations_post_update_release_comments_1(&$sandbox) {
 
     $sandbox['progress']++;
     $sandbox['current_id'] = $result;
+
+    // Creates new revision.
+    $node->setNewRevision(TRUE);
+    $node->revision_log = 'Feldaktualisierung.';
+    $node->setRevisionCreationTime(REQUEST_TIME);
+    $node->setRevisionUserId(1);
+
     $node->save();
   }
 
@@ -286,94 +307,3 @@ function hzd_customizations_post_update_release_comments_1(&$sandbox) {
   // If you do not want to display a completion message, return nothing.
   return $sandbox['progress'] . ' Release Kommentare wurden aktualisiert.';
 }
-
-/**
- * Deployed Releases post update 2.
- * 
- * Fills new field "field_first_deployment".
- */
-// function hzd_customizations_post_update_deployed_releases_2(&$sandbox) {
-//   $entityTypeManager = \Drupal::entityTypeManager();
-//   if (!isset($sandbox['progress'])) {
-//    $query = \Drupal::entityQuery('node');
-//    $query->condition('type', 'deployed_releases');
-//    $entityIds = $query->execute();
-
-//     // This must be the first run. Initialize the sandbox.
-//     $sandbox['progress'] = 0;
-//     $sandbox['current_id'] = 0;
-//     $sandbox['max'] = count($entityIds);
-//   }
-
-//   $query = \Drupal::entityQuery('node')
-//     ->condition('type', 'deployed_releases')
-//     ->condition('nid', $sandbox['current_id'], '>')
-//     ->sort('nid', 'ASC')
-//     ->range(0, 100);
-//   $results = $query->execute();
-
-//   foreach ($results as $result) {
-//     $node = $entityTypeManager->getStorage('node')->load($result);
-
-//     // Identify first deployment status from field_previous_release.
-//     $previousReleaseId = $node->field_previous_release->value;
-//     if ($previousReleaseId && $previousReleaseId > 0) {
-//       $node->set('field_first_deployment', 0);
-//     }
-//     else {
-//       $node->set('field_first_deployment', 1);
-//     }
-//     $sandbox['progress']++;
-//     $sandbox['current_id'] = $result;
-//     $node->save();
-//   }
-
-//   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
-
-//   return $sandbox['progress'] . ' Einsatzmeldungen wurden aktualisiert.';
-// }
-
-/** Deployed Releases post update 3.
- * 
- * Fills new field "field_state_list".
- *
- *  */
-
-// function hzd_customizations_post_update_deployed_releases_3(&$sandbox) {
-//   $entityTypeManager = \Drupal::entityTypeManager();
-//   if (!isset($sandbox['progress'])) {
-//    $query = \Drupal::entityQuery('node');
-//    $query->condition('type', 'deployed_releases');
-//    $entityIds = $query->execute();
-
-//     // This must be the first run. Initialize the sandbox.
-//     $sandbox['progress'] = 0;
-//     $sandbox['current_id'] = 0;
-//     $sandbox['max'] = count($entityIds);
-//   }
-
-//   $query = \Drupal::entityQuery('node')
-//     ->condition('type', 'deployed_releases')
-//     ->condition('nid', $sandbox['current_id'], '>')
-//     ->sort('nid', 'ASC')
-//     ->range(0, 100);
-//   $results = $query->execute();
-
-//   foreach ($results as $result) {
-//     $node = $entityTypeManager->getStorage('node')->load($result);
-
-//     // Convert field_user_state to field_state_list.
-//     $olduserStateId = $node->field_user_state->value;
-//       if ($olduserStateId) {
-//         $node->set('field_state_list', $olduserStateId);
-//       }
-
-//     $sandbox['progress']++;
-//     $sandbox['current_id'] = $result;
-//     $node->save();
-//   }
-
-//   $sandbox['#finished'] = empty($sandbox['max']) ? 1 : $sandbox['progress'] / $sandbox['max'];
-
-//   return $sandbox['progress'] . ' Einsatzmeldungen wurden aktualisiert.';
-// }
