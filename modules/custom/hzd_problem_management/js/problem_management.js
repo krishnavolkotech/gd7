@@ -108,9 +108,11 @@
 //          }, 'json');
 //          return false;
 //        });
-      });
-      var nid = drupalSettings.problem_management.nid;
-      if (typeof nid !== "undefined") {
+	});
+
+	
+      var nid = typeof drupalSettings.problem_management !== "undefined"? drupalSettings.problem_management.nid:'';
+      if (typeof nid !== "undefined" && nid != '') {
         window.location.href = drupalSettings.problem_management.basePath + '/node/' + nid;
       } 
     }

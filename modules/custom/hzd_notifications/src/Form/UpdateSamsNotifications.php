@@ -132,6 +132,6 @@ class UpdateSamsNotifications extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_set_message('Fehler: Daten konnten nicht gespeichert werden. Bitte probieren Sie es erneut.', 'error');
+    \Drupal::messenger()->addMessage('Fehler: Daten konnten nicht gespeichert werden. Bitte probieren Sie es erneut.', 'error');
   }
 }

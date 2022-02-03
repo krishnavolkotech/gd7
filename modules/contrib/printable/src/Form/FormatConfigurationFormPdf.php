@@ -71,7 +71,7 @@ class FormatConfigurationFormPdf extends FormBase {
       );
     }
     else {
-      drupal_set_message($this->t('You are seeing no PDF generating tool because you have not installed any third party library using composer.'));
+      \Drupal::messenger()->addStatus($this->t('You are seeing no PDF generating tool because you have not installed any third party library using composer.'));
     }
     if ($mpdf_present) {
       $form['settings']['print_pdf_pdf_tool']['#options'] += array('mPDF' => 'mPDF');

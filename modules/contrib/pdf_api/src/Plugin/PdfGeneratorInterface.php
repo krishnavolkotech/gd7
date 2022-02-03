@@ -134,4 +134,28 @@ interface PdfGeneratorInterface {
    */
   public function setFooter($html);
 
+  /**
+   * Get stderr from the command that was run.
+   *
+   * @param string $string
+   *   The output sent to stderr.
+   */
+  public function getStderr();
+
+  /**
+   * Get stdout from the command that was run.
+   *
+   * @param string $html
+   *   The text to be rendered as footer.
+   */
+  public function getStdout();
+
+  /**
+   * Display error messages.
+   *
+   * @return boolean
+   *   Whether any errors occurred and were not ignored.
+   */
+  public function displayErrors();
+
 }

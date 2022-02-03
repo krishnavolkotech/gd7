@@ -40,7 +40,7 @@ class ReleaseFilterForm extends FormBase
         $release_type = $filter_value['release_type'];
         if (!$release_type) {
             if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-                $default_type = db_query("SELECT release_type FROM {default_release_type} "
+                $default_type = \Drupal::database()->query("SELECT release_type FROM {default_release_type} "
                     . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
                 $default_type = (isset($default_type) ? $default_type : KONSONS);
             } else {
@@ -50,7 +50,7 @@ class ReleaseFilterForm extends FormBase
             $default_type = $release_type;
         }
         
-        $services_obj = db_query("SELECT n.title, n.nid
+        $services_obj = \Drupal::database()->query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -67,7 +67,7 @@ class ReleaseFilterForm extends FormBase
         }
         
         $container = \Drupal::getContainer();
-        $terms = $container->get('entity.manager')
+        $terms = $container->get('entity_type.manager')
             ->getStorage('taxonomy_term')->loadTree('release_type');
         // $tempstore = \Drupal::service('user.private_tempstore')->get('hzd_release_management');
         // $group_id = $tempstore->get('Group_id');.
@@ -368,7 +368,10 @@ class ReleaseFilterForm extends FormBase
             '#value' => t('Reset'),
             '#weight' => 100,
             '#validate' => array(),
-            '#attributes' => array('onclick' => 'reset_form_elements();return false;'),
+            '#attributes' => array(
+	        'onclick' => 'reset_form_elements();return false;',
+		'class'=> ['button','btn-default','btn']
+	    ),
             '#prefix' => '<div class = "reset_form">',
             '#suffix' => '</div><div style = "clear:both"></div>',
         );

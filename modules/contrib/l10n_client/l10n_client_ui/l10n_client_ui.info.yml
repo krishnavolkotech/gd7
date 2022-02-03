@@ -3,6 +3,7 @@ description: 'On-page tool for easier interface translation.'
 type: module
 # Disabled for now.
 # core: 9.x
+core_version_requirement: ^8 || ^9
 configure: l01n_client_ui.settings
 dependencies:
   - locale

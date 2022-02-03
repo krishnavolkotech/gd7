@@ -35,7 +35,8 @@ class HeaderLinks extends BlockBase {
     $output = "<div class = 'field--name-body'>";
     if (\Drupal::currentUser()->id()) {
       $uid = \Drupal::currentUser()->id();
-      $name = db_select('cust_profile', 'c');
+
+      $name = \Drupal::database()->select('cust_profile', 'c');
       $name->addExpression("CONCAT(c.firstname, ' ', c.lastname)", 'full_name');
       $name->condition('c.uid', $uid, '=');
       $results = $name->execute()->fetchField();

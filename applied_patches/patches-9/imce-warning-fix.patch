@@ -1,0 +1,13 @@
+diff --git a/modules/contrib/imce/src/ImceFM.php b/modules/contrib/imce/src/ImceFM.php
+index 5aef3996e..6b22ede3a 100644
+--- a/modules/contrib/imce/src/ImceFM.php
++++ b/modules/contrib/imce/src/ImceFM.php
+@@ -459,7 +459,7 @@ public function removePathFromJs($path) {
+    */
+   public function getFileProperties($uri) {
+     $properties = ['date' => filemtime($uri), 'size' => filesize($uri)];
+-    if (preg_match('/\.(jpe?g|png|gif)$/i', $uri) && $info = getimagesize($uri)) {
++    if (preg_match('/\.(jpe?g|png|gif)$/i', $uri) && $info = @getimagesize($uri)) {
+       $properties['width'] = $info[0];
+       $properties['height'] = $info[1];
+       $style = $this->getThumbnailStyle();

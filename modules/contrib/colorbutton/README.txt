@@ -20,3 +20,7 @@ Follow these steps to make sure the plugin works for Basic HTML text format:
 1. Drag the button from the toolbar to the active items
 2. Make sure you add the style attribute to span tag from the list of allowed
 html tags, see example what you need to add - "<span style>".
+
+Note: Both buttons are using inline CSS styles to style the content, so they
+will work only in text formats where HTML Filter ("Limit allowed HTML tags")
+is not enabled.

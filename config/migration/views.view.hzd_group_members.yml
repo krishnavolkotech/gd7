@@ -1133,7 +1133,7 @@ display:
           exclude: false
           alter:
             alter_text: true
-            text: '{{ group_roles }}{% if comment_release_status %}{% if group_roles %}, {% endif %}{{ comment_release_status }} {% endif %}'
+            text: "{{ group_roles }}\r\n{{ comment_release_status }}"
             make_link: false
             path: ''
             absolute: false
@@ -1553,7 +1553,7 @@ display:
           group_type: group
           admin_label: ''
           label: Aktionen
-          exclude: true
+          exclude: false
           alter:
             alter_text: false
             text: ''
@@ -1621,7 +1621,7 @@ display:
           group_type: group
           admin_label: ''
           label: Aktionen
-          exclude: false
+          exclude: true
           alter:
             alter_text: true
             text: '{{dropbutton}}'

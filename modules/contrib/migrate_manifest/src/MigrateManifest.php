@@ -4,6 +4,8 @@ namespace Drupal\migrate_manifest;
 
 use Drupal\Core\Database\Database;
 use Drupal\migrate\Plugin\MigrationInterface;
+use Drush\Drush;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\Yaml\Yaml;
 
@@ -25,6 +27,11 @@ class MigrateManifest {
   protected $manager;
 
   /**
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * Constructs a new MigrateManifest object.
    *
    * @param $migration_manager
@@ -33,10 +40,11 @@ class MigrateManifest {
    * @param bool $update
    *   Update previously imported items with current data.
    */
-  public function __construct($migration_manager, $force = FALSE, $update = FALSE) {
+  public function __construct($migration_manager, LoggerInterface $logger, $force = FALSE, $update = FALSE) {
     $this->force = $force;
     $this->update = $update;
     $this->manager = $migration_manager;
+    $this->logger = $logger;
   }
 
   /**
@@ -64,7 +72,7 @@ class MigrateManifest {
         // The info will be stored underneath that key as another array.
         // Any other info is just dropped. It can't be mapped and doesn't match
         // our expected input.
-        $migration_info[key($migration_info)] = current($manifest_row);
+        $migration_info[key($manifest_row)] = current($manifest_row);
       }
       else {
         // If it wasn't an array then the info is just the migration_id.
@@ -122,9 +130,8 @@ class MigrateManifest {
 
     // Warn the user if any migrations were not found.
     if (count($nonexistent_migrations) > 0) {
-      drush_log(dt('The following migrations were not found: @migrations', [
-        '@migrations' => implode(', ', $nonexistent_migrations),
-      ]), 'warning');
+      $this->logger->warning(dt('The following migrations were not found: @migrations', [
+        '@migrations' => implode(',', $nonexistent_migrations)]));
     }
 
     return $run_migrations;
@@ -140,7 +147,7 @@ class MigrateManifest {
    */
   protected function injectDependencies(MigrationInterface $migration, array $manifest_list) {
     $migrations = [$migration->id() => $migration];
-    if ($required_ids = $migration->get('requirements')) {
+    if ($required_ids = $migration->getRequirements()) {
       /** @var \Drupal\migrate\Plugin\MigrationPluginManager $manager */
       $manager = \Drupal::service('plugin.manager.migration');
       /** @var \Drupal\migrate\Plugin\MigrationInterface[] $required_migrations */
@@ -180,8 +187,8 @@ class MigrateManifest {
    */
   protected function executeMigration(MigrationInterface $migration) {
     $run_migration = unserialize(serialize($migration));
-    drush_log('Running ' . $run_migration->id(), 'ok');
-    $executable = new MigrateExecutable($run_migration, new DrushLogMigrateMessage());
+    $this->logger->notice(dt('Running @id', ['@id' => $run_migration->id()]));
+    $executable = new MigrateExecutable($run_migration, new DrushLogMigrateMessage($this->logger));
     // drush_op() provides --simulate support.
 
     return drush_op([$executable, 'import']);
@@ -192,8 +199,8 @@ class MigrateManifest {
    */
   public static function setDbState($db_key, $db_url, $db_prefix) {
     if ($db_key) {
-      $database_state['key'] = drush_get_option('legacy-db-key');
-      $database_state_key = 'default';
+      $database_state['key'] = $db_key;
+      $database_state_key = 'migrate_fallback_key';
       \Drupal::state()->set($database_state_key, $database_state);
       \Drupal::state()->set('migrate.fallback_state_key', $database_state_key);
     }

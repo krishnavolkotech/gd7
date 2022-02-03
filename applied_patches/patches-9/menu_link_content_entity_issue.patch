@@ -1,0 +1,13 @@
+diff --git a/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php b/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php
+index 68ddd94f5..c955b25b8 100644
+--- a/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php
++++ b/core/modules/menu_link_content/src/Plugin/Menu/MenuLinkContent.php
+@@ -134,7 +134,7 @@ public static function create(ContainerInterface $container, array $configuratio
+    * @throws \Drupal\Component\Plugin\Exception\PluginException
+    *   If the entity ID and UUID are both invalid or missing.
+    */
+-  protected function getEntity() {
++  public function getEntity() {
+     if (empty($this->entity)) {
+       $entity = NULL;
+       $storage = $this->entityTypeManager->getStorage('menu_link_content');

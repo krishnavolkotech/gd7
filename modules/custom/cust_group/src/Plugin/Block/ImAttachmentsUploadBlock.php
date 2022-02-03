@@ -109,7 +109,7 @@ class ImAttachmentsUploadBlock extends BlockBase {
                 $field_state = node_get_field_data_fast([$nodeData[$file->id()]], 'field_state')[$nodeData[$file->id()]];
                 $state = hzd_states_abbr()[$field_state];
 
-                $filenameuri = \Drupal\Core\Url::fromUri($file->url());
+                $filenameuri = \Drupal\Core\Url::fromUri($file->createFileUrl(FALSE));
                 $filename = \Drupal::service('link_generator')
                     ->generate($file->getFileName(), $filenameuri);
 
@@ -122,8 +122,8 @@ class ImAttachmentsUploadBlock extends BlockBase {
                              'update_form' => $ticketid_form
                 ];
   
-                
-                $created = $attachment ? format_date($attachment->getCreatedTime(), 'medium', '', NULL, NULL) : '';
+                 $date_formatter = \Drupal::service('date.formatter');
+                $created = $attachment ? $date_formatter->format($attachment->getCreatedTime(), 'medium', '', NULL, NULL) : '';
 
                 $filesize = format_size($file->getSize(), NULL);
 

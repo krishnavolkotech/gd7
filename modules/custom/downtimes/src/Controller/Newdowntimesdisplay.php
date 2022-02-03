@@ -43,7 +43,7 @@ function new_downtimes_display() {
   $string = 'current';
   $output .= "<div class = 'downtime_notes'>" . variable_get('current_downtimes', ' ') . '</div>';
   $data = "<div class ='curr_incidents_form'>" . drupal_get_form('downtimes_filters', 'incidents');
-  $data .= "<div class = 'reset_form'>" . drupal_render(reset_filter_forms('incidents')) . "</div></div>";
+  $data .= "<div class = 'reset_form'>" . \Drupal::service('renderer')->render(reset_filter_forms('incidents')) . "</div></div>";
 
   $output .= theme('current', $data, $string);
   $current_time = time();
@@ -56,7 +56,7 @@ function new_downtimes_display() {
   $sql_where = "  and scheduled_p = 1 and resolved = 0 ";
   $string = 'maintenance';
   $data = "<div class ='curr_incidents_form maintenance_filters'>" . drupal_get_form('downtimes_filters', $string);
-  $data .= "<div class = 'reset_form'>" . drupal_render(reset_filter_forms($string)) . "</div></div>";
+  $data .= "<div class = 'reset_form'>" . \Drupal::service('renderer')->render(reset_filter_forms($string)) . "</div></div>";
 
   $output .= theme('current', $data, $string);
   $default_downtimes = current_incidents($sql_where, $string);

@@ -7,7 +7,7 @@ use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 
 /**
- * Defines an interface for node serial storage classes.
+ * Defines an interface for serial storage classes.
  */
 interface SerialStorageInterface {
 
@@ -16,9 +16,9 @@ interface SerialStorageInterface {
   /**
    * Creates the assistant storage name for a specific field.
    *
-   * @param FieldDefinitionInterface $fieldDefinition
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $fieldDefinition
    *   Field definition.
-   * @param FieldableEntityInterface $entity
+   * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
    *   Entity.
    *
    * @return string
@@ -57,9 +57,9 @@ interface SerialStorageInterface {
   /**
    * Generates a unique serial value (unique per entity bundle).
    *
-   * @param FieldDefinitionInterface $fieldDefinition
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $fieldDefinition
    *   Field definition.
-   * @param FieldableEntityInterface $entity
+   * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
    *   Entity.
    * @param bool $delete
    *   Indicates if temporary records should be deleted.
@@ -92,9 +92,9 @@ interface SerialStorageInterface {
   /**
    * Creates an assistant serial storage for a new created field.
    *
-   * @param FieldDefinitionInterface $fieldDefinition
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $fieldDefinition
    *   Field definition.
-   * @param FieldableEntityInterface $entity
+   * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
    *   Entity.
    */
   public function createStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
@@ -110,9 +110,9 @@ interface SerialStorageInterface {
   /**
    * Drops an assistant serial storage for a deleted field.
    *
-   * @param FieldDefinitionInterface $fieldDefinition
+   * @param \Drupal\Core\Field\FieldDefinitionInterface $fieldDefinition
    *   Field definition.
-   * @param FieldableEntityInterface $entity
+   * @param \Drupal\Core\Entity\FieldableEntityInterface $entity
    *   Entity.
    */
   public function dropStorage(FieldDefinitionInterface $fieldDefinition, FieldableEntityInterface $entity);
@@ -134,10 +134,12 @@ interface SerialStorageInterface {
    *   Entity bundle (entity type) name.
    * @param string $fieldName
    *   Field name.
+   * @param int $startValue
+   *   The value to start the serial increment with.
    *
    * @return int
    *   Amount of entries that were updated.
    */
-  public function initOldEntries($entityTypeId, $entityBundle, $fieldName);
+  public function initOldEntries($entityTypeId, $entityBundle, $fieldName, $startValue);
 
 }

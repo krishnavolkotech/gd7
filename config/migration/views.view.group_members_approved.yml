@@ -893,7 +893,9 @@ display:
           exclude: true
           alter:
             alter_text: true
-            text: "<a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>\n<a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>"
+            text: |-
+              <a href='/group/{{ id_2 }}/members/{{ id }}/edit'>Edit</a><br>
+              <a href='/group/{{ id_2 }}/members/{{ id }}/delete'>Remove</a>
             make_link: false
             path: 'group/{{ id_2 }}/members/{{ id }}/edit'
             absolute: false

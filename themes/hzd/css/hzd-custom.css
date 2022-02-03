@@ -636,6 +636,7 @@ nav#block-optionen ul li a {
 .filter_title_header,
 form.deployed-releases-filter-form .reset_form{
     clear: both;
+    padding: 0px 0px !important;
 }
 .btn.disabled,
 .btn[disabled],
@@ -1661,4 +1662,18 @@ span.field-content::first-letter {
 a.btn.btn-danger.legal-decline-btn {
   margin-left: 5px;
   background-color: #999;
+}
+
+.cust-flex-center-items {
+  display: flex;
+  align-items: center;
+}
+
+.right.group_name {
+    width: 65%;
+    margin-left: 2%;
+}
+
+.messages__wrapper p {
+    display: inline !important;
 }

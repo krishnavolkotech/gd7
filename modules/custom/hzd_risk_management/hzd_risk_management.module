@@ -1021,3 +1021,10 @@ function hzd_risk_management_system_breadcrumb_alter(Breadcrumb &$breadcrumb, Ro
     }
   }
 }
+
+/**
+ * Implements computed_field_field_risk_value_compute().
+ */
+function computed_field_field_risk_value_compute($entity_type_manager, $entity, $fields, $delta) {
+  return $entity->field_probability_of_occurrence->value * $entity->field_risk_impact->value;
+}

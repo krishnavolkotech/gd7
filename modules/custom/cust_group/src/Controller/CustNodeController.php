@@ -550,7 +550,7 @@ class CustNodeController extends ControllerBase {
   }
 
   function updateUrlAlias() {
-    $aliasStorage = \Drupal::service('path.alias_storage');
+    $aliasStorage = \Drupal::service('path_alias.storage');
     $groupContent = \Drupal::entityQuery('group_content')
             ->condition('type', '%group_node-pag%', 'LIKE')
             ->execute();

@@ -450,7 +450,7 @@ class Deployedreleasecreateform extends FormBase {
           \Drupal\Core\Cache\Cache::invalidateTags(array('deployedReleasesOverview'));
       }
 
-      drupal_set_message(t('Release has been deployed sucessfully'), 'status');
+      \Drupal::messenger()->addMessage(t('Release has been deployed sucessfully'), 'status');
       $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander]);
       $form_state->setRedirectUrl($url);
     }

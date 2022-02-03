@@ -6,4 +6,4 @@ faqfield.accordion:
     - core/jquery
     - core/drupal
     - core/drupalSettings
-    - core/jquery.ui.accordion
+    - jquery_ui_accordion/accordion

@@ -12,9 +12,9 @@ use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
-use Drupal\Core\Entity\Query\QueryFactory;
 use Drupal\Component\Plugin\PluginInspectionInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
  * EREFNodeTitles.
@@ -28,7 +28,7 @@ use Drupal\Core\Database\Connection;
  * @ViewsFilter("eref_node_titles")
  */
 class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, ContainerFactoryPluginInterface {
-
+  use StringTranslationTrait;
   // TODO this doesn't work for tax terms or users. separate filter.
   /**
    * Options to sort by.
@@ -73,13 +73,6 @@ class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, Con
   protected $entityTypeManager;
 
   /**
-   * The queryfactory.
-   *
-   * @var \Drupal\Core\Entity\Query\QueryFactory
-   */
-  protected $entityQuery;
-
-  /**
    * The dbconnection.
    *
    * @var \Drupal\Core\Database\Connection
@@ -103,9 +96,8 @@ class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, Con
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, QueryFactory $entity_query, EntityTypeManagerInterface $entity_type_manager, Connection $connection, EntityFieldManagerInterface $entity_field_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entity_type_manager, Connection $connection, EntityFieldManagerInterface $entity_field_manager, EntityTypeBundleInfoInterface $entity_type_bundle_info) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->entityQuery = $entity_query;
     $this->entityTypeManager = $entity_type_manager;
     $this->Connection = $connection;
     $this->entityFieldManager = $entity_field_manager;
@@ -120,7 +112,6 @@ class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, Con
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('entity.query'),
       $container->get('entity_type.manager'),
       $container->get('database'),
       $container->get('entity_field.manager'),
@@ -199,34 +190,34 @@ class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, Con
   public function buildExtraOptionsForm(&$form, FormStateInterface $form_state) {
     $form['sort_by'] = [
       '#type' => 'radios',
-      '#title' => t('Sort by'),
+      '#title' => $this->t('Sort by'),
       '#default_value' => $this->options['sort_by'],
       '#options' => $this->sortByOptions,
-      '#description' => t('On what attribute do you want to sort the node titles?'),
+      '#description' => $this->t('On what attribute do you want to sort the node titles?'),
       '#required' => TRUE,
     ];
     $form['sort_order'] = [
       '#type' => 'radios',
-      '#title' => t('Sort by'),
+      '#title' => $this->t('Sort by'),
       '#default_value' => $this->options['sort_order'],
       '#options' => $this->sortOrderOptions,
-      '#description' => t('In what order do you want to sort the node titles?'),
+      '#description' => $this->t('In what order do you want to sort the node titles?'),
       '#required' => TRUE,
     ];
     $form['get_unpublished'] = [
       '#type' => 'radios',
-      '#title' => t('Published Status'),
+      '#title' => $this->t('Published Status'),
       '#default_value' => $this->options['get_unpublished'],
       '#options' => $this->getUnpublishedOptions,
-      '#description' => t('Do you want Published, Unpublished or All?'),
+      '#description' => $this->t('Do you want Published, Unpublished or All?'),
       '#required' => TRUE,
     ];
     $form['get_filter_no_results'] = [
       '#type' => 'radios',
-      '#title' => t('Filter Out Options With No Results'),
+      '#title' => $this->t('Filter Out Options With No Results'),
       '#default_value' => $this->options['get_filter_no_results'],
       '#options' => $this->getFilterNoResultsOptions,
-      '#description' => t('Do you want to filter out options that will give no results?'),
+      '#description' => $this->t('Do you want to filter out options that will give no results?'),
       '#required' => TRUE,
     ];
   }
@@ -338,8 +329,8 @@ class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, Con
             }
             // Filter out entity reference views.
             if (($handler_settings = $field_obj->getSetting('handler_settings')) && !empty($handler_settings['view'])) {
-              drupal_set_message(t('This is targeting a field filtered by a view. Cannot get bundle.'), 'error');
-              drupal_set_message(t('Please use a field filtered by content type only.'), 'error');
+              \Drupal::messenger()->addError($this->t('This is targeting a field filtered by a view. Cannot get bundle.'), 'error');
+              \Drupal::messenger()->addError($this->t('Please use a field filtered by content type only.'), 'error');
               return [];
             }
             // Get all the targets (content types etc) that this might hit.
@@ -362,7 +353,7 @@ class EREFNodeTitles extends ManyToOne implements PluginInspectionInterface, Con
 
       // Run the query.
       $get_entity = $this->entityTypeManager->getStorage($gen_options['target_entity_type_id']);
-      $relatedContentQuery = $this->entityQuery->get($gen_options['target_entity_type_id'])
+      $relatedContentQuery = $this->entityTypeManager->getStorage($gen_options['target_entity_type_id'])->getQuery()
         ->condition('type', $gen_options['target_bundles'], 'IN');
       // Leave this for any debugging ->sort('title', 'ASC');.
       if ($this->options['get_unpublished'] != 2) {

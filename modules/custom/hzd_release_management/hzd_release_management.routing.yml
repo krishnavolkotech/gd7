@@ -80,18 +80,6 @@ hzd_release_management.deployedinfo:
 #    _permission: 'view releases'
 #    _custom_access: '\Drupal\cust_group\Controller\AccessController::deployedReleasesAccess'
     
-    
-    
-hzd_release_management.release_management_settings:
-  path: 'admin/config/releases'
-  defaults:
-    _form: '\Drupal\hzd_release_management\Form\ReleasemanagementsettingsForm'
-    _title: 'Release Database Configuration'
-  requirements:
-    _permission: 'administer problems'
-#    _csrf_token: 'TRUE'
-#     'access callback' => 'cust_og_is_member', 
-#     'access arguments' => array('administer problems'),
 
 hzd_release_management.read_release_csv:
   path: 'import-releases'
@@ -145,6 +133,20 @@ hzd_release_management.release_documentation_credentials:
 #  requirements:
 #    _permission: 'access content'
 #   _csrf_token: 'TRUE'
+
+    
+    
+#hzd_release_management.release_management_settings:
+#  path: 'admin/config/releases'
+#  defaults:
+#    _form: '\Drupal\hzd_release_management\Form\ReleasemanagementsettingsForm'
+#    _title: 'Release Database Configuration'
+#  requirements:
+#    _permission: 'administer problems'
+#    _csrf_token: 'TRUE'
+#     'access callback' => 'cust_og_is_member', 
+#     'access arguments' => array('administer problems'),
+
 
 hzd_release_management.release_management_settings:
   path: 'admin/config/releases/csv_paths'

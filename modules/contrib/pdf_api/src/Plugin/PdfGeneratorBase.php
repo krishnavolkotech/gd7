@@ -10,11 +10,20 @@ namespace Drupal\pdf_api\Plugin;
 use Drupal\Core\Plugin\PluginBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Drupal\Component\Render\FormattableMarkup;
+use Drupal\Core\StringTranslation\TranslatableMarkup;
 
 /**
  * Provides a base class for PDF generator plugins.
  */
 abstract class PdfGeneratorBase extends PluginBase implements PdfGeneratorInterface {
+
+  /**
+   * The global options for the PDF generator.
+   *
+   * @var array
+   */
+  protected $options = array();
 
   /**
    * {@inheritdoc}
@@ -197,6 +206,66 @@ abstract class PdfGeneratorBase extends PluginBase implements PdfGeneratorInterf
         'height' => 0,
       ),
     );
+  }
+
+  /**
+   * Get stderr from teh command that was run.
+   *
+   * @return string
+   *   Content of stderr output.
+   */
+  public function getStderr() {
+    return '';
+  }
+
+  /**
+   * Get stdout from the command that was run.
+   *
+   * @return string
+   *   Content of stdout.
+   */
+  public function getStdout() {
+    return '';
+  }
+
+  /**
+   * Display error messages.
+   *
+   * @return boolean
+   *   Whether any errors occurred and were not ignored.
+   */
+  public function displayErrors() {
+    $error = $this->getStderr();
+    if ($error && !$this->generator->ignoreWarnings) {
+      // Add stdOut contents - they might help.
+      $output = $this->getStdout();
+      if ($output) {
+        $output = str_replace("\n", "<br />", $output);
+
+        $markup = new TranslatableMarkup('@error<br />Output was:<br />@output',
+          [
+            '@error' => $error,
+            '@output' => new FormattableMarkup($output, []),
+          ]);
+      }
+      else {
+        $markup = $error;
+      }
+      $this->messenger->addError($markup);
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Set global options.
+   *
+   * @param array $options
+   *   The array of options to merge into the currently set options.
+   */
+  public function setOptions(array $options) {
+    $this->options += $options;
   }
 
 }

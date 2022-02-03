@@ -102,7 +102,7 @@ class ImAttachmentsUploadForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_get_messages(null, TRUE);
+   // drupal_get_messages(null, TRUE);
     $values = $form_state->getValues();
     $action = $form_state->getTriggeringElement()['#parents'][0];
 //    pr($action);exit;
@@ -137,9 +137,9 @@ class ImAttachmentsUploadForm extends FormBase {
         $node->save();
         $message = t('File was successfully uploaded!');
       }
-//      drupal_set_message(t('File was successfully uploaded!'));
+//      \Drupal::messenger()->addMessage(t('File was successfully uploaded!'));
     }
-    drupal_set_message($message);
+    \Drupal::messenger()->addMessage($message);
   }
 
 }

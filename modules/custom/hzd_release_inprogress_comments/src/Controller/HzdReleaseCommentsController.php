@@ -6,7 +6,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
 use Drupal\hzd_release_inprogress_comments\HzdReleaseCommentsStorage;
-
+use Drupal\node\Entity\NodeType;
 /**
  * Class HzdReleaseCommentsController.
  */
@@ -37,8 +37,8 @@ class HzdReleaseCommentsController extends ControllerBase {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function add_release_comment($group) {
-    $type = node_type_load("release_comments");
-    $samplenode = $this->entityManager()->getStorage('node')->create(array(
+    $type = NodeType::load("release_comments");
+    $samplenode = $this->entityTypeManager()->getStorage('node')->create(array(
       'type' => $type->id(),
     ));
     $node_create_form = $this->entityFormBuilder()->getForm($samplenode);
@@ -86,7 +86,7 @@ class HzdReleaseCommentsController extends ControllerBase {
     } else {
       $default_type = null;
       if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-        $default_type = db_query("SELECT release_type FROM "
+        $default_type = \Drupal::database()->query("SELECT release_type FROM "
           . "{default_release_type} WHERE group_id = :gid",
           array(
             ":gid" => $group_id

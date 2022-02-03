@@ -67,8 +67,7 @@ class ServiceNotificationsUserForm extends FormBase {
 
     if ($rel_type == KONSONS) {
       //Getting the default time intervals for the planning files of release management
-      $planning_files_default_interval = db_query("SELECT default_send_interval FROM {planning_files_notifications_default_interval} 
-                                         WHERE uid = :uid", array(":uid" => $uid))->fetchField();
+      $planning_files_default_interval =  \Drupal::database()->query("SELECT default_send_interval FROM {planning_files_notifications_default_interval} WHERE uid = :uid", array(":uid" => $uid))->fetchField();
       $form['subscriptions'][$fno]['subscriptions_type_' . $fno] = array(
         '#markup' => t("Planning Files"),
         '#prefix' => "<div class = 'hzd_type'>",
@@ -98,7 +97,7 @@ class ServiceNotificationsUserForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_set_message(t('Service mail preferences saved successfully'));
+    \Drupal::messenger()->addMessage(t('Service mail preferences saved successfully'));
     $uid = $form_state->getValue('account');
     $rel_type = $form_state->getValue('rel_type');
     $mod_type = $types = HzdNotificationsHelper::hzd_get_content_type_name($rel_type);

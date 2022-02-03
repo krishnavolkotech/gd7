@@ -73,33 +73,34 @@
  * @see hook_xmlrpc()
  */
 function xmlrpc_example_xmlrpc() {
-  $methods[] = array(
+  $methods[] = [
     // First argument is the method name.
     'xmlrpc_example.add',
     // Callback to execute when this method is requested.
     '_xmlrpc_example_server_add',
     // An array defines the types of output and input values for this method.
-    array(
+    [
       // The first value is the return type, an integer in this case.
       'int',
       // First operand is an integer.
       'int',
       // Second operand is an integer.
       'int',
-    ),
+    ],
     // Include a little description that is shown when XML-RPC server is
     // requested for the implemented methods list.
     // Method description.
     t('Returns the sum of the two arguments.'),
-  );
+  ];
+
   // The subtract method is similar to the addition, only the method name,
   // callback and description are different.
-  $methods[] = array(
+  $methods[] = [
     'xmlrpc_example.subtract',
     '_xmlrpc_example_server_subtract',
-    array('int', 'int', 'int'),
+    ['int', 'int', 'int'],
     t('Return difference of the two arguments.'),
-  );
+  ];
 
   return $methods;
 }
@@ -124,7 +125,7 @@ function xmlrpc_example_xmlrpc() {
  * @param int $num2
  *   The second number to be summed.
  *
- * @return int
+ * @return int|object
  *   The sum of the arguments, or error if it is not in server defined bounds.
  *
  * @see xmlrpc_error()
@@ -139,10 +140,10 @@ function _xmlrpc_example_server_add($num1, $num2) {
   $min = $config->get('min');
 
   if ($sum > $max) {
-    return xmlrpc_error(10001, t('Result is over the upper limit (@max) defined by the server.', array('@max' => $max)));
+    return xmlrpc_error(10001, t('Result is over the upper limit (@max) defined by the server.', ['@max' => $max]));
   }
   if ($sum < $min) {
-    return xmlrpc_error(10002, t('Result is below the lower limit defined by the server (@min).', array('@min' => $min)));
+    return xmlrpc_error(10002, t('Result is below the lower limit defined by the server (@min).', ['@min' => $min]));
   }
 
   // Otherwise return the result.
@@ -160,7 +161,7 @@ function _xmlrpc_example_server_add($num1, $num2) {
  * @param int $num2
  *   Second number.
  *
- * @return int
+ * @return int|object
  *   The difference of the two arguments, or error if it is not in server
  *   defined bounds.
  *
@@ -176,10 +177,10 @@ function _xmlrpc_example_server_subtract($num1, $num2) {
   $min = $config->get('min');
 
   if ($difference > $max) {
-    return xmlrpc_error(10001, t('Result is above the upper limit (@max) defined by the server.', array('@max' => $max)));
+    return xmlrpc_error(10001, t('Result is above the upper limit (@max) defined by the server.', ['@max' => $max]));
   }
   if ($difference < $min) {
-    return xmlrpc_error(10002, t('Result is below the lower limit (@min) defined by the server.', array('@min' => $min)));
+    return xmlrpc_error(10002, t('Result is below the lower limit (@min) defined by the server.', ['@min' => $min]));
   }
 
   // Otherwise return the result.
@@ -231,7 +232,7 @@ function xmlrpc_example_xmlrpc_alter(&$methods) {
       // (second argument of the array).
       $methods[$index][1] = '_xmlrpc_example_alter_add';
     }
-    // Do the same for the substraction method.
+    // Do the same for the subtraction method.
     if ($method[0] == 'xmlrpc_example.subtract') {
       $methods[$index][1] = '_xmlrpc_example_alter_subtract';
     }
@@ -276,6 +277,7 @@ function _xmlrpc_example_alter_add($num1, $num2) {
 function _xmlrpc_example_alter_subtract($num1, $num2) {
   return $num1 - $num2;
 }
+
 /**
  * @} End of "defgroup xmlrpc_example".
  */

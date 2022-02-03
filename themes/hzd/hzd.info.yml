@@ -5,6 +5,7 @@ base theme: bootstrap
 name: 'HZD Theme'
 description: 'HZD Bootstrap Sub theme'
 package: 'Bootstrap'
+core_version_requirement: ^8 || ^9
 
 regions:
   navigation: 'Navigation'

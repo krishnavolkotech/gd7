@@ -8,6 +8,7 @@ use Drupal\cust_group\Controller\AccessController;
 use Drupal\group\Entity\Group;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\group\Entity\GroupContent;
 use Drupal\Component\Datetime\DateTimePlus;
 use Drupal\user\Entity\User;
@@ -43,9 +44,9 @@ class HzdreleasemanagementStorage {
       // droy, 20110531, Added AND clause to the following two DELETE statements so that one particular
       // in-progress release will not get deleted.
       if ($release_type == 3) {
-        /* db_query("DELETE FROM {node} WHERE nid in (SELECT nid FROM {content_type_release} ctr WHERE ctr.field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen')", $release_type);
-          db_query("DELETE FROM {content_type_release} WHERE field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen'", $release_type); */
-        $node_ids = db_select('node__field_release_type', 'nfrt');
+        /* \Drupal::database()->query("DELETE FROM {node} WHERE nid in (SELECT nid FROM {content_type_release} ctr WHERE ctr.field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen')", $release_type);
+          \Drupal::database()->query("DELETE FROM {content_type_release} WHERE field_release_type_value = '%s' and field_status_value != 'Details bitte in den Early Warnings ansehen'", $release_type); */
+        $node_ids = \Drupal::database()->select('node__field_release_type', 'nfrt');
         $node_ids->join('node__field_status', 'nfs', 'nfrt.entity_id = nfs.entity_id');
         $node_ids->Fields('nfrt', array('entity_id'));
         $node_ids->condition('nfs.field_status_value', 'Details bitte in den Early Warnings ansehen', '!=');
@@ -53,7 +54,7 @@ class HzdreleasemanagementStorage {
         $nids = $node_ids->execute()->fetchCol();
 
         //Not sure is this is really necessary here.
-        $query = db_select('node', 'n');
+        $query = \Drupal::database()->select('node', 'n');
         $query->Fields('n', array('nid'));
         $query->condition('nid', $nids, 'IN');
         $locked_values = $query->execute()->fetchAll();
@@ -74,7 +75,7 @@ class HzdreleasemanagementStorage {
 
       // Removed releases from "in progress" that do not appear in the release database anymore.
       if ($release_type == 2) {
-        $inprogress_values = db_select('node__field_release_type', 'nfrt')
+        $inprogress_values = \Drupal::database()->select('node__field_release_type', 'nfrt')
           ->Fields('nfrt', array('entity_id'))
           ->condition('nfrt.field_release_type_value', '2', '=')
           ->execute()->fetchAll();
@@ -154,7 +155,7 @@ $inprogress_nid_values = [];
       $query->condition('label', 'release management', '=');
       $group_id = $query->execute()->fetchCol();
 
-      $query = db_select('node_field_data', 'n');
+      $query = \Drupal::database()->select('node_field_data', 'n');
       $query->Fields('n', array('nid', 'vid', 'created'));
       $query->condition('n.type', 'release', '=');
       $query->condition('n.title', $values['title'], '=');
@@ -170,19 +171,19 @@ $inprogress_nid_values = [];
       //$release_types = [1 => 'released', 2 => 'progress', 3 => 'locked', 4 => 'ex_eoss'];
 
       if (isset($nid) && $nid) {
-        // $field_date_value = db_result(db_query("select field_date_value from {content_type_release} where nid=%d", $nid));.
-        $field_date_value_query = db_select('node__field_date', 'ntr')
+        // $field_date_value = \Drupal::database()->result(\Drupal::database()->query("select field_date_value from {content_type_release} where nid=%d", $nid));.
+        $field_date_value_query = \Drupal::database()->select('node__field_date', 'ntr')
           ->Fields('ntr', array('field_date_value'))
           ->condition('entity_id', $nid, '=');
 
         $field_date_value = $field_date_value_query->execute()->fetchAssoc();
-        // $field_release_value = db_result(db_query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
-        $field_release_value_query = db_select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
+        // $field_release_value = \Drupal::database()->result(\Drupal::database()->query("select field_release_type_value from {content_type_release} where nid=%d", $nid));.
+        $field_release_value_query = \Drupal::database()->select('node__field_release_type', 'ntr')->Fields('ntr', array('field_release_type_value'))->condition('entity_id', $nid, '=');
 
         $field_release_value = $field_release_value_query->execute()->fetchAssoc();
-        // $field_documentation_link_value = db_result(db_query("SELECT field_documentation_link_value
+        // $field_documentation_link_value = \Drupal::database()->result(\Drupal::database()->query("SELECT field_documentation_link_value
         //                                                     FROM {content_type_release} WHERE nid=%d", $nid));.
-        $field_documentation_link_value_query = db_select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
+        $field_documentation_link_value_query = \Drupal::database()->select('node__field_documentation_link', 'ntr')->Fields('ntr', array('field_documentation_link_value'))->condition('entity_id', $nid, '=');
 
         $field_documentation_link_value = $field_documentation_link_value_query->execute()->fetchAssoc();
       } else {
@@ -321,8 +322,8 @@ $inprogress_nid_values = [];
         }
       }
 
-      // $title = db_result(db_query("select title from {node} where title = '%s' ", $values['title']));.
-      $title_query = db_select('node_field_data', 'nfd')
+      // $title = \Drupal::database()->result(\Drupal::database()->query("select title from {node} where title = '%s' ", $values['title']));.
+      $title_query = \Drupal::database()->select('node_field_data', 'nfd')
         ->Fields('nfd', array('title'))
         ->condition('title', $values['title'], '=')->execute()->fetchAssoc();
 
@@ -376,7 +377,7 @@ $inprogress_nid_values = [];
             $values[$header_values[$key]] = $explodedData[$key];
           }
 
-          $query = db_select('node_field_data', 'n');
+          $query = \Drupal::database()->select('node_field_data', 'n');
           $query->Fields('n', array('nid'));
           $query->condition('title', $values['title'], '=');
           $inprogress_csv_nid = $query->execute()->fetchField();
@@ -410,7 +411,7 @@ $inprogress_nid_values = [];
     // if (is_array($locked_nid_values)) {
     //   foreach ($locked_nid_values as $release_title_nid_values) {
     //     if (!in_array($release_title_nid_values, $locked_csv_nid_values)) {
-    //       db_update('node_field_data')->fields(array('status' => '0'))
+    //       \Drupal::database()->update('node_field_data')->fields(array('status' => '0'))
     //               ->condition('nid', $release_title_nid_values)->execute();
     //     }
     //   }
@@ -435,7 +436,7 @@ $inprogress_nid_values = [];
       // foreach ((array)$inprogress_nid_values as $release_title_nid_values) {
       //   if (!in_array($release_title_nid_values, $inprogress_csv_nid_values)) {
       //     // 20140730 droy - Instead of unpublishing a release, move it to status rejected.
-      //     // db_query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
+      //     // \Drupal::database()->query("UPDATE {node} SET status = %d WHERE nid = %d", 0, $release_title_nid_values);.
           
       //   }
       // }
@@ -464,13 +465,13 @@ $inprogress_nid_values = [];
 
       $values_date = $values['datum'];
 
-      // $service = strtolower(db_result(db_query("SELECT title FROM {node} where nid= %d", $values_service)));.
-      $service_query = db_select('node_field_data', 'nfd')
+      // $service = strtolower(\Drupal::database()->result(\Drupal::database()->query("SELECT title FROM {node} where nid= %d", $values_service)));.
+      $service_query = \Drupal::database()->select('node_field_data', 'nfd')
         ->Fields('nfd', array('title'))
         ->condition('nid', $values_service, '=');
       $service_query = $service_query->execute()->fetchAssoc();
       $service = $service_query['title'];
-      // $nid = db_result(db_query("SELECT nid FROM {node} where title = '%s' ", $values_title));.
+      // $nid = \Drupal::database()->result(\Drupal::database()->query("SELECT nid FROM {node} where title = '%s' ", $values_title));.
       $db = \Drupal::database();
       $query = $db->select('node_field_data', 'nfd');
       $query->fields('nfd', array('nid'));
@@ -480,10 +481,10 @@ $inprogress_nid_values = [];
       $nid = $nid_query['nid'];
       // Create url alias.
       /**
-       * $release_value_type = db_result(db_query("SELECT field_release_type_value
+       * $release_value_type = \Drupal::database()->result(\Drupal::database()->query("SELECT field_release_type_value
        * FROM {content_type_release} WHERE nid = %d ", $nid));
        */
-      $release_value_type_query = db_select('node__field_release_type', 'nfrt')
+      $release_value_type_query = \Drupal::database()->select('node__field_release_type', 'nfrt')
         ->Fields('nfrt', array('field_release_type_value'))
         ->condition('entity_id', $nid, '=');
       $release_value_type_q = $release_value_type_query->execute()->fetchAssoc();
@@ -493,22 +494,22 @@ $inprogress_nid_values = [];
         $url_alias = create_url_alias($nid, $service, $values);
       }
       /**
-       * $count_nid = db_result(db_query("SELECT count(*)
+       * $count_nid = \Drupal::database()->result(\Drupal::database()->query("SELECT count(*)
        * FROM {release_doc_failed_download_info}
        * WHERE nid = %d", $nid));
        */
-      $count_nid_query = db_select('release_doc_failed_download_info', 'rdfdi')
+      $count_nid_query = \Drupal::database()->select('release_doc_failed_download_info', 'rdfdi')
         ->Fields('rdfdi', array('nid'))
         ->condition('nid', $nid, '=');
 
       $count_nid = $count_nid_query->countQuery()->execute()->fetchField();
 
-      $field_release_type = db_select('node__field_release_type', 'nfrt')
+      $field_release_type = \Drupal::database()->select('node__field_release_type', 'nfrt')
         ->Fields('nfrt', array('field_release_type_value'))
         ->condition('entity_id', $nid, '=')->execute()->fetchAssoc();
 
       /**
-       * $field_release_type_value = db_result(db_query("SELECT field_release_type_value
+       * $field_release_type_value = \Drupal::database()->result(\Drupal::database()->query("SELECT field_release_type_value
        * FROM {content_type_release}
        * WHERE nid=%d", $nid));
        */
@@ -583,7 +584,7 @@ $inprogress_nid_values = [];
 
               $dokument_zip = explode("/", $field_documentation_link_value);
               $dokument_zip_file_name = strtolower(array_pop($dokument_zip));
-              $root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+              $root_path = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
               $zip_version_path = $root_path . "/releases/downloads/" . $title . "_doku.zip";
               if (!empty($dokument_zip_file_name)) {
                 if (file_exists($zip_version_path)) {
@@ -612,9 +613,9 @@ $inprogress_nid_values = [];
               $username = \Drupal::config('hzd_release_management.settings')->get('release_import_username');
               $password = \Drupal::config('hzd_release_management.settings')->get('release_import_password');
               self::release_documentation_link_download($username, $password, $paths, $link, $compressed_file, $nid);
-              // $nid_count = db_result(db_query("SELECT count(*)
+              // $nid_count = \Drupal::database()->result(\Drupal::database()->query("SELECT count(*)
               //                                           FROM {release_doc_failed_download_info} WHERE nid = %d", $nid));.
-              $query = db_select('release_doc_failed_download_info', 'rdfdi')
+              $query = \Drupal::database()->select('release_doc_failed_download_info', 'rdfdi')
                 ->Fields('rdfi', array('nid'))
                 ->condition('rdfdi.nid', $nid, '=');
 
@@ -645,12 +646,12 @@ $inprogress_nid_values = [];
     ];
     $params['message'] = \Drupal::service('renderer')->render($message_body);
     /**
-     * $field_link_value = db_result(db_query("SELECT field_documentation_link_value
+     * $field_link_value = \Drupal::database()->result(\Drupal::database()->query("SELECT field_documentation_link_value
      * FROM {content_type_release}
      * WHERE nid = %d ", $nid));
      */
     
-    $field_link_value_query = db_select('node__field_documentation_link', 'nfdl')
+    $field_link_value_query = \Drupal::database()->select('node__field_documentation_link', 'nfdl')
             ->Fields('nfdl', array('field_documentation_link_value'))
             ->condition('entity_id', $nid, '=');
 
@@ -791,7 +792,7 @@ $inprogress_nid_values = [];
       if (!empty($download_directory[2])) {
         shell_exec("unzip " . $paths . "/" . $compressed_file . " -d " . $paths);
         shell_exec("convmv -f latin1 -t utf8 -r --notest " . $paths);
-        $zip_root_path = \Drupal::service('file_system')->realpath(file_default_scheme() . "://");
+        $zip_root_path = \Drupal::service('file_system')->realpath(\Drupal::config('system.file')->get('default_scheme') . "://");
         $zip_lowcaps = strtolower($compressed_file);
         shell_exec("rm -rf " . $paths . "/" . $compressed_file);
 
@@ -875,7 +876,7 @@ $inprogress_nid_values = [];
             'created' => time(),
             'reason' => $failed_link,
           );
-          db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
+          \Drupal::database()->insert('release_doc_failed_download_info')->fields($failed_info)->execute();
         }
       } else {
         // Using shell_exec function could not capture the error message.so insert the default message into  release_doc_failed_download_info  table.
@@ -890,7 +891,7 @@ $inprogress_nid_values = [];
           'created' => time(),
           'reason' => $failed_link,
         );
-        db_insert('release_doc_failed_download_info')->fields($failed_info)->execute();
+        \Drupal::database()->insert('release_doc_failed_download_info')->fields($failed_info)->execute();
       }
     }
     catch (Exception $e) {
@@ -958,7 +959,7 @@ $inprogress_nid_values = [];
       $default_type = $filter_value['release_type'];
     } else {
       if ($group_id != RELEASE_MANAGEMENT) {
-        $default_type = db_query("SELECT release_type "
+        $default_type = \Drupal::database()->query("SELECT release_type "
                 . "FROM {default_release_type} "
                 . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
         $default_type = $default_type ? $default_type : KONSONS;
@@ -972,7 +973,7 @@ $inprogress_nid_values = [];
     if ($filter_value['services']) {
       $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
     } else {
-      $services_obj = db_query("SELECT n.title, n.nid
+      $services_obj = \Drupal::database()->query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -1056,7 +1057,7 @@ $inprogress_nid_values = [];
 //        pr($current_uri = \Drupal::request()->getRequestUri());exit;
     foreach ($result as $deployed_releases_node_id) {
       $deployed_release_node = \Drupal\node\Entity\Node::load($deployed_releases_node_id);
-      $state = db_query("SELECT abbr FROM {states} where id = :id", array(
+      $state = \Drupal::database()->query("SELECT abbr FROM {states} where id = :id", array(
           ":id" => $deployed_release_node->field_user_state->value
               )
               )->fetchField();
@@ -1297,8 +1298,9 @@ $inprogress_nid_values = [];
    */
   static public function deployed_releases_text() {
     $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander]);
-    $link = \Drupal::l(t('hier'), $url);
-
+    //$link = \Drupal::l(t('hier'), $url);
+    $link = Link::fromTextAndUrl(t('hier'), $url)->toString();
+    
     $output = "<div class = 'deployed-release-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
 Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
 F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Zentrale Release Manager KONSENS</a> (ZRMK) zur Verf&uuml;gung.</p></div>";
@@ -1311,8 +1313,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    */
   static public function deployed_info_text() {
     $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander]);
-    $link = \Drupal::l(t('hier'), $url);
-
+    //    $link = \Drupal::l(t('hier'), $url);
+    $link = Link::fromTextAndUrl(t('hier'), $url)->toString();
     $output = "<div class = 'deployed-info-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
 Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
 F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Zentrale Release Manager KONSENS</a> (ZRMK) zur Verf&uuml;gung.</p></div>";
@@ -1425,14 +1427,14 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $environment_lists[$nid] = $vals;
       }
       
-      /*$non_productions_lists_query = db_select('node_field_data', 'nfd');
+      /*$non_productions_lists_query = \Drupal::database()->select('node_field_data', 'nfd');
       $non_productions_lists_query->Fields('nfd', array('nid', 'title'));
       $non_productions_lists_query->join('node__field_non_production_state', 'nfnps', 'nfd.nid = nfnps.entity_id');
       $non_productions_lists_query->condition('nfnps.field_non_production_state_value', $state, '=');
       $non_productions_lists_query->condition('nfd.type', 'non_production_environment', '=');
       $non_productions_lists_query->orderBy('field_order');
       $non_productions_lists = $non_productions_lists_query->execute()->fetchAll();
-      // While ($row = db_fetch_array($non_productions_lists)) {.
+      // While ($row = \Drupal::database()->fetch_array($non_productions_lists)) {.
       foreach ($non_productions_lists as $row) {
         $environment_lists[$row->nid] = $row->title;
       }*/
@@ -1467,6 +1469,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $rows = [];
     foreach ($release_node_ids as $release_node_id) {
       $link = null;
+      $link_path = '';
       $releases = \Drupal\node\Entity\Node::load($release_node_id);
       if ($releases->field_documentation_link->value) {
         $link = self::hzd_get_release_documentation_link(
@@ -1606,7 +1609,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $default_type = $filter_value['release_type'];
     } else {
       if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-        $default_type = db_query("SELECT release_type FROM "
+        $default_type = \Drupal::database()->query("SELECT release_type FROM "
                 . "{default_release_type} WHERE group_id = :gid", array(
             ":gid" => $group_id
                 )
@@ -1765,7 +1768,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     $group_id = get_group_id();
 
     // Early Warnigs count for specific service and release.
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
     $query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->condition('n.type', 'early_warnings', '=')
@@ -1824,7 +1827,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
 
     if ($type == 'progress' && self::RWCommentAccess()) {
       // Comment count for specific service and release.
-      $cmt_query = db_select('node_field_data', 'n');
+      $cmt_query = \Drupal::database()->select('node_field_data', 'n');
       $cmt_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
       $cmt_query->join('node__field_release_service', 'nfrs', 'n.nid = nfrs.entity_id');
       $cmt_query->condition('n.type', 'release_comments', '=')
@@ -1888,7 +1891,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $group_id = $group;
     }
 
-    db_delete('group_releases_view')->condition('group_id', $group_id, '=')
+    \Drupal::database()->delete('group_releases_view')->condition('group_id', $group_id, '=')
             ->execute();
   }
 
@@ -1905,7 +1908,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $group_id = $group;
     }
 
-    $query = db_select('group_releases_view', 'grv');
+    $query = \Drupal::database()->select('group_releases_view', 'grv');
     $query->Fields('grv', array('service_id'));
     $query->condition('group_id', $group_id, '=');
     $result = $query->execute()->fetchAll();
@@ -1923,7 +1926,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $group_id = $group;
     }
 
-    $release_type_query = db_select('default_release_type', 'drt');
+    $release_type_query = \Drupal::database()->select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
     $release_type_query->condition('drt.group_id', $group_id, '=');
     $release_type = $release_type_query->execute()->fetchField();
@@ -1942,15 +1945,15 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       $group_id = $group;
     }
 
-    $release_type_query = db_select('default_release_type', 'drt');
+    $release_type_query = \Drupal::database()->select('default_release_type', 'drt');
     $release_type_query->Fields('drt', array('release_type'));
     $release_type_query->condition('drt.group_id', $group_id, '=');
     $release_type = $release_type_query->execute()->fetchField();
     if ($release_type) {
-      db_update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $group_id, '=')->execute();
+      \Drupal::database()->update('default_release_type')->fields(array('release_type' => $default_release_type))->condition('group_id', $group_id, '=')->execute();
     } else {
 
-      db_insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type))->execute();
+      \Drupal::database()->insert('default_release_type')->fields(array('group_id' => $group_id, 'release_type' => $default_release_type))->execute();
     }
     // $sql = 'insert into {group_releases_view} (group_id, service_id) values (%d, %d)';.
     $counter = 0;
@@ -1958,8 +1961,8 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
       foreach ($selected_services as $service) {
         if ($service != 0) {
           $counter++;
-          // db_query($sql, $group_id, $service);.
-          db_insert('group_releases_view')->fields(array(
+          // \Drupal::database()->query($sql, $group_id, $service);.
+          \Drupal::database()->insert('group_releases_view')->fields(array(
               'group_id' => $group_id,
               'service_id' => $service,
           ))->execute();
@@ -2008,7 +2011,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
     }
     else {
       if ($group_id != RELEASE_MANAGEMENT) {
-          $default_type = db_query("SELECT release_type "
+          $default_type = \Drupal::database()->query("SELECT release_type "
           . "FROM {default_release_type} "
           . "WHERE group_id = :gid", array(":gid" => $group_id))->fetchField();
           $default_type = $default_type ? $default_type : KONSONS;
@@ -2022,7 +2025,7 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
         $deployed_releases_node_ids->condition('field_release_service', $filter_value['services'], '=');
     }
     else {
-      $services_obj = db_query("SELECT n.title, n.nid
+      $services_obj = \Drupal::database()->query("SELECT n.title, n.nid
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 

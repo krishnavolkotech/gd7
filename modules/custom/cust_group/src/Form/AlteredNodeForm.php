@@ -23,15 +23,19 @@ class AlteredNodeForm extends NodeForm {
     parent::save($form, $form_state);
     $node = $this->entity;
     if ($node->getType() == 'quickinfo') {
-      $messages = drupal_get_messages();
+      //$messages = drupal_get_messages();
+      $messages = \Drupal::messenger()->all();
       $nodeTitle = $node->tolink($node->label())->toString();
       if ($node->get('status')->value == 1) {
-        drupal_set_message(t('@type @title has been published.', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
+                \Drupal::messenger()->deleteAll();	
+        \Drupal::messenger()->addMessage(t('@type @title has been published.', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       }
       elseif($node->custom_isnew == 1) {
-          drupal_set_message(t('@type @title has been saved', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
+          \Drupal::messenger()->deleteAll();
+          \Drupal::messenger()->addMessage(t('@type @title has been saved', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       } else {
-        drupal_set_message(t('@type @title has been updated', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
+        \Drupal::messenger()->deleteAll();
+        \Drupal::messenger()->addMessage(t('@type @title has been updated', ['@type' => node_get_type_label($node), '@title' => $nodeTitle]));
       }
     }
   }

@@ -23,9 +23,9 @@ class HzdservicesHelper {
    $message['subject'] = $subject;
    $message['body'] = $body;
    if (drupal_mail_send($message)) {
-     drupal_set_message(t('MAIL SUCESS'), 'status');
+     \Drupal::messenger()->addMessage(t('MAIL SUCESS'), 'status');
    }else{
-     drupal_set_message(t('MAIL UNSUCESS'), 'warning');
+     \Drupal::messenger()->addMessage(t('MAIL UNSUCESS'), 'warning');
    } 
  }
 */
@@ -51,7 +51,7 @@ static public function send_problems_notification($key, $to, $subject, $message_
 
   $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
   if (!$result['result']) {
-    drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+    \Drupal::messenger()->addMessage(t('There was a problem sending your message and it was not sent.'), 'error');
   }
 }
 
@@ -67,7 +67,7 @@ static public function send_problems_notification($key, $to, $subject, $message_
     $send = TRUE;
     $result = $mailManager->mail($module, $key, $to, $langcode, $params, NULL, $send);
     if (!$result['result']) {
-      drupal_set_message(t('There was a problem sending your message and it was not sent.'), 'error');
+      \Drupal::messenger()->addMessage(t('There was a problem sending your message and it was not sent.'), 'error');
     }
   }
 

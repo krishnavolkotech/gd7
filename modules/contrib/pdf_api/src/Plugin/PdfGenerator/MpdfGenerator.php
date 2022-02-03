@@ -7,13 +7,15 @@
 
 namespace Drupal\pdf_api\Plugin\PdfGenerator;
 
+use Drupal\Component\Utility\Random;
 use Drupal\pdf_api\Plugin\PdfGeneratorBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\pdf_api\Annotation\PdfGenerator;
 use Drupal\Core\Annotation\Translation;
 use Drupal\pdf_api\Plugin\PdfGeneratorInterface;
-use \mPDF;
+use Mpdf\Mpdf;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * A PDF generator plugin for the mPDF library.
@@ -28,13 +30,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The global options for mPDF.
-   *
-   * @var array
-   */
-  protected $options = array();
-
-  /**
    * Instance of the mPdf class library.
    *
    * @var \mPdf
@@ -42,12 +37,38 @@ class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginIn
   protected $generator;
 
   /**
+   * The saved header content.
+   *
+   * @var string
+   */
+  protected $headerContent;
+
+  /**
+   * The saved PDF content.
+   *
+   * @var string
+   */
+  protected $pdfContent;
+
+  /**
+   * The saved footer content.
+   *
+   * @var string
+   */
+  protected $footerContent;
+
+  /**
+   * The temporary directory we created.
+   *
+   * @var string
+   */
+  protected $tmpDir;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, mPDF $generator) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-
-    $this->generator = $generator;
   }
 
   /**
@@ -57,8 +78,7 @@ class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginIn
     return new static(
       $configuration,
       $plugin_id,
-      $plugin_definition,
-      $container->get('mpdf')
+      $plugin_definition
     );
   }
 
@@ -68,24 +88,11 @@ class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginIn
   public function setter($pdf_content, $pdf_location, $save_pdf, $paper_orientation, $paper_size, $footer_content, $header_content, $path_to_binary = '') {
     $this->setPageSize($paper_size);
     $this->setPageOrientation($paper_orientation);
-    $this->setHeader($header_content);
-    $this->setFooter($footer_content);
-    $filename = $pdf_location;
-    $this->preGenerate();
-    $stylesheet = '.node_view  { display: none; }';
-    $this->generator->WriteHTML($stylesheet, 1);
-    $this->generator->WriteHTML(utf8_encode($pdf_content), 0);
-    if ($save_pdf) {
-      if (empty($filename)) {
-        $filename = str_replace("/", "_", \Drupal::service('path.current')->getPath());
-        $filename = substr($filename, 1);
-      }
-      $this->stream($filename . '.pdf');
-    }
-    else {
-      $this->send(utf8_encode($pdf_content));
-    }
-    $this->addPage($pdf_content);
+
+    // Save until the generator is constructed in the preGenerate method.
+    $this->headerContent = $header_content;
+    $this->pdfContent = $pdf_content;
+    $this->footerContent = $footer_content;
   }
 
   /**
@@ -148,7 +155,7 @@ class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginIn
    * {@inheritdoc}
    */
   public function setFooter($text) {
-    // $this->generator->SetFooter($text);
+     $this->generator->SetFooter($text);
   }
 
   /**
@@ -156,7 +163,8 @@ class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginIn
    */
   public function save($location) {
     $this->preGenerate();
-    $this->generator->send($location);
+    $this->generator->Output($location, 'F');
+    $this->postGenerate();
   }
 
   /**
@@ -174,20 +182,58 @@ class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginIn
   }
 
   /**
-   * Set global options.
-   *
-   * @param array $options
-   *   The array of options to merge into the currently set options.
-   */
-  protected function setOptions(array $options) {
-    $this->options += $options;
-  }
-
-  /**
    * Set the global options from the plugin into the mPDF generator class.
    */
   protected function preGenerate() {
-    $this->generator->AddPageByArray($this->options);
+    /*
+     * We have to pass the initial page size and orientation that we want to
+     * the constructor, so we delay making the generator until we have those
+     * details.
+     *
+     * mPDF is also strange in its handling of parameters. We can't just set
+     * the page size and orientation separately (as you'd expect) but need to
+     * combine them in the format argument for them to be effective from the
+     * get-go.
+     */
+    $options = $this->options;
+
+    $orientation = $options['orientation'] ? $options['orientation'] : 'P';
+
+    $filesystem = \Drupal::service('file_system');
+    $random = new Random();
+    $this->tmpDir = $filesystem->getTempDirectory() . '/' . $random->name(16, TRUE);
+    $filesystem->mkdir($this->tmpDir);
+
+    $config = [
+      'format' => $this->isValidPageSize($options['sheet-size']) ? $options['sheet-size'] : 'A4',
+      'tempDir' => $this->tmpDir,
+    ];
+
+    if ($orientation == 'L') {
+      $config['format'] .= '-' . $orientation;
+    }
+
+    $this->generator = new mPDF($config);
+
+    // Apply any other options.
+    unset($options['orientation']);
+    unset($options['sheet-size']);
+
+    $this->generator->AddPageByArray($options);
+
+    $this->setHeader($this->headerContent);
+    $this->setFooter($this->footerContent);
+    $stylesheet = '.node_view  { display: none; }';
+    $this->generator->WriteHTML($stylesheet, 1);
+    $this->generator->WriteHTML(utf8_encode($this->pdfContent), 0);
+  }
+
+  /**
+   * Post generation cleanup.
+   */
+  protected function postGenerate() {
+    $filesystem = \Drupal::service('file_system');
+    $filesystem->deleteRecursive($this->tmpDir);
   }
 
 }

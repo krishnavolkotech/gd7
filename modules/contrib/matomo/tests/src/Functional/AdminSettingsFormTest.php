@@ -17,6 +17,13 @@ class AdminSettingsFormTest extends BrowserTestBase {
   public static $modules = ['matomo'];
 
   /**
+   * Default theme.
+   *
+   * @var string
+   */
+  protected $defaultTheme = 'stark';
+
+  /**
    * A test administrator.
    *
    * @var \Drupal\user\Entity\User
@@ -53,7 +60,7 @@ class AdminSettingsFormTest extends BrowserTestBase {
       'matomo_visibility_request_path_mode' => 0,
       'matomo_visibility_request_path_pages' => $pages,
     ];
-    $this->drupalPostForm('admin/config/system/matomo', $edit, t('Save configuration'));
+    $this->drupalPostForm('admin/config/system/matomo', $edit, 'Save configuration');
     $has_validation_error = (bool) $this->getSession()->getPage()->find('css', '#edit-matomo-visibility-request-path-pages.error');
     $this->assertEquals($validation_error_expected, $has_validation_error);
   }
@@ -68,6 +75,7 @@ class AdminSettingsFormTest extends BrowserTestBase {
    *      be thrown.
    */
   public function pageTrackingProvider() {
+    // @codingStandardsIgnoreStart
     return [
       [
         // No validation error should be thrown for an empty page list.
@@ -98,6 +106,7 @@ TXT
         TRUE,
       ],
     ];
+    // @codingStandardsIgnoreEnd
   }
 
 }
