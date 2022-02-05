@@ -3,3 +3,6 @@ queue_mail_queue_time: 45
 _core:
   default_config_hash: pf1sgP08qOF1C19yVSs1Uxp0mlyDNa5YDUK2oO9vHKU
 langcode: de
+threshold: 50
+requeue_interval: 10800
+queue_mail_queue_wait_time: 0

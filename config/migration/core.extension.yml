@@ -102,6 +102,7 @@ module:
   persistent_login: 0
   prlp: 0
   problem_management: 0
+  queue_mail_language: 0
   queue_ui: 0
   quickedit: 0
   rdf: 0
@@ -143,8 +144,6 @@ module:
   hzd_user_customizations: 102
   standard: 1000
 theme:
-  stable: 0
-  classy: 0
   bartik: 0
   seven: 0
   bootstrap: 0

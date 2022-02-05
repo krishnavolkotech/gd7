@@ -110,11 +110,11 @@ field_settings:
     property_path: 'entity_id:entity:body'
     type: text
     dependencies:
+      config:
+        - field.storage.node.body
       module:
         - group
         - node
-      config:
-        - field.storage.node.body
   changed:
     label: 'Inhalt » Inhalt » Geändert'
     datasource_id: 'entity:group_content'
@@ -123,7 +123,6 @@ field_settings:
     dependencies:
       module:
         - group
-        - node
         - node
   changed_1:
     label: Geändert
@@ -150,7 +149,6 @@ field_settings:
       module:
         - group
         - node
-        - node
   created_date:
     label: 'Inhalt » Inhalt » geschrieben am Date'
     datasource_id: 'entity:group_content'
@@ -160,7 +158,6 @@ field_settings:
       module:
         - group
         - node
-        - node
   downtime_description:
     label: 'Inhalt » Inhalt » Downtime Description'
     datasource_id: 'entity:group_content'
@@ -168,9 +165,9 @@ field_settings:
     type: text
     dependencies:
       module:
+        - cust_group
         - group
         - node
-        - cust_group
   entity_id:
     label: Inhalt
     datasource_id: 'entity:group_content'
@@ -193,132 +190,132 @@ field_settings:
     property_path: 'entity_id:entity:field_abnormality_description'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_abnormality_description
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_abnormality_description
   field_attachment:
     label: 'Inhalt » Inhalt » Creator'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_attachment'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_attachment
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_attachment
   field_author_name:
     label: 'Inhalt » Inhalt » Veröffentlicht von'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_author_name'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_author_name
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_author_name
   field_business_impact:
     label: 'Inhalt » Inhalt » 2.5 Fachliche Auswirkungen:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_business_impact'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_business_impact
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_business_impact
   field_business_impact_services:
     label: 'Inhalt » Inhalt » 2.7 Fachliche Auswirkungen auf andere (Fach-) Verfahren:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_business_impact_services'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_business_impact_services
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_business_impact_services
   field_closed:
     label: 'Inhalt » Inhalt » Closed'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_closed'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_closed
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_closed
   field_comments:
     label: 'Inhalt » Inhalt » Comment'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_comments'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_comments
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_comments
   field_contact:
     label: 'Inhalt » Inhalt » 2.12 Ansprechpartner:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_contact'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_contact
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_contact
   field_creators:
     label: 'Inhalt » Inhalt » 2.11 Ersteller:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_creators'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_creators
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_creators
   field_custom_title:
     label: 'Inhalt » Inhalt » 1.1 Title'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_custom_title'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_custom_title
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_custom_title
   field_dates:
     label: 'Inhalt » Inhalt » 2.10 Termine:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_dates'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_dates
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_dates
   field_depend_other_services:
     label: 'Inhalt » Inhalt » 2.4 Abhängigkeiten:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_depend_other_services'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_depend_other_services
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_depend_other_services
   field_description:
     label: Description
     datasource_id: 'entity:group'
@@ -333,22 +330,22 @@ field_settings:
     property_path: 'entity_id:entity:field_detailed_question'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_detailed_question
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_detailed_question
   field_diagnose:
     label: 'Inhalt » Inhalt » Diagnose'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_diagnose'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_diagnose
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_diagnose
   field_einfuehrung:
     label: Einfuehrung
     datasource_id: 'entity:group'
@@ -363,11 +360,11 @@ field_settings:
     property_path: 'entity_id:entity:field_eroffnet'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_eroffnet
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_eroffnet
   field_group_body:
     label: 'Group Body'
     datasource_id: 'entity:group'
@@ -382,263 +379,258 @@ field_settings:
     property_path: 'entity_id:entity:field_intial_situation'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_intial_situation
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_intial_situation
   field_other_services:
     label: 'Inhalt » Inhalt » 1.3 Erstellendes Verfahren'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_other_services'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_other_services
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_other_services
   field_problem_name:
     label: 'Inhalt » Inhalt » Name in Problem Database'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_problem_name'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_problem_name
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_problem_name
   field_problem_status:
     label: 'Inhalt » Inhalt » Problem Status'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_problem_status'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_problem_status
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_problem_status
   field_problem_symptoms:
     label: 'Inhalt » Inhalt » Problem Symptoms'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_problem_symptoms'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_problem_symptoms
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_problem_symptoms
   field_processing:
     label: 'Inhalt » Inhalt » Last Update'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_processing'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_processing
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_processing
   field_professional_conditions:
     label: 'Inhalt » Inhalt » 2.2 Fachliche / organisatorische Einsatzvoraussetzungen:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_professional_conditions'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_professional_conditions
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_professional_conditions
   field_recipients:
     label: 'Inhalt » Inhalt » 1.4 Angesprochene Stellen'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_recipients'
     type: string
     dependencies:
+      config:
+        - field.storage.node.field_recipients
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_recipients
   field_related_transfer_number:
     label: 'Inhalt » Inhalt » 1.2 Bezug zu SW-Übergabe-Nr.:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_related_transfer_number'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_related_transfer_number
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_related_transfer_number
   field_release_name:
     label: 'Inhalt » Inhalt » Name in Release Database'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_release_name'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_release_name
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_release_name
   field_release_service:
     label: 'Inhalt » Inhalt » Verfahren'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_release_service'
     type: integer
     dependencies:
+      config:
+        - field.storage.node.field_release_service
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_release_service
   field_solution:
     label: 'Inhalt » Inhalt » Solution'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_solution'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_solution
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_solution
   field_special_notes:
     label: 'Inhalt » Inhalt » 2.9 Besondere Hinweise:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_special_notes'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_special_notes
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_special_notes
   field_task_force:
     label: 'Inhalt » Inhalt » Task Force'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_task_force'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_task_force
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_task_force
   field_tech_requirements:
     label: 'Inhalt » Inhalt » 2.3 Technische Einsatzvoraussetzungen:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_tech_requirements'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_tech_requirements
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_tech_requirements
   field_technical_impact:
     label: 'Inhalt » Inhalt » 2.6 Technische Auswirkungen:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_technical_impact'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_technical_impact
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_technical_impact
   field_technical_impact_services:
     label: 'Inhalt » Inhalt » 2.8 Technische Auswirkungen auf andere (Fach-) Verfahren:'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_technical_impact_services'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_technical_impact_services
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_technical_impact_services
   field_work_around:
     label: 'Inhalt » Inhalt » Workaround'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_work_around'
     type: text
     dependencies:
+      config:
+        - field.storage.node.field_work_around
       module:
         - group
         - node
-      config:
-        - field.storage.node.field_work_around
   filename_1:
     label: 'Inhalt » Inhalt » Upload Planning File » File » Dateiname'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_upload_planning_file:entity:filename'
     type: text
     dependencies:
-      module:
-        - group
-        - node
-        - file
-        - file
       config:
         - field.storage.node.field_upload_planning_file
+      module:
+        - file
+        - group
+        - node
   filename_2:
     label: 'Inhalt » Inhalt » upload » File » Dateiname'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:upload:entity:filename'
     type: text
     dependencies:
-      module:
-        - group
-        - node
-        - file
-        - file
       config:
         - field.storage.node.upload
+      module:
+        - file
+        - group
+        - node
   filename_3:
     label: 'Inhalt » Inhalt » Upload » File » Dateiname'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_upload:entity:filename'
     type: text
     dependencies:
-      module:
-        - group
-        - node
-        - file
-        - file
       config:
         - field.storage.node.field_upload
+      module:
+        - file
+        - group
+        - node
   filename_4:
     label: 'Inhalt » Inhalt » Dateien » File » Dateiname'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_im_upload_page_files:entity:filename'
     type: text
     dependencies:
-      module:
-        - group
-        - node
-        - file
-        - file
       config:
         - field.storage.node.field_im_upload_page_files
+      module:
+        - file
+        - group
+        - node
   filename_5:
     label: 'Inhalt » Inhalt » Dateien » Datei » Dateiname'
     datasource_id: 'entity:group_content'
     property_path: 'entity_id:entity:field_page_files:entity:filename'
     type: text
     dependencies:
-      module:
-        - group
-        - node
-        - file
-        - file
       config:
         - field.storage.node.field_page_files
+      module:
+        - file
+        - group
+        - node
   gid:
     label: 'Parent group'
     datasource_id: 'entity:group_content'
@@ -663,8 +655,6 @@ field_settings:
     dependencies:
       module:
         - group
-        - group
-        - group
   label_1:
     label: Title
     datasource_id: 'entity:group'
@@ -687,13 +677,13 @@ field_settings:
     property_path: 'entity_id:entity:field_page_files:entity:origname'
     type: text
     dependencies:
-      module:
-        - group
-        - node
-        - file
-        - filefield_paths
       config:
         - field.storage.node.field_page_files
+      module:
+        - file
+        - filefield_paths
+        - group
+        - node
   processed:
     label: 'Kommentar » Processed text'
     datasource_id: 'entity:comment'
@@ -739,7 +729,6 @@ field_settings:
       module:
         - group
         - node
-        - node
   title_1:
     label: Titel
     datasource_id: 'entity:node'
@@ -757,7 +746,6 @@ field_settings:
       module:
         - comment
         - node
-        - node
   type:
     label: 'Inhalt » Inhalt » Inhaltstyp'
     datasource_id: 'entity:group_content'
@@ -766,7 +754,6 @@ field_settings:
     dependencies:
       module:
         - group
-        - node
         - node
   type_1:
     label: 'Group content type'
@@ -793,7 +780,6 @@ field_settings:
       module:
         - comment
         - node
-        - node
   uid:
     label: 'Inhalt » Inhalt » Erstellt von'
     datasource_id: 'entity:group_content'
@@ -802,7 +788,6 @@ field_settings:
     dependencies:
       module:
         - group
-        - node
         - node
   uid_1:
     label: uid_1
@@ -864,15 +849,17 @@ datasource_settings:
       default: true
       selected: {  }
 processor_settings:
+  group_access:
+    weights:
+      preprocess_query: -30
+  sort_datasources_result: {  }
+  reverse_entity_references: {  }
   add_url:
     plugin_id: add_url
     settings: {  }
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
-  group_access:
-    weights:
-      preprocess_query: -30
   highlight:
     highlight: always
     highlight_partial: true
@@ -915,14 +902,13 @@ processor_settings:
     weights:
       preprocess_index: -15
       preprocess_query: -15
+  language_with_fallback: {  }
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
-  reverse_entity_references: {  }
   solr_date_range:
     weights:
       preprocess_index: 0
-  sort_datasources_result: {  }
 tracker_settings:
   default:
     indexing_order: fifo
