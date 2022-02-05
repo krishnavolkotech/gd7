@@ -112,7 +112,7 @@ class Cancelconfirm extends ConfirmFormBase {
     }
     $downtimes_resolve = $this->keyValueExpirable->get("downtimes_cancel_" . $nid);
     if (empty($downtimes_resolve)) {
-      drupal_set_message($this->t('Invalid Request.'), 'error');
+      \Drupal::messenger()->addMessage($this->t('Invalid Request.'), 'error');
       return $this->redirect('<front>');
     }
     return parent::buildForm($form, $form_state);
@@ -150,7 +150,7 @@ class Cancelconfirm extends ConfirmFormBase {
       'uid' => $user->id(),
       'type' => 0,
     );
-    db_insert('resolve_cancel_incident')->fields($record)->execute();
+    \Drupal::database()->insert('resolve_cancel_incident')->fields($record)->execute();
 
     $query = \Drupal::database()->update('downtimes');
     $query->fields([
@@ -162,7 +162,7 @@ class Cancelconfirm extends ConfirmFormBase {
 
 
     $this->keyValueExpirable->delete("downtimes_cancel_" . $nid);
-    drupal_set_message(t($message));
+    \Drupal::messenger()->addMessage(t($message));
     \Drupal\Core\Cache\Cache::invalidateTags(array('node:' . $nid));
     $form_state->setRedirect('downtimes.new_downtimes_controller_newDowntimes', ['group' => $downtimes_resolve['gid']]);
     if(!isset($downtimes_resolve['notifications_content_disable']) || $downtimes_resolve['notifications_content_disable'] != 1) {

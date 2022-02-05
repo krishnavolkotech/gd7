@@ -89,7 +89,9 @@ class FragebogenUploadForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    drupal_get_messages(null, TRUE);
+    //drupal_get_messages(null, TRUE);
+    \Drupal::messenger()->deleteAll();
+    
     $values = $form_state->getValues();
     $action = $form_state->getTriggeringElement()['#parents'][0];
 
@@ -97,7 +99,7 @@ class FragebogenUploadForm extends FormBase {
       if (!empty($values['upload_file'])) {
         $file = \Drupal::entityTypeManager()->getStorage('file')->load($form_state->getValue('upload_file')[0]);
         $message = t('File was successfully uploaded!');
-        drupal_set_message($message);
+        \Drupal::messenger()->addMessage($message);
       }
     }
   }  

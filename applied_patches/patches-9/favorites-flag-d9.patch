@@ -1,0 +1,61 @@
+diff --git a/modules/contrib/favorites/src/Controller/MyFavController.php b/modules/contrib/favorites/src/Controller/MyFavController.php
+index d191e6a1c..fb4141f70 100644
+--- a/modules/contrib/favorites/src/Controller/MyFavController.php
++++ b/modules/contrib/favorites/src/Controller/MyFavController.php
+@@ -15,8 +15,9 @@
+ use Drupal\Core\Controller\ControllerBase;
+ use Drupal\favorites\FavoriteStorage;
+ use Drupal\Core\Url;
+-use Drupal\Core\Render\Element\Link;
++// use Drupal\Core\Render\Element\Link;
+ use Drupal\Core\Ajax\InvokeCommand;
++use \Drupal\Core\Link;
+ 
+ /**
+  * Class MyFavController.
+@@ -62,7 +63,7 @@ public function addFavJS() {
+       }
+       $url = Url::fromUri($url);
+       $url_delete = Url::fromRoute('favorites.remove', ['fid' => $favorite->fid]);
+-      $message .= '<li>' . \Drupal::l($favorite->title, $url) . ' <span id="del-' . $favorite->fid . '">' . \Drupal::l('X', $url_delete) . '</span></li>';
++      $message .= '<li>' . Link::fromTextAndUrl($favorite->title, $url)->toString() . ' <span id="del-' . $favorite->fid . '">' . Link::fromTextAndUrl('X', $url_delete)->toString() . '</span></li>';
+     }
+     $message .= '</ul>';
+ 
+diff --git a/modules/contrib/favorites/src/FavoriteStorage.php b/modules/contrib/favorites/src/FavoriteStorage.php
+index ae25e07fa..565df9632 100644
+--- a/modules/contrib/favorites/src/FavoriteStorage.php
++++ b/modules/contrib/favorites/src/FavoriteStorage.php
+@@ -23,7 +23,7 @@ static function delete($fid) {
+      */
+     static function getFavorites($uid) {
+         $result = \Drupal::database()->query('select * from {favorites} where uid = :uip order by timestamp DESC', array(':uip' => $uid));
+-        return $result = '';
++        return $result;
+     }
+ 
+     /**
+diff --git a/modules/contrib/favorites/src/Plugin/Block/FavBlock.php b/modules/contrib/favorites/src/Plugin/Block/FavBlock.php
+index 91c7dc10e..8c2e88ddd 100644
+--- a/modules/contrib/favorites/src/Plugin/Block/FavBlock.php
++++ b/modules/contrib/favorites/src/Plugin/Block/FavBlock.php
+@@ -10,7 +10,7 @@
+ use Drupal\Core\Block\BlockBase;
+ use Drupal\favorites\FavoriteStorage;
+ use Drupal\Core\Url;
+-
++use \Drupal\Core\Link;
+ /**
+  * Provides a 'favorites' block.
+  *
+@@ -52,8 +52,8 @@ public function build() {
+                 }
+                 $url = Url::fromUri($url);
+                 $url_delete = Url::fromRoute('favorites.remove',['fid'=>$favorite->fid]);
+-                $items[$i]['title_link'] = \Drupal::l($favorite->title, $url);
+-                $items[$i]['remove_link'] = \Drupal::l('X', $url_delete);
++                $items[$i]['title_link'] = Link::fromTextAndUrl($favorite->title, $url);
++                $items[$i]['remove_link'] = Link::fromTextAndUrl('X', $url_delete);
+                 $items[$i]['id'] = $favorite->fid;
+                 $i++;
+             }

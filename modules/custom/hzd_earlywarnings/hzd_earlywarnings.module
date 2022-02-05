@@ -29,7 +29,7 @@ function getErlywarningServies() {
   
   
   /**
-   * $services_obj = db_query("SELECT title , n.nid FROM {node} n, {group_releases_view} grv
+   * $services_obj = \Drupal::database()->query("SELECT title , n.nid FROM {node} n, {group_releases_view} grv
    * WHERE n.nid = grv.service_id and grv.group_id = %d ORDER by title ", $group_id);
    */
   

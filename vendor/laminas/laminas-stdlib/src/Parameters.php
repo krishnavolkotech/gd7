@@ -1,6 +1,10 @@
 <?php
 
-declare(strict_types=1);
+/**
+ * @see       https://github.com/laminas/laminas-stdlib for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-stdlib/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-stdlib/blob/master/LICENSE.md New BSD License
+ */
 
 namespace Laminas\Stdlib;
 
@@ -19,7 +23,7 @@ class Parameters extends PhpArrayObject implements ParametersInterface
      *
      * @param  array $values
      */
-    public function __construct(?array $values = null)
+    public function __construct(array $values = null)
     {
         if (null === $values) {
             $values = [];
@@ -84,8 +88,7 @@ class Parameters extends PhpArrayObject implements ParametersInterface
         if ($this->offsetExists($name)) {
             return parent::offsetGet($name);
         }
-
-        return null;
+        return;
     }
 
     /**

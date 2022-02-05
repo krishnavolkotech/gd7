@@ -113,7 +113,7 @@ class HzdreleasemanagementHelper {
       $group_id = $group;
     }
     $group_id = (isset($group_id) ? $group_id : RELEASE_MANAGEMENT);
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('group_releases_view', 'grv', 'n.nid = grv.service_id');
     $query->join('node__release_type', 'nrt', 'n.nid = nrt.entity_id');
     $query->fields('n', array('nid', 'title'))
@@ -146,7 +146,7 @@ class HzdreleasemanagementHelper {
     }
 
     $group_id = (isset($group_id) ? $group_id : RELEASE_MANAGEMENT);
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_relese_services', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
     $query->fields('n', array('nid', 'title'))
@@ -178,7 +178,7 @@ class HzdreleasemanagementHelper {
 
     $group_id = (isset($group_id) ? $group_id : RELEASE_MANAGEMENT);
     $release_type = get_release_type($string);
-    $query = db_select('node_field_data', 'n');
+    $query = \Drupal::database()->select('node_field_data', 'n');
     $query->join('node__field_relese_services', 'nfrs', 'n.nid = nfrs.entity_id');
     $query->join('group_releases_view', 'grv', 'nfrs.field_relese_services_target_id = grv.service_id');
     $query->join('node__field_release_type', 'nfrt', 'n.nid = nfrt.entity_id');
@@ -203,14 +203,18 @@ class HzdreleasemanagementHelper {
   static public function get_document_args($service_id, $release_id) {
 
     // Get service name and release name.
-    $service_name = strtolower(db_query("SELECT title FROM {node_field_data} where nid = :nid", array(":nid" => $service_id))->fetchField());
-    $release_name = db_query("SELECT title FROM {node_field_data} where nid = :nid", array(":nid" => $release_id))->fetchField();
+    $service_name = strtolower(\Drupal::database()->query("SELECT title FROM {node_field_data} where nid = :nid", array(":nid" => $service_id))->fetchField());
+    $release_name = \Drupal::database()->query("SELECT title FROM {node_field_data} where nid = :nid", array(":nid" => $release_id))->fetchField();
     $release_product = $release_versions = array();
     $releases_title = '';
     if (!empty($release_name)) {
         $release_product = explode("_", $release_name);
-        $release_versions = explode("-", $release_product[1]);
-        $releases_title = $release_product[0] . "_" . $release_versions[0];
+        if(isset($release_product[1])) {
+          $release_versions = explode("-", $release_product[1]);
+        }
+        if(isset($release_versions[0])){
+          $releases_title = $release_product[0] . "_" . $release_versions[0];
+        }
     }
     // Get the documentation folder path.
     $file_path = \Drupal::service('file_system')->realpath("private://");
@@ -241,7 +245,7 @@ class HzdreleasemanagementHelper {
       }
 
       // Get the documentation link zip file.
-      $field_link_value = db_query("SELECT field_documentation_link_value FROM {node__field_documentation_link} WHERE entity_id= :eid", array(":eid" => $release_id))->fetchField();
+      $field_link_value = \Drupal::database()->query("SELECT field_documentation_link_value FROM {node__field_documentation_link} WHERE entity_id= :eid", array(":eid" => $release_id))->fetchField();
       $field_link_value_split = explode("/", $field_link_value);
       $get_link = array_pop($field_link_value_split);
       $remove_link_zip = explode(".zi", $get_link);
@@ -814,16 +818,6 @@ class HzdreleasemanagementHelper {
       $absolute_path = Url::fromUserInput('/group/' . RELEASE_MANAGEMENT . '/rz-schnellinfos/' . $node->nid);
 
       $split_title = str_split($node->title, 50);
-      // $quickinfo_title = strtolower(str_replace(" ","-", $split_title[0]));
-      // $alias_path = 'release-management/rz-schnellinfos/'. $quickinfo_title;
-      // $alias_path = 'release-management/rz-schnellinfos/'. $id;
-      // 20140224 droy
-      // This belongs to the publish function where the db queries are only executed once.
-      // $source = db_result(db_query("SELECT src FROM {url_alias} WHERE src = '%s'",$absolute_path));
-      // $destination = db_result(db_query("SELECT dst FROM {url_alias} WHERE dst = '%s'",$alias_path));
-      // if (!$source && !$destination) {
-      //    db_query("INSERT INTO {url_alias} (src,dst) VALUES ('%s', '%s')", $absolute_path, $alias_path);
-      // }.
       $details = \Drupal::service('link_generator')->generate('Details', $absolute_path);
       // $data = \Drupal\Component\Utility\Html::load($other_services);
       $rows[] = array($id, $state_name, $title, t($other_services), $related_sw_transfer_num, $published, $details);
@@ -853,7 +847,7 @@ class HzdreleasemanagementHelper {
 
   static public function getStateABBR($id) {
     if ($id) {
-      return $state = db_query("SELECT abbr FROM {states} where id = :id", array(":id" => $id))->fetchField();
+      return $state = \Drupal::database()->query("SELECT abbr FROM {states} where id = :id", array(":id" => $id))->fetchField();
     }
   }
 

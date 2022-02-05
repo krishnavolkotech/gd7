@@ -81,7 +81,6 @@ abstract class RendererBase implements RendererInterface, EntityHandlerInterface
    * {@inheritdoc}
    */
   public function generateHtml(array $entities, array $render, $use_default_css, $optimize_css) {
-    global $base_url;
     $rendered_css = $this->assetRenderer->render($entities, $use_default_css, $optimize_css);
     $render['#entity_print_css'] = $this->renderer->executeInRenderContext(new RenderContext(), function () use (&$rendered_css) {
       return $this->renderer->render($rendered_css);
@@ -93,18 +92,7 @@ abstract class RendererBase implements RendererInterface, EntityHandlerInterface
 
     // Allow other modules to alter the generated HTML.
     $this->dispatcher->dispatch(PrintEvents::POST_RENDER, new PrintHtmlAlterEvent($html, $entities));
-    
-    foreach ($entities as $entity) {
-    $current_entity = $entity->toUrl();
-      $result = '';
-      if(!empty($current_entity)) {
-        $entity_path = $current_entity->toString();
-        if($entity_path) {
-          $result = \Drupal::service('path.alias_manager')->getAliasByPath($entity_path);
-	  $render['#footer'] = $base_url . $result;
-        }
-      }
-    }
+
     return $html;
   }
 

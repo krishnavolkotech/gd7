@@ -3,6 +3,8 @@
 namespace Drupal\hzd_sams;
 
 use Drupal\Core\Url;
+use Drupal\Core\Pager\PagerParametersInterface;
+use Drupal\Core\Pager\PagerManagerInterface;
 use Drupal\hzd_artifact_comments\HzdArtifactCommentStorage;
 
 class Aql{}
@@ -299,10 +301,10 @@ class HzdSamsStorage {
 
     /* PAGER */
     if ($limit) {
-      $page = pager_find_page();
+      $page = \Drupal::service('pager.parameters')->findPage();
       $num_per_page = $limit;
       $offset = $num_per_page * $page;
-      pager_default_initialize($this->samsData['total'], $limit);
+      \Drupal::service('pager.manager')->createPager($this->samsData['total'], $limit);
     }
 
     $pageRows = array_slice($this->samsData['artifacts'], $offset, $limit);

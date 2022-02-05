@@ -37,6 +37,28 @@ interface FloodUnblockManagerInterface {
   public function getEvents();
 
   /**
+   * Gets the type of an event.
+   *
+   * @param string $event
+   *   The event descriptor.
+   *
+   * @return string
+   *   Event Type.
+   */
+  public function getEventType($event);
+
+  /**
+   * Gets the label of an event.
+   *
+   * @param string $event
+   *   The event descriptor.
+   *
+   * @return string
+   *   Event Label.
+   */
+  public function getEventLabel($event);
+
+  /**
    * Provides identifier's flood status.
    *
    * @param string $event

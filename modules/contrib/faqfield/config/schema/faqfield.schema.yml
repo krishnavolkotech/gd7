@@ -55,6 +55,12 @@ field.widget.settings.faqfield_default:
       label: 'Custom title of answer input.'
       translatable: true
       translation context: 'Custom title of FAQ Field answer widget.'
+    question_field_required:
+      type: boolean
+      label: 'Question field is required.'
+    answer_field_required:
+      type: boolean
+      label: 'Answer field is required.'
     advanced:
       type: mapping
       label: 'Advanced options of the FAQ Field default widget.'
@@ -71,3 +77,12 @@ field.widget.settings.faqfield_default:
         answer_rows:
           type: integer
           label: 'Number of rows used for the answer widget.'
+
+# FieldType: FAQ Field.
+field.field_settings.faqfield:
+  type: mapping
+  label: 'FAQ Field field settings'
+  mapping:
+    default_format:
+      type: string
+      label: 'Default text format'

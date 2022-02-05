@@ -33,7 +33,7 @@ class DeployedReleasesOverviewiew extends FormBase {
             \Drupal::request()->get('release_type') : KONSONS;
 
     $container = \Drupal::getContainer();
-    $terms = $container->get('entity.manager')
+    $terms = $container->get('entity_type.manager')
                     ->getStorage('taxonomy_term')->loadTree('release_type');
     foreach ($terms as $key => $value) {
       $release_type_list[$value->tid] = $value->name;

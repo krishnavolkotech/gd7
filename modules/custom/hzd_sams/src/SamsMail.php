@@ -15,12 +15,12 @@ class SamsMail {
   public function processSamsMails() {
     $this->readXml();
     if (!$this->xmlData) {
-      drupal_set_message(t('Keine Daten zu Events vom SAMS gefunden'), 'error');
+      \Drupal::messenger()->addMessage(t('Keine Daten zu Events vom SAMS gefunden'), 'error');
       return;
     }
     $this->loadSubscribers();
     if (!$this->subscribers) {
-      drupal_set_message("Keine Abonnenten gefunden!", 'error');
+      \Drupal::messenger()->addMessage("Keine Abonnenten gefunden!", 'error');
       return;
     }
     $render['result']['abo']['#theme'] = 'table';
@@ -213,7 +213,7 @@ class SamsMail {
     $send = True;
     $result = $mailManager->mail($module, $key, $user->getEmail(), $langcode, $params, NULL, $send);
     if ($result['result']) {
-      drupal_set_message(t('Mail sent.'), 'status');
+      \Drupal::messenger()->addMessage(t('Mail sent.'), 'status');
     }
   }
 }

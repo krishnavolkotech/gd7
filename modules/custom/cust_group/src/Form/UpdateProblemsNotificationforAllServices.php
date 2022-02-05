@@ -56,7 +56,7 @@ class UpdateProblemsNotificationforAllServices extends FormBase {
 //        $services = hzd_get_all_services();
         //Getting all services except KONSONS
         $rel_type = KONSONS;
-        $query = db_select('node_field_data', 'n');
+        $query = \Drupal::database()->select('node_field_data', 'n');
         $query->leftJoin('node__field_release_name', 'nfrn', 'n.nid = nfrn.entity_id');
         $query->leftJoin('node__field_problem_name', 'nfpn', 'n.nid = nfpn.entity_id');
         $query->leftJoin('node__field_enable_downtime', 'nfed', 'n.nid = nfed.entity_id');
@@ -124,7 +124,7 @@ class UpdateProblemsNotificationforAllServices extends FormBase {
 
     public static function finishedCallBack($success, $results, $operations) {
         if ($success) {
-            drupal_set_message(\Drupal::translation()->translate('Updated problem notifications successfully'));
+            \Drupal::messenger()->addMessage(\Drupal::translation()->translate('Updated problem notifications successfully'));
         }
     }
 

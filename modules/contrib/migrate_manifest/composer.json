@@ -9,6 +9,11 @@
       "name": "James Gilliland",
       "homepage":"https://www.drupal.org/u/neclimdul",
       "role": "Maintainer"
+    },
+    {
+      "name": "Andrew Jungklaus",
+      "homepage": "https://www.drupal.org/u/lostkangaroo",
+      "role": "Maintainer"
     }
   ],
   "support": {
@@ -17,5 +22,17 @@
     "source": "https://cgit.drupalcode.org/migrate_manifest"
   },
   "minimum-stability": "dev",
-  "require": {}
+  "require": {
+      "drupal/core": "^9.1"
+  },
+  "conflict": {
+    "drush/drush": "<10"
+  },
+  "extra": {
+    "drush": {
+      "services": {
+        "drush.services.yml": "^10"
+      }
+    }
+  }
 }

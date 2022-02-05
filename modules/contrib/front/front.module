@@ -116,7 +116,7 @@
  */
 /*function front_page_get_by_role($index = 0, $number = 1) {
   $roles = \Drupal::currentUser()->getRoles();
-  $result = db_select('front_page', 'fp')
+  $result = \Drupal::database()->select('front_page', 'fp')
     ->fields('fp')
     ->condition('rid', $roles)
     ->condition('mode', '', '<>')
@@ -132,7 +132,7 @@
  * Function to return the first role enabled in front page, ordered by weight.
  */
 /*function front_page_get_by_rid($rid) {
-  $result = db_select('front_page', 'fp')
+  $result = \Drupal::database()->select('front_page', 'fp')
     ->fields('fp')
     ->condition('rid', $rid)
     ->condition('mode', '', '<>')
@@ -146,7 +146,7 @@
  */
 /*function front_page_get_all() {
   global $user;
-  $result = db_select('front_page', 'fp')
+  $result = \Drupal::database()->select('front_page', 'fp')
     ->fields('fp')
     ->orderBy('weight', 'ASC')
     ->orderBy('rid', 'DESC')
@@ -188,7 +188,7 @@
  */
 /*function front_page_user_role_delete($role) {
   // Delete Front configuration for the role being deleted.
-  db_delete('front_page')
+  \Drupal::database()->delete('front_page')
     ->condition('rid', $role->rid)
     ->execute();
 }

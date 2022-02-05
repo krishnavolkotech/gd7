@@ -13,6 +13,7 @@ if (!defined('PRIVACY_NID')) {
  define('PRIVACY_NID', Settings::get('privacy_policy_nid', 335));
 }
 
+
 // development functions
 function __hzd($object) {
     if (empty($object)) {
@@ -136,8 +137,8 @@ function hzd_user_customizations_form_alter(&$form, \Drupal\Core\Form\FormStateI
     $form['legal']['legal_accept']['#title'] = t("Ich stimme der @link zu.",  ['@link' => $link_impressum]);
     $form['field_privacy_policy']['widget']['value']['#title'] = t("Ich stimme der $link_impressum zu.");
     unset($form['field_privacy_policy']);
-$val = [];
-	$user_states = hzd_states();
+    $val = [];
+        $user_states = hzd_states();
 	asort($user_states);
 	//sort($user_states);
         if ($form_id == 'user_register_form') {
@@ -301,7 +302,7 @@ function hzd_user_register_form_submit(array &$form, FormStateInterface $form_st
     $position = $form_state->getValue('user_position');
     $phone = $form_state->getValue('user_phone');
     $state = $form_state->getValue('user_state');
-    db_merge('cust_profile')
+    \Drupal::database()->merge('cust_profile')
         ->key(array('uid' => $userid))
         ->fields(array('firstname' => $firstname, 'lastname' => $lastname, 'phone' => $phone, 'position' => $position, 'state_id' => $state))
         ->execute();
@@ -423,7 +424,8 @@ function hzd_group_list($uid, $no_html = false) {
         $groups = '<div class="user-groups"><h2 class="title">' . t("My Groups") .' </h2>';
         foreach ($val as $group) {
             $url = Url::fromUserInput('/group/' . $group->id);
-            $groups .= '<div class="user-group-list">' . \Drupal::l(t($group->label), $url) . '</div>';
+	    $link = Link::fromTextAndUrl($group->label, $url)->toString();
+            $groups .= '<div class="user-group-list">' . $link . '</div>';
         }
         $groups .= '</div>';
         return $groups;

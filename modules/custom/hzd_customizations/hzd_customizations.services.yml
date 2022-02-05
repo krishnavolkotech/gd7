@@ -10,6 +10,6 @@ services:
 
       #  hzd_breadcrumb.breadcrumb_quickinfo_create:
 #    class: Drupal\hzd_customizations\Breadcrumb\QuickinfoBreadcrumbBuilder
-##    arguments: ['@entity.manager', '@config.factory', '@forum_manager', '@string_translation']
+##    arguments: ['@entity_type.manager', '@config.factory', '@forum_manager', '@string_translation']
 #    tags:
 #      - { name: breadcrumb_builder, priority: 100 }

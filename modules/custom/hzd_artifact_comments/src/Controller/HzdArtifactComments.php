@@ -29,7 +29,7 @@ class HzdArtifactComments extends ControllerBase {
       // \Drupal\node\Entity\NodeType::load() implementieren, da node_type_load deprecated ist
       $type = NodeType::load("artefakt_kommentar");
       // @todo Most of the time static::entityTypeManager() is supposed to be used
-      $samplenode = $this->entityManager()->getStorage('node')->create([
+      $samplenode = $this->entityTypeManager()->getStorage('node')->create([
         'type' => $type->id(),
       ]);
       $output = $this->entityFormBuilder()->getForm($samplenode);
@@ -127,7 +127,7 @@ class HzdArtifactComments extends ControllerBase {
         } else {
             $default_type = null;
             if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-                $default_type = db_query("SELECT release_type FROM "
+                $default_type = \Drupal::database()->query("SELECT release_type FROM "
                     . "{default_release_type} WHERE group_id = :gid",
                     array(
                         ":gid" => $group_id

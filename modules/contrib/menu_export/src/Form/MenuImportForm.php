@@ -34,10 +34,21 @@ class MenuImportForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
-    $form['actions']['submit'] = array(
+    $menus = $this->config('menu_export.settings')
+      ->get('menus');
+    $menuEnt = Menu::loadMultiple($menus);
+    $menuData = array_map(function ($menuEnt) {
+      return $menuEnt->label();
+    }, $menuEnt);
+    $form['menus_to_import'] = [
+      '#theme'=>'item_list',
+      '#title'=>$this->t('Menus to Import'),
+      '#items'=>$menuData,
+    ];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Import Menu Links'),
-    );
+    ];
     return $form;
   }
 
@@ -51,28 +62,37 @@ class MenuImportForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
+public function submitForm(array &$form, FormStateInterface $form_state)
+  {
+    $invalidMenus = [];
     $menus = $this->config('menu_export.export_data')->get();
     foreach ($menus as $key => $menu) {
-      if(!Menu::load($menu)){
-        echo "menu not found";exit;
+      $menu_name = $menu['menu_name']['value'];
+      if (!Menu::load($menu_name)) {
+        $invalidMenus[] = $menu_name;
+        continue;
       }
-      foreach ($menu as $uuid => $linkDataSerialized) {
-        $menuLinkEntity = \Drupal::service('entity.repository')->loadEntityByUuid('menu_link_content', $uuid);
-        if(!$menuLinkEntity){
-          $menuLinkEntity = MenuLinkContent::create();
-        }
-        $linkData = unserialize($linkDataSerialized);
-        foreach ($linkData as $key => $items) {
-          $menuLinkEntity->set($key, $items);
-        }
-        $menuLinkEntity->save();
-        unset($menuLinkEntity);
+      unset($menu['id']);
+      $menuLinkEntity = \Drupal::entityQuery('menu_link_content')
+        ->condition('uuid', $menu['uuid'])
+        ->execute();
+      if (!$menuLinkEntity) {
+        $menuLinkEntity = MenuLinkContent::create();
+      }else{
+        $menuLinkEntity = MenuLinkContent::load(reset($menuLinkEntity));
       }
-    }
+      foreach ($menu as $kkey => $items) {
+        $menuLinkEntity->set($kkey, $items);
+      }
+      $menuLinkEntity->save();
+      unset($menuLinkEntity);
 
-    drupal_set_message('Menu Items Imported successfully', 'status');
-    parent::submitForm($form, $form_state);
+    }
+    if(count($invalidMenus)){
+      $this->messenger()->addError($this->t('Menu(s) @menus not found',['@menus'=>implode(',',$invalidMenus)]));
+    }else{
+      $this->messenger()->addStatus($this->t('Menu(s) imported successfully'));
+    }
   }
 
 }

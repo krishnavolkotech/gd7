@@ -250,15 +250,16 @@ function gforum_preprocess_forums(&$variables) {
 function gforum_container_groups($root_tid) {
 
   // Make sure there is at least one Group type.
-  $group_types = entity_get_bundles('group');
-
+  //$group_types = entity_get_bundles('group');
+  $group_types = \Drupal::service('entity_type.bundle.info')->getBundleInfo('group');
   if (empty($group_types)) {
 
     $roles = \Drupal::currentUser()->getRoles();
 
     if (in_array('administrator', $roles)) {
       $txt = t('You must create a Group type before you can use Group Forum.');
-      drupal_set_message($txt, 'status');
+      //drupal_set_message($txt, 'status');
+      \Drupal::messenger()->addStatus($txt);
     }
 
     return array();
@@ -272,10 +273,10 @@ function gforum_container_groups($root_tid) {
 
   try {
     // Get the groups associated with the forum container.
-    $query = \Drupal::service('entity.query')
-      ->get('group')
-      ->condition($field, $root_tid);
-    $gids = $query->execute();
+    $storage = \Drupal::entityTypeManager()->getStorage('group');
+    $gids = $storage->getQuery()
+      ->condition($field, $root_tid)
+      ->execute();
   }
   catch (Exception $e) {
     $roles = \Drupal::currentUser()->getRoles();
@@ -286,8 +287,9 @@ function gforum_container_groups($root_tid) {
     \Drupal::logger('my_module')->warning($txt);
 
     if (in_array('administrator', $roles)) {
-      drupal_set_message($txt, 'warning');
+      \Drupal::messenger()->addWarning($txt);
     }
+    $gids = [];
   }
 
   if ($gids && $groups = Group::loadMultiple($gids)) {

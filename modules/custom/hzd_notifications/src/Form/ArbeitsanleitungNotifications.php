@@ -68,7 +68,7 @@ class ArbeitsanleitungNotifications extends FormBase {
     $default_send_interval = HzdNotificationsHelper::get_default_arbeitsanleitung_timeintervals($uid);
     $options = [\Drupal::config('cust_group.arbeitsanleitungen.settings')->get('arbeitsanleitungen_id') => 'Arbeitsanleitung'];
     //DELETE the previous default intervals for the submitted user
-    db_query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
+    \Drupal::database()->query("DELETE FROM {arbeitsanleitung_notifications__user_default_interval} where uid = :uid", array(":uid" => $uid));
 
     foreach ($options as $content_key => $content) {
       $subscriptions = $form_state->getValue('arbeitsanleitung');
@@ -82,6 +82,6 @@ class ArbeitsanleitungNotifications extends FormBase {
       }
     }
 
-    drupal_set_message(t('Arbeitsanleitung subscriptions are inserted sucessfully'), 'status');
+    \Drupal::messenger()->addMessage(t('Arbeitsanleitung subscriptions are inserted sucessfully'), 'status');
   }
 }

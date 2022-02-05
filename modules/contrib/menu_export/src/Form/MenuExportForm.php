@@ -2,6 +2,7 @@
 
 namespace Drupal\menu_export\Form;
 
+use Drupal\menu_link_content\Entity\MenuLinkContent;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use \Drupal\system\Entity\Menu;
@@ -33,10 +34,21 @@ class MenuExportForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildForm($form, $form_state);
-    $form['actions']['submit'] = array(
+    $menus = $this->config('menu_export.settings')
+      ->get('menus');
+    $menuEnt = Menu::loadMultiple($menus);
+    $menuData = array_map(function ($menuEnt) {
+      return $menuEnt->label();
+    }, $menuEnt);
+    $form['menus_to_export'] = [
+      '#theme'=>'item_list',
+      '#title'=>$this->t('Menus to Export'),
+      '#items'=>$menuData,
+    ];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Export Selected Menu Links'),
-    );
+    ];
     return $form;
   }
 
@@ -52,11 +64,11 @@ class MenuExportForm extends ConfigFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 		$this->exportMenus();
-		drupal_set_message('Menu Items exported successfully','status');
+		$this->messenger()->addStatus('Menu Items exported successfully');
     parent::submitForm($form, $form_state);
   }
-	
-	protected function exportMenus($menus){
+
+	protected function exportMenus(){
 	  $menus = $this->config('menu_export.settings')
     	->get('menus');
 		if(empty($menus)){
@@ -69,7 +81,7 @@ class MenuExportForm extends ConfigFormBase {
 			$menuLinkIds = \Drupal::entityQuery('menu_link_content')
 				->condition('menu_name',$menu)
 				->execute();
-			$menuLinks = \Drupal\menu_link_content\Entity\MenuLinkContent::loadMultiple($menuLinkIds);
+			$menuLinks = MenuLinkContent::loadMultiple($menuLinkIds);
 			foreach($menuLinks as $link){
 				if(!empty($link)){
 					$linkArray = $link->toArray();
@@ -79,7 +91,7 @@ class MenuExportForm extends ConfigFormBase {
 					//$data[$link->id()] = $linkData;
 					$config->set($link->id(),$linkData);
 					unset($linkData);
-				}				
+				}
 			}
 		}
 		$config->save();

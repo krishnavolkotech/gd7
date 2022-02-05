@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\xmlrpc_example\Controller\XmlRpcExampleController.
- */
-
 namespace Drupal\xmlrpc_example\Controller;
 
 use Drupal\Component\Utility\UrlHelper;
@@ -27,15 +22,15 @@ class XmlRpcExampleController extends ControllerBase {
   public function info() {
     // Make the XML-RPC request.
     $server = $this->getEndpoint();
-    $options = array('system.listMethods' => array());
+    $options = ['system.listMethods' => []];
     $supported_methods = xmlrpc($server, $options);
 
     // Tell the user if there was an error.
     if ($supported_methods === FALSE) {
-      drupal_set_message($this->t('Error return from xmlrpc(): Error: @errno, Message: @message', array(
+      $this->messenger()->addError($this->t('Error return from xmlrpc(): Error: @errno, Message: @message', [
         '@errno' => xmlrpc_errno(),
         '@message' => xmlrpc_error_msg(),
-      )));
+      ]));
     }
 
     // Process the results.

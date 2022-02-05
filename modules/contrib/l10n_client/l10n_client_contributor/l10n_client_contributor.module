@@ -85,7 +85,8 @@ function l10n_client_contributor_form_locale_translate_settings_validate($form, 
           $form_state->setErrorByName('l10n_client_contributor_server', t('The given server could not handle the v2.0 remote submission API.'));
         }
         else {
-          drupal_set_message(t('Verified that the specified server can handle remote string submissions. Supported languages: %languages.', array('%languages' => $response['languages'])));
+          $message = t('Verified that the specified server can handle remote string submissions. Supported languages: %languages.', array('%languages' => $response['languages']));
+          \Drupal::messenger()->addStatus($message);
         }
       }
       else {
@@ -216,10 +217,12 @@ function l10n_client_contributor_form_locale_translate_edit_form_submit($form, F
   // END mostly copy of TranslateEditForm::submitForm().
 
   if ($contributed) {
-    drupal_set_message(\Drupal::translation()->formatPlural($contributed, 'Just contributed a translation to the community. Great job!', 'Contributed @count translations to the community, rock!'));
+    $message = \Drupal::translation()->formatPlural($contributed, 'Just contributed a translation to the community. Great job!', 'Contributed @count translations to the community, rock!');
+    \Drupal::messenger()->addStatus($message);
   }
   if ($refused) {
-    drupal_set_message(t('Errors while contributing translations:') . '<ul><li>' . join('</li><li>', $refused) . '</li></ul>', 'error');
+    $message = t('Errors while contributing translations:') . '<ul><li>' . join('</li><li>', $refused) . '</li></ul>';
+    \Drupal::messenger()->addWarning($message);
   }
 }
 

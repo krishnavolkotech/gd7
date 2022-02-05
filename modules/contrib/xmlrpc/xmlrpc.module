@@ -15,11 +15,11 @@ function xmlrpc_help($route_name) {
     case 'help.page.xmlrpc':
       $output = '';
       $output .= '<h3>' . t('About') . '</h3>';
-      $output .= '<p>' . t('The XML-RPC module gives external systems the opportunity to communicate with the site through the <a href=":url_definition">XML-RPC protocol</a>. An XML-RPC client can communicate with the site by making a request to <a href=":url_endpoint">xmlrpc</a>. For more information, see <a href=":url_docs">the online documentation for the XML-RPC module</a>.', array(
-          ':url_definition' => 'https://en.wikipedia.org/wiki/XML-RPC',
-          ':url_endpoint' => Url::fromRoute('xmlrpc')->toString(),
-          ':url_docs' => 'https://drupal.org/documentation/modules/xmlrpc',
-        )) . '</p>';
+      $output .= '<p>' . t('The XML-RPC module gives external systems the opportunity to communicate with the site through the <a href=":url_definition">XML-RPC protocol</a>. An XML-RPC client can communicate with the site by making a request to <a href=":url_endpoint">xmlrpc</a>. For more information, see <a href=":url_docs">the online documentation for the XML-RPC module</a>.', [
+        ':url_definition' => 'https://en.wikipedia.org/wiki/XML-RPC',
+        ':url_endpoint' => Url::fromRoute('xmlrpc')->toString(),
+        ':url_docs' => 'https://drupal.org/documentation/modules/xmlrpc',
+      ]) . '</p>';
       return $output;
   }
 }
@@ -54,7 +54,7 @@ function xmlrpc_help($route_name) {
  *
  * @ingroup third_party
  */
-function xmlrpc($url, array $args, array $headers = array()) {
+function xmlrpc($url, array $args, array $headers = []) {
   module_load_include('inc', 'xmlrpc');
   return _xmlrpc($url, $args, $headers);
 }

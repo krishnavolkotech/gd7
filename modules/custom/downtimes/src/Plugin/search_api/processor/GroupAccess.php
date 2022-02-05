@@ -4,6 +4,7 @@ namespace Drupal\downtimes\Plugin\search_api\processor;
 
 use Drupal\comment\CommentInterface;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Database\Database;
 use Psr\Log\LoggerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Session\AnonymousUserSession;
@@ -51,11 +52,12 @@ class GroupAccess extends ProcessorPluginBase {
     $text = $query->getKeys();
     $val = isset($text[0])?$text[0]:'';
     $conditions = $query->createConditionGroup('OR');
+    $connection = Database::getConnection();
     $conditions->addCondition('gid', $userGroups, 'IN')
-      ->addCondition('field_group_body', db_like($val) . '%', 'LIKE')
-      ->addCondition('label_1', db_like($val) . '%', 'LIKE')
-      ->addCondition('field_einfuehrung', db_like($val) . '%', 'LIKE')
-      ->addCondition('field_description', db_like($val) . '%', 'LIKE');
+      ->addCondition('field_group_body', $connection->escapeLike($val) . '%', 'LIKE')
+      ->addCondition('label_1', $connection->escapeLike($val) . '%', 'LIKE')
+      ->addCondition('field_einfuehrung', $connection->escapeLike($val) . '%', 'LIKE')
+      ->addCondition('field_description', $connection->escapeLike($val) . '%', 'LIKE');
     $query->addConditionGroup($conditions);
 //    dump($query->getKeys());
 //    pr($userGroups);exit;

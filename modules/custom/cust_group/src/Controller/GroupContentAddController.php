@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\group\Entity\Controller\GroupContentController;
 use Drupal\group\Entity\GroupInterface;
-use Drupal\user\PrivateTempStoreFactory;
+use Drupal\Core\TempStore\PrivateTempStoreFactory;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use \Drupal\Core\Session\AccountProxyInterface;
@@ -25,7 +25,7 @@ class GroupContentAddController extends GroupContentController {
 
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('user.private_tempstore'),
+      $container->get('tempstore.private'),
       $container->get('entity_type.manager'),
       $container->get('entity.form_builder'),
       $container->get('renderer'),

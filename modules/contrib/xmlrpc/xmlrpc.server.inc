@@ -22,33 +22,33 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 function xmlrpc_server(array $callbacks) {
   $xmlrpc_server = new stdClass();
   // Define built-in XML-RPC method names.
-  $defaults = array(
+  $defaults = [
     'system.multicall' => 'xmlrpc_server_multicall',
-    array(
+    [
       'system.methodSignature',
       'xmlrpc_server_method_signature',
-      array('array', 'string'),
+      ['array', 'string'],
       'Returns an array describing the return type and required parameters of a method.',
-    ),
-    array(
+    ],
+    [
       'system.getCapabilities',
       'xmlrpc_server_get_capabilities',
-      array('struct'),
+      ['struct'],
       'Returns a struct describing the XML-RPC specifications supported by this server.',
-    ),
-    array(
+    ],
+    [
       'system.listMethods',
       'xmlrpc_server_list_methods',
-      array('array'),
+      ['array'],
       'Returns an array of available methods on this server.',
-    ),
-    array(
+    ],
+    [
       'system.methodHelp',
       'xmlrpc_server_method_help',
-      array('string', 'string'),
+      ['string', 'string'],
       'Returns a documentation string for the specified method.',
-    ),
-  );
+    ],
+  ];
   // We build an array of all method names by combining the built-ins
   // with those defined by modules implementing the _xmlrpc hook.
   // Built-in methods are overridable.
@@ -81,7 +81,7 @@ function xmlrpc_server(array $callbacks) {
     return xmlrpc_server_error(-32600, t('Server error. Invalid XML-RPC. Request must be a methodCall.'));
   }
   if (!isset($xmlrpc_server->message->params)) {
-    $xmlrpc_server->message->params = array();
+    $xmlrpc_server->message->params = [];
   }
   xmlrpc_server_set($xmlrpc_server);
   $result = xmlrpc_server_call($xmlrpc_server, $xmlrpc_server->message->methodname, $xmlrpc_server->message->params);
@@ -136,10 +136,10 @@ function xmlrpc_server_error($error, $message = FALSE) {
  */
 function xmlrpc_server_output($xml) {
   $xml = '<?xml version="1.0" encoding="utf-8" ?>' . "\n" . $xml;
-  $headers = array(
+  $headers = [
     'Content-Length' => strlen($xml),
     'Content-Type' => 'text/xml; charset=utf-8',
-  );
+  ];
   return new Response($xml, 200, $headers);
 }
 
@@ -192,7 +192,7 @@ function xmlrpc_server_get() {
 function xmlrpc_server_call($xmlrpc_server, $method_name, array $args) {
   // Make sure parameters are in an array.
   if ($args && !is_array($args)) {
-    $args = array($args);
+    $args = [$args];
   }
   // Has this method been mapped to a Drupal function by us or by modules?
   if (!isset($xmlrpc_server->callbacks[$method_name])) {
@@ -257,7 +257,7 @@ function xmlrpc_server_call($xmlrpc_server, $method_name, array $args) {
   }
 
   if (!function_exists($method)) {
-    return xmlrpc_error(-32601, t('Server error. Requested function @method does not exist.', array("@method" => $method)));
+    return xmlrpc_error(-32601, t('Server error. Requested function @method does not exist.', ["@method" => $method]));
   }
   // Call the mapped function.
   return call_user_func_array($method, $args);
@@ -279,7 +279,7 @@ function xmlrpc_server_call($xmlrpc_server, $method_name, array $args) {
  */
 function xmlrpc_server_multicall(array $method_calls) {
   // See http://www.xmlrpc.com/discuss/msgReader$1208
-  $return = array();
+  $return = [];
   $xmlrpc_server = xmlrpc_server_get();
   foreach ($method_calls as $call) {
     $ok = TRUE;
@@ -296,13 +296,13 @@ function xmlrpc_server_multicall(array $method_calls) {
       $result = xmlrpc_server_call($xmlrpc_server, $method, $params);
     }
     if (is_object($result) && !empty($result->is_error)) {
-      $return[] = array(
+      $return[] = [
         'faultCode' => $result->code,
         'faultString' => $result->message,
-      );
+      ];
     }
     else {
-      $return[] = array($result);
+      $return[] = [$result];
     }
   }
   return $return;
@@ -332,24 +332,24 @@ function xmlrpc_server_list_methods() {
  * @see http://groups.yahoo.com/group/xml-rpc/message/2897
  */
 function xmlrpc_server_get_capabilities() {
-  return array(
-    'xmlrpc' => array(
+  return [
+    'xmlrpc' => [
       'specUrl' => 'http://www.xmlrpc.com/spec',
       'specVersion' => 1,
-    ),
-    'faults_interop' => array(
+    ],
+    'faults_interop' => [
       'specUrl' => 'http://xmlrpc-epi.sourceforge.net/specs/rfc.fault_codes.php',
       'specVersion' => 20010516,
-    ),
-    'system.multicall' => array(
+    ],
+    'system.multicall' => [
       'specUrl' => 'http://www.xmlrpc.com/discuss/msgReader$1208',
       'specVersion' => 1,
-    ),
-    'introspection' => array(
+    ],
+    'introspection' => [
       'specUrl' => 'http://scripts.incutio.com/xmlrpc/introspection.html',
       'specVersion' => 1,
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -364,24 +364,24 @@ function xmlrpc_server_get_capabilities() {
  * @param string $methodname
  *   Name of method to return a method signature for.
  *
- * @return array
+ * @return array|object
  *   An array of arrays of types, each of the arrays representing one method
- *   signature of the function that $methodname maps to.
+ *   signature of the function that $methodname maps to. Or an error object.
  */
 function xmlrpc_server_method_signature($methodname) {
   $xmlrpc_server = xmlrpc_server_get();
   if (!isset($xmlrpc_server->callbacks[$methodname])) {
-    return xmlrpc_error(-32601, t('Server error. Requested method @methodname not specified.', array("@methodname" => $methodname)));
+    return xmlrpc_error(-32601, t('Server error. Requested method @methodname not specified.', ["@methodname" => $methodname]));
   }
   if (!is_array($xmlrpc_server->signatures[$methodname])) {
-    return xmlrpc_error(-32601, t('Server error. Requested method @methodname signature not specified.', array("@methodname" => $methodname)));
+    return xmlrpc_error(-32601, t('Server error. Requested method @methodname signature not specified.', ["@methodname" => $methodname]));
   }
   // We array of types.
-  $return = array();
+  $return = [];
   foreach ($xmlrpc_server->signatures[$methodname] as $type) {
     $return[] = $type;
   }
-  return array($return);
+  return [$return];
 }
 
 /**

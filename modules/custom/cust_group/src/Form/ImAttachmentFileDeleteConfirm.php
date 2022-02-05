@@ -5,6 +5,8 @@ namespace Drupal\cust_group\Form;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Entity\EntityTypeManager;
 
 class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
 
@@ -14,6 +16,19 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
      */
     protected $fid;
     protected $nid;
+
+    private $entityTypeManager;
+
+    public function __construct(EntityTypeManager $entityTypeManager)
+    {
+        $this->entityTypeManager = $entityTypeManager;
+    }
+
+    public static function create(ContainerInterface $container)
+    {
+        $entityTypeManager = $container->get('entity_type.manager');
+        return new static($entityTypeManager);
+    }
 
     /**
      * {@inheritdoc}.
@@ -88,8 +103,12 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
         foreach ($node->get('field_im_upload_page_files')->getValue() as $file_field) {
           if ($file_field['target_id'] == $fid) {
             $node->get('field_im_upload_page_files')->removeItem($count);
-            file_delete($file_field['target_id']);
-            $entity = \Drupal::entityTypeManager()->getStorage('cust_group_imattachments_data')->loadByProperties(['fid' => $fid]);
+            //            file_delete($file_field['target_id']);
+            $filestorage = $this->entityTypeManager->getStorage('file');
+            $file = $filestorage->load($fid);
+            $filestorage->delete([$file]);
+	        //\Drupal::service('file_system')->delete($file_field['target_id']);
+            $entity = $this->entityTypeManager->getStorage('cust_group_imattachments_data')->loadByProperties(['fid' => $fid]);
             $entity = reset($entity);
             if($entity) {
              $entity->delete();
@@ -101,7 +120,7 @@ class ImAttachmentFileDeleteConfirm extends ConfirmFormBase {
         $node->save();
         $exposedFilterData = \Drupal::request()->query->all();
         $form_state->setRedirect('entity.node.canonical', ['node' => 826],['query' => $exposedFilterData]);
-        drupal_set_message('File was successfully deleted!');
+        \Drupal::messenger()->addMessage('File was successfully deleted!');
     }
 }
 

@@ -140,7 +140,7 @@ class FloodUnblockManager implements FloodUnblockManagerInterface {
   public function getEvents() {
     return [
       'user.failed_login_ip' => [
-        'type' => 'user',
+        'type' => 'ip',
         'label' => $this->t('User failed login IP'),
       ],
       'user.failed_login_user' => [
@@ -151,14 +151,47 @@ class FloodUnblockManager implements FloodUnblockManagerInterface {
         'type' => 'user',
         'label' => $this->t('User failed http login'),
       ],
+      'user.password_request_ip' => [
+        'type' => 'user',
+        'label' => $this->t('User failed password request IP'),
+      ],
+      'user.password_request_user' => [
+        'type' => 'user',
+        'label' => $this->t('User failed password request user'),
+      ],
     ];
   }
 
   /**
    * {@inheritdoc}
    */
+  public function getEventLabel($event) {
+    $event_mapping = $this->getEvents();
+    if (array_key_exists($event, $event_mapping)) {
+      return $event_mapping[$event]['label'];
+    }
+
+    return ucfirst(str_replace(['.', '_'], ' ', $event));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEventType($event) {
+    $event_mapping = $this->getEvents();
+    if (array_key_exists($event, $event_mapping)) {
+      return $event_mapping[$event]['type'];
+    }
+
+    $parts = explode('.', $event);
+    return $parts[0];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function isBlocked($identifier, $event) {
-    $type = $this->getEvents()[$event]['type'];
+    $type = $this->getEventType($event);
     switch ($type) {
       case 'user':
         return !$this->flood->isAllowed($event, $this->config->get('user_limit'), $this->config->get('user_window'), $identifier);

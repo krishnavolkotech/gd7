@@ -47,7 +47,7 @@ class ProblemsController extends ControllerBase {
 	  $string = 'archived';
 	  $output .= "<div class = 'downtime_notes'>" . variable_get('archived_downtimes', ' ') . '</div>';
 	  $output .= "<div class ='curr_incidents_form'>" . drupal_get_form('downtimes_filters', $string);
-	  $output .= "<div class = 'archive_reset_form'>" . drupal_render(reset_filter_forms($string)) . "</div></div>";
+	  $output .= "<div class = 'archive_reset_form'>" . \Drupal::service('renderer')->render(reset_filter_forms($string)) . "</div></div>";
 	  $sql_wheres = $_SESSION['incident_sql_where'] ? $_SESSION['incident_sql_where'] : $sql_where;
 	  $service = $_SESSION['incident_service'] ? $_SESSION['incident_service'] : NULL;
 	  $state = $_SESSION['incident_state'] ? $_SESSION['incident_state'] : NULL;

@@ -152,7 +152,7 @@ class BlockUploadForm extends FormBase {
         $new_file['description'] = $desc;
       }
       $node->get($field_name)->appendItem($new_file);
-      drupal_set_message(t('File was successfully uploaded!'));
+      $this->messenger()->addMessage(t('File was successfully uploaded!'));
     }
     $node->save();
   }

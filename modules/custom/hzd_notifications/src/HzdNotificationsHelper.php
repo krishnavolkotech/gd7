@@ -171,7 +171,7 @@ class HzdNotificationsHelper {
    */
   static function insert_default_quickinfo_user_intervel($type, $intervel, $uid) {
     $quickinfo_record = array('uid' => $uid, 'affected_service' => $type, 'default_send_interval' => $intervel);
-    db_insert('quickinfo_notifications_user_default_interval')->fields($quickinfo_record)->execute();
+     \Drupal::database()->insert('quickinfo_notifications_user_default_interval')->fields($quickinfo_record)->execute();
   }
 
   /*
@@ -188,7 +188,7 @@ class HzdNotificationsHelper {
    */
   static function insert_default_arbeitsanleitung_user_intervel($uid, $intervel) {
     $arbeitsanleitung_record = array('uid' => $uid, 'default_send_interval' => $intervel);
-    return db_insert('arbeitsanleitung_notifications__user_default_interval')->fields($arbeitsanleitung_record)->execute();
+    return  \Drupal::database()->insert('arbeitsanleitung_notifications__user_default_interval')->fields($arbeitsanleitung_record)->execute();
   }
 
   // get default interval of a particular content type
@@ -380,7 +380,7 @@ class HzdNotificationsHelper {
       }
     }
     // get priority of user services.
-    $get_override_services = db_query("SELECT service_id, send_interval, type FROM {service_notifications_override}
+    $get_override_services =  \Drupal::database()->query("SELECT service_id, send_interval, type FROM {service_notifications_override}
                              WHERE uid = :uid and rel_type = :rel_type", array(":uid" => $uid, ":rel_type" => $rel_type))->fetchAll();
     if (count($get_override_services) > 0) {
       foreach ($get_override_services as $get_override_services_vals) {
@@ -471,7 +471,7 @@ class HzdNotificationsHelper {
     $limit = " limit ". $limitStart ." , ". $limitEnd;
 
     $sql = $select . $where. $limit;
-    $users = db_query($sql, array(':gid' => $gid))->fetchAll();
+    $users =  \Drupal::database()->query($sql, array(':gid' => $gid))->fetchAll();
     if (count($users) > 0) {
       foreach($users as $uid) {
         $user = \Drupal\user\Entity\User::load($uid->uid);

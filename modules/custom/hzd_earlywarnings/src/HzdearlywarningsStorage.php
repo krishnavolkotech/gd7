@@ -42,7 +42,7 @@ class HzdearlywarningsStorage
         $lastposting = array('data' => t('Last Posting'), 'class' => 'last-posting-hdr');
         $header = array($release, $earlywarnings, $responses, $lastposting);
         // $select = "SELECT  n.nid as nid , title as title, n.created as created , n.uid as uid , field_release_service_value as service, cfer.field_earlywarning_release_value as release_id ";.
-        $query = db_select('node_field_data', 'nfd');
+        $query = \Drupal::database()->select('node_field_data', 'nfd');
         $query->Fields('nfd', array('nid', 'title', 'created', 'uid'));
         $query->addField('field_release_service_value', 'service');
         $query->addField('nfer.field_earlywarning_release_value', 'release_id');
@@ -84,7 +84,7 @@ class HzdearlywarningsStorage
         // $group_group = " GROUP BY dep.release_id ORDER By dep.created DESC ";
         // $group_sql = $group_select . " from (" . $select . $from . $where . $in_order . " ) dep " . $group_group;.
         $query_result = $query->execute();
-        $group_sql = db_select('$query_result', 'sep');
+        $group_sql = \Drupal::database()->select('$query_result', 'sep');
         $group_sql->Fields('dep', array('nid', 'title', 'created', 'uid', 'service', 'release_id'));
         $group_sql->groupBy('dep.release_id');
         $group_sql->orderBy('dep.created', 'DESC');
@@ -95,7 +95,7 @@ class HzdearlywarningsStorage
          * $earlywarnings_query = pager_query($group_sql, $page_limit, 0 , $count_query);
          * }
          * else {
-         * $earlywarnings_query = db_query($group_sql, $page_limit);
+         * $earlywarnings_query = \Drupal::database()->query($group_sql, $page_limit);
          * }
          */
         if ($page_limit) {
@@ -104,7 +104,7 @@ class HzdearlywarningsStorage
             $earlywarnings_query = $pager->execute()->fetchAll();
         } else {
             $earlywarnings_query = $group_sql->execute()->fetchAll();
-            // $earlywarnings_query = db_query($sql, $page_limit, 0 , $count_query);.
+            // $earlywarnings_query = \Drupal::database()->query($sql, $page_limit, 0 , $count_query);.
         }
         // While ($earlywarnings = db_fetch_array($earlywarnings_query)) {.
         foreach ($earlywarnings_query as $earlywarnings) {
@@ -114,19 +114,18 @@ class HzdearlywarningsStorage
                 $warning_icon = "<img src = '/" . $warning_imgpath . "'>";
                 $warningclass = ($warnings_lastpost['warnings'] >= 10 ? 'warningcount_second' : 'warningcount');
                 
-                $title_query = db_select('node_field_data', 'nfd')->Fields('nfd', array('title'))->condition('nid', $earlywarnings->release_id, '=')->execute()->fetchCol();
+                $title_query = \Drupal::database()->select('node_field_data', 'nfd')->Fields('nfd', array('title'))->condition('nid', $earlywarnings->release_id, '=')->execute()->fetchCol();
                 
                 /**
-                 * db_result(db_query("SELECT count(*) FROM {comments} c, {content_field_earlywarning_release} ctew
-                 * WHERE c.nid =  ctew.nid and ctew.field_earlywarning_release_value = %d", $earlywarnings->release_id))
+                 * \Drupal::database()->result(\Drupal::database()->query("SELECT count(*) FROM {comments} c, {content_field_earlywarning_release} ctew WHERE c.nid =  ctew.nid and ctew.field_earlywarning_release_value = %d", $earlywarnings->release_id))
                  */
-                $comment_count_query = db_select('comment', 'c');
+                $comment_count_query = \Drupal::database()->select('comment', 'c');
                 $comment_count_query->addField('*');
                 $comment_count_query->join('node__field_earlywarning_release', 'nfer', 'c.nid =  nfer.entity_id');
                 $comment_count_query->condition('nfer.field_earlywarning_release_value', $earlywarnings->release_id, '=');
                 $comment_count_query->execute->fetchCol();
                 $elements = array(
-                    // db_result(db_query("SELECT title FROM {node} where nid = %d", $earlywarnings->release_id))
+                    // db_result(\Drupal::database()->query("SELECT title FROM {node} where nid = %d", $earlywarnings->release_id))
                     array('data' => $title_query['title'], 'class' => 'releases-cell'),
                     array('data' => ($warnings_lastpost['warnings'] ? l("<span class = '" .
                         $warningclass . "'>" . $warnings_lastpost['warnings'] . "</span>",
@@ -304,7 +303,7 @@ class HzdearlywarningsStorage
             $responses['uid'] = $last_comment->uid->value;
             $responses['last_posted'] = date('d.m.Y', $last_comment->created->value);
             if ($responses['last_posted']) {
-                $user_query = db_select('cust_profile', 'cp');
+                $user_query = \Drupal::database()->select('cust_profile', 'cp');
                 $user_query->condition('cp.uid', $last_comment->getOwnerId(), '=')
                     ->fields('cp', array('firstname', 'lastname'));
                 $author = $user_query->execute()->fetchAssoc();
@@ -329,8 +328,8 @@ class HzdearlywarningsStorage
      */
     public function get_early_warning_lastposting_count($release_id) {
         
-        // $sql = db_query("SELECT n.nid, n.uid, n.created  FROM {node} n , {content_field_earlywarning_release} ctew   WHERE n.nid = ctew.nid and field_earlywarning_release_value = %d and n.type = '%s' order by created DESC", $release_id, 'early_warnings');.
-        $sql_query = db_select('node', 'n');
+        // $sql = \Drupal::database()->query("SELECT n.nid, n.uid, n.created  FROM {node} n , {content_field_earlywarning_release} ctew   WHERE n.nid = ctew.nid and field_earlywarning_release_value = %d and n.type = '%s' order by created DESC", $release_id, 'early_warnings');.
+        $sql_query = \Drupal::database()->select('node', 'n');
         $sql_query->Fields('n', array('nid', 'uid', 'created'));
         $sql_query->join('node__field_earlywarning_release', 'nfer', 'n.nid = nfer.entity_id');
         $sql_query->condition('nfer.field_earlywarning_release_value', $release_id, '=');
@@ -365,8 +364,8 @@ class HzdearlywarningsStorage
     public function earlywarnings_lastposting($earlywarnings_nid) {
         $nids = implode(',', $earlywarnings_nid);
         
-        // $resonses_sql_query = db_query("select nid, uid, timestamp from {comments} WHERE nid in (%s) order by timestamp DESC limit 1", $nids);.
-        $resonses_sql_query = db_select('comment', 'c');
+        // $resonses_sql_query = \Drupal::database()->query("select nid, uid, timestamp from {comments} WHERE nid in (%s) order by timestamp DESC limit 1", $nids);.
+        $resonses_sql_query = \Drupal::database()->select('comment', 'c');
         $resonses_sql_query->Fields('c', array('nid', 'uid', 'timestamp'));
         $resonses_sql_query->condition('nid', $nids, 'IN');
         $resonses_sql_query->orderBy('timestamp', 'DESC');
@@ -386,7 +385,7 @@ class HzdearlywarningsStorage
     static public function early_warning_text() {
 //        $create_icon_path = drupal_get_path('module', 'hzd_release_management') . '/images/create-icon.png';
 //        $create_icon = "<img height=15 src = '/" . $create_icon_path . "'>";
-        $body = db_query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
+        $body = \Drupal::database()->query("SELECT body_value FROM {node__body} WHERE entity_id = :eid", array(":eid" => EARLYWARNING_TEXT))->fetchField();
 //        $url = Url::fromRoute('hzd_earlywarnings.add_early_warnings', ['group' => RELEASE_MANAGEMENT]);
 //        $link = \Drupal::service('link_generator')->generate(t($create_icon), $url->setOptions(['query' => ['destination' => 'group/' . RELEASE_MANAGEMENT . '/early-warnings']]));
         $output = "<div class = 'earlywarnings_text'>" . $body;

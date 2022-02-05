@@ -188,6 +188,17 @@ class ServerForm extends EntityForm {
   }
 
   /**
+   * {@inheritdoc}
+   */
+  protected function actions(array $form, FormStateInterface $form_state) {
+    if ($form === []) {
+      return [];
+    }
+
+    return parent::actions($form, $form_state);
+  }
+
+  /**
    * Builds the backend-specific configuration form.
    *
    * @param array $form
@@ -266,7 +277,7 @@ class ServerForm extends EntityForm {
       // be discarded.
       $input = &$form_state->getUserInput();
       $input['backend_config'] = [];
-      $new_backend = $this->backendPluginManager->createInstance($form_state->getValues()['backend']);
+      $new_backend = $this->backendPluginManager->createInstance($form_state->getValue('backend'));
       if ($new_backend instanceof PluginFormInterface) {
         $form_state->setRebuild();
       }

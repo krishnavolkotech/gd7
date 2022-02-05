@@ -443,7 +443,7 @@ function tour_builder_patch_form_submit($form, &$form_state) {
   // TODO: create patch file
   $filename = _tour_builder_generate_patch($active_tour, $module, $nid, $cid);
   if (!empty($filename)) {
-    drupal_set_message("You may download: " . l('Patch file', $filename));
+    \Drupal::messenger()->addStatus("You may download: " . l('Patch file', $filename));
     // TODO: create file download response
   }
 }
@@ -460,13 +460,13 @@ function tour_builder_apply_patch_form($form, &$form_state, $short_name = NULL) 
 
     $tour = config_typed()->get($name);
     if (empty($tour)) {
-      drupal_set_message('Tour not found');
+      \Drupal::messenger()->addStatus('Tour not found');
       return array();
     }
     $values = $tour->getValue();
     if (empty($values)) {
       // TODO: return proper response
-      drupal_set_message('Tour also not found');
+      \Drupal::messenger()->addStatus('Tour also not found');
       return array();
     }
     $module = $values['module'];
@@ -564,7 +564,7 @@ function _tour_builder_generate_patch($active_tour, $module, $nid, $comment) {
   if ($error) {
     // what is error 127?
     watchdog('tour_builder', "Shell error: %error \n %lines", array('%error' => $error, '%lines' => join("\n", $output)), WATCHDOG_WARNING);
-    drupal_set_message("Unable to generate patch file. Error: " . $error, 'error');
+    \Drupal::messenger()->addError("Unable to generate patch file. Error: " . $error);
     return;
   }
 
@@ -601,7 +601,7 @@ function _tour_builder_apply_patch($nid, $destination, $tour = NULL) {
     );
     // what is error 127?
     watchdog('tour_builder', "Shell error: %error \n %lines", array('%error' => $error, '%lines' => join("\n", $output)), WATCHDOG_WARNING);
-    drupal_set_message("Unable to apply given patch. Error: " . $error, 'error');
+    \Drupal::messenger()->addError("Unable to apply given patch. Error: " . $error);
     return;
   }
 }

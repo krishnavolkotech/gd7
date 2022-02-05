@@ -40,7 +40,7 @@ class ReleaseCommentsFilterForm extends FormBase {
 
     $release_type = $filter_value['release_type'];
     if (isset($group_id) && $group_id != RELEASE_MANAGEMENT) {
-      $default_type = db_query("SELECT release_type FROM "
+      $default_type = \Drupal::database()->query("SELECT release_type FROM "
         . "{default_release_type} WHERE group_id = :gid",
         array(":gid" => $group_id))->fetchField();
       $default_type = isset($release_type) ? $release_type :
@@ -49,7 +49,7 @@ class ReleaseCommentsFilterForm extends FormBase {
       $default_type = $release_type ? $release_type : KONSONS;
     }
 
-    $services_obj = db_query("SELECT n.title, n.nid 
+    $services_obj = \Drupal::database()->query("SELECT n.title, n.nid 
                      FROM {node_field_data} n, {group_releases_view} grv, 
                      {node__release_type} nrt 
                      WHERE n.nid = grv.service_id and n.nid = nrt.entity_id 
@@ -72,7 +72,7 @@ class ReleaseCommentsFilterForm extends FormBase {
     $form['#suffix'] = "</div>";
 
     $container = \Drupal::getContainer();
-    $terms = $container->get('entity.manager')
+    $terms = $container->get('entity_type.manager')
       ->getStorage('taxonomy_term')->loadTree('release_type');
 
     foreach ($terms as $key => $value) {

@@ -5,31 +5,36 @@
  * The Queue Mail module.
  */
 
-
-/**
- * This is the name of our Drupal queue that stores emails waiting to be sent.
- */
-define('QUEUE_MAIL_QUEUE_NAME', 'queue_mail');
-
 /**
  * Get an instance of the mail queue.
  */
 function _queue_mail_get_queue() {
-  return \Drupal::queue(QUEUE_MAIL_QUEUE_NAME, TRUE);
+  return \Drupal::queue('queue_mail', TRUE);
 }
 
 /**
  * Implements hook_mail_alter().
  */
 function queue_mail_mail_alter(&$message) {
-  $config = Drupal::config('queue_mail.settings');
+  $message['queued'] = FALSE;
+
+  // Avoid queueing a message if it is not going to be sent, as it would be
+  // skipped by our queue worker anyway.
+  if (empty($message['send'])) {
+    return;
+  }
+
+  $config = \Drupal::config('queue_mail.settings');
   $mail_keys = $config->get('queue_mail_keys');
 
   if (\Drupal::service('path.matcher')->matchPath($message['id'], $mail_keys)) {
     // Save theme that is used to format mail.
     $message['theme'] = \Drupal::service('theme.manager')->getActiveTheme()->getName();
+    // Add message to the queue.
+    $id = _queue_mail_get_queue()->createItem($message);
+    // Was the message added to queue?
+    $message['queued'] = $id ? TRUE : FALSE;
     // Prevent the message from being sent instantly.
-    _queue_mail_get_queue()->createItem($message);
     $message['send'] = FALSE;
   }
 }
@@ -47,4 +52,15 @@ function queue_mail_module_implements_alter(&$implementations, $hook) {
       $implementations['queue_mail'] = $group;
     }
   }
+}
+
+/**
+ * Implements hook_queue_info_alter().
+ */
+function queue_mail_queue_info_alter(&$queues) {
+  $queue_time = \Drupal::config('queue_mail.settings')->get('queue_mail_queue_time');
+  if (!empty($queue_time)) {
+    $queues['queue_mail']['cron']['time'] = $queue_time;
+  }
+
 }

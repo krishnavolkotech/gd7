@@ -223,7 +223,9 @@ class FormValidator implements FormValidatorInterface {
    *   not be repeated in the submission step.
    * @param $form_id
    *   A unique string identifying the form for validation, submission,
-   *   theming, and hook_form_alter functions.
+   *   theming, and hook_form_alter functions. Is only present on the initial
+   *   call to the method, which receives the entire form array as the $element,
+   *   and not on recursive calls.
    */
   protected function doValidateForm(&$elements, FormStateInterface &$form_state, $form_id = NULL) {
     // Recurse through all children, sorting the elements so that the order of
@@ -328,12 +330,7 @@ class FormValidator implements FormValidatorInterface {
    */
   protected function performRequiredValidation(&$elements, FormStateInterface &$form_state) {
     // Verify that the value is not longer than #maxlength.
-    $length = 0;
-    if (!isset($elements['#value'])) {
-      $length = count($elements['#value']) > 0 ? mb_strlen(str_replace(array("\n", "\r\n", "\r"), '', $elements['#value'])): 0;
-    }
-
-    if (isset($elements['#maxlength']) && $length > $elements['#maxlength']) {
+    if (isset($elements['#maxlength']) && mb_strlen($elements['#value']) > $elements['#maxlength']) {
       $form_state->setError($elements, $this->t('@name cannot be longer than %max characters but is currently %length characters long.', ['@name' => empty($elements['#title']) ? $elements['#parents'][0] : $elements['#title'], '%max' => $elements['#maxlength'], '%length' => mb_strlen($elements['#value'])]));
     }
 
