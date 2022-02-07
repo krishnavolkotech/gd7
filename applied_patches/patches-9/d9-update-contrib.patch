@@ -1,0 +1,378 @@
+diff --git a/modules/contrib/gforum/gforum.module b/modules/contrib/gforum/gforum.module
+index a8ce062c8..bdf4c4ef7 100644
+--- a/modules/contrib/gforum/gforum.module
++++ b/modules/contrib/gforum/gforum.module
+@@ -258,7 +258,8 @@ function gforum_container_groups($root_tid) {
+ 
+     if (in_array('administrator', $roles)) {
+       $txt = t('You must create a Group type before you can use Group Forum.');
+-      drupal_set_message($txt, 'status');
++      //drupal_set_message($txt, 'status');
++      \Drupal::messenger()->addStatus($txt);
+     }
+ 
+     return array();
+@@ -286,7 +287,8 @@ function gforum_container_groups($root_tid) {
+     \Drupal::logger('my_module')->warning($txt);
+ 
+     if (in_array('administrator', $roles)) {
+-      drupal_set_message($txt, 'warning');
++      //drupal_set_message($txt, 'warning');
++      \Drupal::messenger()->addWarning($txt);
+     }
+     $gids = [];
+   }
+diff --git a/modules/contrib/l10n_client/l10n_client_contributor/l10n_client_contributor.module b/modules/contrib/l10n_client/l10n_client_contributor/l10n_client_contributor.module
+index 273278720..9eae7b2e4 100644
+--- a/modules/contrib/l10n_client/l10n_client_contributor/l10n_client_contributor.module
++++ b/modules/contrib/l10n_client/l10n_client_contributor/l10n_client_contributor.module
+@@ -85,7 +85,8 @@ function l10n_client_contributor_form_locale_translate_settings_validate($form,
+           $form_state->setErrorByName('l10n_client_contributor_server', t('The given server could not handle the v2.0 remote submission API.'));
+         }
+         else {
+-          drupal_set_message(t('Verified that the specified server can handle remote string submissions. Supported languages: %languages.', array('%languages' => $response['languages'])));
++          $message = t('Verified that the specified server can handle remote string submissions. Supported languages: %languages.', array('%languages' => $response['languages']));
++          \Drupal::messenger()->addStatus($message);
+         }
+       }
+       else {
+@@ -216,10 +217,12 @@ function l10n_client_contributor_form_locale_translate_edit_form_submit($form, F
+   // END mostly copy of TranslateEditForm::submitForm().
+ 
+   if ($contributed) {
+-    drupal_set_message(\Drupal::translation()->formatPlural($contributed, 'Just contributed a translation to the community. Great job!', 'Contributed @count translations to the community, rock!'));
++    $message = \Drupal::translation()->formatPlural($contributed, 'Just contributed a translation to the community. Great job!', 'Contributed @count translations to the community, rock!');
++    \Drupal::messenger()->addStatus($message);
+   }
+   if ($refused) {
+-    drupal_set_message(t('Errors while contributing translations:') . '<ul><li>' . join('</li><li>', $refused) . '</li></ul>', 'error');
++    $message = t('Errors while contributing translations:') . '<ul><li>' . join('</li><li>', $refused) . '</li></ul>';
++    \Drupal::messenger()->addWarning($message);
+   }
+ }
+ 
+diff --git a/modules/contrib/migrate_tools/src/Form/MigrationDeleteForm.php b/modules/contrib/migrate_tools/src/Form/MigrationDeleteForm.php
+index b28fa9be3..7b05a53a3 100644
+--- a/modules/contrib/migrate_tools/src/Form/MigrationDeleteForm.php
++++ b/modules/contrib/migrate_tools/src/Form/MigrationDeleteForm.php
+@@ -60,9 +60,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->entity->delete();
+ 
+     // Set a message that the entity was deleted.
+-    drupal_set_message(t('Migration %label was deleted.', array(
+-      '%label' => $this->entity->label(),
+-    )));
++    $message = t('Migration %label was deleted.', array('%label' => $this->entity->label()));
++    \Drupal::messenger()->addStatus($message);
+ 
+     // Redirect the user to the list controller when complete.
+     $form_state->setRedirectUrl($this->getCancelUrl());
+diff --git a/modules/contrib/migrate_tools/src/Form/MigrationFormBase.php b/modules/contrib/migrate_tools/src/Form/MigrationFormBase.php
+index 8eb8841cb..f09992696 100644
+--- a/modules/contrib/migrate_tools/src/Form/MigrationFormBase.php
++++ b/modules/contrib/migrate_tools/src/Form/MigrationFormBase.php
+@@ -180,11 +180,13 @@ public function save(array $form, FormStateInterface $form_state) {
+ 
+     if ($status == SAVED_UPDATED) {
+       // If we edited an existing entity...
+-      drupal_set_message($this->t('Migration %label has been updated.', array('%label' => $migration->label())));
++      $message = $this->t('Migration %label has been updated.', array('%label' => $migration->label()));
++      \Drupal::messenger()->addStatus($message);
+     }
+     else {
+       // If we created a new entity...
+-      drupal_set_message($this->t('Migration %label has been added.', array('%label' => $migration->label())));
++      $message = $this->t('Migration %label has been added.', array('%label' => $migration->label()));
++      \Drupal::messenger()->addStatus($message);
+     }
+ 
+     // Redirect the user back to the listing route after the save operation.
+diff --git a/modules/contrib/migrate_tools/src/Form/MigrationGroupDeleteForm.php b/modules/contrib/migrate_tools/src/Form/MigrationGroupDeleteForm.php
+index ac047f83d..d21ed7293 100644
+--- a/modules/contrib/migrate_tools/src/Form/MigrationGroupDeleteForm.php
++++ b/modules/contrib/migrate_tools/src/Form/MigrationGroupDeleteForm.php
+@@ -60,9 +60,8 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->entity->delete();
+ 
+     // Set a message that the entity was deleted.
+-    drupal_set_message(t('Migration group %label was deleted.', array(
+-      '%label' => $this->entity->label(),
+-    )));
++    $message= t('Migration group %label was deleted.', array('%label' => $this->entity->label()));
++    \Drupal::messenger()->addStatus($message);
+ 
+     // Redirect the user to the list controller when complete.
+     $form_state->setRedirectUrl($this->getCancelUrl());
+diff --git a/modules/contrib/migrate_tools/src/Form/MigrationGroupFormBase.php b/modules/contrib/migrate_tools/src/Form/MigrationGroupFormBase.php
+index 30229fe27..c88ded44d 100644
+--- a/modules/contrib/migrate_tools/src/Form/MigrationGroupFormBase.php
++++ b/modules/contrib/migrate_tools/src/Form/MigrationGroupFormBase.php
+@@ -170,11 +170,11 @@ public function save(array $form, FormStateInterface $form_state) {
+ 
+     if ($status == SAVED_UPDATED) {
+       // If we edited an existing entity...
+-      drupal_set_message($this->t('Migration group %label has been updated.', array('%label' => $migration_group->label())));
++      \Drupal::messenger()->addStatus($this->t('Migration group %label has been updated.', array('%label' => $migration_group->label())));
+     }
+     else {
+       // If we created a new entity...
+-      drupal_set_message($this->t('Migration group %label has been added.', array('%label' => $migration_group->label())));
++      \Drupal::messenger()->addStatus($this->t('Migration group %label has been added.', array('%label' => $migration_group->label())));
+     }
+ 
+     // Redirect the user back to the listing route after the save operation.
+diff --git a/modules/contrib/pdf_api/vendor/mikehaertl/phpwkhtmltopdf/src/Pdf.php b/modules/contrib/pdf_api/vendor/mikehaertl/phpwkhtmltopdf/src/Pdf.php
+index ac471cc7b..1560287b9 100644
+--- a/modules/contrib/pdf_api/vendor/mikehaertl/phpwkhtmltopdf/src/Pdf.php
++++ b/modules/contrib/pdf_api/vendor/mikehaertl/phpwkhtmltopdf/src/Pdf.php
+@@ -269,7 +269,7 @@ protected function createPdf()
+         $command->addArg($fileName, null, true);    // Always escape filename
+         if (!$command->execute()) {
+             $this->_error = $command->getError();
+-            drupal_set_message($command->getError(), 'error');
++            \Drupal::messenger()->addError($command->getError());
+             if (!(file_exists($fileName) && filesize($fileName)!==0 && $this->ignoreWarnings)) {
+                 return false;
+             }
+diff --git a/modules/contrib/piwik/tests/modules/piwik_test/src/Controller/PiwikTestController.php b/modules/contrib/piwik/tests/modules/piwik_test/src/Controller/PiwikTestController.php
+index 5c65b7bd7..62635bd30 100644
+--- a/modules/contrib/piwik/tests/modules/piwik_test/src/Controller/PiwikTestController.php
++++ b/modules/contrib/piwik/tests/modules/piwik_test/src/Controller/PiwikTestController.php
+@@ -17,10 +17,10 @@ class PiwikTestController extends ControllerBase {
+    */
+   public function drupalSetMessageTest() {
+     // Set some messages.
+-    drupal_set_message('Example status message.', 'status');
+-    drupal_set_message('Example warning message.', 'warning');
+-    drupal_set_message('Example error message.', 'error');
+-    drupal_set_message('Example error <em>message</em> with html tags and <a href="http://example.com/">link</a>.', 'error');
++    \Drupal::messenger()->addStatus(t('Example status message.'));
++    \Drupal::messenger()->addWarning(t('Example warning message.'));
++    \Drupal::messenger()->addError('Example error message.', 'error');
++    \Drupal::messenger()->addStatus(t('Example error <em>message</em> with html tags and <a href="http://example.com/">link</a>.'));
+ 
+     return [];
+   }
+diff --git a/modules/contrib/printable/src/Form/FormatConfigurationFormPdf.php b/modules/contrib/printable/src/Form/FormatConfigurationFormPdf.php
+index 08a984c8d..373349670 100755
+--- a/modules/contrib/printable/src/Form/FormatConfigurationFormPdf.php
++++ b/modules/contrib/printable/src/Form/FormatConfigurationFormPdf.php
+@@ -71,7 +71,7 @@ public function buildForm(array $form, FormStateInterface $form_state, $printabl
+       );
+     }
+     else {
+-      drupal_set_message($this->t('You are seeing no PDF generating tool because you have not installed any third party library using composer.'));
++      \Drupal::messenger()->addStatus($this->t('You are seeing no PDF generating tool because you have not installed any third party library using composer.'));
+     }
+     if ($mpdf_present) {
+       $form['settings']['print_pdf_pdf_tool']['#options'] += array('mPDF' => 'mPDF');
+diff --git a/modules/contrib/search_api_page/src/Form/SearchApiPageDeleteForm.php b/modules/contrib/search_api_page/src/Form/SearchApiPageDeleteForm.php
+index eadc3e2e7..3eb6a270b 100644
+--- a/modules/contrib/search_api_page/src/Form/SearchApiPageDeleteForm.php
++++ b/modules/contrib/search_api_page/src/Form/SearchApiPageDeleteForm.php
+@@ -43,7 +43,7 @@ public function getConfirmText() {
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->entity->delete();
+ 
+-    drupal_set_message($this->t('@search_page_page_label has been deleted.', ['@search_page_page_label' => $this->entity->label()]));
++    \Drupal::messenger()->addStatus($this->t('@search_page_page_label has been deleted.', ['@search_page_page_label' => $this->entity->label()]));
+ 
+     // Trigger router rebuild.
+     \Drupal::service('router.builder')->rebuild();
+diff --git a/modules/contrib/search_api_page/src/Form/SearchApiPageForm.php b/modules/contrib/search_api_page/src/Form/SearchApiPageForm.php
+index 03508a7d2..c20025b5e 100644
+--- a/modules/contrib/search_api_page/src/Form/SearchApiPageForm.php
++++ b/modules/contrib/search_api_page/src/Form/SearchApiPageForm.php
+@@ -278,13 +278,13 @@ public function save(array $form, FormStateInterface $form_state) {
+         // the edit form again.
+         if ($form_state->getValue('index') == $form_state->getValue('previous_index')) {
+           $form_state->setRedirectUrl($search_api_page->toUrl('collection'));
+-          drupal_set_message($this->t('Saved the %label Search page.', [
++          \Drupal::messenger()->addStatus($this->t('Saved the %label Search page.', [
+             '%label' => $search_api_page->label(),
+           ]));
+         }
+         else {
+           $form_state->setRedirectUrl($search_api_page->toUrl('edit-form'));
+-          drupal_set_message($this->t('Updated the index for the %label Search page.', [
++          \Drupal::messenger()->addStatus($this->t('Updated the index for the %label Search page.', [
+             '%label' => $search_api_page->label(),
+           ]));
+         }
+diff --git a/modules/contrib/services/src/Form/ServiceEndpointDeleteForm.php b/modules/contrib/services/src/Form/ServiceEndpointDeleteForm.php
+index 9f5f7dfe0..231e75198 100644
+--- a/modules/contrib/services/src/Form/ServiceEndpointDeleteForm.php
++++ b/modules/contrib/services/src/Form/ServiceEndpointDeleteForm.php
+@@ -42,7 +42,7 @@ public function getConfirmText() {
+   public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->entity->delete();
+ 
+-    drupal_set_message(
++    \Drupal::messenger()->addStatus(
+       $this->t('content @type: deleted @label.',
+         [
+           '@type' => $this->entity->bundle(),
+diff --git a/modules/contrib/services/src/Form/ServiceEndpointForm.php b/modules/contrib/services/src/Form/ServiceEndpointForm.php
+index 5268a0f6d..1f4153d50 100644
+--- a/modules/contrib/services/src/Form/ServiceEndpointForm.php
++++ b/modules/contrib/services/src/Form/ServiceEndpointForm.php
+@@ -124,12 +124,12 @@ public function save(array $form, FormStateInterface $form_state) {
+     $status = $service_endpoint->save();
+ 
+     if ($status) {
+-      drupal_set_message($this->t('Saved the %label service endpoint.', array(
++      \Drupal::messenger()->addStatus($this->t('Saved the %label service endpoint.', array(
+         '%label' => $service_endpoint->label(),
+       )));
+     }
+     else {
+-      drupal_set_message($this->t('The %label service endpoint was not saved.', array(
++      \Drupal::messenger()->addStatus($this->t('The %label service endpoint was not saved.', array(
+         '%label' => $service_endpoint->label(),
+       )));
+     }
+diff --git a/modules/contrib/services/src/Plugin/ServiceDefinition/EntityPost.php b/modules/contrib/services/src/Plugin/ServiceDefinition/EntityPost.php
+index 5849d0e43..21e959cdc 100644
+--- a/modules/contrib/services/src/Plugin/ServiceDefinition/EntityPost.php
++++ b/modules/contrib/services/src/Plugin/ServiceDefinition/EntityPost.php
+@@ -44,7 +44,7 @@ public function processRequest(Request $request, RouteMatchInterface $route_matc
+       try {
+         $entity->save();
+         if ($entity->id()) {
+-          drupal_set_message($this->t("Entity of type @type was created.", ['@type' => $entity->getEntityType()->id()]));
++          \Drupal::messenger()->addStatus($this->t("Entity of type @type was created.", ['@type' => $entity->getEntityType()->id()]));
+           return $entity->toArray();
+         }
+       }
+diff --git a/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogin.php b/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogin.php
+index b6881b7bb..e4214da2f 100644
+--- a/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogin.php
++++ b/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogin.php
+@@ -128,7 +128,7 @@ public function processRequest(Request $request, RouteMatchInterface $route_matc
+             $this->flood->clear('services.failed_login_user', $identifier);
+             $this->session->start();
+             user_login_finalize($account);
+-            drupal_set_message(t('User succesffully logged in'), 'status', FALSE);
++            \Drupal::messenger()->addStatus(t('User succesffully logged in'));
+             return [
+               'id' => $this->session->getId(),
+               'name' => $this->session->getName(),
+diff --git a/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogout.php b/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogout.php
+index 62838652c..45d8f8235 100644
+--- a/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogout.php
++++ b/modules/contrib/services/src/Plugin/ServiceDefinition/UserLogout.php
+@@ -40,7 +40,7 @@ public function processRoute(Route $route) {
+    */
+   public function processRequest(Request $request, RouteMatchInterface $route_match, SerializerInterface $serializer) {
+     user_logout();
+-    drupal_set_message(t('User succesffully logged out'), 'status', FALSE);
++    \Drupal::messenger()->addStatus(t('User succesffully logged out'));
+     return [];
+   }
+ 
+diff --git a/modules/contrib/superfish/superfish.install b/modules/contrib/superfish/superfish.install
+index ec83f62aa..0f4eb463b 100644
+--- a/modules/contrib/superfish/superfish.install
++++ b/modules/contrib/superfish/superfish.install
+@@ -12,9 +12,9 @@
+  */
+ function superfish_install() {
+   if (superfish_library_check()){
+-    drupal_set_message(t('In order to use Superfish, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@block' => 'structure/block')));
++    \Drupal::messenger()->addStatus(t('In order to use Superfish, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@block' => 'structure/block')));
+   } else {
+-    drupal_set_message(t('Superfish library is missing. Please refer to the <a href="@documentation">plugin documentation</a> for how you can fix this issue; Once done, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@documentation' => 'http://drupal.org/node/1125896', '@block' => 'structure/block')), 'warning');
++    \Drupal::messenger()->addStatus(t('Superfish library is missing. Please refer to the <a href="@documentation">plugin documentation</a> for how you can fix this issue; Once done, go to the <a href="@block">Block layout</a> page and use any of the "Place block" buttons to create a Superfish block.', array('@documentation' => 'http://drupal.org/node/1125896', '@block' => 'structure/block')), 'warning');
+   }
+ }
+ 
+diff --git a/modules/contrib/tour_builder/tour_builder.module b/modules/contrib/tour_builder/tour_builder.module
+index 4becffa6a..3afe85998 100644
+--- a/modules/contrib/tour_builder/tour_builder.module
++++ b/modules/contrib/tour_builder/tour_builder.module
+@@ -443,7 +443,7 @@ function tour_builder_patch_form_submit($form, &$form_state) {
+   // TODO: create patch file
+   $filename = _tour_builder_generate_patch($active_tour, $module, $nid, $cid);
+   if (!empty($filename)) {
+-    drupal_set_message("You may download: " . l('Patch file', $filename));
++    \Drupal::messenger()->addStatus("You may download: " . l('Patch file', $filename));
+     // TODO: create file download response
+   }
+ }
+@@ -460,13 +460,13 @@ function tour_builder_apply_patch_form($form, &$form_state, $short_name = NULL)
+ 
+     $tour = config_typed()->get($name);
+     if (empty($tour)) {
+-      drupal_set_message('Tour not found');
++      \Drupal::messenger()->addStatus('Tour not found');
+       return array();
+     }
+     $values = $tour->getValue();
+     if (empty($values)) {
+       // TODO: return proper response
+-      drupal_set_message('Tour also not found');
++      \Drupal::messenger()->addStatus('Tour also not found');
+       return array();
+     }
+     $module = $values['module'];
+@@ -564,7 +564,7 @@ function _tour_builder_generate_patch($active_tour, $module, $nid, $comment) {
+   if ($error) {
+     // what is error 127?
+     watchdog('tour_builder', "Shell error: %error \n %lines", array('%error' => $error, '%lines' => join("\n", $output)), WATCHDOG_WARNING);
+-    drupal_set_message("Unable to generate patch file. Error: " . $error, 'error');
++    \Drupal::messenger()->addError("Unable to generate patch file. Error: " . $error);
+     return;
+   }
+ 
+@@ -601,7 +601,7 @@ function _tour_builder_apply_patch($nid, $destination, $tour = NULL) {
+     );
+     // what is error 127?
+     watchdog('tour_builder', "Shell error: %error \n %lines", array('%error' => $error, '%lines' => join("\n", $output)), WATCHDOG_WARNING);
+-    drupal_set_message("Unable to apply given patch. Error: " . $error, 'error');
++    \Drupal::messenger()->addError("Unable to apply given patch. Error: " . $error);
+     return;
+   }
+ }
+diff --git a/modules/contrib/tour_ui/src/Form/TourForm.php b/modules/contrib/tour_ui/src/Form/TourForm.php
+index 19eb2570f..eb3652c56 100644
+--- a/modules/contrib/tour_ui/src/Form/TourForm.php
++++ b/modules/contrib/tour_ui/src/Form/TourForm.php
+@@ -130,7 +130,7 @@ public function form(array $form, FormStateInterface $form_state) {
+           $form['#data'][$tip_id] = $tip->getConfiguration();
+         }
+         catch (\Error $e) {
+-          drupal_set_message($this->t('Tip %tip is not configurable. You cannot save this tour.', ['%tip' => $tip->getLabel()]), 'warning');
++         \Drupal::messenger()->addWarning($this->t('Tip %tip is not configurable. You cannot save this tour.', ['%tip' => $tip->getLabel()]));
+         }
+         $form['tips'][$tip_id]['#attributes']['class'][] = 'draggable';
+         $form['tips'][$tip_id]['label'] = [
+diff --git a/modules/contrib/tour_ui/src/Form/TourTipDeleteForm.php b/modules/contrib/tour_ui/src/Form/TourTipDeleteForm.php
+index 28d84d509..6b6bce8f7 100644
+--- a/modules/contrib/tour_ui/src/Form/TourTipDeleteForm.php
++++ b/modules/contrib/tour_ui/src/Form/TourTipDeleteForm.php
+@@ -110,7 +110,7 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     $this->entity->save();
+ 
+     $form_state->setRedirect('entity.tour.edit_form', ['tour' => $this->entity->id()]);
+-    drupal_set_message($this->t('Deleted the %tour tour %tip tip.', ['%tour' => $this->entity->label(), '%tip' => $this->tip->get('label')]));
++    \Drupal::messenger()->addStatus($this->t('Deleted the %tour tour %tip tip.', ['%tour' => $this->entity->label(), '%tip' => $this->tip->get('label')]));
+   }
+ 
+ }
+diff --git a/modules/contrib/tour_ui/src/Form/TourTipForm.php b/modules/contrib/tour_ui/src/Form/TourTipForm.php
+index a7c8c1677..2b7d7c3a1 100644
+--- a/modules/contrib/tour_ui/src/Form/TourTipForm.php
++++ b/modules/contrib/tour_ui/src/Form/TourTipForm.php
+@@ -173,10 +173,10 @@ public function submitForm(array &$form, FormStateInterface $form_state) {
+     $tour->save();
+ 
+     if (isset($storage['#new'])) {
+-      drupal_set_message($this->t('The %tip tip has been created.', array('%tip' => $new_tip['label'])));
++      \Drupal::messenger()->addStatus($this->t('The %tip tip has been created.', array('%tip' => $new_tip['label'])));
+     }
+     else {
+-      drupal_set_message($this->t('Updated the %tip tip.', array('%tip' => $new_tip['label'])));
++      \Drupal::messenger()->addStatus($this->t('Updated the %tip tip.', array('%tip' => $new_tip['label'])));
+     }
+ 
+     $form_state->setRedirect('entity.tour.edit_form', ['tour' => $tour->id()]);

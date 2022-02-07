@@ -88,7 +88,8 @@ class ResponseSubscriber implements EventSubscriberInterface {
             }
 
             $joinPath = $url->toString();
-            drupal_set_message($message, 'warning');
+            \Drupal::messenger()->addWarning($message);
+            // drupal_set_message($message, 'warning');
             
             global $base_url;
             header('Location: ' . $base_url . $joinPath);

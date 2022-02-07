@@ -17,10 +17,10 @@ class PiwikTestController extends ControllerBase {
    */
   public function drupalSetMessageTest() {
     // Set some messages.
-    drupal_set_message('Example status message.', 'status');
-    drupal_set_message('Example warning message.', 'warning');
-    drupal_set_message('Example error message.', 'error');
-    drupal_set_message('Example error <em>message</em> with html tags and <a href="http://example.com/">link</a>.', 'error');
+    \Drupal::messenger()->addStatus(t('Example status message.'));
+    \Drupal::messenger()->addWarning(t('Example warning message.'));
+    \Drupal::messenger()->addError('Example error message.', 'error');
+    \Drupal::messenger()->addStatus(t('Example error <em>message</em> with html tags and <a href="http://example.com/">link</a>.'));
 
     return [];
   }
