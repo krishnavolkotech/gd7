@@ -1625,11 +1625,10 @@ function is_legel_conditions_modified($uid) {
 }	
 
 function allowed_external_host() {
-  $allowed_hosts = Settings::get('do_not_allow_external_hosts');
-  $host = \Drupal::request()->getSchemeAndHttpHost();
+  $allowed_hosts = Settings::get('allow_external_hosts');
 
-  if (!empty($allowed_hosts) && in_array($host, $allowed_hosts)) {
-    return false;
+  if ($allowed_hosts == TRUE) {
+    return TRUE;
   }   
-  return true;
+  return FALSE;
 }
