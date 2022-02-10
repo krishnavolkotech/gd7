@@ -1627,8 +1627,8 @@ function is_legel_conditions_modified($uid) {
 function allowed_external_host() {
   $allowed_hosts = Settings::get('allow_external_hosts');
 
-  if ($allowed_hosts == TRUE) {
-    return TRUE;
+  if (!$allowed_hosts) {
+    return FALSE;
   }   
-  return FALSE;
+  return TRUE;
 }
