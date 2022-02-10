@@ -455,7 +455,7 @@ export default function DeployedReleasesFilter(props) {
         <Col sm={6}>
           <div>
             {/* <OverlayTrigger placement="top" overlay={ttFilter}>
-              <Button onClick={props.fetchDeployments} bsStyle="success"><span className="glyphicon glyphicon-filter" /></Button>
+              <Button onClick={props.fetchDeployments} bsClass="btn follow-up-button"><span className="glyphicon glyphicon-filter" /></Button>
               </OverlayTrigger>
             &nbsp; */}
             <OverlayTrigger placement="top" overlay={ttReset}>

@@ -686,6 +686,9 @@ input.hasDatepicker,
     border: 0 !important;
     border-radius: 3px !important;
 }
+.btn-success {
+  background-color: #0e9e57 !important;
+}
 .btn-default:hover,
 .views-exposed-form button:hover,
 button.button--reset:hover {
@@ -1800,4 +1803,11 @@ table.deployed_overview_table thead th:first-child {
 
 table.deployed_overview_table thead {
   z-index: 3;
+}
+
+/* rsc: To be replaced by "new" default green. */
+button.btn.follow-up-button {
+  /* #5cb85c */
+  color: #fff;
+  background-color: #5cb85c;
 }

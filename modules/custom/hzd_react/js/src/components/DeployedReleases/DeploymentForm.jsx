@@ -570,7 +570,7 @@ export default function DeploymentForm(props) {
                     <tr>
                       <td colSpan="3">
                         <OverlayTrigger placement="top" overlay={ttAddPrevRelease}>
-                          <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsStyle="success" alt="Vorgängerrelease hinzufügen"><span className="glyphicon glyphicon-plus" /></Button>
+                          <Button disabled={addPrevReleaseDisabled} onClick={handleAddPrevRelease} bsClass="btn follow-up-button" alt="Vorgängerrelease hinzufügen"><span className="glyphicon glyphicon-plus" /></Button>
                         </OverlayTrigger>
                       </td>
                     </tr>

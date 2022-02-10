@@ -73,7 +73,7 @@ export default function ManageDeployedReleasesTableRow({ deployment, handleActio
         { status == "1" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttReportSuccessor}>
-            <Button bsStyle="success" onClick={(e) => handleAction(e, "successor", { state, environment, service, release, product, releaseName })} alt="Nachfolgerelease melden" name="Nachfolgerelease melden"><span className="glyphicon glyphicon-forward" /></Button>
+            <Button bsClass="btn follow-up-button" onClick={(e) => handleAction(e, "successor", { state, environment, service, release, product, releaseName })} alt="Nachfolgerelease melden" name="Nachfolgerelease melden"><span className="glyphicon glyphicon-forward" /></Button>
           </OverlayTrigger>
           &nbsp;
         </span>

@@ -402,7 +402,6 @@ export default function DeploymentManager() {
       <div className="skeleton-textbody loading"></div>
       <div className="skeleton-textbody loading"></div>
       <div className="skeleton-textbody loading"></div> */}
-      <p>Build 0.11</p>
       <Nav bsStyle="tabs" activeKey={filterState.status} onSelect={handleNav}>
         <NavItem eventKey="1">
           Eingesetzt
