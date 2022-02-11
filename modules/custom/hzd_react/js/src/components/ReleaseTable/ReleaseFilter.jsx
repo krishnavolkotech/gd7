@@ -147,6 +147,7 @@ export default function ReleaseFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="type-filter">
             <FormControl
               name="type"
+              alt="Typfilter"
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.type}
@@ -161,6 +162,7 @@ export default function ReleaseFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="service-filter" >
             <FormControl
               name="service"
+              alt="Verfahrensfilter"
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.service}
@@ -173,6 +175,7 @@ export default function ReleaseFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="product-filter" >
             <FormControl
               name="product"
+              alt="Produktfilter"
               disabled={disableProductFilter}
               componentClass="select"
               onChange={handleFilterSelect}
@@ -186,6 +189,7 @@ export default function ReleaseFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="release-filter" >
             <FormControl
               name="release"
+              alt="Releasefilter"
               disabled={props.disableReleaseFilter}
               componentClass="select"
               onChange={handleFilterSelect}
@@ -203,6 +207,7 @@ export default function ReleaseFilter(props) {
               <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
               <FormControl
                 name="releaseSortBy"
+                alt="Sortieren nach"
                 componentClass="select"
                 placeholder="select"
                 onChange={handleFilterSelect}
@@ -217,6 +222,7 @@ export default function ReleaseFilter(props) {
             <FormGroup bsClass="select-wrapper hzd-form-element" controlId="releaseSortOrder">
               <FormControl
                 name="releaseSortOrder"
+                alt="Sortierreihenfolge"
                 componentClass="select"
                 placeholder="select"
                 onChange={handleFilterSelect}
@@ -230,6 +236,7 @@ export default function ReleaseFilter(props) {
               <ControlLabel>Elemente pro Seite&nbsp;</ControlLabel>
               <FormControl
                 name="items_per_page"
+                alt="Elemente pro Seite"
                 componentClass="select"
                 placeholder="select"
                 onChange={handleFilterSelect}
@@ -247,7 +254,7 @@ export default function ReleaseFilter(props) {
         <Col sm={6}>
           <div>
             <OverlayTrigger placement="top" overlay={ttReset}>
-              <Button onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
+              <Button name="Zurücksetzen" alt="Zurücksetzen" onClick={props.handleReset} bsStyle="danger"><span className="glyphicon glyphicon-repeat" /></Button>
             </OverlayTrigger>
             &nbsp;
           </div>

@@ -323,6 +323,7 @@ export default function DeployedReleasesFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="type-filter">
             <FormControl
               name="type"
+              alt="Typfilter"
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.type}
@@ -336,6 +337,7 @@ export default function DeployedReleasesFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="state-filter">
             <FormControl
               name="state"
+              alt="Landesfilter"
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.state}
@@ -349,6 +351,7 @@ export default function DeployedReleasesFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="environment-filter" >
             <FormControl
               name="environment"
+              alt="Umgebungsfilter"
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.environment}
@@ -363,6 +366,7 @@ export default function DeployedReleasesFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="service-filter" >
             <FormControl
               name="service"
+              alt="Verfahrensfilter"
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.service}
@@ -375,6 +379,7 @@ export default function DeployedReleasesFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="product-filter" >
             <FormControl
               name="product"
+              alt="Produktfilter"
               disabled={disableProductFilter}
               componentClass="select"
               onChange={handleFilterSelect}
@@ -388,6 +393,7 @@ export default function DeployedReleasesFilter(props) {
           <FormGroup bsClass="select-wrapper hzd-form-element" controlId="release-filter" >
             <FormControl
               name="release"
+              alt="Releasefilter"
               disabled={disableProductFilter}
               componentClass="select"
               onChange={handleFilterSelect}
@@ -405,6 +411,7 @@ export default function DeployedReleasesFilter(props) {
                   <ControlLabel>Sortieren nach&nbsp;</ControlLabel>
                   <FormControl
                     name="deploymentSortBy"
+                    alt="Sortieren nach"
                     componentClass="select"
                     placeholder="select"
                     onChange={handleFilterSelect}
@@ -422,6 +429,7 @@ export default function DeployedReleasesFilter(props) {
                 <FormGroup bsClass="select-wrapper hzd-form-element" controlId="deploymentSortOrder">
                   <FormControl
                     name="deploymentSortOrder"
+                    alt="Sortierreihenfolge"
                     componentClass="select"
                     placeholder="select"
                     onChange={handleFilterSelect}
@@ -436,6 +444,7 @@ export default function DeployedReleasesFilter(props) {
                   <ControlLabel>Elemente pro Seite&nbsp;</ControlLabel>
                   <FormControl
                     name="items_per_page"
+                    alt="Elemente pro Seite"
                     componentClass="select"
                     placeholder="select"
                     onChange={handleFilterSelect}
