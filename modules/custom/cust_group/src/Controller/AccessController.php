@@ -31,6 +31,7 @@ class AccessController extends ControllerBase
      */
     public function groupNodeEdit(Route $route, RouteMatch $route_match, AccountInterface $user) {
         // this is not necessary as groups module handles(have to confirm), just to add one more layer of access check
+        // This is necessary to prevent non zrml group members from editing deployed_releases.
         $node = $route_match->getParameter('node');
         if (is_object($node)) {
 
@@ -57,6 +58,21 @@ class AccessController extends ControllerBase
                     return AccessResult::forbidden();
                 }
             }
+
+            // Limit form access to group members of Zentrale_Release_Manager_Lander.
+            if ($node->getType() == 'deployed_releases') {
+              $group = \Drupal\group\Entity\Group::load(Zentrale_Release_Manager_Lander);
+              $content = $group->getMember($user);
+              if (array_intersect($user->getRoles(), ['site_administrator', 'administrator'])) {
+                return AccessResult::allowed();
+              }
+              if ($content && group_request_status($content)) {
+                return AccessResult::allowed();
+              } else {
+                return AccessResult::forbidden();
+              }
+            }
+
 
             if ($node->getType() == 'downtimes') {
 
