@@ -315,7 +315,7 @@ export default function DeploymentManager() {
       return;
     }
 
-    let url = '/api/v1/releases/' + mixedService;
+    let url = '/api/v1/releases/' + mixedService + "?status[]=1&status[]=2";
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });

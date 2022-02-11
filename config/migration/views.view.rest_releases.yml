@@ -356,22 +356,28 @@ display:
           value:
             1: '1'
             2: '2'
+            5: '5'
           group: 1
-          exposed: false
+          exposed: true
           expose:
-            operator_id: ''
-            label: ''
+            operator_id: field_release_type_value_op
+            label: 'Status (field_release_type)'
             description: ''
             use_operator: false
-            operator: ''
+            operator: field_release_type_value_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: ''
+            identifier: status
             required: false
             remember: false
-            multiple: false
+            multiple: true
             remember_roles:
               authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
             reduce: false
           is_grouped: false
           group_info:
