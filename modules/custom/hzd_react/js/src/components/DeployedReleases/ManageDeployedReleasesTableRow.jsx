@@ -89,7 +89,6 @@ export default function ManageDeployedReleasesTableRow({ deployment, handleActio
         { global.drupalSettings.role !== "ZRML" &&
         <span>
           <OverlayTrigger placement="top" overlay={ttEdit}>
-            {/* <Button href={"/node/" + deployment.nid + "/edit?destination=/zrml/einsatzmeldungen/eingesetzt"} bsStyle="primary"><span className="glyphicon glyphicon-edit" /></Button> */}
             <Button bsStyle="primary" onClick={(e) => handleAction(e, "edit", { nid, uuidDeployment, releaseName })} alt="Bearbeiten" name="Bearbeiten"><span className="glyphicon glyphicon-edit" /></Button>
           </OverlayTrigger>
           &nbsp;

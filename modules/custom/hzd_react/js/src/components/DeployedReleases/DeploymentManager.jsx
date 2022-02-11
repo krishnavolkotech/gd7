@@ -140,13 +140,13 @@ export default function DeploymentManager() {
     let pathname;
     switch (filterState.status) {
       case "1":
-        pathname = '/zrml/einsatzmeldungen/eingesetzt';
+        pathname = '/zrml/eingesetzt';
         break;
       case "2":
-        pathname = '/zrml/einsatzmeldungen/archiviert';
+        pathname = '/zrml/archiviert';
         break;
       default:
-        pathname = '/zrml/einsatzmeldungen/eingesetzt';
+        pathname = '/zrml/eingesetzt';
         break;
     }
     

@@ -33,17 +33,8 @@ hzd_react.ajax:
   requirements:
     _permission: 'access content'
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-hzd_react.deployed_releases_home:
-  path: '/group/{group}/einsatzmeldungen'
-  defaults:
-    _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
-    _title: 'Einsatzmeldungen verwalten'
-  requirements:
-    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-    group: '5'
 hzd_react.deployed_releases_list:
-  path: '/group/{group}/einsatzmeldungen/eingesetzt'
+  path: '/group/{group}/eingesetzt'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
     _title: 'Einsatzmeldungen verwalten'
@@ -52,7 +43,7 @@ hzd_react.deployed_releases_list:
     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     group: '5'
 hzd_react.archived_deployments:
-  path: '/group/{group}/einsatzmeldungen/archiviert'
+  path: '/group/{group}/archiviert'
   defaults:
     _controller: '\Drupal\hzd_react\Controller\ReactController::deployedReleases'
     _title: 'Einsatzmeldungen verwalten'

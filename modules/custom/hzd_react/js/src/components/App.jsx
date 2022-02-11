@@ -5,7 +5,6 @@ import {
   Route,
 } from "react-router-dom";
 import { Alert } from 'react-bootstrap';
-import ReleaseDeploymentHome from './ReleaseDeploymentHome';
 import DeploymentManager from './DeployedReleases/DeploymentManager';
 import ReleaseViewNavigator from './ReleaseTable/ReleaseViewNavigator';
 
@@ -52,13 +51,10 @@ class App extends React.Component {
             <Route exact path="/:group/releases/einsatzinformationen">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/zrml/einsatzmeldungen">
-              <ReleaseDeploymentHome />
-            </Route>
-            <Route exact path="/zrml/einsatzmeldungen/eingesetzt">
+            <Route exact path="/zrml/eingesetzt">
               <DeploymentManager />
             </Route>
-            <Route exact path="/zrml/einsatzmeldungen/archiviert">
+            <Route exact path="/zrml/archiviert">
               <DeploymentManager />
             </Route>
           </Switch>
