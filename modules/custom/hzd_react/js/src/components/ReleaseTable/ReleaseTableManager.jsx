@@ -6,6 +6,9 @@ import ReleaseTable from './ReleaseTable';
 export default function ReleaseTableManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
+  
+  /** @const {number} fetchReleasesCount - Ensures that the latest fetch gets processed. */
+  const fetchReleasesCount = useRef(0);
 
   /** @const {array} releases - Array mit den Release-Objekten. */
   const [releases, setReleases] = useState([]);
@@ -156,43 +159,49 @@ export default function ReleaseTableManager(props) {
     const headers = new Headers({
       Accept: 'application/vnd.api+json',
     });
+
+    fetchReleasesCount.current++;
+    const releaseRunner = fetchReleasesCount.current;
+
     fetch(url, { headers })
       .then(response => response.json())
       .then(result => {
-        setFilterReleases(result);
-        setDisableReleaseFilter(false);
-        
-        // Helper variable to set the filterState.
-        let val = {};
-        
-        // The release id of the matching release.
-        let releaseId = -1;
+        if (releaseRunner === fetchReleasesCount.current) {
+          setFilterReleases(result);
+          setDisableReleaseFilter(false);
+          
+          // Helper variable to set the filterState.
+          let val = {};
+          
+          // The release id of the matching release.
+          let releaseId = -1;
 
-        // Sentinel variable, gets set to false, if release could not be found in
-        // result set.
-        let reset = true;
-        result.forEach((r, i) => {
-          // Searches the result set for the selected release.
-          if (r.nid == props.filterState.release) {
-            reset = false;
-            releaseId = i;
-          }
-        });
-        if (reset) {
-          // Resets release and product filter, if previously selected release could
-          // not be found in results.
-          val["release"] = "0";
-          val["product"] = "";
-          props.setFilterState(prev => ({ ...prev, ...val }));
-        }
-        else {
-          if (props.filterState.product) {
-            // Product may change if coming from archive (product might have gotten
-            // a new name).
-            // If a product was selected, replace it with new product.
-            const [product] = result[releaseId].title.split("_");
-            val["product"] = product;
+          // Sentinel variable, gets set to false, if release could not be found in
+          // result set.
+          let reset = true;
+          result.forEach((r, i) => {
+            // Searches the result set for the selected release.
+            if (r.nid == props.filterState.release) {
+              reset = false;
+              releaseId = i;
+            }
+          });
+          if (reset) {
+            // Resets release and product filter, if previously selected release could
+            // not be found in results.
+            val["release"] = "0";
+            val["product"] = "";
             props.setFilterState(prev => ({ ...prev, ...val }));
+          }
+          else {
+            if (props.filterState.product) {
+              // Product may change if coming from archive (product might have gotten
+              // a new name).
+              // If a product was selected, replace it with new product.
+              const [product] = result[releaseId].title.split("_");
+              val["product"] = product;
+              props.setFilterState(prev => ({ ...prev, ...val }));
+            }
           }
         }
       })

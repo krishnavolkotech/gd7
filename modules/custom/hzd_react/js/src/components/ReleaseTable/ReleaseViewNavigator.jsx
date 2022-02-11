@@ -229,17 +229,6 @@ export default function ReleaseViewNavigator() {
     setPage(1);
   }, [history.location.pathname])
 
-  // Changes active tab and sets releaseStatus accordingly.
-  const handleNav = (k) => {
-    setActiveKey(k);
-    let val = {};
-    val["items_per_page"] = "20";
-    if (["1", "2", "3", "5"].includes(k)) {
-      val["releaseStatus"] = k;
-    }
-    setFilterState(prev => ({ ...prev, ...val }));
-  }
-
   return (
     <div>
       <ul className="nav nav-tabs">
@@ -253,31 +242,6 @@ export default function ReleaseViewNavigator() {
         <li className={activeKey==="6" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt-uebersicht?" + query.toString()}>Eingesetzt(Übersicht)</Link></li>
         <li className={activeKey==="7" ? "active" : ""}><Link to={"/" + groupPath + "/releases/einsatzinformationen?" + query.toString()}>Einsatzinformationen</Link></li>
       </ul>
-      {/* <Nav bsStyle="tabs" activeKey={activeKey}>
-        <NavItem eventKey="1" onSelect={handleNav}>
-          Bereitgestellt
-        </NavItem>
-        <NavItem eventKey="2" onSelect={handleNav}>
-          <Link to="/release-management/releases/in-bearbeitung">In Bearbeitung</Link>
-        </NavItem>
-        <NavItem eventKey="3" onSelect={handleNav}>
-          Gesperrt
-        </NavItem>
-        { ["ZRMK", "SITE-ADMIN"].includes(global.drupalSettings.role) && 
-        <NavItem eventKey="5" onSelect={handleNav}>
-          Archiviert
-        </NavItem>
-        }
-        <NavItem eventKey="4" onSelect={handleNav}>
-          Eingesetzt
-        </NavItem>
-        <NavItem eventKey="6" onSelect={handleNav}>
-          Eingesetzt(Übersicht)
-        </NavItem>
-        <NavItem eventKey="7" onSelect={handleNav}>
-          Einsatzinformationen
-        </NavItem>
-      </Nav> */}
       { ["1", "2", "3", "5"].includes(activeKey) &&
         <ReleaseTableManager
           filterState={filterState}

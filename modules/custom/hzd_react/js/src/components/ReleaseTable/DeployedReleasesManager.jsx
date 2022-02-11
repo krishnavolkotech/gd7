@@ -8,6 +8,9 @@ export default function DeployedReleasesManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
 
+  /** @const {number} fetchReleasesCount - Ensures that the latest fetch gets processed. */
+  const fetchReleasesCount = useRef(0);
+
   /** @const {bool} timeout - True triggers display of "No data found.". */
   const [timeout, setTimeout] = useState(false);
 
@@ -31,7 +34,7 @@ export default function DeployedReleasesManager(props) {
    *      service: string,
    *    }
    *  }} release
-   * @property {{[nid: nid of service]: release}} releases - The provided releases.
+   * @property {{[nid: nid of service]: release}} releases - The provided releases for the release filter.
    */
   const [releases, setReleases] = useState({});
 
@@ -203,24 +206,29 @@ export default function DeployedReleasesManager(props) {
       Accept: 'application/vnd.api+json',
     });
 
+    fetchReleasesCount.current++;
+    const releaseRunner = fetchReleasesCount.current;
+
     return fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        let releaseData = { ...releases };
-        releaseData[mixedService] = {};
-        results.map((result) => {
-          let release = {
-            "uuidRelease": result.uuid,
-            "nid": result.nid,
-            "title": result.title,
-            "service": result.service,
-          };
-          releaseData[mixedService][result.nid] = release;
-        });
-        setReleases(releaseData);
-        // setTriggerReleaseSelectCount(triggerReleaseSelectCount + 1);
-        // setTriggerReleaseSelect(true);
-        // preloadDeploymentData(formState);
+        if (releaseRunner === fetchReleasesCount.current) {
+          let releaseData = { ...releases };
+          releaseData[mixedService] = {};
+          results.map((result) => {
+            let release = {
+              "uuidRelease": result.uuid,
+              "nid": result.nid,
+              "title": result.title,
+              "service": result.service,
+            };
+            releaseData[mixedService][result.nid] = release;
+          });
+          setReleases(releaseData);
+          // setTriggerReleaseSelectCount(triggerReleaseSelectCount + 1);
+          // setTriggerReleaseSelect(true);
+          // preloadDeploymentData(formState);
+        }
       })
       .catch(error => {
         console.log(error);

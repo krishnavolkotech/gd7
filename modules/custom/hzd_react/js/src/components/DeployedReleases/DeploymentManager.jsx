@@ -11,6 +11,8 @@ export default function DeploymentManager() {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
   const fetchCount = useRef(0);
 
+  /** @const {number} fetchReleasesCount - Ensures that the latest fetch gets processed. */
+  const fetchReleasesCount = useRef(0);
 
   /** @const {URLSearchParams} query - Read URL Params. */
   const query = useQuery();
@@ -320,24 +322,29 @@ export default function DeploymentManager() {
       Accept: 'application/vnd.api+json',
     });
 
+    fetchReleasesCount.current++;
+    const releaseRunner = fetchReleasesCount.current;
+
     return fetch(url, { headers })
       .then(response => response.json())
       .then(results => {
-        let releaseData = { ...releases };
-        releaseData[mixedService] = {};
-        results.map((result) => {
-          let release = {
-            "uuidRelease": result.uuid,
-            "nid": result.nid,
-            "title": result.title,
-            "service": result.service,
-          };
-          releaseData[mixedService][result.nid] = release;
-        });
-        setReleases(releaseData);
-        setTriggerReleaseSelectCount(triggerReleaseSelectCount + 1);
-        // setTriggerReleaseSelect(true);
-        // preloadDeploymentData(formState);
+        if (releaseRunner === fetchReleasesCount.current) {
+          let releaseData = { ...releases };
+          releaseData[mixedService] = {};
+          results.map((result) => {
+            let release = {
+              "uuidRelease": result.uuid,
+              "nid": result.nid,
+              "title": result.title,
+              "service": result.service,
+            };
+            releaseData[mixedService][result.nid] = release;
+          });
+          setReleases(releaseData);
+          setTriggerReleaseSelectCount(triggerReleaseSelectCount + 1);
+          // setTriggerReleaseSelect(true);
+          // preloadDeploymentData(formState);
+        }
       })
       .catch(error => {
         console.log(error);
