@@ -89,7 +89,6 @@ export default function FailedDeploymentForm(props) {
         </Modal.Header>
         <Modal.Body>
           <p>Möchten Sie <strong>{props.prevDeploymentData.releaseName}</strong> wirklich den Status "Fehlmeldung" zuweisen?</p>
-          <p>Die Änderung kann nicht rückgängig gemacht werden.</p>
         </Modal.Body>
         <Modal.Footer>
           <Button bsStyle="primary" onClick={handleSave} ><span className="glyphicon glyphicon-ok" /> Speichern</Button>
