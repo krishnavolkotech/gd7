@@ -7,8 +7,6 @@ export default function ReleaseFilter(props) {
   /** @const {Object[]} productOptions - The product option components array. */
   const [productOptions, setProductOptions] = useState(<option key="product-0" value="0">&lt;Komponente&gt;</option>);
   const [releaseOptions, setReleaseOptions] = useState(defaultReleaseOption);
-  /** @const {bool} disableProductFilter - Enable / Disable the product filter. */
-  const [disableProductFilter, setDisableProductFilter] = useState(true);
 
   /**
    * Handles the filter selection events.
@@ -96,8 +94,6 @@ export default function ReleaseFilter(props) {
       // Verify that the releases for the selected service are loaded.
       let serviceReleases = {};
       serviceReleases = props.filterReleases;
-      // Enable filter input.
-      setDisableProductFilter(false);
 
       // Extract product names.
       let products = [];
@@ -176,7 +172,7 @@ export default function ReleaseFilter(props) {
             <FormControl
               name="product"
               alt="Produktfilter"
-              disabled={disableProductFilter}
+              disabled={props.disableReleaseFilter}
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.product}
