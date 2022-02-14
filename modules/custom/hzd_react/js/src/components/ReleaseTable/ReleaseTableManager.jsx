@@ -62,6 +62,14 @@ export default function ReleaseTableManager(props) {
       fetchReleasesForFilter();
       setWasKeyFive(true);
     }
+    return () => {
+      if (props.activeKey === "5") {
+        let val = {};
+        val["release"] = "0";
+        val["product"] = "";
+        props.setFilterState(prev => ({ ...prev, ...val }));
+      }
+    }
   }, [props.activeKey]);
   
   /**
