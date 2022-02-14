@@ -13,7 +13,6 @@ dependencies:
     - node.type.release_comments
   module:
     - comment
-    - options
     - text
     - user
 id: node.release_comments.default
@@ -37,33 +36,19 @@ content:
     third_party_settings: {  }
     type: comment_default
     region: content
-  field_earlywarning_release:
-    weight: 1
-    label: inline
-    settings: {  }
-    third_party_settings: {  }
-    type: list_default
-    region: content
   field_release_ref:
-    weight: 5
-    label: above
+    weight: 2
+    label: inline
     settings:
-      link: true
+      link: false
     third_party_settings: {  }
     type: entity_reference_label
     region: content
-  field_release_service:
-    weight: 2
-    label: inline
-    settings: {  }
-    third_party_settings: {  }
-    type: list_default
-    region: content
   field_service:
-    weight: 6
-    label: above
+    weight: 1
+    label: inline
     settings:
-      link: true
+      link: false
     third_party_settings: {  }
     type: entity_reference_label
     region: content
@@ -78,4 +63,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_earlywarning_release: true
+  field_release_service: true
   langcode: true
+  search_api_excerpt: true

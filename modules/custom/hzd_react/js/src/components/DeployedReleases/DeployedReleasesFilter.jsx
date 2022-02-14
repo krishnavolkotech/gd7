@@ -17,7 +17,7 @@ import { useHistory } from 'react-router-dom';
  */
 export default function DeployedReleasesFilter(props) {
 
-  /** @const {bool} disableProductFilter - Enable / Disable the product filter. */
+  /** @const {bool} disableProductFilter - Enable / Disable the product and release filter. */
   const [disableProductFilter, setDisableProductFilter] = useState(true);
 
   /** @const {Object[]} productOptions - The product option components array. */

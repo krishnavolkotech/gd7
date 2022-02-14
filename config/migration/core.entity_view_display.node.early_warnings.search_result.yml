@@ -51,3 +51,4 @@ hidden:
   field_release_ref: true
   field_service: true
   langcode: true
+  search_api_excerpt: true
