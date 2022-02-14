@@ -7,19 +7,21 @@ export default function ReleaseRow(props) {
   const history = useHistory()
   const pathname = history.location.pathname;
   const explodedPath = pathname.split("/");
+  let humanDateFormat = "";
+  if (props.release.attributes.field_date !== null) {
+    const unixTimestamp = props.release.attributes.field_date;
   
-  const unixTimestamp = props.release.attributes.field_date;
-
-  const milliseconds = unixTimestamp * 1000;
-
-  const dateObject = new Date(milliseconds);
-
-  const options = {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  };
-  const humanDateFormat = dateObject.toLocaleDateString('de-DE', options);
+    const milliseconds = unixTimestamp * 1000;
+  
+    const dateObject = new Date(milliseconds);
+  
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    };
+    humanDateFormat = dateObject.toLocaleDateString('de-DE', options);
+  }
 
   // The comment, if the release is locked.
   let comment = "";
