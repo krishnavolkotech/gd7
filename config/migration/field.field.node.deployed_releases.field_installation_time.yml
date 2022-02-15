@@ -19,5 +19,5 @@ settings:
   min: 0
   max: 59999
   prefix: ''
-  suffix: min
+  suffix: ' min'
 field_type: integer
