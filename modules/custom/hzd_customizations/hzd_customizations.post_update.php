@@ -95,7 +95,7 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
     ->condition('type', 'deployed_releases')
     ->condition('nid', $sandbox['current_id'], '>')
     ->sort('nid', 'ASC')
-    ->range(0, 100);
+    ->range(0, 200);
   $results = $query->execute();
 
   $statusMap = [
@@ -172,10 +172,12 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
     $sandbox['current_id'] = $result;
 
     // Creates new revision.
-    $node->setNewRevision(TRUE);
-    $node->revision_log = 'Feldaktualisierung.';
-    $node->setRevisionCreationTime(REQUEST_TIME);
-    $node->setRevisionUserId(1);
+    // $node->setNewRevision(TRUE);
+    // $node->revision_log = 'Feldaktualisierung.';
+    // $node->setRevisionCreationTime(REQUEST_TIME);
+    // $node->setRevisionUserId(1);
+    $changed = $node->getChangedTime();
+    $node->changed = $changed;
 
     $node->save();
   }
@@ -211,7 +213,7 @@ function hzd_customizations_post_update_early_warnings_1(&$sandbox) {
     ->condition('type', 'early_warnings')
     ->condition('nid', $sandbox['current_id'], '>')
     ->sort('nid', 'ASC')
-    ->range(0, 20);
+    ->range(0, 200);
   $results = $query->execute();
 
    foreach ($results as $result) {
@@ -233,11 +235,12 @@ function hzd_customizations_post_update_early_warnings_1(&$sandbox) {
     $sandbox['current_id'] = $result;
 
     // Creates new revision.
-    $node->setNewRevision(TRUE);
-    $node->revision_log = 'Feldaktualisierung.';
-    $node->setRevisionCreationTime(REQUEST_TIME);
-    $node->setRevisionUserId(1);
-
+    // $node->setNewRevision(TRUE);
+    // $node->revision_log = 'Feldaktualisierung.';
+    // $node->setRevisionCreationTime(REQUEST_TIME);
+    // $node->setRevisionUserId(1);
+    $changed = $node->getChangedTime();
+    $node->changed = $changed;
     $node->save();
   }
 
@@ -271,7 +274,7 @@ function hzd_customizations_post_update_release_comments_1(&$sandbox) {
     ->condition('type', 'release_comments')
     ->condition('nid', $sandbox['current_id'], '>')
     ->sort('nid', 'ASC')
-    ->range(0, 20);
+    ->range(0, 200);
   $results = $query->execute();
 
     foreach ($results as $result) {
@@ -293,10 +296,12 @@ function hzd_customizations_post_update_release_comments_1(&$sandbox) {
     $sandbox['current_id'] = $result;
 
     // Creates new revision.
-    $node->setNewRevision(TRUE);
-    $node->revision_log = 'Feldaktualisierung.';
-    $node->setRevisionCreationTime(REQUEST_TIME);
-    $node->setRevisionUserId(1);
+    // $node->setNewRevision(TRUE);
+    // $node->revision_log = 'Feldaktualisierung.';
+    // $node->setRevisionCreationTime(REQUEST_TIME);
+    // $node->setRevisionUserId(1);
+    $changed = $node->getChangedTime();
+    $node->changed = $changed;
 
     $node->save();
   }
