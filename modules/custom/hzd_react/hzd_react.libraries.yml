@@ -1,11 +1,11 @@
 react_app:
-  version: 0.13
+  version: 0.14
   js:
     js/dist/main.min.js: {minified: true}
   dependencies:
     - core/drupalSettings
 react_app_dev:
-  version: 0.13
+  version: 0.14
   js:
     js/dist_dev/main.min.js: {minified: true}
   dependencies:
