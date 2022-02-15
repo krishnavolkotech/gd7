@@ -24,16 +24,11 @@ content:
       rows: 9
       summary_rows: 3
       placeholder: ''
+      show_summary: false
     third_party_settings: {  }
-    region: content
-  field_earlywarning_release:
-    weight: 2
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
     region: content
   field_release_ref:
-    weight: 26
+    weight: 2
     settings:
       match_operator: CONTAINS
       match_limit: 10
@@ -42,14 +37,8 @@ content:
     third_party_settings: {  }
     type: entity_reference_autocomplete
     region: content
-  field_release_service:
-    weight: 1
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
-    region: content
   field_service:
-    weight: 27
+    weight: 1
     settings:
       match_operator: CONTAINS
       match_limit: 10
@@ -76,6 +65,8 @@ content:
 hidden:
   comment_no_subject: true
   created: true
+  field_earlywarning_release: true
+  field_release_service: true
   langcode: true
   path: true
   promote: true
