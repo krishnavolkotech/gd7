@@ -177,40 +177,6 @@ export default function ReleaseTableManager(props) {
         if (releaseRunner === fetchReleasesCount.current) {
           setFilterReleases(result);
           setDisableReleaseFilter(false);
-          
-          // Helper variable to set the filterState.
-          let val = {};
-          
-          // The release id of the matching release.
-          let releaseId = -1;
-
-          // Sentinel variable, gets set to false, if release could not be found in
-          // result set.
-          let reset = true;
-          result.forEach((r, i) => {
-            // Searches the result set for the selected release.
-            if (r.nid == props.filterState.release) {
-              reset = false;
-              releaseId = i;
-            }
-          });
-          if (reset) {
-            // Resets release and product filter, if previously selected release could
-            // not be found in results.
-            val["release"] = "0";
-            val["product"] = "";
-            props.setFilterState(prev => ({ ...prev, ...val }));
-          }
-          else {
-            if (props.filterState.product) {
-              // Product may change if coming from archive (product might have gotten
-              // a new name).
-              // If a product was selected, replace it with new product.
-              const [product] = result[releaseId].title.split("_");
-              val["product"] = product;
-              props.setFilterState(prev => ({ ...prev, ...val }));
-            }
-          }
         }
       })
       .catch(error => console.log(error));

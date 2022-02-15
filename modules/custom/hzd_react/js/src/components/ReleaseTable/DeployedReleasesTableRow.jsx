@@ -21,6 +21,13 @@ export default function DeployedReleasesTableRow({ deployment, detail }) {
     day: "2-digit",
   });
 
+  let formattedTimeString = "";
+  if (deployment.installationTime) {
+    const hour = Math.floor(deployment.installationTime/60);
+    const minutes = deployment.installationTime % 60;
+    formattedTimeString = hour + "h " + minutes + "min";
+  }
+
   // Show popover after ajax call finished loading data.
   useEffect(() => {
     if (detail) {
@@ -177,10 +184,10 @@ export default function DeployedReleasesTableRow({ deployment, detail }) {
         {deployment.installationTime && 
           <td>
             {deployment.status === "1" &&
-              deployment.installationTime + " min"
+              formattedTimeString
             }
             {deployment.status === "2" &&
-              <i>{deployment.installationTime} min</i>
+              <i>{formattedTimeString}</i>
             }
           </td>
         }
