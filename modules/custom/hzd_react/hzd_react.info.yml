@@ -1,0 +1,14 @@
+name: HZD React Module
+description: Progressively Decoupling Drupal
+package: Custom
+version: 1.0
+
+type: module
+core_version_requirement: ^8.8 || ^9
+libraries:
+  - hzd_react_theme/react_app
+
+dependencies:
+  - drupal:rest
+  - drupal:jsonapi
+  - jsonapi_hypermedia:jsonapi_hypermedia

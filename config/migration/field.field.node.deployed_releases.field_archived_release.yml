@@ -11,7 +11,7 @@ id: node.deployed_releases.field_archived_release
 field_name: field_archived_release
 entity_type: node
 bundle: deployed_releases
-label: Archiviert
+label: ALT_Archiviert
 description: ''
 required: false
 translatable: true

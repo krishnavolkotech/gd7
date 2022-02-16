@@ -6,19 +6,27 @@ dependencies:
     - field.field.node.deployed_releases.body
     - field.field.node.deployed_releases.comment
     - field.field.node.deployed_releases.field_abnormalities
+    - field.field.node.deployed_releases.field_abnormalities_bool
     - field.field.node.deployed_releases.field_abnormality_description
     - field.field.node.deployed_releases.field_archived_release
     - field.field.node.deployed_releases.field_automated_deployment
+    - field.field.node.deployed_releases.field_automated_deployment_bool
     - field.field.node.deployed_releases.field_date_deployed
-    - field.field.node.deployed_releases.field_earlywarning_release
+    - field.field.node.deployed_releases.field_deployed_release
+    - field.field.node.deployed_releases.field_deployment_status
     - field.field.node.deployed_releases.field_environment
+    - field.field.node.deployed_releases.field_first_deployment
     - field.field.node.deployed_releases.field_installation_duration
-    - field.field.node.deployed_releases.field_previous_release
-    - field.field.node.deployed_releases.field_release_service
+    - field.field.node.deployed_releases.field_installation_time
+    - field.field.node.deployed_releases.field_prev_release
+    - field.field.node.deployed_releases.field_service
+    - field.field.node.deployed_releases.field_state_list
+    - field.field.node.deployed_releases.field_successor_release
     - field.field.node.deployed_releases.field_user_state
     - field.field.node.deployed_releases.upload
     - node.type.deployed_releases
   module:
+    - cust_group
     - datetime
     - text
 id: node.deployed_releases.default
@@ -26,43 +34,49 @@ targetEntityType: node
 bundle: deployed_releases
 mode: default
 content:
-  field_abnormalities:
-    weight: 8
-    settings: {  }
+  field_abnormalities_bool:
+    weight: 6
+    settings:
+      display_label: true
     third_party_settings: {  }
-    type: options_buttons
+    type: boolean_checkbox
     region: content
   field_abnormality_description:
-    weight: 9
+    weight: 7
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
     region: content
-  field_archived_release:
-    weight: 10
-    type: options_buttons
-    settings: {  }
+  field_automated_deployment_bool:
+    weight: 5
+    settings:
+      display_label: true
     third_party_settings: {  }
-    region: content
-  field_automated_deployment:
-    weight: 7
-    settings: {  }
-    third_party_settings: {  }
-    type: options_buttons
+    type: boolean_checkbox
     region: content
   field_date_deployed:
-    weight: 5
+    weight: 3
     settings: {  }
     third_party_settings: {  }
     type: datetime_default
     region: content
-  field_earlywarning_release:
-    weight: 3
-    type: options_select
+  field_deployed_release:
+    weight: 8
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_deployment_status:
+    weight: 11
     settings: {  }
     third_party_settings: {  }
+    type: options_select
     region: content
   field_environment:
     weight: 1
@@ -70,26 +84,64 @@ content:
     third_party_settings: {  }
     type: options_select
     region: content
-  field_installation_duration:
-    weight: 6
+  field_first_deployment:
+    weight: 9
+    settings: {  }
+    third_party_settings: {  }
+    type: options_buttons
+    region: content
+  field_installation_time:
+    weight: 4
     settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_prev_release:
+    weight: 10
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
+    type: entity_reference_autocomplete
     region: content
-  field_previous_release:
-    weight: 4
-    settings: {  }
-    third_party_settings: {  }
-    type: options_select
-    region: content
-  field_release_service:
+  field_service:
     weight: 2
-    type: options_select
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_state_list:
+    weight: 26
     settings: {  }
     third_party_settings: {  }
+    type: options_select
     region: content
+  field_successor_release:
+    weight: 28
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
+  field_user_state:
+    type: number
+    weight: 12
+    region: content
+    settings:
+      placeholder: ''
+    third_party_settings:
+      cust_group:
+        group_files: 0
   title:
     type: string_textfield
     weight: 0
@@ -102,7 +154,10 @@ hidden:
   body: true
   comment: true
   created: true
-  field_user_state: true
+  field_abnormalities: true
+  field_archived_release: true
+  field_automated_deployment: true
+  field_installation_duration: true
   langcode: true
   path: true
   promote: true

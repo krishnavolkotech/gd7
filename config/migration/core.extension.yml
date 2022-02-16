@@ -68,6 +68,7 @@ module:
   hzd_customizations: 0
   hzd_earlywarnings: 0
   hzd_notifications: 0
+  hzd_react: 0
   hzd_release_inprogress_comments: 0
   hzd_risk_management: 0
   hzd_sams: 0
@@ -79,6 +80,8 @@ module:
   jquery_ui_accordion: 0
   jquery_ui_datepicker: 0
   jquery_ui_effects: 0
+  jsonapi: 0
+  jsonapi_hypermedia: 0
   l10n_client_contributor: 0
   l10n_client_ui: 0
   language: 0
@@ -106,6 +109,7 @@ module:
   queue_ui: 0
   quickedit: 0
   rdf: 0
+  rest: 0
   revision_log: 0
   search_api: 0
   search_api_solr: 0

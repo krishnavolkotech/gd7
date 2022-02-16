@@ -766,24 +766,23 @@ function hzd_risk_management_node_view(array &$build, EntityInterface $entity, E
 
   // Historie der Änderungen nur für Gruppenadmins sichtbar.
   // @todo: schöner machen
-  $group = \Drupal\group\Entity\Group::load(73);
-  $groupMember = $group->getMember(\Drupal::currentUser());
-  if ($groupMember) {
-    $roles = $groupMember->getRoles();
-    if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
-    }
-    else {
-      if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+  if (in_array($entity->bundle(), ['risk_cluster', 'risk', 'measure'])) {
+    $group = \Drupal\group\Entity\Group::load(73);
+    $groupMember = $group->getMember(\Drupal::currentUser());
+    if ($groupMember) {
+      $roles = $groupMember->getRoles();
+      if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
       }
       else {
-        $build['content_revision_log'] = NULL;
+        if (in_array('site_administrator', \Drupal::currentUser()->getRoles()) || \Drupal::currentUser()->id() == 1) {
+        }
+        else {
+          $build['content_revision_log'] = NULL;
+        }
       }
     }
-  }
 
-  // Disabling caches for detail presentations (cluster, risk, measure)
-  $riskmBundles = ['risk_cluster', 'risk', 'measure'];
-  if (in_array($entity->bundle(), $riskmBundles)) {
+    // Disabling caches for detail presentations (cluster, risk, measure)
     $build['#cache']['max-age'] = 0;
   }
 }

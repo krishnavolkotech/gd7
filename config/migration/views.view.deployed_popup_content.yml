@@ -4,13 +4,13 @@ status: true
 dependencies:
   config:
     - field.storage.node.field_abnormality_description
-    - field.storage.node.field_automated_deployment
+    - field.storage.node.field_automated_deployment_bool
     - field.storage.node.field_date_deployed
-    - field.storage.node.field_earlywarning_release
+    - field.storage.node.field_deployed_release
     - field.storage.node.field_environment
-    - field.storage.node.field_installation_duration
-    - field.storage.node.field_previous_release
-    - field.storage.node.field_release_service
+    - field.storage.node.field_installation_time
+    - field.storage.node.field_prev_release
+    - field.storage.node.field_service
     - node.type.deployed_releases
   module:
     - datetime
@@ -143,10 +143,10 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_release_service:
-          id: field_release_service
-          table: node__field_release_service
-          field: field_release_service
+        field_service:
+          id: field_service
+          table: node__field_service
+          field: field_service
           relationship: none
           group_type: group
           admin_label: ''
@@ -191,10 +191,11 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
+          click_sort_column: target_id
+          type: entity_reference_label
+          settings:
+            link: false
+          group_column: target_id
           group_columns: {  }
           group_rows: true
           delta_limit: 0
@@ -205,10 +206,10 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_earlywarning_release:
-          id: field_earlywarning_release
-          table: node__field_earlywarning_release
-          field: field_earlywarning_release
+        field_deployed_release:
+          id: field_deployed_release
+          table: node__field_deployed_release
+          field: field_deployed_release
           relationship: none
           group_type: group
           admin_label: ''
@@ -253,10 +254,11 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
+          click_sort_column: target_id
+          type: entity_reference_label
+          settings:
+            link: false
+          group_column: target_id
           group_columns: {  }
           group_rows: true
           delta_limit: 0
@@ -267,18 +269,18 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_previous_release:
-          id: field_previous_release
-          table: node__field_previous_release
-          field: field_previous_release
+        field_prev_release:
+          id: field_prev_release
+          table: node__field_prev_release
+          field: field_prev_release
           relationship: none
           group_type: group
           admin_label: ''
           label: Vorgängerrelease
           exclude: false
           alter:
-            alter_text: true
-            text: "{% if field_previous_release == '0' %} \r\n   {{ 'Ersteinsatz' }}\r\n{% else %}\r\n   {{ field_previous_release }}\r\n{% endif %}"
+            alter_text: false
+            text: ''
             make_link: false
             path: ''
             absolute: false
@@ -315,10 +317,11 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          click_sort_column: value
-          type: list_default
-          settings: {  }
-          group_column: value
+          click_sort_column: target_id
+          type: entity_reference_label
+          settings:
+            link: false
+          group_column: target_id
           group_columns: {  }
           group_rows: true
           delta_limit: 0
@@ -393,10 +396,10 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_installation_duration:
-          id: field_installation_duration
-          table: node__field_installation_duration
-          field: field_installation_duration
+        field_installation_time:
+          id: field_installation_time
+          table: node__field_installation_time
+          field: field_installation_time
           relationship: none
           group_type: group
           admin_label: ''
@@ -442,9 +445,10 @@ display:
           empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: string
+          type: number_integer
           settings:
-            link_to_entity: false
+            thousand_separator: ''
+            prefix_suffix: true
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -456,18 +460,18 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_automated_deployment:
-          id: field_automated_deployment
-          table: node__field_automated_deployment
-          field: field_automated_deployment
+        field_automated_deployment_bool:
+          id: field_automated_deployment_bool
+          table: node__field_automated_deployment_bool
+          field: field_automated_deployment_bool
           relationship: none
           group_type: group
           admin_label: ''
           label: 'Automatisiertes Deployment'
           exclude: false
           alter:
-            alter_text: true
-            text: "{% if field_automated_deployment  == 'Automated Deployment' %}\r\n   {{ 'Yes' | t }}   \r\n{% else %}\r\n   {{ 'No' | t }}\r\n{% endif %}"
+            alter_text: false
+            text: ''
             make_link: false
             path: ''
             absolute: false
@@ -501,12 +505,15 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
-          hide_empty: true
-          empty_zero: true
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
-          type: list_default
-          settings: {  }
+          type: boolean
+          settings:
+            format: yes-no
+            format_custom_true: ''
+            format_custom_false: ''
           group_column: value
           group_columns: {  }
           group_rows: true
@@ -675,13 +682,13 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.field_abnormality_description'
-        - 'config:field.storage.node.field_automated_deployment'
+        - 'config:field.storage.node.field_automated_deployment_bool'
         - 'config:field.storage.node.field_date_deployed'
-        - 'config:field.storage.node.field_earlywarning_release'
+        - 'config:field.storage.node.field_deployed_release'
         - 'config:field.storage.node.field_environment'
-        - 'config:field.storage.node.field_installation_duration'
-        - 'config:field.storage.node.field_previous_release'
-        - 'config:field.storage.node.field_release_service'
+        - 'config:field.storage.node.field_installation_time'
+        - 'config:field.storage.node.field_prev_release'
+        - 'config:field.storage.node.field_service'
   page_1:
     display_plugin: page
     id: page_1
@@ -701,10 +708,10 @@ display:
         - user.permissions
       tags:
         - 'config:field.storage.node.field_abnormality_description'
-        - 'config:field.storage.node.field_automated_deployment'
+        - 'config:field.storage.node.field_automated_deployment_bool'
         - 'config:field.storage.node.field_date_deployed'
-        - 'config:field.storage.node.field_earlywarning_release'
+        - 'config:field.storage.node.field_deployed_release'
         - 'config:field.storage.node.field_environment'
-        - 'config:field.storage.node.field_installation_duration'
-        - 'config:field.storage.node.field_previous_release'
-        - 'config:field.storage.node.field_release_service'
+        - 'config:field.storage.node.field_installation_time'
+        - 'config:field.storage.node.field_prev_release'
+        - 'config:field.storage.node.field_service'

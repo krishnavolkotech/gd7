@@ -760,11 +760,13 @@ function _get_subscribed_users($entity) {
  * Implementing HOOK_entity_postupdate
  */
 function hzd_notifications_node_postupdate(EntityInterface $node) {
-  if ($node->getType() == 'deployed_releases') {
-    if ($node->original->get('field_archived_release')->value == 1) {
-      \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
-    }
-  }
+  // @todo Zurückbauen (01.11.21, Robin Schomburg, Verbesserte Einsatzmeldungen).
+  // Kann zum crash führen, wenn Einsatzmeldungen gepatcht werden.
+  // if ($node->getType() == 'deployed_releases') {
+  //   if ($node->original->get('field_archived_release')->value == 1) {
+  //     \Drupal::service('cache_tags.invalidator')->invalidateTags(['hzd_release_management:releases']);
+  //   }
+  // }
 
   if ($node->isPublished() && $node->bundle() == 'quickinfo') {
     return;

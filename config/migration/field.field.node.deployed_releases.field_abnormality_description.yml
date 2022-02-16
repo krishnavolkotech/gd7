@@ -10,13 +10,13 @@ dependencies:
     - text
 third_party_settings:
   allowed_formats:
+    full_html: full_html
     basic_html: basic_html
     restricted_html: restricted_html
     filtered_html: filtered_html
-    full_html: '0'
-    messaging_plain_text: '0'
+    messaging_plain_text: messaging_plain_text
+    plain_text: plain_text
     php_code: '0'
-    plain_text: '0'
 id: node.deployed_releases.field_abnormality_description
 field_name: field_abnormality_description
 entity_type: node

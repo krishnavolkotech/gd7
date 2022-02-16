@@ -1,0 +1,29 @@
+uuid: 990144fb-3f2d-41d7-b431-c0e70a2aa6cf
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_release_ref
+    - node.type.early_warnings
+    - node.type.release
+id: node.early_warnings.field_release_ref
+field_name: field_release_ref
+entity_type: node
+bundle: early_warnings
+label: Release
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      release: release
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

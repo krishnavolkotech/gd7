@@ -7,11 +7,12 @@ dependencies:
     - field.field.node.release_comments.body
     - field.field.node.release_comments.comment_no_subject
     - field.field.node.release_comments.field_earlywarning_release
+    - field.field.node.release_comments.field_release_ref
     - field.field.node.release_comments.field_release_service
+    - field.field.node.release_comments.field_service
     - node.type.release_comments
   module:
     - comment
-    - options
     - text
     - user
 id: node.release_comments.default
@@ -35,19 +36,21 @@ content:
     third_party_settings: {  }
     type: comment_default
     region: content
-  field_earlywarning_release:
-    weight: 1
-    label: inline
-    settings: {  }
-    third_party_settings: {  }
-    type: list_default
-    region: content
-  field_release_service:
+  field_release_ref:
     weight: 2
     label: inline
-    settings: {  }
+    settings:
+      link: false
     third_party_settings: {  }
-    type: list_default
+    type: entity_reference_label
+    region: content
+  field_service:
+    weight: 1
+    label: inline
+    settings:
+      link: false
+    third_party_settings: {  }
+    type: entity_reference_label
     region: content
   links:
     weight: 0
@@ -60,4 +63,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_earlywarning_release: true
+  field_release_service: true
   langcode: true
+  search_api_excerpt: true

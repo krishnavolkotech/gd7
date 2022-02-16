@@ -1,0 +1,22 @@
+uuid: 7b77607f-0578-4184-9488-f4885b35e550
+langcode: de
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_first_deployment
+field_name: field_first_deployment
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

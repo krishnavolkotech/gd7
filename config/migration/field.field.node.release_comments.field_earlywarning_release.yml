@@ -11,7 +11,7 @@ id: node.release_comments.field_earlywarning_release
 field_name: field_earlywarning_release
 entity_type: node
 bundle: release_comments
-label: Release
+label: ALT_Release
 description: ''
 required: false
 translatable: true

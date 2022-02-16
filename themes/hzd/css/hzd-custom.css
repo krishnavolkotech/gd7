@@ -1677,3 +1677,137 @@ a.btn.btn-danger.legal-decline-btn {
 .messages__wrapper p {
     display: inline !important;
 }
+
+.skeleton-header {
+  background-color: #eaeaea;
+  width: 30%;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+}
+
+.skeleton-label {
+  background-color: #eaeaea;
+  width: 25%;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+}
+
+.skeleton-select {
+  background-color: #eaeaea;
+  width: 100%;
+  height: 30px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 15px;
+  border-radius: 5px;
+}
+
+.skeleton-select-box {
+  float: left;
+  background-color: #eaeaea;
+  width: 12px;
+  height: 12px;
+  margin: 5px 0px;
+  border-radius: 1px;
+}
+
+.skeleton-select-box-label {
+  background-color: #eaeaea;
+  width: 150px;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 15px 15px;
+  border-radius: 5px;
+}
+
+.skeleton-textbody {
+  background-color: #eaeaea;
+  width: 100%;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+}
+
+.loading {
+    position: relative;
+    background-color: #eaeaea;
+}
+
+.loading::after {
+    display: block;
+    content: "";
+    /* position: absolute; */
+    width: 20%;
+    height: 100%;
+    transform: translateX(0);
+    /* background: -webkit-gradient(linear, left top,
+                right top, from(transparent), 
+                color-stop(rgba(255, 255, 255, 0.2)),
+                to(transparent)); */
+                  
+    background: linear-gradient(90deg, transparent,
+            rgba(255, 255, 255, 0.2), transparent);
+    /* background:rgba(0, 0, 0, 0.3); */
+    /* Adding animation */
+    animation: loading 1.5s infinite;
+}
+
+/* Loading Animation */
+@keyframes loading {
+    100% {
+        transform: translateX(400%);
+    }
+}
+
+table.deployed_overview_table {
+  display:block;
+  overflow: auto;
+  max-height: 800px;
+  table-layout: fixed;
+}
+
+thead tr th.sticky-row {
+  position: sticky;
+  top: 0;
+  z-index:1;
+  background-color: rgb(245, 245, 245);
+}
+
+table.deployed_overview_table th:last-child {
+  width: 100%;
+}
+
+table.deployed_overview_table tbody td:first-child {
+  position: sticky;
+  font-weight: bold;
+  left: 0;
+  z-index: 1;
+  background: white;
+}
+
+table.deployed_overview_table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: rgb(245, 245, 245);
+}
+
+table.deployed_overview_table thead {
+  z-index: 3;
+}
+
+/* rsc: To be replaced by "new" default green. */
+button.btn.follow-up-button {
+  /* #5cb85c */
+  color: #fff;
+  background-color: #5cb85c;
+}

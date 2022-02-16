@@ -1,0 +1,29 @@
+uuid: cc21ad6a-eac6-4b54-b9c0-8415668a1eeb
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_release_ref
+    - node.type.release
+    - node.type.release_comments
+id: node.release_comments.field_release_ref
+field_name: field_release_ref
+entity_type: node
+bundle: release_comments
+label: Release
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      release: release
+    sort:
+      field: _none
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference
