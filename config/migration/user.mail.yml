@@ -1,5 +1,5 @@
 cancel_confirm:
-  body: '[user:name], Your account on [site:name] has been deleted.'
+  body: "[user:display-name],\r\n\r\nauf der Seite  [site:name] wurde eine Anfrage zur Löschung Ihres Benutzerkontos gestellt .\r\n\r\nSie können nun Ihr Benutzerkonto auf der Seite [site:url-brief]  schliessen, indem Sie auf folgenden Link klicken oder diesen in die Adresszeile Ihres Browsers kopieren:\r\n\r\n[user:cancel-url]\r\n\r\nBeachten Sie: Die Schließung Ihres Benutzerkontos kannn icht rükgägngig gemacht werden.\r\n\r\nDieser Link läuft innerhalb eines Tages ab. Es passiert nichts, wenn Sie den Link nicht benutzen.\r\n\r\nIch Team von:\r\n\r\n--  [site:name]"
   subject: 'Account details for [user:name] at [site:name] (deleted)'
 password_reset:
   body: "Hallo [user:name],\r\n\r\nes wurde ein neues Passwort für Ihren Zugang zu dem Betriebsportal KONSENS angefordert. Falls Sie diese Aktion nicht selber angefordert haben, ignorieren Sie bitte diese Email. Sie können sich jetzt mit dem folgenden Link anmelden:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Link, der nur einmal benutzt werden kann und 24 Stunden gültig ist. Melden Sie sich nicht innerhalb dieser Zeit an, verfällt der Link ohne Wirkung. Nach der Anmeldung werden Sie auf eine Seite weitergeleitet, wo Sie ihr Passwort ändern können.\r\n\r\n-- Team Betriebsportal KONSENS"
@@ -24,7 +24,7 @@ status_blocked:
   subject: 'Account details for [user:name] at [site:name] (blocked)'
 status_canceled:
   body: "[user:display-name],\r\n\r\nYour account on [site:name] has been canceled.\r\n\r\n--  [site:name] team"
-  subject: 'Account details for [user:display-name] at [site:name] (canceled)'
+  subject: 'Details für Benutzerkonto [user:display-name] auf [site:name] (abgebrochen)'
 langcode: de
 _core:
   default_config_hash: r_VG2AQN5andXmmy8cQAYj1i9OinO1B4ia9al1ZKAvE

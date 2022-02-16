@@ -7,7 +7,11 @@ filebrowser:
     create_folders: 0
     download_manager: private
     force_download: 0
-    forbidden_files: "descript.ion\nfile.bbs\n*.git\n*.svn"
+    forbidden_files: |-
+      descript.ion
+      file.bbs
+      *.git
+      *.svn
     whitelist: ''
   uploads:
     enabled: 1

@@ -777,7 +777,7 @@ display:
   page_2:
     display_plugin: page
     id: page_2
-    display_title: 'File usage'
+    display_title: Dateinutzung
     position: 2
     display_options:
       display_description: ''
@@ -924,7 +924,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
-          label: 'Registering module'
+          label: 'Registrierendes Modul'
           exclude: false
           alter:
             alter_text: false
@@ -1024,7 +1024,7 @@ display:
           suffix: ''
           plugin_id: numeric
       group_by: false
-      title: 'File usage'
+      title: Dateinutzung
       arguments:
         fid:
           id: fid

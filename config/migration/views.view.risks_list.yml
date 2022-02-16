@@ -2146,7 +2146,87 @@ display:
     position: 1
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config:
+            field_id:
+              merge_option: filter
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_risk_clusters:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            title:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_risk_category:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_risk_value:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_risk_status:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_follow_up:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_owner:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_non_production_state:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            view_node:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            nid:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            id:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            nothing:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
       path: group/%group/risiken
       menu:
         type: none
@@ -2158,87 +2238,6 @@ display:
         context: '0'
         menu_name: menu-340
       rendering_language: '***LANGUAGE_entity_translation***'
-      merge_rows: 0
-      use_grouping: 0
-      field_config:
-        field_id:
-          merge_option: filter
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_risk_clusters:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        title:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_risk_category:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_risk_value:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_risk_status:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_follow_up:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_owner:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_non_production_state:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        view_node:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        nid:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        id:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        nothing:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
       filters:
         type:
           id: type
