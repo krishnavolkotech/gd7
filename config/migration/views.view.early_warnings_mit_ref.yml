@@ -6,7 +6,6 @@ dependencies:
     - field.storage.node.field_release_ref
     - field.storage.node.field_service
     - node.type.early_warnings
-    - system.menu.menu-339
     - taxonomy.vocabulary.release_type
   content:
     - 'taxonomy_term:release_type:5fb82566-c087-41d5-ada5-81f41bb2d6ac'
@@ -965,10 +964,12 @@ display:
     position: 1
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config: {  }
       path: release-management/early-warnings-view
       menu:
-        type: normal
+        type: none
         title: 'Early Warnings (view)'
         description: ''
         expanded: false

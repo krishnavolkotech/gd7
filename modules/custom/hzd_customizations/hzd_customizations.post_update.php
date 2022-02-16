@@ -110,6 +110,7 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
 
   foreach ($results as $result) {
     $node = $entityTypeManager->getStorage('node')->load($result);
+    $changed = intval($node->getChangedTime()) + 1;
 
     // Convert field_archived_release to field_deployment_status.
     $oldStatus = $node->field_archived_release->value;
@@ -176,9 +177,7 @@ function hzd_customizations_post_update_deployed_releases_1(&$sandbox) {
     // $node->revision_log = 'Feldaktualisierung.';
     // $node->setRevisionCreationTime(REQUEST_TIME);
     // $node->setRevisionUserId(1);
-    $changed = $node->getChangedTime();
     $node->changed = $changed;
-
     $node->save();
   }
 
@@ -218,6 +217,7 @@ function hzd_customizations_post_update_early_warnings_1(&$sandbox) {
 
    foreach ($results as $result) {
     $node = $entityTypeManager->getStorage('node')->load($result);
+    $changed = intval($node->getChangedTime()) + 1;
 
     // Convert field_earlywarning_release to field_release_ref.
     $oldRelease = $node->field_earlywarning_release->value;
@@ -239,7 +239,6 @@ function hzd_customizations_post_update_early_warnings_1(&$sandbox) {
     // $node->revision_log = 'Feldaktualisierung.';
     // $node->setRevisionCreationTime(REQUEST_TIME);
     // $node->setRevisionUserId(1);
-    $changed = $node->getChangedTime();
     $node->changed = $changed;
     $node->save();
   }
@@ -279,6 +278,7 @@ function hzd_customizations_post_update_release_comments_1(&$sandbox) {
 
     foreach ($results as $result) {
     $node = $entityTypeManager->getStorage('node')->load($result);
+    $changed = intval($node->getChangedTime()) + 1;
 
     // Convert field_earlywarning_release to field_release_ref.
     $oldRelease = $node->field_earlywarning_release->value;
@@ -300,9 +300,7 @@ function hzd_customizations_post_update_release_comments_1(&$sandbox) {
     // $node->revision_log = 'Feldaktualisierung.';
     // $node->setRevisionCreationTime(REQUEST_TIME);
     // $node->setRevisionUserId(1);
-    $changed = $node->getChangedTime();
     $node->changed = $changed;
-
     $node->save();
   }
 

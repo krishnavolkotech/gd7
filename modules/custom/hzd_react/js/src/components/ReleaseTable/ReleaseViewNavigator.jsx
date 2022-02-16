@@ -239,7 +239,7 @@ export default function ReleaseViewNavigator() {
           <li className={activeKey==="5" ? "active" : ""}><Link to={"/" + groupPath + "/releases/archiviert?" + query.toString()}>Archiviert</Link></li>
         }
         <li className={activeKey==="4" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt?" + query.toString()}>Eingesetzt</Link></li>
-        <li className={activeKey==="6" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt-uebersicht?" + query.toString()}>Eingesetzt(Übersicht)</Link></li>
+        <li className={activeKey==="6" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt-uebersicht?" + query.toString()}>Eingesetzt (Übersicht)</Link></li>
         <li className={activeKey==="7" ? "active" : ""}><Link to={"/" + groupPath + "/releases/einsatzinformationen?" + query.toString()}>Einsatzinformationen</Link></li>
       </ul>
       { ["1", "2", "3", "5"].includes(activeKey) &&
