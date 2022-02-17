@@ -210,7 +210,7 @@ class HzdearlywarningsStorage
             }
             
             if ($filter_value['releases'] && $filter_value['releases'] != 0) {
-                $earlywarnings_nids->condition('field_earlywarning_release',
+                $earlywarnings_nids->condition('field_release_ref',
                     $filter_value['releases'], '=');
             }
 //  @to do 

@@ -20,7 +20,7 @@ hzd_earlywarnings.early-warnings:
 hzd_earlywarnings.add_early_warnings:
   path: 'group/{group}/add/early-warnings'
   defaults:
-    _controller: '\Drupal\hzd_earlywarnings\Controller\HzdEarlyWarnings::add_early_warnings'
+    _form: '\Drupal\hzd_earlywarnings\Form\CreateEarlyWarningForm'
     _title: 'Early Warnings'
     _entity_view: 'group.default'
   requirements:

@@ -1,74 +1,74 @@
-hzd_release_management.view_deployed_releases:
-  path: 'group/{group}/releases/view_deployed_releases'
-  defaults:
-    _title: 'Deployed Releases (Overview)'
-    _controller: '\Drupal\hzd_release_management\Controller\DeployedReleases::OverView'
-    _entity_view: group.default
-  requirements:
-#    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-  options:
-    no_cache: 'TRUE'
+# hzd_release_management.view_deployed_releases:
+#   path: 'group/{group}/releases/view_deployed_releases'
+#   defaults:
+#     _title: 'Deployed Releases (Overview)'
+#     _controller: '\Drupal\hzd_release_management\Controller\DeployedReleases::OverView'
+#     _entity_view: group.default
+#   requirements:
+# #    _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+#   options:
+#     no_cache: 'TRUE'
 
-hzd_release_management.released:
-  path: 'group/{group}/releases'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
-    _title: 'Released'
-    _entity_view: group.default
-  requirements:
-    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.released:
+#   path: 'group/{group}/releases'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
+#     _title: 'Released'
+#     _entity_view: group.default
+#   requirements:
+#     _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
-hzd_release_management.archived:
-  path: 'group/{group}/releases/archived'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::archived'
-    _title: 'Archived'
-    _entity_view: group.default
-  requirements:
-    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.archived:
+#   path: 'group/{group}/releases/archived'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::archived'
+#     _title: 'Archived'
+#     _entity_view: group.default
+#   requirements:
+#     _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
-hzd_release_management.inprogress:
-  path: 'group/{group}/releases/in_progress'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
-    _title: 'In Progress'
-    _entity_view: group.default
-  requirements:
-  #  _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.inprogress:
+#   path: 'group/{group}/releases/in_progress'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
+#     _title: 'In Progress'
+#     _entity_view: group.default
+#   requirements:
+#   #  _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
-hzd_release_management.locked:
-  path: 'group/{group}/releases/locked'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
-    _title: 'Locked'
-    _entity_view: group.default
-  requirements:
-  #  _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.locked:
+#   path: 'group/{group}/releases/locked'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
+#     _title: 'Locked'
+#     _entity_view: group.default
+#   requirements:
+#   #  _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     
-hzd_release_management.deployed:
-  path: 'group/{group}/releases/deployed'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
-    _title: 'Deployed'
-    _entity_view: group.default
-  requirements:
-  #  _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.deployed:
+#   path: 'group/{group}/releases/deployed'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed'
+#     _title: 'Deployed'
+#     _entity_view: group.default
+#   requirements:
+#   #  _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
-hzd_release_management.deployedinfo:
-  path: 'group/{group}/releases/einsatzinformationen'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_info'
-    _title: 'Deployment Information'
-    _entity_view: group.default
-  requirements:
-  #  _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.deployedinfo:
+#   path: 'group/{group}/releases/einsatzinformationen'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_info'
+#     _title: 'Deployment Information'
+#     _entity_view: group.default
+#   requirements:
+#   #  _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
 #hzd_release_management.eingesetzte:
 #  path: 'group/{group}/eingesetzte-releases'
@@ -197,34 +197,34 @@ hzd_release_management.release_settings:
 #   cust_og_is_admin: 'TRUE' 
 
 
-hzd_release_management.deployed_releases:
-  path: '/group/{group}/eingesetzte-releases'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
-    _title: 'Deployed Releases'
-    _entity_view: group.default
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.deployed_releases:
+#   path: '/group/{group}/eingesetzte-releases'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
+#     _title: 'Deployed Releases'
+#     _entity_view: group.default
+#   requirements:
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
-hzd_release_management.archived_deployed_releases:
-  path: '/group/{group}/eingesetzte-releases/archiv'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::archived_deployed_releases'
-    _title: 'Archived Deployed Releases'
-    _entity_view: group.default
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-#   cust_og_is_admin: 'TRUE'
+# hzd_release_management.archived_deployed_releases:
+#   path: '/group/{group}/eingesetzte-releases/archiv'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::archived_deployed_releases'
+#     _title: 'Archived Deployed Releases'
+#     _entity_view: group.default
+#   requirements:
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# #   cust_og_is_admin: 'TRUE'
 
-hzd_release_management.extended_deployed_releases:
-  path: '/group/{group}/eingesetzte-releases/neues-eingesetzte'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::extended_deployed_releases'
-    _title: 'Extended Deployed Releases'
-    _entity_view: group.default
-  requirements:
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
-#   cust_og_is_admin: 'TRUE'
+# hzd_release_management.extended_deployed_releases:
+#   path: '/group/{group}/eingesetzte-releases/neues-eingesetzte'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::extended_deployed_releases'
+#     _title: 'Extended Deployed Releases'
+#     _entity_view: group.default
+#   requirements:
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# #   cust_og_is_admin: 'TRUE'
 
 # to do access check ( group id is releasemanagement)
 #hzd_release_management.rz-schnellinfo-overview:
@@ -374,38 +374,38 @@ hzd_release_management.display_planning_files:
 #    );
 #    'access callback' => 'saved_quickinfo_og_is_member',  
 
-hzd_release_management.releases_released:
-  path: '/releases/released'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
-    _title: 'Released'
-  requirements:
-#    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.releases_released:
+#   path: '/releases/released'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::released'
+#     _title: 'Released'
+#   requirements:
+# #    _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
 
-hzd_release_management.releases_in_progress:
-  path: '/releases/in_progress'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
-    _title: 'In Progress'
-  requirements:
-#    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.releases_in_progress:
+#   path: '/releases/in_progress'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::inprogress'
+#     _title: 'In Progress'
+#   requirements:
+# #    _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
      
-hzd_release_management.releases_locked:
-  path: '/releases/locked'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
-    _title: 'Locked'
-  requirements:
-#    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.releases_locked:
+#   path: '/releases/locked'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::locked'
+#     _title: 'Locked'
+#   requirements:
+# #    _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
     
-hzd_release_management.releases_deployed:
-  path: '/releases/deployed'
-  defaults:
-    _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
-    _title: 'Deployed'
-  requirements:
-#    _permission: 'access content'
-    _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'
+# hzd_release_management.releases_deployed:
+#   path: '/releases/deployed'
+#   defaults:
+#     _controller: '\Drupal\hzd_release_management\Controller\HzdReleases::deployed_releases'
+#     _title: 'Deployed'
+#   requirements:
+# #    _permission: 'access content'
+#     _custom_access: '\Drupal\cust_group\Controller\CustNodeController::hzdGroupAccess'

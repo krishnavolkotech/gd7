@@ -1,0 +1,76 @@
+uuid: b8b3a587-2fa6-4987-9ae4-622da011ed78
+langcode: de
+status: true
+dependencies:
+  module:
+    - field_permissions
+    - node
+    - options
+third_party_settings:
+  field_permissions:
+    permission_type: public
+id: node.field_state_list
+field_name: field_state_list
+entity_type: node
+type: list_string
+settings:
+  allowed_values:
+    -
+      value: '2'
+      label: Baden-Württemberg
+    -
+      value: '3'
+      label: Bayern
+    -
+      value: '4'
+      label: Berlin
+    -
+      value: '5'
+      label: Brandenburg
+    -
+      value: '6'
+      label: Bremen
+    -
+      value: '7'
+      label: Hamburg
+    -
+      value: '8'
+      label: Hessen
+    -
+      value: '9'
+      label: Mecklenburg-Vorpommern
+    -
+      value: '10'
+      label: Niedersachsen
+    -
+      value: '11'
+      label: Nordrhein-Westfalen
+    -
+      value: '12'
+      label: Rheinland-Pfalz
+    -
+      value: '13'
+      label: Saarland
+    -
+      value: '14'
+      label: Sachsen
+    -
+      value: '15'
+      label: Sachsen-Anhalt
+    -
+      value: '16'
+      label: Schleswig-Holstein
+    -
+      value: '17'
+      label: Thüringen
+    -
+      value: '18'
+      label: Bund
+  allowed_values_function: ''
+module: options
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

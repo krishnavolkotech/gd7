@@ -1,0 +1,12 @@
+deployed-releases:
+  description: "The deployed releases."
+  reference: "test"
+  notes: "test"
+early-warnings:
+  description: "The early warnings."
+  reference: "test"
+  notes: "test"
+release-comments:
+  description: "The release comments."
+  reference: "test"
+  notes: "test"

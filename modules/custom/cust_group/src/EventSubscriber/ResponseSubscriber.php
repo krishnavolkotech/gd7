@@ -52,51 +52,51 @@ class ResponseSubscriber implements EventSubscriberInterface {
    */
   public function alterResponse(GetResponseEvent $event) {
     $exception = $event->getException();                                                                                                       
-    if ($exception instanceof HttpException) {
-      if ($exception->getStatusCode() == 403) {
-
+    if (!$exception instanceof HttpException) {
+			return;
+		}
+    if ($exception->getStatusCode() == 403) {
       if (\Drupal::currentUser()->isAuthenticated()) {
         $currentPath = \Drupal::service('path.current')->getPath();
         $group = \Drupal\cust_group\CustGroupHelper::getGroupFromRouteMatch();
 
-        if ($group) {
+        if (is_a($group, "Drupal\group\Entity\Group")) {
           $groupType = $group->getGroupType()->id();
           // Do not attempt to redirect a group member. Prevents redirect loop.
           if ($group->getMember(\Drupal::currentUser())) {
             return;
           }
-        }
-
-        if ($group and in_array($groupType, ['open', 'moderate'])) {
-
-          // Generates Link to FAQ.
-          $link = \Drupal\Core\Link::fromTextAndUrl(
-            'FAQ',
-             \Drupal\Core\Url::fromUri('internal:/betriebsportal-konsens/faq/mitgliedschaft')
-             )->toString();
-
-          if ($groupType === 'open') {
-            $url = \Drupal\Core\Url::fromRoute('entity.group.join', ['group' => $group->id()]);
-            // 'Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
-            $message = t('Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
-          }
-
-          if ($groupType === 'moderate') {
-            $url = \Drupal\Core\Url::fromRoute('entity.group.group_request_membership', ['group' => $group->id()]);
-            // 'Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
-            $message = t('Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
-          }
-
-          $joinPath = $url->toString();
-	  \Drupal::messenger()->addWarning($message);
-	  //          drupal_set_message($message, 'warning');
           
-          global $base_url;
-          header('Location: ' . $base_url . $joinPath);
-          exit;
+          if (in_array($groupType, ['open', 'moderate'])) {
+
+            // Generates Link to FAQ.
+            $link = \Drupal\Core\Link::fromTextAndUrl(
+              'FAQ',
+              \Drupal\Core\Url::fromUri('internal:/betriebsportal-konsens/faq/mitgliedschaft')
+              )->toString();
+              
+            if ($groupType === 'open') {
+              $url = \Drupal\Core\Url::fromRoute('entity.group.join', ['group' => $group->id()]);
+              // 'Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
+              $message = t('Die angeforderte Seite gehört zur Gruppe @group. Bitte treten Sie der Gruppe bei, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
+            }
+            
+            if ($groupType === 'moderate') {
+              $url = \Drupal\Core\Url::fromRoute('entity.group.group_request_membership', ['group' => $group->id()]);
+              // 'Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.'
+              $message = t('Die angeforderte Seite gehört zur moderierten Gruppe @group. Bitte beantragen Sie eine Gruppenmitgliedschaft, um den Zugriff auf die Gruppeninhalte freizuschalten. Weitere Informationen zum Gruppenkonzept des Betriebsportal KONSENS finden Sie in unseren @faq.', ['@faq' => $link, '@group' => $group->label()]);
+            }
+
+            $joinPath = $url->toString();
+            \Drupal::messenger()->addWarning($message);
+            // drupal_set_message($message, 'warning');
+            
+            global $base_url;
+            header('Location: ' . $base_url . $joinPath);
+            exit;
+          }
         }
       }
-    }
     }
   }
 }

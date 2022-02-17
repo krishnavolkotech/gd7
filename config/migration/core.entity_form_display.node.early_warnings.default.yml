@@ -6,7 +6,9 @@ dependencies:
     - field.field.node.early_warnings.body
     - field.field.node.early_warnings.comment_no_subject
     - field.field.node.early_warnings.field_earlywarning_release
+    - field.field.node.early_warnings.field_release_ref
     - field.field.node.early_warnings.field_release_service
+    - field.field.node.early_warnings.field_service
     - node.type.early_warnings
   module:
     - text
@@ -36,11 +38,31 @@ content:
     settings: {  }
     third_party_settings: {  }
     region: content
+  field_release_ref:
+    weight: 26
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
+    region: content
   field_release_service:
     weight: 1
     type: options_select
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_service:
+    weight: 27
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: entity_reference_autocomplete
     region: content
   title:
     type: string_textfield

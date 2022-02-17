@@ -1032,6 +1032,20 @@ function cust_group_node_view(array &$build, \Drupal\Core\Entity\EntityInterface
  */
 function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\Core\Session\AccountInterface $account) {
 
+  if ($node->getType() == 'deployed_releases' && $op != "view") {
+    $group = \Drupal\group\Entity\Group::load(Zentrale_Release_Manager_Lander);
+    $content = $group->getMember($account);
+    if (array_intersect($account->getRoles(), ['site_administrator', 'administrator'])) {
+      return AccessResult::allowed();
+    }
+    if ($content && group_request_status($content)) {
+      return AccessResult::allowed();
+    }
+    else {
+      return AccessResult::forbidden();
+    }
+  }
+
   if ($node->getType() == 'release_comments') {
     if (\Drupal\hzd_release_management\HzdreleasemanagementStorage::RWCommentAccess()) {
       return AccessResult::allowed();
@@ -1081,23 +1095,24 @@ function cust_group_node_access(\Drupal\node\NodeInterface $node, $op, \Drupal\C
       }
   }
 
-  if ($node->getType() == 'deployed_releases') {
-    $group_id = 5;
-    $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
-    if (!$is_group_admin) {
-        switch ($op) {
-        case 'view':
-            return AccessResult::allowed();
-        case 'edit':
-            return AccessResult::forbidden();
-        default:
-            if ($account->isAnonymous()) {
-                return AccessResult::forbidden();
-            }
-        }
-        return AccessResult::forbidden();
-    }
-  }
+  // @todo Zurückbauen (Nicht kompatibel mit Meldetool).
+  // if ($node->getType() == 'deployed_releases') {
+  //   $group_id = 5;
+  //   $is_group_admin = \Drupal\cust_group\Controller\CustNodeController::isGroupAdmin($group_id);
+  //   if (!$is_group_admin) {
+  //       switch ($op) {
+  //       case 'view':
+  //           return AccessResult::allowed();
+  //       case 'edit':
+  //           return AccessResult::forbidden();
+  //       default:
+  //           if ($account->isAnonymous()) {
+  //               return AccessResult::forbidden();
+  //           }
+  //       }
+  //       return AccessResult::forbidden();
+  //   }
+  // }
 
 }
 
@@ -1710,6 +1725,10 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
 
   if (!in_array('site_administrator', $current_user->getRoles())) {
     if ($entity->getEntityTypeId() == 'node') {
+      // Do not create pathauto for deployed releases.
+      if ($entity->bundle() === "deployed_releases") {
+        return;
+      }
       $token_type = \Drupal::service('token.entity_mapper');
       $data = [$token_type->getTokenTypeForEntityType($entity->getEntityTypeId()) => $entity,];
 

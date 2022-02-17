@@ -11,9 +11,9 @@ id: node.deployed_releases.field_previous_release
 field_name: field_previous_release
 entity_type: node
 bundle: deployed_releases
-label: Vorgängerrelease
+label: ALT_Vorgängerrelease
 description: ''
-required: true
+required: false
 translatable: true
 default_value: {  }
 default_value_callback: ''

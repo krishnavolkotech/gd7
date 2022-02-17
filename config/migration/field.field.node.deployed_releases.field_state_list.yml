@@ -1,0 +1,21 @@
+uuid: 2996472a-5833-4f7e-b2cd-7ba263ad6f92
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_state_list
+    - node.type.deployed_releases
+  module:
+    - options
+id: node.deployed_releases.field_state_list
+field_name: field_state_list
+entity_type: node
+bundle: deployed_releases
+label: Land
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

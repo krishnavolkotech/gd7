@@ -31,11 +31,11 @@ hzd_release_management.release_type_settings_tab: #name it same as route to avoi
   base_route: hzd_release_management.release_documentation_settings #set the base tab
   weight: 3
 
-hzd_release_management.release_management_release_tab:
-  title: Released
-  route_name: hzd_release_management.released
-  base_route: hzd_release_management.released
-  weight: 0
+# hzd_release_management.release_management_release_tab:
+#   title: Released
+#   route_name: hzd_release_management.released
+#   base_route: hzd_release_management.released
+#   weight: 0
 
 # 02.07.2021 - Robin Schomburg
 # Archivierte Releases nicht mehr von Relevanz. Ansicht enthält auch Releases,
@@ -47,51 +47,51 @@ hzd_release_management.release_management_release_tab:
 #   base_route: hzd_release_management.released
 #   weight: 1
   
-hzd_release_management.release_management_progress_tab:
-  title: In Progress
-  route_name: hzd_release_management.inprogress
-  base_route: hzd_release_management.released
-  weight: 2
+# hzd_release_management.release_management_progress_tab:
+#   title: In Progress
+#   route_name: hzd_release_management.inprogress
+#   base_route: hzd_release_management.released
+#   weight: 2
   
-hzd_release_management.release_management_locked_tab:
-  title: Locked
-  route_name: hzd_release_management.locked
-  base_route: hzd_release_management.released
-  weight: 3
+# hzd_release_management.release_management_locked_tab:
+#   title: Locked
+#   route_name: hzd_release_management.locked
+#   base_route: hzd_release_management.released
+#   weight: 3
   
-hzd_release_management.release_management_deployed_tab:
-  title: Deployed
-  route_name: hzd_release_management.deployed
-  base_route: hzd_release_management.released
-  weight: 4
+# hzd_release_management.release_management_deployed_tab:
+#   title: Deployed
+#   route_name: hzd_release_management.deployed
+#   base_route: hzd_release_management.released
+#   weight: 4
   
-hzd_release_management.release_management_overview_deployed_tab:
-  title: Deployed(Overview)
-  route_name: hzd_release_management.view_deployed_releases
-  base_route: hzd_release_management.released
-  weight: 5
+# hzd_release_management.release_management_overview_deployed_tab:
+#   title: Deployed(Overview)
+#   route_name: hzd_release_management.view_deployed_releases
+#   base_route: hzd_release_management.released
+#   weight: 5
 
-hzd_release_management.release_management_deployed_info_tab:
-  title: Einsatzinformationen
-  route_name: hzd_release_management.deployedinfo
-  base_route: hzd_release_management.released
-  weight: 6
+# hzd_release_management.release_management_deployed_info_tab:
+#   title: Einsatzinformationen
+#   route_name: hzd_release_management.deployedinfo
+#   base_route: hzd_release_management.released
+#   weight: 6
 
 
-hzd_release_management.deployed_releases_tab:
-  title: Deployed Releases
-  route_name: hzd_release_management.deployed_releases
-  base_route: hzd_release_management.deployed_releases
-  weight: 1
+# hzd_release_management.deployed_releases_tab:
+#   title: Deployed Releases
+#   route_name: hzd_release_management.deployed_releases
+#   base_route: hzd_release_management.deployed_releases
+#   weight: 1
 
-hzd_release_management.archived_deployed_releases_tab:
-  title: Archived Deployed Releases
-  route_name: hzd_release_management.archived_deployed_releases
-  base_route: hzd_release_management.deployed_releases
-  weight: 2
+# hzd_release_management.archived_deployed_releases_tab:
+#   title: Archived Deployed Releases
+#   route_name: hzd_release_management.archived_deployed_releases
+#   base_route: hzd_release_management.deployed_releases
+#   weight: 2
 
-hzd_release_management.extended_deployed_releases_tab:
-  title: Extended Deployed Releases
-  route_name: hzd_release_management.extended_deployed_releases
-  base_route: hzd_release_management.deployed_releases
-  weight: 3
+# hzd_release_management.extended_deployed_releases_tab:
+#   title: Extended Deployed Releases
+#   route_name: hzd_release_management.extended_deployed_releases
+#   base_route: hzd_release_management.deployed_releases
+#   weight: 3

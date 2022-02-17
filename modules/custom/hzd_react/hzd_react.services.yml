@@ -1,0 +1,8 @@
+services:
+  # Name of this service.
+  custom_resource_type_build_event_subscriber:
+    # Event subscriber class that will listen for the events.
+    class: '\Drupal\hzd_react\EventSubscriber\ResourceTypeBuildEventSubscriber'
+    # Tagged as an event_subscriber to register this subscriber with the event_dispatch service.
+    tags:
+      - { name: 'event_subscriber' }

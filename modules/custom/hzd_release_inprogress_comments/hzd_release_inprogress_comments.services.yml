@@ -1,0 +1,6 @@
+services:
+  cache_context.user.release_comments_permissions:
+    class: 'Drupal\hzd_release_inprogress_comments\Cache\Context\HasReleaseCommentRoleCacheContext'
+    arguments: ['@current_user', '@user.data']
+    tags:
+      - { name: 'cache.context'}

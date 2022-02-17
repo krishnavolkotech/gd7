@@ -56,18 +56,6 @@ class ReleasesettingsForm extends FormBase {
     $options = HzdservicesStorage::get_related_services($type);
     $view_path = \Drupal::config('hzd_release_management.settings')->get('import_alias_releases');
 
-    
-    $url = Url::fromRoute('hzd_release_management.released', array(
-      'group' => $group_id,
-        ), array(
-          'absolute' => TRUE
-        )
-      );
-
-    $release_view = \Drupal::service('link_generator')->generate(
-        $url->toString(), $url);
-
-
     // l($path, $path) .
     $form['#prefix'] = "<div class = 'release_settings'> " . " <div> " . t("Please specify the services of which you would like to display the Releases in this group.") . "</div></p>";
     $form['#suffix'] = "</div>";

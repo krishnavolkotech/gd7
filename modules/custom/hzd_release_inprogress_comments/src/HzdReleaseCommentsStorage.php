@@ -31,12 +31,12 @@ class HzdReleaseCommentsStorage {
 
     if (!empty($filter_value)) {
       if ($filter_value['services'] && $filter_value['services'] != 0) {
-        $earlywarnings_nids->condition('field_release_service',
+        $earlywarnings_nids->condition('field_service',
           $filter_value['services'], '=');
       }
 
       if ($filter_value['releases'] && $filter_value['releases'] != 0) {
-        $earlywarnings_nids->condition('field_earlywarning_release',
+         $earlywarnings_nids->condition('field_release_ref',
           $filter_value['releases'], '=');
       }
 
