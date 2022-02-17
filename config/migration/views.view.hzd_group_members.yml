@@ -544,80 +544,8 @@ display:
     display_options:
       display_extenders:
         views_merge_rows:
-          merge_rows: true
-          field_config:
-            id:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            id_2:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            group_member_name:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            label:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            id_1:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            lastname:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            firstname:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            name:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            group_roles:
-              merge_option: merge_unique
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            abbr:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            mail:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
-            operations:
-              merge_option: filter
-              exclude_first: false
-              prefix: ''
-              separator: ', '
-              suffix: ''
+          merge_rows: false
+          field_config: {  }
       path: group/%group/members/approved
       use_more: false
       defaults:
@@ -1936,6 +1864,81 @@ display:
                   rewrite:
                     filter_rewrite_values: ''
                   sort_options: false
+      merge_rows: 1
+      use_grouping: 0
+      field_config:
+        id:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id_2:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        group_member_name:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        label:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        id_1:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        lastname:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        firstname:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        name:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        group_roles:
+          merge_option: merge_unique
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        abbr:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        mail:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
+        operations:
+          merge_option: filter
+          exclude_first: 0
+          prefix: ''
+          separator: ', '
+          suffix: ''
     cache_metadata:
       max-age: -1
       contexts:
@@ -1975,7 +1978,9 @@ display:
     position: 2
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config: {  }
       path: group/%group/members/pending
       use_more: false
       defaults:
@@ -2014,7 +2019,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-      title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
+      title: 'Ausstehende Benutzer freischalten'
       menu:
         type: none
         title: ''

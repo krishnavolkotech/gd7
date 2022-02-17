@@ -68,6 +68,7 @@ permissions:
   - 'view any unpublished quickinfo content'
   - 'view downtimes revisions'
   - 'view field_contact_from_pretext'
+  - 'view listings'
   - 'view media'
   - 'view noscript tag'
   - 'view own field_contact_from_pretext'
