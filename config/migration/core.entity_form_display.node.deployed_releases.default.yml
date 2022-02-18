@@ -157,7 +157,10 @@ hidden:
   field_abnormalities: true
   field_archived_release: true
   field_automated_deployment: true
+  field_earlywarning_release: true
   field_installation_duration: true
+  field_previous_release: true
+  field_release_service: true
   langcode: true
   path: true
   promote: true

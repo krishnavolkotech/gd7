@@ -87,12 +87,16 @@ hidden:
   field_date_deployed: true
   field_deployed_release: true
   field_deployment_status: true
+  field_earlywarning_release: true
   field_first_deployment: true
   field_installation_duration: true
   field_installation_time: true
   field_prev_release: true
+  field_previous_release: true
+  field_release_service: true
   field_service: true
   field_state_list: true
   field_successor_release: true
   langcode: true
+  search_api_excerpt: true
   upload: true

@@ -28,6 +28,7 @@ permissions:
   - 'administer search'
   - 'block remove'
   - 'block upload'
+  - 'create deployed_releases content'
   - 'create quickinfo content'
   - 'create service_profile content'
   - 'create url aliases'
