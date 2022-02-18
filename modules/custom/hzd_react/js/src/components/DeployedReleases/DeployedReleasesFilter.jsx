@@ -263,13 +263,13 @@ export default function DeployedReleasesFilter(props) {
 
 
     // Product filtering should trigger fetch only when deploymentStatus is "2".
-    if (props.filterState.deploymentStatus === "2" && e.target.name === "product") {
+    if (props.filterState.status === "2" && e.target.name === "product") {
       props.setCount(props.count + 1);
       return;
     }
 
     if (e.target.name === "deploymentSortOrder") {
-      if (props.filterState.deploymentStatus === "2") {
+      if (props.filterState.status === "2") {
         props.setCount(props.count + 1);
         return;
       }
@@ -280,7 +280,7 @@ export default function DeployedReleasesFilter(props) {
     }
 
     if (e.target.name === "deploymentSortBy") {
-      if (props.filterState.deploymentStatus === "2") {
+      if (props.filterState.status === "2") {
         props.setCount(props.count + 1);
         return;
       }
