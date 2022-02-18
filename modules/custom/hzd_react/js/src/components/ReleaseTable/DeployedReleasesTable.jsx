@@ -8,11 +8,12 @@ export default function DeployedReleasesTable(props) {
   
   useEffect(() => {
     let newData = props.data;
-    if (props.filterState.product.length > 1) {
-      newData = props.data.filter(deployment => {
-        return deployment.release.includes(props.filterState.product + "_");
-      });
-    }
+    // BÖSE: FRISST EINSATZMELDUNGEN! NICHT FÜTTERN!
+    // if (props.filterState.product.length > 1) {
+    //   newData = props.data.filter(deployment => {
+    //     return deployment.release.includes(props.filterState.product + "_");
+    //   });
+    // }
     if (props.data.length > 0 && newData.length === 0) {
       props.setTimeout(true);
     }

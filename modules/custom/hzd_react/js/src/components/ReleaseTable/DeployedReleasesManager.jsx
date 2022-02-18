@@ -152,7 +152,7 @@ export default function DeployedReleasesManager(props) {
 
     // Apply product filtering, if not on page "deployed".
     url += '&page=' + (props.page - 1);
-    url += '&releaseTitle=' + props.filterState.product;
+    url += '&releaseTitle=' + props.filterState.product + "_";
 
     // Apply sorting.
     url += '&sort_by=' + props.filterState.deploymentSortBy;

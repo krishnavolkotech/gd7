@@ -110,7 +110,7 @@ export default function ReleaseTableManager(props) {
       // Apply the product filter (substring).
       url += '&filter[product-filter][condition][path]=title';
       url += '&filter[product-filter][condition][operator]=CONTAINS';
-      url += '&filter[product-filter][condition][value]=' + props.filterState.product;
+      url += '&filter[product-filter][condition][value]=' + props.filterState.product + "_";
     }
 
     if (props.filterState.release != "0") {
