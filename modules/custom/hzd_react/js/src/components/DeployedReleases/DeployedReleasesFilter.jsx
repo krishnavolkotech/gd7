@@ -133,7 +133,7 @@ export default function DeployedReleasesFilter(props) {
       optionsReleases = selectReleases.map(option => {
         for (const nid in option) {
           if (props.filterState.product) {
-            if (option.title.indexOf(props.filterState.product) !== -1) {
+            if (option.title.indexOf(props.filterState.product + "_") !== -1) {
               return <option key={"select-release-" + option.nid} value={option.nid}>{option.title}</option>;
             }
           } else {
