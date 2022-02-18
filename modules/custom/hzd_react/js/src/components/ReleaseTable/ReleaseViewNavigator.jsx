@@ -36,7 +36,11 @@ export default function ReleaseViewNavigator() {
     active = "7";
   }
 
-  const groupPath = history.location.pathname.split("/")[1];
+  let groupPath = history.location.pathname.split("/")[1];
+  if (history.location.pathname.split("/")[1] === "group") {
+    groupPath += "/" + history.location.pathname.split("/")[2];
+    console.log(groupPath);
+  }
   const [activeKey, setActiveKey] = useState(active);
   // Pagination.
   const [page, setPage] = useState(1);
