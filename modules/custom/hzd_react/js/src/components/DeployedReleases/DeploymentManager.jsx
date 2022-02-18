@@ -267,7 +267,7 @@ export default function DeploymentManager() {
     // Apply product filtering, if not on page "deployed".
     if (filterState.deploymentStatus !== "1") {
       url += '&page=' + (page - 1);
-      url += '&releaseTitle=' + filterState.product;
+      url += '&releaseTitle=' + filterState.product + "_";
     }
 
     // Apply sorting.

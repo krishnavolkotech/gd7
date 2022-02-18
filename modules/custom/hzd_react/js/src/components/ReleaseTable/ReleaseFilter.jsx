@@ -71,7 +71,7 @@ export default function ReleaseFilter(props) {
     ];
     for (let i = 0; i < props.filterReleases.length; i++) {
       if (props.filterState.product) {
-        if (props.filterReleases[i].title.indexOf(props.filterState.product) !== -1) {
+        if (props.filterReleases[i].title.indexOf(props.filterState.product + "_") !== -1) {
           options.push(<option key={"release-" + props.filterReleases[i].nid} value={props.filterReleases[i].nid}>{props.filterReleases[i].title}</option>);
         }
       }

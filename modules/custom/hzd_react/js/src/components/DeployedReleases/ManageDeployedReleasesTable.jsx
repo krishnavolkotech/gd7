@@ -142,7 +142,7 @@ export default function ManageDeployedReleasesTable(props) {
             </tr>
           </tbody>
         </Table>
-        { (props.filterState.status === "2") &&
+        { (props.filterState.deploymentStatus === "2") &&
         <SimplePager
           page={props.page}
           count={tableData.length}
@@ -177,17 +177,17 @@ export default function ManageDeployedReleasesTable(props) {
               highlight={highlight}
               handleArchive={props.handleArchive}
               handleEdit={props.handleEdit}
-              status={props.filterState.status}
+              status={props.filterState.deploymentStatus}
               handleView={props.handleView}
             />
           );
         }) : <tr><td colSpan="6"><center>Daten werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status"><span className="sr-only">Lade...</span></span></center></td></tr> }
         </tbody>
       </Table>
-    { (props.filterState.status === "1") &&
+    { (props.filterState.deploymentStatus === "1") &&
       <Pagination bsSize="small">{items}</Pagination>
     }
-    { (props.filterState.status !== "1") &&
+    { (props.filterState.deploymentStatus !== "1") &&
         <SimplePager
           page={props.page}
           count={tableData.length}
