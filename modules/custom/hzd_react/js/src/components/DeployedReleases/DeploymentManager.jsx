@@ -42,9 +42,9 @@ export default function DeploymentManager() {
 
   // Benötigt für die Initiale Befüllung der isArchived-State-Variablen. Wurde
   // die Seite "archiviert" initial aufgerufen?
-  let status = "1";
+  let deploymentStatus = "1";
   if (history.location.pathname.indexOf('archiviert') > 0) {
-    status = "2";
+    deploymentStatus = "2";
   }
   /** @const {string} isArchived - Archiviert oder im Einsatz? */
   // const [isArchived, setIsArchived] = useState(archivedUrl);
@@ -82,7 +82,7 @@ export default function DeploymentManager() {
     "service": query.has("service") ? query.get("service") : "0",
     "product": query.has("product") ? query.get("product") : "",
     "release": query.has("release") ? query.get("release") : "0",
-    "status": status,
+    "deploymentStatus": deploymentStatus,
     "deploymentSortBy": query.has("deploymentSortBy") ? query.get("deploymentSortBy") : "field_date_deployed_value",
     "deploymentSortOrder": query.has("deploymentSortOrder") ? query.get("deploymentSortOrder") : "DESC",
   };
@@ -95,7 +95,7 @@ export default function DeploymentManager() {
    * @property {string} filterState.service - The service id.
    * @property {string} filterState.product - The product name.
    * @property {string} filterState.release - The release id.
-   * @property {string} filterState.status - The deployment status.
+   * @property {string} filterState.deploymentStatus - The deployment status.
    * @property {string} filterState.deploymentSortBy - Field name for sorting.
    * @property {string} filterState.deploymentSortOrder - The sorting direction ('ASC', 'DESC').
    */
@@ -130,7 +130,7 @@ export default function DeploymentManager() {
     // if (filterState.service !== "0") {
     //   preloadDeploymentData(filterState);
     // }
-  }, [filterState.type, filterState.status, filterState.state, filterState.environment, filterState.service, filterState.release, count]);
+  }, [filterState.type, filterState.deploymentStatus, filterState.state, filterState.environment, filterState.service, filterState.release, count]);
 
   /**
    * Changes URL-Params depending on Nav / Filters, resets Pagination.
@@ -138,9 +138,9 @@ export default function DeploymentManager() {
    * Implements hook useEffect().
    */
   useEffect(() => {
-    // Change URL path based on status.
+    // Change URL path based on deploymentStatus.
     let pathname;
-    switch (filterState.status) {
+    switch (filterState.deploymentStatus) {
       case "1":
         pathname = '/zrml/eingesetzt';
         break;
@@ -232,7 +232,7 @@ export default function DeploymentManager() {
     let url = '/api/v1/deployments';
 
     // Status-Filter
-    url += '?status[]=' + filterState.status;
+    url += '?status[]=' + filterState.deploymentStatus;
 
     if (filterState.type) {
       url += '&type=' + filterState.type;
@@ -260,12 +260,12 @@ export default function DeploymentManager() {
 
     // Nur im Status "im Einsatz" sollen alle Einsatzmeldungen auf einmal geladen
     // werden.
-    if (filterState.status === "1") {
+    if (filterState.deploymentStatus === "1") {
       url += '&items_per_page=All';
     }
 
     // Apply product filtering, if not on page "deployed".
-    if (filterState.status !== "1") {
+    if (filterState.deploymentStatus !== "1") {
       url += '&page=' + (page - 1);
       url += '&releaseTitle=' + filterState.product;
     }
@@ -362,7 +362,7 @@ export default function DeploymentManager() {
       "service": "0",
       "release": "0",
       "product": "",
-      "status": filterState.status,
+      "deploymentStatus": filterState.deploymentStatus,
       "deploymentSortBy": "field_date_deployed_value",
       "deploymentSortOrder": "DESC",
     });
@@ -383,7 +383,7 @@ export default function DeploymentManager() {
   }
 
   const handleNav = (k) => {
-    setFilterState(prev => ({ ...prev, "status": k }));
+    setFilterState(prev => ({ ...prev, "deploymentStatus": k }));
     setPage(1);
   }
 
@@ -409,7 +409,7 @@ export default function DeploymentManager() {
       <div className="skeleton-textbody loading"></div>
       <div className="skeleton-textbody loading"></div>
       <div className="skeleton-textbody loading"></div> */}
-      <Nav bsStyle="tabs" activeKey={filterState.status} onSelect={handleNav}>
+      <Nav bsStyle="tabs" activeKey={filterState.deploymentStatus} onSelect={handleNav}>
         <NavItem eventKey="1">
           Eingesetzt
         </NavItem>
@@ -454,7 +454,7 @@ export default function DeploymentManager() {
         fetchReleases={fetchReleases}
         type={filterState.type}
         state={filterState.state}
-        status={filterState.status}
+        status={filterState.deploymentStatus}
         count={count}
         setCount={setCount}
         setDeploymentHistory={setDeploymentHistory}

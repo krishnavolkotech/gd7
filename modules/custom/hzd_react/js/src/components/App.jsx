@@ -27,34 +27,34 @@ class App extends React.Component {
       <Router>
         <div>
           <Switch >
-            <Route exact path="/:group/releases">
+            <Route exact path="/*/releases">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/bereitgestellt">
+            <Route exact path="/*/releases/bereitgestellt">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/in-bearbeitung">
+            <Route exact path="/*/releases/in-bearbeitung">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/gesperrt">
+            <Route exact path="/*/releases/gesperrt">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/archiviert">
+            <Route exact path="/*/releases/archiviert">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/eingesetzt">
+            <Route exact path="/*/releases/eingesetzt">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/eingesetzt-uebersicht">
+            <Route exact path="/*/releases/eingesetzt-uebersicht">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/:group/releases/einsatzinformationen">
+            <Route exact path="/*/releases/einsatzinformationen">
               <ReleaseViewNavigator />
             </Route>
-            <Route exact path="/zrml/eingesetzt">
+            <Route exact path="/*/eingesetzt">
               <DeploymentManager />
             </Route>
-            <Route exact path="/zrml/archiviert">
+            <Route exact path="/*/archiviert">
               <DeploymentManager />
             </Route>
           </Switch>

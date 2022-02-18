@@ -61,6 +61,9 @@ class HasReleaseCommentRoleCacheContext implements CacheContextInterface {
       // Site Admin has the permission.
       return '1';
     }
+    if (!$groupMember) {
+      return '0';
+    }
     $roles = $groupMember->getRoles();
     if (!empty($roles) && (in_array($group->bundle() . '-admin', array_keys($roles)))) {
       // Group admin has the permission.
