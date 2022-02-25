@@ -349,7 +349,6 @@ class Inactiveusers extends ControllerBase {
         $query->range(0, 1);
         $donot_block = $query->execute()->fetchField();
 
-        // $inactive_flag = db_result(\Drupal::database()->query("SELECT value from {inactive_user_flag} WHERE user_id = %d", $user->uid));.
         $query = \Drupal::database()->select('inactive_users', 'iu');
         $query->addField('iu', 'warned_user_block_timestamp');
         $query->condition('iu.uid', $user->uid, '=');
