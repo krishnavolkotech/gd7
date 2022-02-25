@@ -337,3 +337,23 @@ function hzd_customizations_update_8065(&$sandbox) {
    module_set_weight('hzd_user_customizations', 102);	
    module_set_weight('legal', 101);
 }
+
+/**
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8066.
+ * Moving all depending deployed Releases to Rlease Management  group (ID : 1)
+ */
+function hzd_customizations_update_8066(&$sandbox) {
+  $gid = 1;
+  $sql = "select nid
+          from {node_field_data} nfd
+	  left join {group_content_field_data} gfc on nfd.nid = gfc.entity_id
+	  where nfd.type= :type and gfc.label is null ";
+  $nodes = \Drupal::database()->query($sql, array(':type' => 'deployed_releases'))->fetchAll();
+
+  if (count($nodes) > 0) {
+      foreach($nodes as $nid) {
+          saveNewstoBPK($nid->nid, 'group_node:deployed_releases', $gid);
+      }
+  }
+  \Drupal::messenger()->addMessage('Deployed releases Processed to Group Release Management.');
+}
