@@ -10,13 +10,13 @@ dependencies:
 id: parent_group
 name: 'Parent group'
 url_alias: parent_group
-weight: 0
+weight: -1
 min_count: 1
 show_only_one_result: false
 field_identifier: gid
 facet_source_id: 'search_api:views_page__solr_search__page_1'
 widget:
-  type: links
+  type: checkbox
   config:
     show_numbers: false
     soft_limit: 0
@@ -28,6 +28,7 @@ widget:
     hide_reset_when_no_selection: false
 query_operator: or
 use_hierarchy: false
+keep_hierarchy_parents_active: false
 expand_hierarchy: false
 enable_parent_when_child_gets_disabled: true
 hard_limit: 0
