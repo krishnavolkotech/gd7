@@ -1,0 +1,8 @@
+uuid: 15029a05-2b3e-4b7a-8e1a-9cd3f740e82b
+langcode: de
+status: true
+dependencies: {  }
+id: menu-86005
+label: 'Ablösung BS2000'
+description: ''
+locked: false

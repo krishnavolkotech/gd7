@@ -7,7 +7,9 @@ dependencies:
     - field.field.node.early_warnings.body
     - field.field.node.early_warnings.comment_no_subject
     - field.field.node.early_warnings.field_earlywarning_release
+    - field.field.node.early_warnings.field_release_ref
     - field.field.node.early_warnings.field_release_service
+    - field.field.node.early_warnings.field_service
     - node.type.early_warnings
   module:
     - user
@@ -46,4 +48,7 @@ hidden:
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
+  field_release_ref: true
+  field_service: true
   langcode: true
+  search_api_excerpt: true

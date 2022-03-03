@@ -1,7 +1,7 @@
 favicon:
   mimetype: image/vnd.microsoft.icon
   path: themes/hzd/favicon.ico
-  url: 'http://localhzd.com/themes/hzd/favicon.ico'
+  url: 'https://betriebsportal-konsens.hessen.testa-de.net/themes/hzd/favicon.ico'
   use_default: 0
 schema: '8000'
 features:
@@ -19,15 +19,11 @@ schemas:
   bootstrap: 8000
   hzd: 8000
 region_wells:
-  navigation: ''
   user_menu: ''
-  navigation_collapsible: ''
-  header: ''
-  highlighted: ''
-  help: ''
-  content: ''
-  sidebar_first: ''
   sidebar_second: ''
-  footer: ''
 modal_enabled: 0
-table: ''
+cdn_custom: |-
+  /themes/hzd/css/3.3.5/bootstrap.css
+  /themes/hzd/css/3.3.5/bootstrap.min.css
+  /themes/hzd/js/3.3.5/bootstrap.js
+  /themes/hzd/js/3.3.5/bootstrap.min.js

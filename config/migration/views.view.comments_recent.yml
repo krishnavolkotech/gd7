@@ -11,7 +11,7 @@ _core:
 id: comments_recent
 label: 'Neueste Kommentare'
 module: views
-description: 'Recent comments.'
+description: 'Neueste Kommentare.'
 tag: default
 base_table: comment_field_data
 base_field: cid

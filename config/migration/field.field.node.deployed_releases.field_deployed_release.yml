@@ -1,0 +1,29 @@
+uuid: 3d3c73e5-39e8-4d86-8ef8-cdc98dae7ac4
+langcode: de
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_deployed_release
+    - node.type.deployed_releases
+    - node.type.release
+id: node.deployed_releases.field_deployed_release
+field_name: field_deployed_release
+entity_type: node
+bundle: deployed_releases
+label: Release
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:node'
+  handler_settings:
+    target_bundles:
+      release: release
+    sort:
+      field: changed
+      direction: ASC
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

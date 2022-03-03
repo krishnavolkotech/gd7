@@ -11,7 +11,7 @@ id: node.deployed_releases.field_automated_deployment
 field_name: field_automated_deployment
 entity_type: node
 bundle: deployed_releases
-label: 'Automatisiertes Deployment'
+label: 'ALT_Automatisiertes Deployment'
 description: ''
 required: false
 translatable: true

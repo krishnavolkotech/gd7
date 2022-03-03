@@ -12,6 +12,8 @@ conf:
   maxwidth: 10000
   maxheight: 10000
   replace: 1
+  thumbnail_style: ''
+  thumbnail_grid_style: false
   folders:
     -
       path: gruppen
@@ -21,3 +23,8 @@ conf:
         create_subfolders: true
         upload_files: true
         delete_files: true
+    -
+      path: al-edv
+      permissions:
+        browse_files: true
+        browse_subfolders: true

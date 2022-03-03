@@ -3,7 +3,7 @@ langcode: de
 status: true
 dependencies:
   module:
-    - block_class
+    - block_visibility_groups
     - cust_group
     - user
   theme:
@@ -24,6 +24,12 @@ visibility:
     id: user_role
     roles:
       authenticated: authenticated
+      site_administrator: site_administrator
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+  condition_group:
+    id: condition_group
+    negate: false
+    block_visibility_group: ''
+    context_mapping: {  }

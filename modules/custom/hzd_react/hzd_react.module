@@ -1,0 +1,64 @@
+<?php
+
+use Drupal\group\Entity\GroupContent;
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+// function hzd_react_page_attachments_alter(array &$attachments) {
+//   // Use the dev library if we're developing locally.
+//   if (in_array('hzd_react/react_app', $attachments['#attached']['library']) && file_exists(__DIR__ . '/js/dist_dev')) {
+//     $index = array_search('hzd_react/react_app', $attachments['#attached']['library']);
+//     $attachments['#attached']['library'][$index] = 'hzd_react/react_app_dev';
+//   }
+// }
+
+/**
+ * Implements hook_theme().
+ */
+function hzd_react_theme() {
+  return [
+    'node__article' => [
+      'template' => 'node--article',
+      'base hook' => 'node'
+    ],
+  ];
+}
+
+// function hzd_react_page_attachments(array &$page) { 
+//   $page['#attached']['library'][] = 'hzd_react/react_app_dev';
+// }
+
+/**
+ * Implements hook_ENTITY_TYPE_presave.
+ * 
+ * @todo (03.09.2021) Implementieren: Validieren, dass Identische Einsatzmeldung
+ * noch nicht existiert. Identisch: Land, Umgebung und Release darf es in dieser
+ * Kombination noch nicht geben.
+ */
+function hzd_react_node_presave(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->bundle() === "deployed_releases") {
+    // Validation
+    // throw new \Exception(t('Doppelmeldung!'));
+  }
+}
+
+/**
+ * Add deployment as group content.
+ * 
+ * Implements hook_ENTITY_TYPE_insert()
+ */
+function hzd_react_node_insert(Drupal\Core\Entity\EntityInterface $entity) {
+  if ($entity->bundle() === "deployed_releases") {
+    // Load Group "Release Management (1)".
+    $group = Drupal\group\Entity\Group::load(1);
+    // Adding node to group.
+    $groupContent = GroupContent::create([
+      'type' => $group->getGroupType()->getContentPlugin('group_node:deployed_releases')->getContentTypeConfigId(),
+      'gid' => $group->id(),
+      'entity_id' => $entity->id(),
+      'request_status' => 1,
+    ]);
+    $groupContent->save();
+  }
+}

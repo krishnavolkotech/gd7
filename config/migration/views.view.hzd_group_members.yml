@@ -543,7 +543,9 @@ display:
     position: 2
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config: {  }
       path: group/%group/members/approved
       use_more: false
       defaults:
@@ -1976,7 +1978,9 @@ display:
     position: 2
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config: {  }
       path: group/%group/members/pending
       use_more: false
       defaults:
@@ -2015,7 +2019,7 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
-      title: 'Ausstehende Benutzer der {{ arguments.gid|placeholder }} '
+      title: 'Ausstehende Benutzer freischalten'
       menu:
         type: none
         title: ''

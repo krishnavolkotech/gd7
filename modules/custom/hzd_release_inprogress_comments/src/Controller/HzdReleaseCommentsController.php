@@ -118,16 +118,16 @@ class HzdReleaseCommentsController extends ControllerBase {
     $query->addExpression("nfd.nid", 'release_comments');
     $query->addExpression("max(ces.cid)", 'comment_id');
     $query->addExpression("CASE WHEN max(cfd.changed) is not null THEN max(cfd.changed) ELSE max(nfd.changed) END", 'last_changed');
-    $query->fields('nfer', ['field_earlywarning_release_value']);
+    $query->fields('nfrr', ['field_release_ref_target_id']);
     $query->leftJoin('comment_field_data', 'cfd', 'nfd.nid = cfd.entity_id');
     $query->leftJoin('comment_entity_statistics', 'ces', 'nfd.nid = ces.entity_id');
-    $query->innerJoin('node__field_earlywarning_release', 'nfer', 'nfer.entity_id = nfd.nid');
-    $query->InnerJoin('node__field_release_service', 'nfrs', 'nfrs.entity_id = nfd.nid');
-    $query->groupBy('nfer.field_earlywarning_release_value');
+    $query->innerJoin('node__field_release_ref', 'nfrr', 'nfrr.entity_id = nfd.nid');
+    $query->InnerJoin('node__field_service', 'nfs', 'nfs.entity_id = nfd.nid');
+    $query->groupBy('nfrr.field_release_ref_target_id');
     $query->condition('nfd.type', 'release_comments');
     $query->orderBy('last_changed', 'desc');
     if (isset($filter_value['services']) && $filter_value['services'] != 0) {
-      $query->condition('nfrs.field_release_service_value', $filter_value['services'], '=');
+      $query->condition('nfs.field_service_target_id', $filter_value['services'], '=');
     } else {
       $group_release_view_service_id_query = \Drupal::database()
         ->select('group_releases_view', 'grv');
@@ -144,10 +144,10 @@ class HzdReleaseCommentsController extends ControllerBase {
         ->condition('release_type', $default_type, '=')
         ->condition('nid', (array)$group_release_view_service, 'IN')
         ->execute();
-      $query->condition('nfrs.field_release_service_value', $services, 'IN');
+      $query->condition('nfs.field_service_target_id', $services, 'IN');
     }
     if (isset($filter_value['releases']) && $filter_value['releases'] != 0) {
-      $query->condition('nfer.field_earlywarning_release_value', $filter_value['releases'], '=');
+      $query->condition('nfrr.field_release_ref_target_id', $filter_value['releases'], '=');
     }
     if ($filter_value['filter_startdate']) {
       $startDate = DateTimePlus::createFromFormat('d.m.Y|', $filter_value['filter_startdate'], null, ['validate_format' => FALSE])->getTimestamp();
@@ -169,12 +169,12 @@ class HzdReleaseCommentsController extends ControllerBase {
     foreach ($results as $key => $value) {
       $release_specifc_earlywarnings = \Drupal::entityQuery('node')
         ->condition('type', 'release_comments', '=')
-        ->condition('field_earlywarning_release', $value->field_earlywarning_release_value, '=')
+        ->condition('field_release_ref', $value->field_release_ref_target_id, '=')
         ->sort('changed', 'DESC');
       $earlywarnings_nids = $release_specifc_earlywarnings->execute();
 
       if (isset($earlywarnings_nids) && !empty($earlywarnings_nids)) {
-        $release = node_get_title_fast([$value->field_earlywarning_release_value])[$value->field_earlywarning_release_value];
+        $release = node_get_title_fast([$value->field_release_ref_target_id])[$value->field_release_ref_target_id];
         if (count($earlywarnings_nids) >= 10) {
           $warningclass = 'warningcount_second';
         } else {
@@ -191,7 +191,7 @@ class HzdReleaseCommentsController extends ControllerBase {
           count($earlywarnings_nids) . "</span>";
 
         $options['query'][] = array(
-          'releases' => $value->field_earlywarning_release_value,
+          'releases' => $value->field_release_ref_target_id,
           'r_type' => 'released',
           'release_type' => $default_type
         );

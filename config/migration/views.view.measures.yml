@@ -1407,89 +1407,88 @@ display:
     position: 1
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config:
+            title:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_type:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_owner:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_contact_person:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_measure_status:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_non_production_state:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_order_date:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_follow_up:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_target_date:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            id:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            nid:
+              merge_option: filter
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            view_node:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            nothing:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
       path: group/%group/massnahmen
-      merge_rows: 0
-      use_grouping: 0
-      field_config:
-        title:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_type:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_owner:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_contact_person:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_measure_status:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_non_production_state:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_order_date:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_follow_up:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_target_date:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        id:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        nid:
-          merge_option: filter
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        view_node:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        nothing:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
     cache_metadata:
       max-age: -1
       contexts:

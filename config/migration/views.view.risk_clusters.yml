@@ -583,35 +583,34 @@ display:
     position: 1
     display_options:
       display_extenders:
-        views_merge_rows: {  }
+        views_merge_rows:
+          merge_rows: false
+          field_config:
+            field_id:
+              merge_option: filter
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            title:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            view_node:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
+            field_id_1:
+              merge_option: merge_unique
+              exclude_first: false
+              prefix: ''
+              separator: ', '
+              suffix: ''
       path: group/%group/risikocluster
-      merge_rows: 0
-      use_grouping: 0
-      field_config:
-        field_id:
-          merge_option: filter
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        title:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        view_node:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
-        field_id_1:
-          merge_option: merge_unique
-          exclude_first: 0
-          prefix: ''
-          separator: ', '
-          suffix: ''
     cache_metadata:
       max-age: -1
       contexts:

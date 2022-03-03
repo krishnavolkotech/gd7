@@ -1,15 +1,15 @@
 <div class="early-warnings-info">
 <table>
     <tr>
-        <td style="font-weight: 700;line-height: 22px;width: 10%;padding: 0px;">{{ node.field_release_service.fieldDefinition.label }}</td>
-        <td>{{ content.field_release_service }}</td>
+        <td style="font-weight: 700;line-height: 22px;width: 10%;padding: 0px;">{{ node.field_service.fieldDefinition.label }}</td>
+        <td>{{ content.field_service }}</td>
     </tr>
     <tr>
-    	<td style="font-weight: 700;line-height: 22px;width: 10%;padding: 0px;">{{ node.field_earlywarning_release.fieldDefinition.label }}</td>
-    	<td>{{ content.field_earlywarning_release }}</td>
+    	<td style="font-weight: 700;line-height: 22px;width: 10%;padding: 0px;">{{ node.field_release_ref.fieldDefinition.label }}</td>
+    	<td>{{ content.field_release_ref }}</td>
     </tr>
 </table>
   <div{{ content_attributes.addClass('content') }}>
-    {{ content|without('field_release_service','field_earlywarning_release') }}
+    {{ content|without('field_service','field_release_ref') }}
   </div>
 </div>
