@@ -8,6 +8,7 @@ use Drupal\Core\Controller\ControllerBase;
 use Drupal\inactive_user\Inactiveuserhelper;
 use Drupal\Core\Url;
 use Drupal\inactive_user\InactiveuserStorage;
+use Drupal\Core\Database\Query\Condition;
 
 /**
  * Class Inactiveusers.
@@ -118,12 +119,17 @@ class Inactiveusers extends ControllerBase {
       /**
        *  (access not 0 and login not 0 and ufd.created  ) or (created < current time - notifytime)
        */
-      $orandcond1 = db_and()->condition('ufd.access', 0, '!=')
+      $and1 = new Condition('AND');
+      $orandcond1 = $and1->condition('ufd.access', 0, '!=')
         ->condition('ufd.login', 0, '!=')
         ->condition('ufd.access', (time() - $notify_time), '<');
-      $orandcond2 = db_and()->condition('ufd.login', 0, '=')
+
+      $and2 = new Condition('AND');
+      $orandcond2 = $and2->condition('ufd.login', 0, '=')
         ->condition('ufd.created', (time() - $notify_time), '<');
-      $condition = db_or()->condition($orandcond1)->condition($orandcond2);
+	
+      $or = new Condition('OR');
+      $condition = $or->condition($orandcond1)->condition($orandcond2);
       $query->condition($condition);
       /**
        *  Active user and not an admin.
@@ -201,6 +207,7 @@ class Inactiveusers extends ControllerBase {
   public static function notify_user_inactive_accounts($sitename, $base_url) {
     // User notify time.
     $notify_time = \Drupal::config('inactive_user.settings')->get('inactive_user_notify');
+
     if ($notify_time) {
       // Fetch user details from users_field_data.
       $query = \Drupal::database()->select('users_field_data', 'ufd');
@@ -211,14 +218,21 @@ class Inactiveusers extends ControllerBase {
       $query->condition('ufd.uid', 1, '!=');
       $query->condition('ufd.status', 1, '=');
       // not new user and access time is less than notify time.
-      $orandcond1 = db_and()->condition('ufd.access', 0, '!=')
+
+      $and1 = new Condition('AND');
+      $orandcond1 = $and1->condition('ufd.access', 0, '!=')
         ->condition('ufd.login', 0, '!=')
         ->condition('ufd.access', (time() - $notify_time), '<');
+
+      $and2 = new Condition('AND');
       // or new user and and created time is less than notify time.
-      $orandcond2 = db_and()->condition('ufd.login', 0, '=')
+      $orandcond2 = $and2->condition('ufd.login', 0, '=')
         ->condition('ufd.created', (time() - $notify_time), '<');
-      $condition = db_or()->condition($orandcond1)->condition($orandcond2);
+
+      $or = new Condition('OR');
+      $condition = $or->condition($orandcond1)->condition($orandcond2);
       $query->condition($condition);
+
       $result = $query->execute()->fetchAll();
 
       foreach ($result as $user) {          
@@ -311,12 +325,17 @@ class Inactiveusers extends ControllerBase {
        */
       $query = \Drupal::database()->select('users_field_data', 'ufd');
       $query->fields('ufd');
-      $orandcond1 = db_and()->condition('ufd.access', 0, '!=')
+      $and1 = new Condition('AND');
+      $orandcond1 = $and1->condition('ufd.access', 0, '!=')
         ->condition('ufd.login', 0, '!=')
         ->condition('ufd.access', (time() - $block_time), '<');
-      $orandcond2 = db_and()->condition('ufd.login', 0, '=')
+
+      $and2 = new Condition('AND');
+      $orandcond2 = $and2->condition('ufd.login', 0, '=')
         ->condition('ufd.created', (time() - $block_time), '<');
-      $condition = db_or()->condition($orandcond1)->condition($orandcond2);
+	
+      $or = new Condition('OR');
+      $condition = $or->condition($orandcond1)->condition($orandcond2);
       $query->condition($condition);
       $query->condition('ufd.uid', 1, '!=');
       $query->condition('ufd.status', 0, '!=');
@@ -330,7 +349,6 @@ class Inactiveusers extends ControllerBase {
         $query->range(0, 1);
         $donot_block = $query->execute()->fetchField();
 
-        // $inactive_flag = db_result(\Drupal::database()->query("SELECT value from {inactive_user_flag} WHERE user_id = %d", $user->uid));.
         $query = \Drupal::database()->select('inactive_users', 'iu');
         $query->addField('iu', 'warned_user_block_timestamp');
         $query->condition('iu.uid', $user->uid, '=');
@@ -413,12 +431,18 @@ class Inactiveusers extends ControllerBase {
     if ($block_time) {
       $query = \Drupal::database()->select('users_field_data', 'ufd');
       $query->fields('ufd');
-      $orandcond1 = db_and()->condition('ufd.access', 0, '!=')
+      
+      $and1 = new Condition('AND');
+      $orandcond1 = $and1->condition('ufd.access', 0, '!=')
         ->condition('ufd.login', 0, '!=')
         ->condition('ufd.access', (time() - $block_time), '<');
-      $orandcond2 = db_and()->condition('ufd.login', 0, '=')
+
+      $and2 = new Condition('AND');
+      $orandcond2 = $and2->condition('ufd.login', 0, '=')
         ->condition('ufd.created', (time() - $block_time), '<');
-      $condition = db_or()->condition($orandcond1)->condition($orandcond2);
+	
+      $or = new Condition('OR');
+      $condition = $or->condition($orandcond1)->condition($orandcond2);
       $query->condition($condition);
       // if not admin and user is not blocked yet.
       $query->condition('ufd.uid', 1, '!=');
