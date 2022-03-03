@@ -106,7 +106,7 @@ class HzdearlywarningsStorage
             $earlywarnings_query = $group_sql->execute()->fetchAll();
             // $earlywarnings_query = \Drupal::database()->query($sql, $page_limit, 0 , $count_query);.
         }
-        // While ($earlywarnings = db_fetch_array($earlywarnings_query)) {.
+
         foreach ($earlywarnings_query as $earlywarnings) {
             if ($earlywarnings->release_id) {
                 $warnings_lastpost = self::get_early_warning_lastposting_count($earlywarnings->release_id);
@@ -125,7 +125,6 @@ class HzdearlywarningsStorage
                 $comment_count_query->condition('nfer.field_earlywarning_release_value', $earlywarnings->release_id, '=');
                 $comment_count_query->execute->fetchCol();
                 $elements = array(
-                    // db_result(\Drupal::database()->query("SELECT title FROM {node} where nid = %d", $earlywarnings->release_id))
                     array('data' => $title_query['title'], 'class' => 'releases-cell'),
                     array('data' => ($warnings_lastpost['warnings'] ? l("<span class = '" .
                         $warningclass . "'>" . $warnings_lastpost['warnings'] . "</span>",

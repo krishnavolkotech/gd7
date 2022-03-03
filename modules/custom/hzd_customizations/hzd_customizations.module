@@ -1655,3 +1655,12 @@ function is_legel_conditions_modified($uid) {
   }
   return TRUE;
 }	
+
+function allowed_external_host() {
+  $allowed_hosts = Settings::get('allow_external_hosts');
+
+  if (!$allowed_hosts) {
+    return FALSE;
+  }   
+  return TRUE;
+}

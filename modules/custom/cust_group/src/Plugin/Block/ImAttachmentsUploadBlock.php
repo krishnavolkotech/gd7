@@ -6,6 +6,8 @@ use Drupal;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Database\Query\Condition;
+
 
 /**
  * Provides a 'ImAttachmentsUploadBlock' block.
@@ -46,7 +48,8 @@ class ImAttachmentsUploadBlock extends BlockBase {
             $query->condition('fs.field_state_value', $statename, '=');
         }
         if (!empty($string)) {
-            $or = db_or()->condition('fm.filename',"%" . $string . "%", 'LIKE')
+   	    $or = new Condition('OR');
+            $or->condition('fm.filename',"%" . $string . "%", 'LIKE')
                          ->condition('imd.description__value',"%" . $string . "%", 'LIKE')
                          ->condition('imd.ticket_id',"%" . $string . "%", 'LIKE');
             $query->condition($or);

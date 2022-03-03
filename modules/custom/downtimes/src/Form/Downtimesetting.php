@@ -24,23 +24,7 @@ class DowntimesettingsForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     global $base_url;
-    /**
-      //Getting the default Services
-      $breadcrumb = array();
-      $breadcrumb[] = l(t('Home'), NULL);
-      if (isset($_SESSION['Group_name'])) {
-      $breadcrumb[] = l(t($_SESSION['Group_name']), 'node/' . $_SESSION['Group_id']);
-      }
-      $breadcrumb[] = drupal_get_title();
-      drupal_set_breadcrumb($breadcrumb);
-     */
-    /**
-      $query = \Drupal::database()->query("select service_id from {group_downtimes_view} where group_id = %d", $_SESSION['Group_id']);
 
-      while ($services = db_fetch_array($query)) {
-      $default_services[$services['service_id']] = $services['service_id'];
-      }
-     */
     $default_services[$services['service_id']] = HzdservicesStorage::get_downtimes_default_services();
     $type = 'downtimes';
 

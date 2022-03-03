@@ -120,13 +120,15 @@ class TokenHandler implements EventSubscriberInterface {
         $this->token = $this->tokenManager->validateToken($this->token);
 
         if ($this->token->getStatus() === PersistentToken::STATUS_VALID) {
-          // TODO make sure we are starting the user session properly.
-          /** @var \Drupal\User\UserInterface $user */
-          $user = $this->entityManager->getStorage('user')
-            ->load($this->token->getUid());
-           if(!is_legel_conditions_modified($user->id())) {
-             user_login_finalize($user);
-           }
+          try {
+            // TODO make sure we are starting the user session properly.
+            /** @var \Drupal\User\UserInterface $user */
+            $user = $this->entityTypeManager->getStorage('user')
+              ->load($this->token->getUid());
+            user_login_finalize($user);
+          }
+          catch (PluginException $e) {
+          }
         }
       }
     }

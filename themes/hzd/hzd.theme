@@ -1732,3 +1732,24 @@ function hzd_preprocess_input(&$variables) {
     
   }
 }
+
+/**
+ * Implements hook_preprocess_region().
+ */
+function hzd_preprocess_region(&$variables) {
+  $variables['content_preview'] = '';
+  // Add 'Back to content editing' link on preview page.
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() == 'entity.node.preview') {
+    $page['page_top']['node_preview'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'class' => ['node-preview-container', 'container-inline'],
+      ],
+    ];
+
+    $form = \Drupal::formBuilder()->getForm('\Drupal\node\Form\NodePreviewForm', $route_match->getParameter('node_preview'));
+    // $page['page_top']['node_preview']['view_mode'] = $form;
+    $variables['content_preview'] = $form;
+  }
+}
