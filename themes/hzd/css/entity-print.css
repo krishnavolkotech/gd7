@@ -671,3 +671,25 @@ button .dropdown-toggle{
   text-decoration:none;
 }
 
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr .faq-title::after {
+    content: ' ';
+    float: none;
+    display: none;
+}
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row span.faq-title span.field-content {
+    float: none;
+}
+form[id^="views-form-groups-faq-category-"] div.table-responsive tbody tr div.views-row span.field-content {
+    font-size: 16px;
+    line-height: 40px;
+}
+
+form[id^="views-form-groups-faq-category-"] table {
+	width: 100% !important;
+	float: none;
+	margin: 10px;
+	border: 1px solid rgba(0,0,0,.2);
+	border-radius: 5px !important;
+	border-collapse: inherit !important;
+}
+
