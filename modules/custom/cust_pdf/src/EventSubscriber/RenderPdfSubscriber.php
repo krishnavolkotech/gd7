@@ -9,6 +9,7 @@ use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\KernelEvents;
 use \Drupal\Component\Utility\NestedArray;
+use \Drupal\views\Render\ViewsRenderPipelineMarkup;
 
 /**
  * Class RenderPdfSubscriber.
@@ -45,7 +46,7 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
     if ($query->has('print') && $query->get('print') == 'pdf') {
       $renderArray = $event->getControllerResult();
       $x['data'] = $this->searchNestedArrayKey($renderArray, '#exclude_from_print');
-//      pr($x['data'][3]);exit;
+      //      pr($x['data'][3]);exit;
       $x['#type'] = 'container';
       $x['#attributes'] = [
         'style' => 'font-size:12px;',
@@ -65,13 +66,23 @@ class RenderPdfSubscriber implements EventSubscriberInterface {
         echo $html;
         exit;
       }
+      
       $request = \Drupal::request();
       $route = \Drupal::routeMatch()->getRouteObject();
       $title = \Drupal::service('title_resolver')->getTitle($request, $route);
       if($title instanceof \Drupal\Core\StringTranslation\TranslatableMarkup){
 	  $title = $title->render();
-      }else{
-	  $title = \Drupal::service('renderer')->renderRoot($title);
+      }
+      else{
+        if (is_object($title)) {
+          if ($title instanceof ViewsRenderPipelineMarkup){
+            $title = $title->__toString();
+          }
+	  else {
+            $title = $title->render();
+          }
+        }
+
       }
 
       $clean_string = \Drupal::service('pathauto.alias_cleaner')->cleanString($title);

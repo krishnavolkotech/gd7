@@ -3357,10 +3357,12 @@ header .block-cust-group-search-block button {
 }
 .custom-search-facet label {
     font-weight: 400;
+    /*
     -webkit-hyphens : auto;
     -moz-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
+*/
     word-wrap: break-word;
 }
 .path-search .view-solr-search .view-content ul li {
@@ -3895,7 +3897,7 @@ table.artifacts tr td.artifact-comment-cell img{
 }
 
 .artifact-info-icon.disabled {
-	pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 .commentcount {
@@ -4122,16 +4124,20 @@ table.released tr th:last-child {
   background-color: #f5f7fa !important;
   border-color: #EDF0F3 !important;
 }
+/*
 .panel-light > .panel-heading + .panel-collapse > .panel-body {
   border-top-color: #EDF0F3 !important;
 }
+*/
 .panel-light > .panel-heading .badge {
   color: #f5f7fa !important;
   background-color: #fff !important;
 }
+/*
 .panel-light > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #EDF0F3 !important;
 }
+*/
 fieldset#edit-node-notification-checkbox--wrapper {
     clear: both;
 }
