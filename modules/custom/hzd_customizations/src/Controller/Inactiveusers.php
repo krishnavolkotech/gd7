@@ -75,7 +75,7 @@ class Inactiveusers extends ControllerBase {
     /**
             $url = Url::fromRoute('entity.user.edit_form', array('user' =>  $user_detail->uid));
             $link = Link::fromTextAndUrl(t('edit user'), $url);
-            $message = 'recent user activity: ' .  $user_detail->name . 'removed from inactivity list. ' . $link;
+            $message = 'recent user activity: ' .  $user_detail->name . 'removed from inactivity list. ' . $link->toString();
             \Drupal::logger('inactive_user')->notice($message);
           }
         }
@@ -302,7 +302,7 @@ class Inactiveusers extends ControllerBase {
             'query' => array(
               'destination' => 'admin/user/user'
             )));
-          $message = "user $user->name notified of inactivity " . $user->name . $link;
+          $message = "user $user->name notified of inactivity " . $user->name . $link->toString();
           \Drupal::logger('inactive_user')->notice($message);
         }
       }
@@ -418,7 +418,7 @@ class Inactiveusers extends ControllerBase {
               'destination' => 'admin/user/user'
             )));
 
-          $message = "user $user->name warned will be blocked due to inactivity " . $user->name . $link;
+          $message = "user $user->name warned will be blocked due to inactivity " . $user->name . $link->toString();
           \Drupal::logger('inactive_user')->notice($message);
         }
       }
@@ -540,7 +540,7 @@ class Inactiveusers extends ControllerBase {
                     'destination' => 'admin/user/user'
                   )));
 
-                $message = "user $user->name blocked due to inactivity" . $user->name . $link;
+                $message = "user $user->name blocked due to inactivity" . $user->name . $link->toString();
                 \Drupal::logger('inactive_user')->notice($message);
               }
             }
@@ -648,7 +648,7 @@ class Inactiveusers extends ControllerBase {
                   'query' => array(
                     'destination' => 'admin/user/user'
                   )));
-                $message = "user $user->name blocked due to inactivity" . $user->name . $link;
+                $message = "user $user->name blocked due to inactivity" . $user->name . $link->toString();
                 \Drupal::logger('inactive_user')->notice($message);
               }
             }
