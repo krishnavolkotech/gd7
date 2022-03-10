@@ -9,6 +9,7 @@ use Drupal\inactive_user\Inactiveuserhelper;
 use Drupal\Core\Url;
 use Drupal\inactive_user\InactiveuserStorage;
 use Drupal\Core\Database\Query\Condition;
+use Drupal\Core\Link;
 
 /**
  * Class Inactiveusers.
@@ -73,8 +74,8 @@ class Inactiveusers extends ControllerBase {
              */
     /**
             $url = Url::fromRoute('entity.user.edit_form', array('user' =>  $user_detail->uid));
-            $link = \Drupal::l(t('edit user'), $url);
-            $message = 'recent user activity: ' .  $user_detail->name . 'removed from inactivity list. ' . $link;
+            $link = Link::fromTextAndUrl(t('edit user'), $url);
+            $message = 'recent user activity: ' .  $user_detail->name . 'removed from inactivity list. ' . $link->toString();
             \Drupal::logger('inactive_user')->notice($message);
           }
         }
@@ -296,11 +297,12 @@ class Inactiveusers extends ControllerBase {
           $url = Url::fromRoute('entity.user.edit_form', array(
             'user' => $user->uid
           ));
-          $link = \Drupal::l(t('edit user'), $url, array(
+
+          $link = Link::fromTextAndUrl(t('edit user'), $url, array(
             'query' => array(
               'destination' => 'admin/user/user'
             )));
-          $message = "user $user->name notified of inactivity " . $user->name . $link;
+          $message = "user $user->name notified of inactivity " . $user->name . $link->toString();
           \Drupal::logger('inactive_user')->notice($message);
         }
       }
@@ -411,12 +413,12 @@ class Inactiveusers extends ControllerBase {
           $url = Url::fromRoute('entity.user.edit_form', array(
             'user' => $user->uid
           ));
-          $link = \Drupal::l(t('edit user'), $url, array(
+          $link = Link::fromTextAndUrl(t('edit user'), $url, array(
             'query' => array(
               'destination' => 'admin/user/user'
             )));
 
-          $message = "user $user->name warned will be blocked due to inactivity " . $user->name . $link;
+          $message = "user $user->name warned will be blocked due to inactivity " . $user->name . $link->toString();
           \Drupal::logger('inactive_user')->notice($message);
         }
       }
@@ -533,12 +535,12 @@ class Inactiveusers extends ControllerBase {
                 $url = Url::fromRoute('entity.user.edit_form', array(
                   'user' => $user->uid
                 ));
-                $link = \Drupal::l(t('edit user'), $url, array(
+                $link = Link::fromTextAndUrl(t('edit user'), $url, array(
                   'query' => array(
                     'destination' => 'admin/user/user'
                   )));
 
-                $message = "user $user->name blocked due to inactivity" . $user->name . $link;
+                $message = "user $user->name blocked due to inactivity" . $user->name . $link->toString();
                 \Drupal::logger('inactive_user')->notice($message);
               }
             }
@@ -642,11 +644,11 @@ class Inactiveusers extends ControllerBase {
                   'user' => $user->uid
                 ));
 
-                $link = \Drupal::l(t('edit user'), $url, array(
+                $link = Link::fromTextAndUrl(t('edit user'), $url, array(
                   'query' => array(
                     'destination' => 'admin/user/user'
                   )));
-                $message = "user $user->name blocked due to inactivity" . $user->name . $link;
+                $message = "user $user->name blocked due to inactivity" . $user->name . $link->toString();
                 \Drupal::logger('inactive_user')->notice($message);
               }
             }

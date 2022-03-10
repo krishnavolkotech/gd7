@@ -1298,7 +1298,6 @@ $inprogress_nid_values = [];
    */
   static public function deployed_releases_text() {
     $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander]);
-    //$link = \Drupal::l(t('hier'), $url);
     $link = Link::fromTextAndUrl(t('hier'), $url)->toString();
     
     $output = "<div class = 'deployed-release-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
@@ -1313,7 +1312,6 @@ F&uuml;r R&uuml;ckfragen steht Ihnen der <a href=\"mailto:zrmk@hzd.hessen.de\">Z
    */
   static public function deployed_info_text() {
     $url = Url::fromRoute('hzd_release_management.deployed_releases', ['group' => Zentrale_Release_Manager_Lander]);
-    //    $link = \Drupal::l(t('hier'), $url);
     $link = Link::fromTextAndUrl(t('hier'), $url)->toString();
     $output = "<div class = 'deployed-info-text'><p>Hier sehen Sie eine &Uuml;bersicht der von den L&auml;ndern produktiv eingesetzten Releases. &Uuml;ber die unten stehenden Auswahlfelder k&ouml;nnen Sie die Ansicht filtern.</p><p>
 Um Releases zu melden, m&uuml;ssen Sie Mitglied der Gruppe ZRML sein. Initial sind dies alle Zentralen Release Manager der L&auml;nder (ZRMKL). Auf Antrag beim <a href=\"mailto:zrmk@hzd.hessen.de\">Zentralen Release Manager KONSENS</a> (ZRMK) k&ouml;nnen Stellvertreter in die Gruppe aufgenommen werden. Eingesetzte Releases melden Sie bitte " . $link . ".</p><p>
