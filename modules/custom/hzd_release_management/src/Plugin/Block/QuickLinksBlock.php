@@ -48,20 +48,20 @@ class QuickLinksBlock extends BlockBase {
   public function hzd_quicklinks() {
     $output = "<div class = 'field--name-body'><ul>";
     if (\Drupal::currentUser()->id()) {
-      $output .= "<li>" . \Drupal::l('Störungen und Blockzeiten', Url::fromUserInput('/group/24/downtimes')) . "</li>\n";
-      $output .= "<li>" . \Drupal::l('Störung melden', Url::fromUserInput('/group/24/downtimes/create_downtimes')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Störungen und Blockzeiten', Url::fromUserInput('/group/24/downtimes')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Störung melden', Url::fromUserInput('/group/24/downtimes/create_downtimes')) . "</li>\n";
       // TODO: Need to write access function once group functions work
       // if(quicklink_maintenance_access(32454)) {.
-      $output .= "<li>" . \Drupal::l('Blockzeit melden', Url::fromUserInput('/group/24/downtimes/create_maintenance')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Blockzeit melden', Url::fromUserInput('/group/24/downtimes/create_maintenance')) . "</li>\n";
       // }.
-      $output .= "<li>" . \Drupal::l('Bekannte Fehler und Probleme', Url::fromUserInput('/group/' . PROBLEM_MANAGEMENT . '/problems')) . "</li>\n";
-      $output .= "<li>" . \Drupal::l('Bereitgestellte Releases', Url::fromUserInput('/group/' . RELEASE_MANAGEMENT . '/releases')) . "</li>\n";
-      $output .= "<li>" . \Drupal::l('RZ-Schnellinfos', Url::fromUserInput('/release-management/rz-schnellinfos')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Bekannte Fehler und Probleme', Url::fromUserInput('/group/' . PROBLEM_MANAGEMENT . '/problems')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Bereitgestellte Releases', Url::fromUserInput('/group/' . RELEASE_MANAGEMENT . '/releases')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('RZ-Schnellinfos', Url::fromUserInput('/release-management/rz-schnellinfos')) . "</li>\n";
       $output .= "<li><a target=\"_blank\" href=\"http://glossar.konsens.ktz.testa-de.net/\">KONSENS-Glossar</a></li>\n";
       $output .= "<li><a target=\"_blank\" href=\"/login_from_bp\">Service Monitoring</a></li>";
-      $output .= "<li>" . \Drupal::l('Architektursteuerung', Url::fromUserInput('/architektursteuerung')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Architektursteuerung', Url::fromUserInput('/architektursteuerung')) . "</li>\n";
     } else {
-      $output .= "<li>" . \Drupal::l('Störungen und Blockzeiten', Url::fromUserInput('/stoerungen-blockzeiten')) . "</li>\n";
+      $output .= "<li>" . Link::fromTextAndUrl('Störungen und Blockzeiten', Url::fromUserInput('/stoerungen-blockzeiten')) . "</li>\n";
     }
     $output .= "</ul></div>";
     return $output;
