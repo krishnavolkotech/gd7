@@ -5,6 +5,7 @@ namespace Drupal\hzd_release_management\Controller;
 use Drupal\group\Entity\Group;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Url;
+use Drupal\Core\Link;
 use Drupal\hzd_release_management\HzdreleasemanagementHelper;
 
 if (!defined('QUICKINFO')) {
@@ -49,7 +50,7 @@ class DisplayquickinfoController extends ControllerBase {
       $output['#title'] = t("Table of RZ Accelerators");
 
       $url = Url::fromUserInput('/release-management/betriebsueberfuehrung/rz-schnellinfo');
-      $link = \Drupal::l($this->t('F&uuml;r &auml;ltere Ausgaben (03/2012-02/2014) bitte hier klicken.'), $url);
+      $link = Link::fromTextAndUrl($this->t('F&uuml;r &auml;ltere Ausgaben (03/2012-02/2014) bitte hier klicken.'), $url);
 
       $output['#markup'] = '<p>In dieser Übersicht finden Sie RZ-Schnellinfos ab 03/2014. ' . $link . '</p>';
       $output['quickinfo_display_table']['#prefix'] = "<div class = 'quickinfo_content_output'>";

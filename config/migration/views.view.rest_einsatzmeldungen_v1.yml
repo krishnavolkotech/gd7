@@ -940,11 +940,6 @@ display:
           operator: or
           value:
             all: all
-            38568: '38568'
-            2: '2'
-            1: '1'
-            38570: '38570'
-            38569: '38569'
           group: 1
           exposed: true
           expose:
@@ -966,7 +961,7 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            reduce: true
+            reduce: false
           is_grouped: false
           group_info:
             label: ''

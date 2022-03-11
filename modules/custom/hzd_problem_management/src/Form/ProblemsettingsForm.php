@@ -81,21 +81,9 @@ class ProblemsettingsForm extends FormBase {
       $default_services = ['all' => 'all'] + $default_services;
     }
 
-    // $services_obj= \Drupal::database()->query("SELECT title, n.nid FROM {node} n, {content_field_service_type} cfst WHERE n.nid = cfst.nid and   field_service_type_value = %d ", 3);
-    // while ($services = db_fetch_array($services_obj)) {
-    // $options[$services['nid']] = $services['title'];
-    // }.
-    $view_path = \Drupal::config('problem_management.settings')->get('import_alias');
-    // \Drupal::url($route_name, $route_parameters = array(), $options = array(), $collect_bubbleable_metadata = FALSE)
-    // Url::fromInternalUri('node/' . add)
-    // $path = Url::fromInternalUri(array('node', $group_id ,$view_path));
-    //  echo '<pre>';  print_r($path);  exit;
-    // $path = URL::fromRoute('entity.node.canonical', array('node' => $group_id));
-
     $url = Url::fromRoute('problem_management.problems', array('group' => $group_id)); 
     $url->setAbsolute();
     
-    //    $url = Url::fromUserInput('/group/31/problems', array('absolute' => true));
     $problems_view = \Drupal::service('link_generator')->generate($url->toString(), $url);
 
     $prefix = '';

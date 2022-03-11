@@ -10,7 +10,7 @@ dependencies:
 id: inhalt_inhalt_inhaltstyp
 name: 'Inhalt » Inhalt » Inhaltstyp'
 url_alias: inhalt_inhalt_inhaltstyp
-weight: 0
+weight: -2
 min_count: 1
 show_only_one_result: false
 field_identifier: type

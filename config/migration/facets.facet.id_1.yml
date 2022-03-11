@@ -1,4 +1,4 @@
-uuid: 1c92bde9-9187-4ee3-8274-e0ca6f115752
+uuid: b97401af-848a-413f-963a-b7cf838375c8
 langcode: de
 status: true
 dependencies:
@@ -7,13 +7,13 @@ dependencies:
     - views.view.solr_search
   module:
     - search_api
-id: parent_group
-name: 'Parent group'
-url_alias: parent_group
-weight: -1
+id: id_1
+name: 'ID 1'
+url_alias: id_1
+weight: 0
 min_count: 1
 show_only_one_result: false
-field_identifier: gid
+field_identifier: id_1
 facet_source_id: 'search_api:views_page__solr_search__page_1'
 widget:
   type: checkbox
@@ -53,11 +53,6 @@ processor_configs:
       sort: 40
     settings:
       sort: ASC
-  translate_entity:
-    processor_id: translate_entity
-    weights:
-      build: 5
-    settings: {  }
   url_processor_handler:
     processor_id: url_processor_handler
     weights:

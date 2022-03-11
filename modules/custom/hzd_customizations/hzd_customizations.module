@@ -766,6 +766,7 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
  * Implements hook_views_query_alter().
  */
 function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
+
   if ($view->id() == 'my_groups') {
     $member = \Drupal::currentUser();
     $user_groups = \Drupal\cust_group\CustGroupHelper::hzd_user_groups_list($member->id());
@@ -1462,7 +1463,37 @@ function hzd_customizations_entity_base_field_info(\Drupal\Core\Entity\EntityTyp
 
 
 function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\QueryInterface &$query) {
+  $gid_value = 0;
+
+  $conditions = &$query->getConditionGroup()->getConditions();
+  foreach ($conditions as $i => $condition) {
+    if ($condition instanceof \Drupal\search_api\Query\ConditionGroupInterface
+        && ($condition->hasTag('facet:id_1') || $condition->hasTag('facet:gid'))) {
+              // special condition
+      if($condition->hasTag('facet:gid')){
+        $gid_value = $conditions[$i]->getConditions()[0]->getValue();
+      }
+
+      unset($conditions[$i]);
+      // echo '<pre>'; print_r($conditions[$i]->getConditions()[0]->getValue()); die;
+    }
+  }
+
+
   $fields = $query->getIndex()->getFields();
+
+  $getConditionGroup = $query->getConditionGroup();
+
+  if($gid_value){
+    $conditions1 = $query->createConditionGroup('OR');
+    $conditions1->addCondition('id_1', "$gid_value")
+      ->addCondition('gid', "$gid_value");
+  
+    $query->addConditionGroup($conditions1);
+  }
+
+
+
   if (isset($fields['created_date'])) {
     $param = \Drupal::request()->query->all();
     if (isset($param['created'])) {
@@ -1472,6 +1503,7 @@ function hzd_customizations_search_api_query_alter(\Drupal\search_api\Query\Quer
       }
     }
   }
+
 }
 
 
@@ -1623,3 +1655,12 @@ function is_legel_conditions_modified($uid) {
   }
   return TRUE;
 }	
+
+function allowed_external_host() {
+  $allowed_hosts = Settings::get('allow_external_hosts');
+
+  if (!$allowed_hosts) {
+    return FALSE;
+  }   
+  return TRUE;
+}

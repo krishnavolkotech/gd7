@@ -103,7 +103,6 @@ class CancelForm extends FormBase {
       $breadcrumb[] = l(t('Downtime'), 'node/' . $nid);
       $breadcrumb[] = t('Resolve');
      */
-    // $resolved_title = db_result(\Drupal::database()->query("SELECT scheduled_p from {state_downtimes} WHERE down_id = %d", $nid));
 
     $query = \Drupal::database()->select('downtimes', 'd');
     $query->fields('d', ['scheduled_p']);
