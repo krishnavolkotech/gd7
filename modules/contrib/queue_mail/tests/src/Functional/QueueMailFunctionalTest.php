@@ -33,7 +33,7 @@ class QueueMailFunctionalTest extends BrowserTestBase {
    *
    * @var array
    */
-  public static $modules = ['queue_mail', 'queue_mail_test'];
+  protected static $modules = ['queue_mail', 'queue_mail_test'];
 
   /**
    * {@inheritdoc}

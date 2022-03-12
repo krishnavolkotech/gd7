@@ -5,7 +5,7 @@
 
 (function ($) {
 
-  "use strict";
+  'use strict';
 
   /**
    * Provide the summary information for the tracking settings vertical tabs.
@@ -123,6 +123,20 @@
           return Drupal.t('Not tracked');
         }
         return Drupal.t('@items enabled', {'@items': vals.join(', ')});
+      });
+
+      $('#edit-status-codes').drupalSetSummary(function (context) {
+        var vals = [];
+        if ($('input#edit-status-codes-disabled-404', context).is(':checked')) {
+          vals.push(Drupal.t('404'));
+        }
+        if ($('input#edit-status-codes-disabled-403', context).is(':checked')) {
+          vals.push(Drupal.t('403'));
+        }
+        if (!vals.length) {
+          return Drupal.t('Default');
+        }
+        return Drupal.t('@items disabled', {'@items': vals.join(', ')});
       });
 
       $('#edit-privacy').drupalSetSummary(function (context) {

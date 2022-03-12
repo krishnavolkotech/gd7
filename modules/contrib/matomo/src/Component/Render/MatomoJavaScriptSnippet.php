@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\matomo\Component\Render;
 
 use Drupal\Component\Render\MarkupInterface;
@@ -36,6 +38,7 @@ class MatomoJavaScriptSnippet implements MarkupInterface {
   /**
    * {@inheritdoc}
    */
+  #[\ReturnTypeWillChange]
   public function jsonSerialize() {
     return $this->__toString();
   }

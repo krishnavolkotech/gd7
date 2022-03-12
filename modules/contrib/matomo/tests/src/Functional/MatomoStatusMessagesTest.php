@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
 use Drupal\Tests\BrowserTestBase;
@@ -26,9 +28,16 @@ class MatomoStatusMessagesTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * Admin user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $adminUser;
+
+  /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $permissions = [
@@ -37,7 +46,7 @@ class MatomoStatusMessagesTest extends BrowserTestBase {
     ];
 
     // User to set up matomo.
-    $this->admin_user = $this->drupalCreateUser($permissions);
+    $this->adminUser = $this->drupalCreateUser($permissions);
   }
 
   /**
@@ -51,17 +60,18 @@ class MatomoStatusMessagesTest extends BrowserTestBase {
 
     // Enable logging of errors only.
     $this->config('matomo.settings')->set('track.messages', ['error' => 'error'])->save();
+    $this->drupalGet('user/login');
 
-    $this->drupalPostForm('user/login', [], 'Log in');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Username field is required."]);', '[testMatomoStatusMessages]: trackEvent "Username field is required." is shown.');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Password field is required."]);', '[testMatomoStatusMessages]: trackEvent "Password field is required." is shown.');
+    $this->submitForm([], 'Log in');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Error message", "Username field is required."]);');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Error message", "Password field is required."]);');
 
     // Testing this Drupal::messenger() requires an extra test module.
     $this->drupalGet('matomo-test/drupal-messenger-add-message');
-    $this->assertNoRaw('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);', '[testMatomoStatusMessages]: Example status message is not enabled for tracking.');
-    $this->assertNoRaw('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);', '[testMatomoStatusMessages]: Example warning message is not enabled for tracking.');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);', '[testMatomoStatusMessages]: Example error message is shown.');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);', '[testMatomoStatusMessages]: HTML has been stripped successful from Example error message with html tags and link.');
+    $this->assertSession()->responseNotContains('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);');
+    $this->assertSession()->responseNotContains('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);');
 
     // Enable logging of status, warnings and errors.
     $this->config('matomo.settings')->set('track.messages', [
@@ -71,10 +81,10 @@ class MatomoStatusMessagesTest extends BrowserTestBase {
     ])->save();
 
     $this->drupalGet('matomo-test/drupal-messenger-add-message');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);', '[testMatomoStatusMessages]: Example status message is enabled for tracking.');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);', '[testMatomoStatusMessages]: Example warning message is enabled for tracking.');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);', '[testMatomoStatusMessages]: Example error message is shown.');
-    $this->assertRaw('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);', '[testMatomoStatusMessages]: HTML has been stripped successful from Example error message with html tags and link.');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Status message", "Example status message."]);');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Warning message", "Example warning message."]);');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Error message", "Example error message."]);');
+    $this->assertSession()->responseContains('_paq.push(["trackEvent", "Messages", "Error message", "Example error message with html tags and link."]);');
   }
 
 }

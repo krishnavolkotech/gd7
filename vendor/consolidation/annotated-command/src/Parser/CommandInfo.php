@@ -100,6 +100,11 @@ class CommandInfo
     protected $parameterMap = [];
 
     /**
+     * @var bool
+     */
+    protected $simpleOptionParametersAllowed = false;
+
+    /**
      * Create a new CommandInfo class for a particular method of a class.
      *
      * @param string|mixed $classNameOrInstance The name of a class, or an
@@ -155,7 +160,9 @@ class CommandInfo
         // `$options = ['name' => 'default'], and arguments will be everything else.
         // When we process the annotations / attributes, if we find an "option" which
         // appears in the 'arguments' section, then we will move it.
-        $this->options = new DefaultsWithDescriptions($this->determineOptionsFromParameters(), false);
+        $optionsFromParameters = $this->determineOptionsFromParameters();
+        $this->simpleOptionParametersAllowed = empty($optionsFromParameters);
+        $this->options = new DefaultsWithDescriptions($optionsFromParameters, false);
         $this->arguments = $this->determineAgumentClassifications();
     }
 
@@ -373,7 +380,7 @@ class CommandInfo
      */
     public function setDescription($description)
     {
-        $this->description = str_replace("\n", ' ', $description);
+        $this->description = str_replace("\n", ' ', $description ?? '');
         return $this;
     }
 
@@ -625,7 +632,7 @@ class CommandInfo
     public function addOptionDescription($name, $description)
     {
         $variableName = $this->findMatchingOption($name);
-        if ($this->arguments()->exists($variableName)) {
+        if ($this->simpleOptionParametersAllowed && $this->arguments()->exists($variableName)) {
             $existingArg = $this->arguments()->removeMatching($variableName);
             // One of our parameters is an option, not an argument. Flag it so that we can inject the right value when needed.
             $this->parameterMap[$variableName] = true;
@@ -823,6 +830,15 @@ class CommandInfo
             // into this object, using our accessors.
             CommandDocBlockParserFactory::parse($this, $this->reflection);
             $this->docBlockIsParsed = true;
+            // Use method's return type if @return is not present.
+            if ($this->reflection->hasReturnType() && !$this->getReturnType()) {
+                $type = $this->reflection->getReturnType();
+                if ($type instanceof \ReflectionUnionType) {
+                    // Use first declared type.
+                    $type = current($type->getTypes());
+                }
+                $this->setReturnType($type->getName());
+            }
         }
     }
 

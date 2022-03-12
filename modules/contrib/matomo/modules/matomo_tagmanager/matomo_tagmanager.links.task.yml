@@ -1,0 +1,9 @@
+matomo_tagmanager.settings_tab:
+  title: 'Tag Manager settings'
+  route_name: matomo_tagmanager.settings_form
+  base_route: matomo.admin_settings_form
+
+matomo_tagmanager.container_list_tab:
+  title: 'Tag Manager containers'
+  route_name: entity.matomo_tagmanager_container.collection
+  base_route: matomo.admin_settings_form

@@ -23,8 +23,9 @@ define('DOMPDF_ENABLE_AUTOLOAD', FALSE);
  * @PdfGenerator(
  *   id = "dompdf",
  *   module = "pdf_api",
- *   title = @Translation("DOMPDF"),
- *   description = @Translation("PDF generator using the DOMPDF generator.")
+ *   title = @Translation("dompdf"),
+ *   description = @Translation("PDF generator using the DOMPDF generator."),
+ *   required_class = "Dompdf\Dompdf",
  * )
  */
 class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginInterface {
@@ -39,10 +40,10 @@ class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPlugin
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, DOMPDF $generator) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
-    $this->generator = $generator;
+    $this->generator = new Dompdf();
   }
 
   /**
@@ -53,7 +54,6 @@ class DompdfGenerator extends PdfGeneratorBase implements ContainerFactoryPlugin
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('dompdf')
     );
   }
 

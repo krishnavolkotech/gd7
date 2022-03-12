@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
 use Drupal\Core\Session\AccountInterface;
@@ -34,9 +36,16 @@ class MatomoBasicTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * Admin user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $adminUser;
+
+  /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $permissions = [
@@ -47,8 +56,8 @@ class MatomoBasicTest extends BrowserTestBase {
     // User to set up matomo.
     $this->noSnippetUser = $this->drupalCreateUser($permissions);
     $permissions[] = 'add js snippets for matomo';
-    $this->admin_user = $this->drupalCreateUser($permissions);
-    $this->drupalLogin($this->admin_user);
+    $this->adminUser = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($this->adminUser);
   }
 
   /**
@@ -57,26 +66,36 @@ class MatomoBasicTest extends BrowserTestBase {
   public function testMatomoConfiguration() {
     // Check for setting page's presence.
     $this->drupalGet('admin/config/system/matomo');
-    $this->assertRaw('Matomo site ID', '[testMatomoConfiguration]: Settings page displayed.');
+    $this->assertSession()->responseContains('Matomo site ID');
 
     // Check for account code validation.
     $edit['matomo_site_id'] = $this->randomMachineName(2);
     $edit['matomo_url_http'] = 'http://www.example.com/matomo/';
-    $this->drupalPostForm('admin/config/system/matomo', $edit, 'Save configuration');
-    $this->assertRaw('A valid Matomo site ID is an integer only.', '[testMatomoConfiguration]: Invalid Matomo site ID number validated.');
+    $this->drupalGet('admin/config/system/matomo');
+    $this->submitForm($edit, 'Save configuration');
+    $this->assertSession()->pageTextContains('Matomo site ID must be a number.');
+
+    // Check that a validation error is shown for exponential number formats.
+    // These are accepted by the core number field validation, but are not valid
+    // as a Matomo site ID.
+    $edit['matomo_site_id'] = '12.34e9';
+    $this->drupalGet('admin/config/system/matomo');
+    $this->submitForm($edit, 'Save configuration');
+    $this->assertSession()->pageTextContains('A valid Matomo site ID is an integer only.');
 
     // Verify that invalid URLs throw a form error.
     $edit = [];
     $edit['matomo_site_id'] = 1;
     $edit['matomo_url_http'] = 'http://www.example.com/matomo/';
     $edit['matomo_url_https'] = 'https://www.example.com/matomo/';
-    $this->drupalPostForm('admin/config/system/matomo', $edit, 'Save configuration');
-    $this->assertRaw('The validation of "http://www.example.com/matomo/matomo.php" failed with an exception', '[testMatomoConfiguration]: HTTP URL exception shown.');
-    $this->assertRaw('The validation of "https://www.example.com/matomo/matomo.php" failed with an exception', '[testMatomoConfiguration]: HTTPS URL exception shown.');
+    $this->drupalGet('admin/config/system/matomo');
+    $this->submitForm($edit, 'Save configuration');
+    $this->assertSession()->responseContains('The validation of "http://www.example.com/matomo/matomo.php" failed with an exception');
+    $this->assertSession()->responseContains('The validation of "https://www.example.com/matomo/matomo.php" failed with an exception');
 
     // User should have access to code snippets.
-    $this->assertFieldByName('matomo_codesnippet_before');
-    $this->assertFieldByName('matomo_codesnippet_after');
+    $this->assertSession()->fieldExists('matomo_codesnippet_before');
+    $this->assertSession()->fieldExists('matomo_codesnippet_after');
     $this->assertNoFieldByXPath("//textarea[@name='matomo_codesnippet_before' and @disabled='disabled']", NULL, '"Code snippet (before)" is enabled.');
     $this->assertNoFieldByXPath("//textarea[@name='matomo_codesnippet_after' and @disabled='disabled']", NULL, '"Code snippet (after)" is enabled.');
 
@@ -85,8 +104,8 @@ class MatomoBasicTest extends BrowserTestBase {
     $this->drupalGet('admin/config/system/matomo');
 
     // User should *not* have access to snippets, but create fields.
-    $this->assertFieldByName('matomo_codesnippet_before');
-    $this->assertFieldByName('matomo_codesnippet_after');
+    $this->assertSession()->fieldExists('matomo_codesnippet_before');
+    $this->assertSession()->fieldExists('matomo_codesnippet_after');
     $this->assertFieldByXPath("//textarea[@name='matomo_codesnippet_before' and @disabled='disabled']", NULL, '"Code snippet (before)" is disabled.');
     $this->assertFieldByXPath("//textarea[@name='matomo_codesnippet_after' and @disabled='disabled']", NULL, '"Code snippet (after)" is disabled.');
   }
@@ -109,30 +128,30 @@ class MatomoBasicTest extends BrowserTestBase {
 
     // Check tracking code visibility.
     $this->drupalGet('');
-    $this->assertRaw('/matomo/js/matomo.js', '[testMatomoPageVisibility]: Custom tracking script is is displayed for authenticated users.');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is displayed for authenticated users.');
+    $this->assertSession()->responseContains('/matomo/js/matomo.js');
+    $this->assertSession()->responseContains('u+"matomo.php"');
 
     // Test whether tracking code is not included on pages to omit.
     $this->drupalGet('admin');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is not displayed on admin page.');
+    $this->assertSession()->responseNotContains('u+"matomo.php"');
     $this->drupalGet('admin/config/system/matomo');
     // Checking for tracking URI here, as $site_id is displayed in the form.
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is not displayed on admin subpage.');
+    $this->assertSession()->responseNotContains('u+"matomo.php"');
 
     // Test whether tracking code display is properly flipped.
     $this->config('matomo.settings')->set('visibility.request_path_mode', 1)->save();
     $this->drupalGet('admin');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is displayed on admin page.');
+    $this->assertSession()->responseContains('u+"matomo.php"');
     $this->drupalGet('admin/config/system/matomo');
     // Checking for tracking URI here, as $site_id is displayed in the form.
-    $this->assertRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is displayed on admin subpage.');
+    $this->assertSession()->responseContains('u+"matomo.php"');
     $this->drupalGet('');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is NOT displayed on front page.');
+    $this->assertSession()->responseNotContains('u+"matomo.php"');
 
     // Test whether tracking code is not display for anonymous.
     $this->drupalLogout();
     $this->drupalGet('');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoPageVisibility]: Tracking code is NOT displayed for anonymous.');
+    $this->assertSession()->responseNotContains('u+"matomo.php"');
 
     // Switch back to every page except the listed pages.
     $this->config('matomo.settings')->set('visibility.request_path_mode', 0)->save();
@@ -141,11 +160,11 @@ class MatomoBasicTest extends BrowserTestBase {
 
     // Test whether 403 forbidden tracking code is shown if user has no access.
     $this->drupalGet('admin');
-    $this->assertRaw('"403/URL = "', '[testMatomoPageVisibility]: 403 Forbidden tracking code shown if user has no access.');
+    $this->assertSession()->responseContains('"403/URL = "');
 
     // Test whether 404 not found tracking code is shown on non-existent pages.
     $this->drupalGet($this->randomMachineName(64));
-    $this->assertRaw('"404/URL = "', '[testMatomoPageVisibility]: 404 Not Found tracking code shown on non-existent page.');
+    $this->assertSession()->responseContains('"404/URL = "');
   }
 
   /**
@@ -181,57 +200,55 @@ class MatomoBasicTest extends BrowserTestBase {
             s.parentNode.insertBefore(g,s);
     })();
     </script>
-    */
+     */
     // @codingStandardsIgnoreEnd
 
     // Test whether tracking code uses latest JS.
     $this->config('matomo.settings')->set('cache', 0)->save();
     $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoTrackingCode]: Latest tracking code used.');
+    $this->assertSession()->responseContains('u+"matomo.php"');
 
     // Test if tracking of User ID is enabled.
     $this->config('matomo.settings')->set('track.userid', 1)->save();
     $this->drupalGet('');
-    $this->assertRaw('_paq.push(["setUserId", ', '[testMatomoTrackingCode]: Tracking code for User ID is enabled.');
+    $this->assertSession()->responseContains('_paq.push(["setUserId", ');
 
     // Test if tracking of User ID is disabled.
     $this->config('matomo.settings')->set('track.userid', 0)->save();
     $this->drupalGet('');
-    $this->assertNoRaw('_paq.push(["setUserId", ', '[testMatomoTrackingCode]: Tracking code for User ID is disabled.');
+    $this->assertSession()->responseNotContains('_paq.push(["setUserId", ');
 
     // Test whether single domain tracking is active.
     $this->drupalGet('');
-    $this->assertNoRaw('_paq.push(["setCookieDomain"', '[testMatomoTrackingCode]: Single domain tracking is active.');
+    $this->assertSession()->responseNotContains('_paq.push(["setCookieDomain"');
 
     // Enable "One domain with multiple subdomains".
     $this->config('matomo.settings')->set('domain_mode', 1)->save();
     $this->drupalGet('');
 
     // Test may run on localhost, an ipaddress or real domain name.
-    // TODO: Workaround to run tests successfully. This feature cannot tested
-    // reliable.
-    global $cookie_domain;
-    if (count(explode('.', $cookie_domain)) > 2 && !is_numeric(str_replace('.', '', $cookie_domain))) {
-      $this->assertRaw('_paq.push(["setCookieDomain"', '[testMatomoTrackingCode]: One domain with multiple subdomains is active on real host.');
+    $cookie_domain = '.' . \parse_url($this->getUrl(), \PHP_URL_HOST);
+    if (\count(\explode('.', $cookie_domain)) > 2 && !\is_numeric(\str_replace('.', '', $cookie_domain))) {
+      $this->assertSession()->responseContains('_paq.push(["setCookieDomain"');
     }
     else {
       // Special cases, Localhost and IP addresses don't show 'setCookieDomain'.
-      $this->assertNoRaw('_paq.push(["setCookieDomain"', '[testMatomoTrackingCode]: One domain with multiple subdomains may be active on localhost (test result is not reliable).');
+      $this->assertSession()->responseNotContains('_paq.push(["setCookieDomain"');
     }
 
     // Test whether the BEFORE and AFTER code is added to the tracker.
     $this->config('matomo.settings')->set('codesnippet.before', '_paq.push(["setLinkTrackingTimer", 250]);')->save();
     $this->config('matomo.settings')->set('codesnippet.after', '_paq.push(["t2.setSiteId", 2]);if(1 == 1 && 2 < 3 && 2 > 1){console.log("Matomo: Custom condition works.");}_gaq.push(["t2.trackPageView"]);')->save();
     $this->drupalGet('');
-    $this->assertRaw('setLinkTrackingTimer', '[testMatomoTrackingCode]: Before codesnippet has been found with "setLinkTrackingTimer" set.');
-    $this->assertRaw('t2.trackPageView', '[testMatomoTrackingCode]: After codesnippet with "t2" tracker has been found.');
-    $this->assertRaw('if(1 == 1 && 2 < 3 && 2 > 1){console.log("Matomo: Custom condition works.");}', '[testMatomoTrackingCode]: JavaScript code is not HTML escaped.');
+    $this->assertSession()->responseContains('setLinkTrackingTimer');
+    $this->assertSession()->responseContains('t2.trackPageView');
+    $this->assertSession()->responseContains('if(1 == 1 && 2 < 3 && 2 > 1){console.log("Matomo: Custom condition works.");}');
 
     // Test disable cookie setting.
-    $this->assertNoRaw('_paq.push(["disableCookies"]);', '[testMatomoTrackingCode]: Cookies not disabled by default.');
+    $this->assertSession()->responseNotContains('_paq.push(["disableCookies"]);');
     $this->config('matomo.settings')->set('privacy.disablecookies', TRUE)->save();
     $this->drupalGet('');
-    $this->assertRaw('_paq.push(["disableCookies"]);', '[testMatomoTrackingCode]: Cookies disabled.');
+    $this->assertSession()->responseContains('_paq.push(["disableCookies"]);');
   }
 
 }

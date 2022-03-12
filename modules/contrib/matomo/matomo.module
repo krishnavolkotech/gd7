@@ -8,6 +8,9 @@
  * the Matomo statistics package.
  */
 
+declare(strict_types = 1);
+
+use Drupal\Component\Render\MarkupInterface;
 use Drupal\Component\Serialization\Json;
 use Drupal\Component\Utility\Crypt;
 use Drupal\Component\Utility\UrlHelper;
@@ -17,8 +20,11 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Site\Settings;
 use Drupal\Core\Url;
+use Drupal\matomo\HookHandler\ViewsPostRenderHookHandler;
 use Drupal\matomo\MatomoInterface;
 use Drupal\node\NodeInterface;
+use Drupal\views\Plugin\views\cache\CachePluginBase;
+use Drupal\views\ViewExecutable;
 use GuzzleHttp\Exception\RequestException;
 use Drupal\matomo\Component\Render\MatomoJavaScriptSnippet;
 
@@ -40,17 +46,30 @@ function matomo_help($route_name, RouteMatchInterface $route_match) {
 function matomo_page_attachments(array &$page) {
   $account = \Drupal::currentUser();
   $config = \Drupal::config('matomo.settings');
-  $id = $config->get('site_id');
+  $id = $config->get('site_id') ?? '';
   $request = \Drupal::request();
 
   // Add module cache tags.
-  $page['#cache']['tags'] = Cache::mergeTags(isset($page['#cache']['tags']) ? $page['#cache']['tags'] : [], $config->getCacheTags());
+  $page['#cache']['tags'] = Cache::mergeTags($page['#cache']['tags'] ?? [], $config->getCacheTags());
+
+  if ($config->get('disable_tracking')) {
+    // Tracking is disabled in favor of other methods (e.g. Tag Manager).
+    return;
+  }
 
   // Get page http status code for visibility filtering.
   $status = NULL;
-  if ($exception = $request->attributes->get('exception')) {
+  $exception = $request->attributes->get('exception');
+  if ($exception) {
     $status = $exception->getStatusCode();
   }
+
+  // Early return if status matches configured values.
+  $disabled_status_codes = $config->get('status_codes_disabled') ?? [];
+  if (in_array($status, $disabled_status_codes)) {
+    return;
+  }
+
   $trackable_status_codes = [
     // "Forbidden" status code.
     '403',
@@ -74,7 +93,8 @@ function matomo_page_attachments(array &$page) {
     $link_settings['disableCookies'] = $config->get('privacy.disablecookies');
     $link_settings['trackMailto'] = $config->get('track.mailto');
 
-    if ((\Drupal::moduleHandler()->moduleExists('colorbox')) && $track_colorbox = $config->get('track.colorbox')) {
+    $track_colorbox = $config->get('track.colorbox');
+    if ((\Drupal::moduleHandler()->moduleExists('colorbox')) && $track_colorbox) {
       $link_settings['trackColorbox'] = $track_colorbox;
     }
 
@@ -101,7 +121,8 @@ function matomo_page_attachments(array &$page) {
 
     // Add messages tracking.
     $message_events = '';
-    if ($message_types = $config->get('track.messages')) {
+    $message_types = $config->get('track.messages');
+    if ($message_types) {
       $message_types = array_values(array_filter($message_types));
       $status_heading = [
         'status' => t('Status message'),
@@ -109,10 +130,14 @@ function matomo_page_attachments(array &$page) {
         'error' => t('Error message'),
       ];
 
-      foreach (\Drupal::messenger()->all(NULL, FALSE) as $type => $messages) {
+      foreach (\Drupal::messenger()->all() as $type => $messages) {
         // Track only the selected message types.
         if (in_array($type, $message_types)) {
           foreach ($messages as $message) {
+            if ($message instanceof MarkupInterface) {
+              $message = $message->__toString();
+            }
+
             $message_events .= '_paq.push(["trackEvent", ' . Json::encode(t('Messages')) . ', ' . Json::encode($status_heading[$type]) . ', ' . Json::encode(strip_tags($message)) . ']);';
           }
         }
@@ -231,8 +256,9 @@ function matomo_page_attachments(array &$page) {
     }
 
     // Domain tracking type.
-    $session_storage_options = \Drupal::getContainer()->getParameter('session.storage.options');
-    $cookie_domain = !empty($session_storage_options['cookie_domain']) ? $session_storage_options['cookie_domain'] : NULL;
+    /** @var \Drupal\Core\Session\SessionConfigurationInterface $session_config */
+    $session_config = \Drupal::service('session_configuration');
+    $cookie_domain = $session_config->getOptions(\Drupal::request())['cookie_domain'] ?? '';
     $domain_mode = $config->get('domain_mode');
 
     // Per RFC 2109, cookie domains must contain at least one dot other than the
@@ -255,7 +281,13 @@ function matomo_page_attachments(array &$page) {
     // Site search tracking support.
     // NOTE: It's recommended not to call trackPageView() on the Site Search
     // Result page.
-    if (\Drupal::moduleHandler()->moduleExists('search') && $config->get('track.site_search') && (strpos(\Drupal::routeMatch()->getRouteName(), 'search.view') === 0) && $keys = ($request->query->has('keys') ? trim($request->get('keys')) : '')) {
+    $keys = ($request->query->has('keys') ? trim($request->get('keys')) : '');
+    if (
+      \Drupal::moduleHandler()->moduleExists('search') &&
+      $config->get('track.site_search') &&
+      (strpos(\Drupal::routeMatch()->getRouteName(), 'search.view') === 0) &&
+      $keys
+    ) {
       // Parameters:
       // 1. Search keyword searched for. Example: "Banana"
       // 2. Search category selected in your search engine. If you do not need
@@ -268,7 +300,7 @@ function matomo_page_attachments(array &$page) {
       $script .= '_paq.push(["trackSiteSearch", ' . Json::encode($keys) . ', false, (window.matomo_search_results) ? window.matomo_search_results : 0]);';
     }
     else {
-      $script .= '_paq.push(["trackPageView"]);';
+      $script .= 'if (!window.matomo_search_results_active) {_paq.push(["trackPageView"]);}';
     }
 
     // Add link tracking.
@@ -302,14 +334,17 @@ function matomo_page_attachments(array &$page) {
     $script .= 'g.async=true;';
 
     // Should a local cached copy of the tracking code be used?
-    if ($config->get('cache') && $url = _matomo_cache($url_http . 'matomo.js')) {
-      // A dummy query-string is added to filenames, to gain control over
-      // browser-caching. The string changes on every update or full cache
-      // flush, forcing browsers to load a new copy of the files, as the
-      // URL changed.
-      $query_string = '?' . (\Drupal::state()->get('system.css_js_query_string') ?: '0');
+    if ($config->get('cache')) {
+      $url = _matomo_cache($url_http . 'matomo.js');
+      if ($url) {
+        // A dummy query-string is added to filenames, to gain control over
+        // browser-caching. The string changes on every update or full cache
+        // flush, forcing browsers to load a new copy of the files, as the
+        // URL changed.
+        $query_string = '?' . (\Drupal::state()->get('system.css_js_query_string') ?: '0');
 
-      $script .= 'g.src="' . $url . $query_string . '";';
+        $script .= 'g.src="' . $url . $query_string . '";';
+      }
     }
     else {
       $script .= 'g.src=u+"matomo.js";';
@@ -350,6 +385,7 @@ function matomo_user_id_hash($uid) {
  * Implements hook_entity_extra_field_info().
  */
 function matomo_entity_extra_field_info() {
+  $extra = [];
   $extra['user']['user']['form']['matomo'] = [
     'label' => t('Matomo settings'),
     'description' => t('Matomo module form element.'),
@@ -366,9 +402,12 @@ function matomo_entity_extra_field_info() {
  */
 function matomo_form_user_form_alter(&$form, FormStateInterface $form_state) {
   $config = \Drupal::config('matomo.settings');
-  $account = $form_state->getFormObject()->getEntity();
-
-  if ($account->hasPermission('opt-in or out of matomo tracking') && ($visibility_users = $config->get('visibility.user_account_mode')) != 0 && _matomo_visibility_roles($account)) {
+  /** @var \Drupal\user\AccountForm $userform */
+  $userform = $form_state->getFormObject();
+  /** @var \Drupal\user\UserInterface $account */
+  $account = $userform->getEntity();
+  $visibility_users = $config->get('visibility.user_account_mode');
+  if ($account->hasPermission('opt-in or out of matomo tracking') && $visibility_users != 0 && _matomo_visibility_roles($account)) {
     $account_data_matomo = \Drupal::service('user.data')->get('matomo', $account->id());
 
     $form['matomo'] = [
@@ -377,7 +416,7 @@ function matomo_form_user_form_alter(&$form, FormStateInterface $form_state) {
       '#weight' => 3,
       '#open' => TRUE,
     ];
-
+    $description = '';
     switch ($visibility_users) {
       case 1:
         $description = t('Users are tracked by default, but you are able to opt out.');
@@ -391,7 +430,7 @@ function matomo_form_user_form_alter(&$form, FormStateInterface $form_state) {
     // Disable tracking for visitors who have opted out from tracking via DNT
     // (Do-Not-Track) header.
     $disabled = FALSE;
-    if ($config->get('privacy.donottrack') && !empty($_SERVER['HTTP_DNT'])) {
+    if ($config->get('privacy.donottrack') && \Drupal::request()->headers->has('dnt')) {
       $disabled = TRUE;
 
       // Override settings value.
@@ -402,7 +441,7 @@ function matomo_form_user_form_alter(&$form, FormStateInterface $form_state) {
       $description .= '</span>';
     }
 
-    // Migrate old piwik settings to matomo.
+    // Migrate old Piwik settings to Matomo.
     $account_data_piwik = \Drupal::service('user.data')->get('piwik', $account->id());
     if (isset($account_data_piwik['user_account_users'])) {
       $account_data_matomo['user_account_users'] = $account_data_piwik['user_account_users'];
@@ -412,7 +451,7 @@ function matomo_form_user_form_alter(&$form, FormStateInterface $form_state) {
       '#type' => 'checkbox',
       '#title' => t('Enable user tracking'),
       '#description' => $description,
-      '#default_value' => isset($account_data_matomo['user_account_users']) ? $account_data_matomo['user_account_users'] : ($visibility_users == 1),
+      '#default_value' => $account_data_matomo['user_account_users'] ?? ($visibility_users == 1),
       '#disabled' => $disabled,
     ];
 
@@ -425,12 +464,15 @@ function matomo_form_user_form_alter(&$form, FormStateInterface $form_state) {
  * Submit callback for user profile form to save the Matomo setting.
  */
 function matomo_user_profile_form_submit($form, FormStateInterface $form_state) {
-  $account = $form_state->getFormObject()->getEntity();
+  /** @var \Drupal\user\AccountForm $userform */
+  $userform = $form_state->getFormObject();
+  /** @var \Drupal\user\UserInterface $account */
+  $account = $userform->getEntity();
   if ($account->id() && $form_state->hasValue('user_account_users')) {
     \Drupal::service('user.data')->set('matomo', $account->id(), 'user_account_users', (int) $form_state->getValue('user_account_users'));
   }
 
-  // Remove old piwik setting to complete migration to matomo.
+  // Remove old Piwik setting to complete migration to Matomo.
   $account_data_piwik = \Drupal::service('user.data')->get('piwik', $account->id());
   if (isset($account_data_piwik)) {
     \Drupal::service('user.data')->delete('piwik', $account->id());
@@ -464,7 +506,7 @@ function matomo_preprocess_item_list__search_results(&$variables) {
     // There is no search result $variable available that hold the number of
     // items found. The variable $variables['items'] has the current page items
     // only. But the pager item number can tell the number of search results.
-    /* @var $pager_manager \Drupal\Core\Pager\PagerManagerInterface */
+    /** @var \Drupal\Core\Pager\PagerManagerInterface $pager_manager */
     $pager_manager = \Drupal::service('pager.manager');
     $pager = $pager_manager->getPager();
     $pager_total_items = $pager ? $pager->getTotalItems() : 0;
@@ -499,7 +541,8 @@ function _matomo_cache($location, $synchronize = FALSE) {
     try {
       $data = \Drupal::httpClient()
         ->get($location)
-        ->getBody(TRUE);
+        ->getBody()
+        ->getContents();
 
       if (file_exists($file_destination)) {
         // Synchronize tracking code and and replace local file if outdated.
@@ -564,6 +607,16 @@ function matomo_clear_js_cache() {
 }
 
 /**
+ * Implements hook_views_post_render().
+ */
+function matomo_views_post_render(ViewExecutable $view, array &$output, CachePluginBase $cache) {
+  /** @var \Drupal\matomo\HookHandler\ViewsPostRenderHookHandler $instance */
+  $instance = \Drupal::service('class_resolver')
+    ->getInstanceFromDefinition(ViewsPostRenderHookHandler::class);
+  $instance->process($view, $output, $cache);
+}
+
+/**
  * Tracking visibility check for an user object.
  *
  * @param object $account
@@ -580,7 +633,8 @@ function _matomo_visibility_user($account) {
   if (_matomo_visibility_roles($account)) {
 
     // Use the user's block visibility setting, if necessary.
-    if (($visibility_user_account_mode = $config->get('visibility.user_account_mode')) != 0) {
+    $visibility_user_account_mode = $config->get('visibility.user_account_mode');
+    if ($visibility_user_account_mode != 0) {
       $user_data_matomo = \Drupal::service('user.data')->get('matomo', $account->id());
       if ($account->id() && isset($user_data_matomo['user_account_users'])) {
         $enabled = $user_data_matomo['user_account_users'];
@@ -615,7 +669,7 @@ function _matomo_visibility_roles($account) {
   $enabled = $visibility_user_role_mode = $config->get('visibility.user_role_mode');
   $user_role_roles = $config->get('visibility.user_role_roles');
 
-  if (count($user_role_roles) > 0) {
+  if (!empty($user_role_roles)) {
     // One or more roles are selected.
     foreach (array_values($account->getRoles()) as $user_role) {
       // Is the current user a member of one of these roles?
@@ -658,7 +712,13 @@ function _matomo_visibility_pages() {
       if ($visibility_request_path_mode < 2) {
         // Compare the lowercase path alias (if any) and internal path.
         $path = \Drupal::service('path.current')->getPath();
-        $path_alias = mb_strtolower(\Drupal::service('path_alias.manager')->getAliasByPath($path));
+        $path_alias = \Drupal::service('path_alias.manager')->getAliasByPath($path);
+        if (empty($path_alias)) {
+          $path_alias = mb_strtolower($path);
+        }
+        else {
+          $path_alias = mb_strtolower($path_alias);
+        }
         $page_match = \Drupal::service('path.matcher')->matchPath($path_alias, $pages) || (($path != $path_alias) && \Drupal::service('path.matcher')->matchPath($path, $pages));
         // When $visibility_request_path_mode has a value of 0, the tracking
         // code is displayed on all pages except those listed in $pages. When
@@ -700,7 +760,7 @@ function _matomo_get_hierarchy_titles() {
   }
 
   // Load up the menu tree.
-  // TODO: Check this is a sane approach.
+  // @todo Check this is a sane approach.
   $menu_tree = \Drupal::menuTree();
   $menu_name = \Drupal::config('system.menu.main')->get('id');
 

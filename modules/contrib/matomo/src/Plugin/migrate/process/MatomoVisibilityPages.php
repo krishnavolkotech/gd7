@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\matomo\Plugin\migrate\process;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -16,11 +18,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Prefixes paths with a slash.
  *
  * @MigrateProcessPlugin(
- *   id = "matomo_visibility_pages"
+ *     id = "matomo_visibility_pages"
  * )
- *
- * TODO update with new migrate process:
- *   @see https://www.drupal.org/node/3047268
  */
 class MatomoVisibilityPages extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
@@ -66,7 +65,7 @@ class MatomoVisibilityPages extends ProcessPluginBase implements ContainerFactor
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, ?MigrationInterface $migration = NULL) {
     $migration_configuration = [
       'migration' => [
         'd6_user_role',
@@ -86,7 +85,7 @@ class MatomoVisibilityPages extends ProcessPluginBase implements ContainerFactor
    * {@inheritdoc}
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    list($old_visibility, $pages) = $value;
+    [$old_visibility, $pages] = $value;
 
     $request_path_pages = '';
 
@@ -105,11 +104,11 @@ class MatomoVisibilityPages extends ProcessPluginBase implements ContainerFactor
         }
       }
       else {
-        $paths = preg_split("(\r\n?|\n)", $pages);
+        $paths = \preg_split("(\r\n?|\n)", $pages);
         foreach ($paths as $key => $path) {
-          $paths[$key] = $path === '<front>' ? $path : '/' . ltrim($path, '/');
+          $paths[$key] = $path === '<front>' ? $path : '/' . \ltrim($path, '/');
         }
-        $request_path_pages = implode("\n", $paths);
+        $request_path_pages = \implode("\n", $paths);
       }
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\matomo\Plugin\migrate\process;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -15,10 +17,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Converts D7 role ids to D8 role names.
  *
  * @MigrateProcessPlugin(
- *   id = "matomo_visibility_roles"
+ *     id = "matomo_visibility_roles"
  * )
- *  TODO update with new migrate process:
- *   @see https://www.drupal.org/node/3047268
  */
 class MatomoVisibilityRoles extends ProcessPluginBase implements ContainerFactoryPluginInterface {
 
@@ -50,7 +50,7 @@ class MatomoVisibilityRoles extends ProcessPluginBase implements ContainerFactor
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, MigrationInterface $migration = NULL) {
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition, ?MigrationInterface $migration = NULL) {
     $migration_configuration = [
       'migration' => [
         'd6_user_role',
@@ -70,10 +70,10 @@ class MatomoVisibilityRoles extends ProcessPluginBase implements ContainerFactor
    * {@inheritdoc}
    */
   public function transform($value, MigrateExecutableInterface $migrate_executable, Row $row, $destination_property) {
-    list($roles) = $value;
+    [$roles] = $value;
 
     // Remove role IDs disabled in D6/D7.
-    $roles = array_filter($roles);
+    $roles = \array_filter($roles);
 
     $user_role_roles = [];
 
@@ -81,7 +81,7 @@ class MatomoVisibilityRoles extends ProcessPluginBase implements ContainerFactor
       foreach ($roles as $key => $role_id) {
         $roles[$key] = $this->migrationPlugin->transform($role_id, $migrate_executable, $row, $destination_property);
       }
-      $user_role_roles = array_combine($roles, $roles);
+      $user_role_roles = \array_combine($roles, $roles);
     }
 
     return $user_role_roles;

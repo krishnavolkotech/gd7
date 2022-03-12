@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
 use Drupal\Tests\BrowserTestBase;
@@ -26,14 +28,14 @@ class AdminSettingsFormTest extends BrowserTestBase {
   /**
    * A test administrator.
    *
-   * @var \Drupal\user\Entity\User
+   * @var \Drupal\user\UserInterface
    */
   protected $adminUser;
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $permissions = [
@@ -60,7 +62,8 @@ class AdminSettingsFormTest extends BrowserTestBase {
       'matomo_visibility_request_path_mode' => 0,
       'matomo_visibility_request_path_pages' => $pages,
     ];
-    $this->drupalPostForm('admin/config/system/matomo', $edit, 'Save configuration');
+    $this->drupalGet('admin/config/system/matomo');
+    $this->submitForm($edit, 'Save configuration');
     $has_validation_error = (bool) $this->getSession()->getPage()->find('css', '#edit-matomo-visibility-request-path-pages.error');
     $this->assertEquals($validation_error_expected, $has_validation_error);
   }
@@ -84,7 +87,7 @@ class AdminSettingsFormTest extends BrowserTestBase {
       ],
       [
         // No validation error should be thrown for a list of valid pages.
-        <<<TXT
+        <<<'TXT'
 /node/1
 /blog/*/view
 /shop
@@ -96,7 +99,7 @@ TXT
       [
         // A validation error should be thrown if one of the pages doesn't start
         // with a slash.
-        <<<TXT
+        <<<'TXT'
 /node/1
 /blog/*/view
 shop

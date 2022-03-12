@@ -7,8 +7,6 @@
 
 namespace Drupal\pdf_api\Plugin\PdfGenerator;
 
-use Drupal\Component\Render\FormattableMarkup;
-use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\pdf_api\Plugin\PdfGeneratorBase;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\pdf_api\Annotation\PdfGenerator;
@@ -23,8 +21,9 @@ use Drupal\Core\Messenger\MessengerInterface;
  * @PdfGenerator(
  *   id = "wkhtmltopdf",
  *   module = "pdf_api",
- *   title = @Translation("WKHTMLTOPDF"),
- *   description = @Translation("PDF generator using the WKHTMLTOPDF binary.")
+ *   title = @Translation("wkhtmltoPDF"),
+ *   description = @Translation("PDF generator using the WKHTMLTOPDF binary."),
+ *   required_class = "mikehaertl\wkhtmlto\Pdf"
  * )
  */
 class WkhtmltopdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginInterface {
@@ -46,10 +45,10 @@ class WkhtmltopdfGenerator extends PdfGeneratorBase implements ContainerFactoryP
   /**
    * {@inheritdoc}
    */
-  public function __construct(array $configuration, $plugin_id, array $plugin_definition, Pdf $generator, MessengerInterface $messenger) {
+  public function __construct(array $configuration, $plugin_id, array $plugin_definition, MessengerInterface $messenger) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
 
-    $this->generator = $generator;
+    $this->generator = new Pdf();
     $this->messenger = $messenger;
   }
 
@@ -61,7 +60,6 @@ class WkhtmltopdfGenerator extends PdfGeneratorBase implements ContainerFactoryP
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('wkhtmltopdf'),
       $container->get('messenger')
     );
   }

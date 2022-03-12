@@ -1,25 +1,14 @@
 {
-  "name": "drupal/matomo",
-  "description": "Adds Matomo javascript tracking code to all your site's pages",
-  "type": "drupal-module",
-  "homepage": "https://www.drupal.org/project/matomo",
-  "authors": [
-    {
-      "name": "Carsten Logemann",
-      "homepage": "https://www.drupal.org/u/C_Logemann"
+    "name": "drupal/matomo",
+    "description": "Adds Matomo javascript tracking code to all your site's pages.",
+    "license": "GPL-2.0-or-later",
+    "type": "drupal-module",
+    "require-dev": {
+        "drupal/csp": "~1.12",
+        "drupal/php": "~1.1",
+        "drupal/token": "~1.9"
     },
-    {
-      "name": "Shelane French",
-      "homepage": "https://www.drupal.org/u/shelane"
-    },
-    {
-      "name": "See other contributors",
-      "homepage":"https://www.drupal.org/node/247808/committers"
+    "conflict": {
+        "drupal/csp": "<1.12"
     }
-  ],
-  "support": {
-    "issues": "https://www.drupal.org/project/issues/matomo",
-    "source": "https://git.drupal.org/project/matomo.git"
-  },
-  "license": "GPL-2.0-or-later"
 }

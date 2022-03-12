@@ -13,10 +13,10 @@ use Drupal\views\Plugin\views\display_extender\DisplayExtenderPluginBase;
  * @ingroup views_display_extender_plugins
  *
  * @ViewsDisplayExtender(
- *   id = "views_merge_rows",
- *   title = @Translation("Merge rows"),
- *   help = @Translation("Merges rows with the same values in the specified fields."),
- *   no_ui = FALSE
+ *     id = "views_merge_rows",
+ *     title = @Translation("Merge rows"),
+ *     help = @Translation("Merges rows with the same values in the specified fields."),
+ *     no_ui = FALSE
  * )
  */
 class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
@@ -36,7 +36,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
    *
    * @phpstan-ignore-next-line
    */
-  public function buildOptionsForm(&$form, FormStateInterface $form_state) : void {
+  public function buildOptionsForm(&$form, FormStateInterface $form_state): void {
     if ($form_state->get('section') != 'views_merge_rows') {
       return;
     }
@@ -103,7 +103,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
           '@field_name' => $name,
         ]),
         '#title_display' => 'invisible',
-        '#size' => 10,
+        '#size' => (int) 10,
         '#default_value' => $this->options['field_config'][$field]['prefix'] ?? '',
       ];
 
@@ -113,7 +113,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
           '@field_name' => $name,
         ]),
         '#title_display' => 'invisible',
-        '#size' => 10,
+        '#size' => (int) 10,
         '#default_value' => $this->options['field_config'][$field]['separator'] ?? ', ',
       ];
 
@@ -123,7 +123,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
           '@field_name' => $name,
         ]),
         '#title_display' => 'invisible',
-        '#size' => 10,
+        '#size' => (int) 10,
         '#default_value' => $this->options['field_config'][$field]['suffix'] ?? '',
       ];
     }
@@ -197,11 +197,13 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
    *
    * @phpstan-ignore-next-line
    */
-  public function submitOptionsForm(&$form, FormStateInterface $form_state) : void {
+  public function submitOptionsForm(&$form, FormStateInterface $form_state): void {
     if ($form_state->get('section') != 'views_merge_rows') {
       return;
     }
-    foreach ($form_state->getValue('options') as $option => $value) {
+    /** @var array $form_state_options */
+    $form_state_options = $form_state->getValue('options');
+    foreach ($form_state_options as $option => $value) {
       $this->options[$option] = $value;
     }
   }
@@ -211,7 +213,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
    *
    * @phpstan-ignore-next-line
    */
-  public function optionsSummary(&$categories, &$options) : void {
+  public function optionsSummary(&$categories, &$options): void {
     if (!$this->displayHandler->usesFields()) {
       return;
     }
@@ -239,7 +241,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
    * @return array
    *   Configuration for row merging.
    */
-  public function getOptions() : array {
+  public function getOptions(): array {
     $options = [
       'merge_rows' => FALSE,
       'field_config' => [],
@@ -257,7 +259,7 @@ class ViewsMergeRowsDisplayExtenderPlugin extends DisplayExtenderPluginBase {
       ];
 
       $fields = $this->displayHandler->getOption('fields');
-      foreach (array_keys($fields) as $field) {
+      foreach (\array_keys($fields) as $field) {
         $options['field_config'][$field] = $field_default_options;
 
         if (isset($this->options['field_config'][$field])) {

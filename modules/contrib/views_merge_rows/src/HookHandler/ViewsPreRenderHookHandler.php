@@ -49,7 +49,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container) : self {
+  public static function create(ContainerInterface $container): self {
     return new self(
       $container->get('pager.manager'),
       $container->get('request_stack')
@@ -62,7 +62,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
    * @param \Drupal\views\ViewExecutable $view
    *   The view to alter.
    */
-  public function process(ViewExecutable $view) : void {
+  public function process(ViewExecutable $view): void {
     $extenders = $view->getDisplay()->getExtenders();
     if (!isset($extenders['views_merge_rows'])) {
       // If the ID of the plugin is not in the list then do nothing.
@@ -101,7 +101,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
       $is_filter_row = [];
       $merged_row_replaced = FALSE;
 
-      if (!array_key_exists($filter_value, $filters)) {
+      if (!\array_key_exists($filter_value, $filters)) {
         $filters[$filter_value] = $row_index;
         $merged_row = [];
         $merged_row_copy = [];
@@ -178,11 +178,11 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
       foreach ($options['field_config'] as $field_name => $field_config) {
         switch ($field_config['merge_option']) {
           case 'count_unique':
-            $view->style_plugin->setRenderedField(count($merged_row[$field_name]), $row_index, $field_name);
+            $view->style_plugin->setRenderedField(\count($merged_row[$field_name]), $row_index, $field_name);
             break;
 
           case 'count_minus_count_unique':
-            $view->style_plugin->setRenderedField(intval($merged_rows_copy[$row_index][$field_name]) - count($merged_row[$field_name]), $row_index, $field_name);
+            $view->style_plugin->setRenderedField((int) ($merged_rows_copy[$row_index][$field_name]) - \count($merged_row[$field_name]), $row_index, $field_name);
             break;
 
           case 'merge_unique':
@@ -247,18 +247,18 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
-      if (!array_key_exists($field_name, $merged_row)) {
+      if (!\array_key_exists($field_name, $merged_row)) {
         $merged_row[$field_name] = [];
       }
-      if (!in_array($rendered_row[$field_name], $merged_row[$field_name])) {
+      if (!\in_array($rendered_row[$field_name], $merged_row[$field_name], TRUE)) {
         $merged_row[$field_name][] = $rendered_row[$field_name];
       }
       $merged_rows[$row_index] = $merged_row;
     }
     else {
-      if (!empty($rendered_row[$field_name]) && !in_array($rendered_row[$field_name], $merged_row[$field_name])) {
+      if (!empty($rendered_row[$field_name]) && !\in_array($rendered_row[$field_name], $merged_row[$field_name], TRUE)) {
         $merged_row[$field_name][] = $rendered_row[$field_name];
       }
       $this->unsetRow($view, $row_index);
@@ -294,13 +294,13 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = 1;
       $merged_rows[$row_index] = $merged_row;
     }
     else {
-      $merged_row[$field_name] = intval($merged_row[$field_name]) + 1;
+      $merged_row[$field_name] = (int) ($merged_row[$field_name]) + 1;
       $this->unsetRow($view, $row_index);
       $merged_rows[$merged_row_index] = $merged_row;
     }
@@ -343,18 +343,18 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
-      if (!array_key_exists($field_name, $merged_row)) {
+      if (!\array_key_exists($field_name, $merged_row)) {
         $merged_row[$field_name] = [];
       }
-      if (!in_array($rendered_row[$field_name], $merged_row[$field_name])) {
+      if (!\in_array($rendered_row[$field_name], $merged_row[$field_name], TRUE)) {
         $merged_row[$field_name][] = $rendered_row[$field_name];
       }
       $merged_rows[$row_index] = $merged_row;
     }
     else {
-      if (!empty($rendered_row[$field_name]) && !in_array($rendered_row[$field_name], $merged_row[$field_name])) {
+      if (!empty($rendered_row[$field_name]) && !\in_array($rendered_row[$field_name], $merged_row[$field_name], TRUE)) {
         $merged_row[$field_name][] = $rendered_row[$field_name];
       }
       $merged_rows[$merged_row_index] = $merged_row;
@@ -365,7 +365,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
       $merged_rows_copy[$row_index] = $merged_row_copy;
     }
     else {
-      $merged_row_copy[$field_name] = intval($merged_row_copy[$field_name]) + 1;
+      $merged_row_copy[$field_name] = (int) ($merged_row_copy[$field_name]) + 1;
       $this->unsetRow($view, $row_index);
       $merged_rows_copy[$merged_row_index] = $merged_row_copy;
     }
@@ -402,13 +402,13 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = [$rendered_row[$field_name]];
       $merged_rows[$row_index] = $merged_row;
     }
     else {
-      if (!empty($rendered_row[$field_name]) && !in_array($rendered_row[$field_name], $merged_row[$field_name])) {
+      if (!empty($rendered_row[$field_name]) && !\in_array($rendered_row[$field_name], $merged_row[$field_name], TRUE)) {
         $merged_row[$field_name][] = $rendered_row[$field_name];
       }
       $this->unsetRow($view, $row_index);
@@ -447,7 +447,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = [$rendered_row[$field_name]];
       $merged_rows[$row_index] = $merged_row;
@@ -490,7 +490,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = [$rendered_row[$field_name]];
       $merged_rows[$row_index] = $merged_row;
@@ -533,7 +533,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = [$rendered_row[$field_name]];
       $merged_rows[$row_index] = $merged_row;
@@ -576,7 +576,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = [$rendered_row[$field_name]];
       $merged_rows[$row_index] = $merged_row;
@@ -619,7 +619,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = $rendered_row[$field_name];
       $merged_rows[$row_index] = $merged_row;
@@ -660,7 +660,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = $rendered_row[$field_name];
       $merged_rows[$row_index] = $merged_row;
@@ -705,7 +705,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row[$field_name] = $rendered_row[$field_name];
       $merged_rows[$row_index] = $merged_row;
@@ -713,8 +713,8 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     else {
       // Strip the HTML from the rendered and merged fields data and grab
       // the raw value.
-      $rendered_row_data = floatval((string) $rendered_row[$field_name]);
-      $merged_row_data = floatval((string) $merged_row[$field_name]);
+      $rendered_row_data = (float) ((string) $rendered_row[$field_name]);
+      $merged_row_data = (float) ((string) $merged_row[$field_name]);
 
       // Place the higher value into the merged row array.
       if ($rendered_row_data > $merged_row_data) {
@@ -769,7 +769,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     int $merged_row_index
-  ) : void {
+  ): void {
     if ($is_filter_row) {
       $merged_row = [];
       $merged_row[$field_name] = $rendered_row[$field_name];
@@ -778,8 +778,8 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     else {
       // Strip the HTML from the rendered and merged fields data and grab
       // the raw value.
-      $rendered_row_data = floatval((string) $rendered_row[$field_name]);
-      $merged_row_data = floatval((string) $merged_row[$field_name]);
+      $rendered_row_data = (float) ((string) $rendered_row[$field_name]);
+      $merged_row_data = (float) ((string) $merged_row[$field_name]);
 
       // Place the lower value into the merged row array.
       if (!empty($rendered_row[$field_name])) {
@@ -827,29 +827,29 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     int $row_index,
     string $field_name,
     array $field_config
-  ) : void {
+  ): void {
     foreach ($merged_row[$field_name] as $field_index => $field_value) {
       if (empty($field_value)) {
         unset($merged_row[$field_name][$field_index]);
       }
     }
     if ($field_config['exclude_first']) {
-      array_shift($merged_row[$field_name]);
+      \array_shift($merged_row[$field_name]);
     }
-    $value_count = count($merged_row[$field_name]);
+    $value_count = \count($merged_row[$field_name]);
     $iteration = 1;
     foreach ($merged_row[$field_name] as $field_index => $field_value) {
-      if ($iteration <> $value_count) {
+      if ($iteration != $value_count) {
         $merged_row[$field_name][$field_index] = $field_config['prefix'] . $field_value . $field_config['separator'] . $field_config['suffix'];
       }
       else {
         $merged_row[$field_name][$field_index] = $field_config['prefix'] . $field_value . $field_config['suffix'];
       }
-      $iteration++;
+      ++$iteration;
     }
-    unset($iteration);
-    unset($value_count);
-    $view->style_plugin->setRenderedField(implode($merged_row[$field_name]), $row_index, $field_name);
+    unset($iteration, $value_count);
+
+    $view->style_plugin->setRenderedField(\implode('', $merged_row[$field_name]), $row_index, $field_name);
   }
 
   /**
@@ -872,11 +872,11 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     array &$merged_row,
     int $row_index,
     string $field_name
-  ) : void {
+  ): void {
     $sum = 0;
     foreach ($merged_row[$field_name] as $field_value) {
       if (!empty($field_value)) {
-        $sum += floatval((string) $field_value);
+        $sum += (float) ((string) $field_value);
       }
     }
     $view->style_plugin->setRenderedField($sum, $row_index, $field_name);
@@ -902,13 +902,13 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     array &$merged_row,
     int $row_index,
     string $field_name
-  ) : void {
+  ): void {
     $sum = 0;
     $count_field_values = 0;
     foreach ($merged_row[$field_name] as $field_value) {
       if (!empty($field_value)) {
-        $sum += floatval((string) $field_value);
-        $count_field_values++;
+        $sum += (float) ((string) $field_value);
+        ++$count_field_values;
       }
     }
     $sum = $sum / $count_field_values;
@@ -935,15 +935,15 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     array &$merged_row,
     int $row_index,
     string $field_name
-  ) : void {
+  ): void {
     $sum = 0;
     $sum_square = 0;
     $count_field_values = 0;
     foreach ($merged_row[$field_name] as $field_value) {
       if (!empty($field_value)) {
-        $sum += floatval((string) $field_value);
-        $sum_square += floatval((string) $field_value) * floatval((string) $field_value);
-        $count_field_values++;
+        $sum += (float) ((string) $field_value);
+        $sum_square += (float) ((string) $field_value) * (float) ((string) $field_value);
+        ++$count_field_values;
       }
     }
     $average = $sum / $count_field_values;
@@ -954,7 +954,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     else {
       $sum = ($count_field_values / ($count_field_values - 1)) *
         ($average_square - $average * $average);
-      $sum = sqrt($sum);
+      $sum = \sqrt($sum);
     }
     $view->style_plugin->setRenderedField($sum, $row_index, $field_name);
   }
@@ -967,7 +967,7 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
    * @param int $row_index
    *   Supplied row index value.
    */
-  protected function unsetRow(ViewExecutable $view, int $row_index) : void {
+  protected function unsetRow(ViewExecutable $view, int $row_index): void {
     if (isset($view->result[$row_index])) {
       unset($view->result[$row_index]);
       --$view->total_rows;
@@ -993,29 +993,29 @@ class ViewsPreRenderHookHandler implements ContainerInjectionInterface {
     array &$merged_row,
     int $row_index,
     int $merged_row_index
-  ) : void {
+  ): void {
     $merged_rows[$row_index] = $merged_row;
     // Getting the items per page setting from the view display.
     $items_per_page = $view->getItemsPerPage();
     $total_items = $view->total_rows;
     // Getting pager values as per merged rows.
-    $merged_rows_total_num = count($merged_rows);
+    $merged_rows_total_num = \count($merged_rows);
 
     if ($items_per_page > 0 && $merged_rows_total_num > $items_per_page) {
       $current_page_num = 0;
       /** @var \Drupal\views\Plugin\views\pager\PagerPluginBase|null $pager */
       $pager = $view->getPager();
-      if (!is_null($pager) && !is_null($pager->getCurrentPage())) {
+      if ($pager !== NULL && $pager->getCurrentPage() !== NULL) {
         $current_page_num = $pager->getCurrentPage();
       }
       $page_rows = $all_pages = 0;
       foreach ($merged_rows as $row_index => $merged_row) {
         if ($page_rows >= $items_per_page) {
-          $all_pages++;
+          ++$all_pages;
           $page_rows = 1;
         }
         else {
-          $page_rows++;
+          ++$page_rows;
         }
         // Unsetting all results but the ones from current page.
         if ($all_pages != $current_page_num) {

@@ -1,17 +1,15 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\matomo\Form;
 
 use Drupal\Component\Utility\UrlHelper;
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
 use Drupal\matomo\MatomoInterface;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -41,13 +39,26 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
   protected $httpClient;
 
   /**
+   * The session configuration.
+   *
+   * @var \Drupal\Core\Session\SessionConfigurationInterface
+   */
+  protected $sessionConfig;
+
+  /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, AccountInterface $currentUser, ModuleHandlerInterface $moduleHandler, Client $httpClient) {
-    parent::__construct($config_factory);
-    $this->currentUser = $currentUser;
-    $this->moduleHandler = $moduleHandler;
-    $this->httpClient = $httpClient;
+  public static function create(ContainerInterface $container) {
+    // Using constructor less class instantiation inspired by the Webform
+    // module.
+    // @see https://www.drupal.org/node/3076421
+    $instance = parent::create($container);
+    $instance->currentUser = $container->get('current_user');
+    $instance->moduleHandler = $container->get('module_handler');
+    $instance->httpClient = $container->get('http_client');
+    $instance->sessionConfig = $container->get('session_configuration');
+
+    return $instance;
   }
 
   /**
@@ -83,7 +94,9 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       '#required' => TRUE,
       '#size' => 15,
       '#title' => $this->t('Matomo site ID'),
-      '#type' => 'textfield',
+      '#type' => 'number',
+      '#min' => 0,
+      '#step' => 1,
     ];
     $form['general']['matomo_url_http'] = [
       '#default_value' => $config->get('url_http'),
@@ -101,11 +114,6 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       '#size' => 80,
       '#title' => $this->t('Matomo HTTPS URL'),
       '#type' => 'textfield',
-    ];
-    // Required for automated form save testing only.
-    $form['general']['matomo_url_skiperror'] = [
-      '#type' => 'hidden',
-      '#default_value' => FALSE,
     ];
 
     // Visibility settings.
@@ -125,10 +133,11 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       '#group' => 'tracking_scope',
     ];
 
-    global $cookie_domain;
+    $session_options = $this->sessionConfig->getOptions($this->getRequest());
+    $cookie_domain = $session_options['cookie_domain'];
     $multiple_sub_domains = [];
     foreach (['www', 'app', 'shop'] as $subdomain) {
-      if (count(explode('.', $cookie_domain)) > 2 && !is_numeric(str_replace('.', '', $cookie_domain))) {
+      if (\count(\explode('.', $cookie_domain)) > 2 && !\is_numeric(\str_replace('.', '', $cookie_domain))) {
         $multiple_sub_domains[] = $subdomain . $cookie_domain;
       }
       // IP addresses or localhost.
@@ -145,10 +154,10 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
         1 => $this->t('One domain with multiple subdomains'),
       ],
       0 => [
-        '#description' => $this->t('Domain: @domain', ['@domain' => $_SERVER['HTTP_HOST']]),
+        '#description' => $this->t('Domain: @domain', ['@domain' => $this->getRequest()->getHost()]),
       ],
       1 => [
-        '#description' => $this->t('Examples: @domains', ['@domains' => implode(', ', $multiple_sub_domains)]),
+        '#description' => $this->t('Examples: @domains', ['@domains' => \implode(', ', $multiple_sub_domains)]),
       ],
       '#default_value' => $config->get('domain_mode'),
     ];
@@ -167,20 +176,28 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     if ($config->get('visibility.request_path_mode') == 2 && !$php_access) {
       // No permission to change PHP snippets, but keep existing settings.
       $form['tracking']['page_visibility_settings'] = [];
-      $form['tracking']['page_visibility_settings']['matomo_visibility_request_path_mode'] = ['#type' => 'value', '#value' => 2];
-      $form['tracking']['page_visibility_settings']['matomo_visibility_request_path_pages'] = ['#type' => 'value', '#value' => $visibility_request_path_pages];
+      $form['tracking']['page_visibility_settings']['matomo_visibility_request_path_mode'] = [
+        '#type' => 'value',
+        '#value' => 2,
+      ];
+      $form['tracking']['page_visibility_settings']['matomo_visibility_request_path_pages'] = [
+        '#type' => 'value',
+        '#value' => $visibility_request_path_pages,
+      ];
     }
     else {
       $options = [
         $this->t('Every page except the listed pages'),
         $this->t('The listed pages only'),
       ];
-      $description = $this->t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.",
+      $description = $this->t(
+        "Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.",
         [
           '%blog' => '/blog',
           '%blog-wildcard' => '/blog/*',
           '%front' => '<front>',
-        ]);
+        ]
+      );
 
       if ($this->moduleHandler->moduleExists('php') && $php_access) {
         $options[] = $this->t('Pages on which this PHP code returns <code>TRUE</code> (experts only)');
@@ -228,7 +245,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       '#type' => 'checkboxes',
       '#title' => $this->t('Roles'),
       '#default_value' => !empty($visibility_user_role_roles) ? $visibility_user_role_roles : [],
-      '#options' => array_map('\Drupal\Component\Utility\Html::escape', user_role_names()),
+      '#options' => \array_map('\Drupal\Component\Utility\Html::escape', \user_role_names()),
       '#description' => $this->t('If none of the roles are selected, all users will be tracked. If a user has any of the roles checked, that user will be tracked (or excluded, depending on the setting above).'),
     ];
 
@@ -256,6 +273,23 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       '#title' => $this->t('Track User ID'),
       '#default_value' => $config->get('track.userid'),
       '#description' => $this->t('User ID enables the analysis of groups of sessions, across devices, using a unique, persistent, and non-personally identifiable ID string representing a user. <a href=":url">Learn more about the benefits of using User ID</a>.', [':url' => 'https://matomo.org/docs/user-id/']),
+    ];
+
+    // Status Code configurations.
+    $form['tracking']['status_codes'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Status Codes'),
+      '#group' => 'tracking_scope',
+    ];
+
+    $form['tracking']['status_codes']['status_codes_disabled'] = [
+      '#type' => 'checkboxes',
+      '#title' => $this->t('Prevent tracking of pages with given HTTP Status code:'),
+      '#options' => [
+        '404' => $this->t('404 - Not found'),
+        '403' => $this->t('403 - Access denied'),
+      ],
+      '#default_value' => $config->get('status_codes_disabled'),
     ];
 
     // Link specific configurations.
@@ -293,12 +327,18 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     ];
 
     $colorbox_dependencies = '<div class="admin-requirements">';
-    $colorbox_dependencies .= $this->t('Requires: @module-list',
+    $colorbox_dependencies .= $this->t(
+      'Requires: @module-list',
       [
-        '@module-list' => ($this->moduleHandler->moduleExists('colorbox') ? $this->t('@module (<span class="admin-enabled">enabled</span>)',
-        ['@module' => 'Colorbox']) : $this->t('@module (<span class="admin-missing">disabled</span>)',
-        ['@module' => 'Colorbox'])),
-      ]);
+        '@module-list' => ($this->moduleHandler->moduleExists('colorbox') ? $this->t(
+          '@module (<span class="admin-enabled">enabled</span>)',
+          ['@module' => 'Colorbox']
+        ) : $this->t(
+          '@module (<span class="admin-missing">disabled</span>)',
+          ['@module' => 'Colorbox']
+        )),
+      ]
+    );
     $colorbox_dependencies .= '</div>';
 
     $form['tracking']['linktracking']['matomo_trackcolorbox'] = [
@@ -335,12 +375,18 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     ];
 
     $site_search_dependencies = '<div class="admin-requirements">';
-    $site_search_dependencies .= $this->t('Requires: @module-list',
+    $site_search_dependencies .= $this->t(
+      'Requires: @module-list',
       [
-        '@module-list' => ($this->moduleHandler->moduleExists('search') ? $this->t('@module (<span class="admin-enabled">enabled</span>)',
-        ['@module' => 'Search']) : $this->t('@module (<span class="admin-missing">disabled</span>)',
-        ['@module' => 'Search'])),
-      ]);
+        '@module-list' => ($this->moduleHandler->moduleExists('search') ? $this->t(
+          '@module (<span class="admin-enabled">enabled</span>)',
+          ['@module' => 'Search']
+        ) : $this->t(
+          '@module (<span class="admin-missing">disabled</span>)',
+          ['@module' => 'Search']
+        )),
+      ]
+    );
     $site_search_dependencies .= '</div>';
 
     $form['tracking']['search']['matomo_site_search'] = [
@@ -382,7 +428,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     ];
     $form['page_title_hierarchy']['matomo_page_title_hierarchy'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t("Show page titles as hierarchy like breadcrumbs"),
+      '#title' => $this->t('Show page titles as hierarchy like breadcrumbs'),
       '#description' => $this->t('By default Matomo tracks the current page title and shows you a flat list of the most popular titles. This enables a breadcrumbs like tree view.'),
       '#default_value' => $config->get('page_title_hierarchy'),
     ];
@@ -395,7 +441,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
 
     // Custom variables.
     $form['matomo_custom_var'] = [
-      '#description' => $this->t('You can add Matomos <a href=":custom_var_documentation">Custom Variables</a> here. These will be added to every page that Matomo tracking code appears on. Custom variable names and values are limited to 200 characters in length. Keep the names and values as short as possible and expect long values to get trimmed. You may use tokens in custom variable names and values. Global and user tokens are always available; on node pages, node tokens are also available.', [':custom_var_documentation' => 'https://matomo.org/docs/custom-variables/']),
+      '#description' => $this->t('You can add Matomo\'s <a href=":custom_var_documentation">Custom Variables</a> here. These will be added to every page that Matomo tracking code appears on. Custom variable names and values are limited to 200 characters in length. Keep the names and values as short as possible and expect long values to get trimmed. You may use tokens in custom variable names and values. Global and user tokens are always available; on node pages, node tokens are also available.', [':custom_var_documentation' => 'https://matomo.org/docs/custom-variables/']),
       '#title' => $this->t('Custom variables'),
       '#tree' => TRUE,
       '#type' => 'details',
@@ -414,7 +460,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     $matomo_custom_vars = $config->get('custom.variable');
 
     // Matomo supports up to 5 custom variables.
-    for ($i = 1; $i < 6; $i++) {
+    for ($i = 1; $i < 6; ++$i) {
       $form['matomo_custom_var']['slots'][$i]['slot'] = [
         '#default_value' => $i,
         '#description' => $this->t('Slot number'),
@@ -425,7 +471,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
         '#type' => 'textfield',
       ];
       $form['matomo_custom_var']['slots'][$i]['name'] = [
-        '#default_value' => isset($matomo_custom_vars[$i]['name']) ? $matomo_custom_vars[$i]['name'] : '',
+        '#default_value' => $matomo_custom_vars[$i]['name'] ?? '',
         '#description' => $this->t('The custom variable name.'),
         '#maxlength' => 100,
         '#size' => 20,
@@ -434,20 +480,20 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
         '#type' => 'textfield',
       ];
       $form['matomo_custom_var']['slots'][$i]['value'] = [
-        '#default_value' => isset($matomo_custom_vars[$i]['value']) ? $matomo_custom_vars[$i]['value'] : '',
+        '#default_value' => $matomo_custom_vars[$i]['value'] ?? '',
         '#description' => $this->t('The custom variable value.'),
         '#maxlength' => 255,
         '#title' => $this->t('Custom variable value #@slot', ['@slot' => $i]),
         '#title_display' => 'invisible',
         '#type' => 'textfield',
-        '#element_validate' => [[get_class($this), 'tokenElementValidate']],
+        '#element_validate' => [[static::class, 'tokenElementValidate']],
         '#token_types' => ['node'],
       ];
       if ($this->moduleHandler->moduleExists('token')) {
         $form['matomo_custom_var']['slots'][$i]['value']['#element_validate'][] = 'token_element_validate';
       }
       $form['matomo_custom_var']['slots'][$i]['scope'] = [
-        '#default_value' => isset($matomo_custom_vars[$i]['scope']) ? $matomo_custom_vars[$i]['scope'] : '',
+        '#default_value' => $matomo_custom_vars[$i]['scope'] ?? '',
         '#description' => $this->t('The scope for the custom variable.'),
         '#title' => $this->t('Custom variable slot #@slot', ['@slot' => $i]),
         '#title_display' => 'invisible',
@@ -461,7 +507,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
 
     $form['matomo_custom_var']['matomo_custom_var_description'] = [
       '#type' => 'item',
-      '#description' => $this->t("You can supplement Matomos' basic IP address tracking of visitors by segmenting users based on custom variables. Make sure you will not associate (or permit any third party to associate) any data gathered from your websites (or such third parties' websites) with any personally identifying information from any source as part of your use (or such third parties' use) of the Matomo' service."),
+      '#description' => $this->t("You can supplement Matomo's basic IP address tracking of visitors by segmenting users based on custom variables. Make sure you will not associate (or permit any third party to associate) any data gathered from your websites (or such third party websites) with any personally identifying information from any source as part of your use (or such third parties' use) of the Matomo's service."),
     ];
     if ($this->moduleHandler->moduleExists('token')) {
       $form['matomo_custom_var']['matomo_custom_var_token_tree'] = [
@@ -475,6 +521,13 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       '#type' => 'details',
       '#title' => $this->t('Advanced settings'),
       '#open' => FALSE,
+    ];
+
+    $form['advanced']['matomo_disable_tracking'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Disable tracking'),
+      '#description' => $this->t('If checked, the tracking code is disabled generally. This may be useful when using Matomo Tag Manager.'),
+      '#default_value' => $config->get('disable_tracking'),
     ];
 
     $form['advanced']['matomo_cache'] = [
@@ -535,98 +588,47 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
         'slots',
         $custom_var['slot'],
         'name',
-      ], trim($custom_var['name']));
+      ], \trim($custom_var['name']));
       $form_state->setValue([
         'matomo_custom_var',
         'slots',
         $custom_var['slot'],
         'value',
-      ], trim($custom_var['value']));
+      ], \trim($custom_var['value']));
 
       // Validate empty names/values.
       if (empty($custom_var['name']) && !empty($custom_var['value'])) {
-        $form_state->setErrorByName("matomo_custom_var][slots][" . $custom_var['slot'] . "][name", $this->t('The custom variable @slot-number requires a <em>Name</em> if a <em>Value</em> has been provided.', ['@slot-number' => $custom_var['slot']]));
+        $form_state->setErrorByName('matomo_custom_var][slots][' . $custom_var['slot'] . '][name', $this->t('The custom variable @slot-number requires a <em>Name</em> if a <em>Value</em> has been provided.', ['@slot-number' => $custom_var['slot']]));
       }
       elseif (!empty($custom_var['name']) && empty($custom_var['value'])) {
-        $form_state->setErrorByName("matomo_custom_var][slots][" . $custom_var['slot'] . "][value", $this->t('The custom variable @slot-number requires a <em>Value</em> if a <em>Name</em> has been provided.', ['@slot-number' => $custom_var['slot']]));
+        $form_state->setErrorByName('matomo_custom_var][slots][' . $custom_var['slot'] . '][value', $this->t('The custom variable @slot-number requires a <em>Value</em> if a <em>Name</em> has been provided.', ['@slot-number' => $custom_var['slot']]));
       }
     }
-    $form_state->setValue('matomo_custom_var', $form_state->getValue(['matomo_custom_var', 'slots']));
+    $form_state->setValue('matomo_custom_var', $form_state->getValue([
+      'matomo_custom_var',
+      'slots',
+    ]));
 
     // Trim some text area values.
-    $form_state->setValue('matomo_site_id', trim($form_state->getValue('matomo_site_id')));
-    $form_state->setValue('matomo_visibility_request_path_pages', trim($form_state->getValue('matomo_visibility_request_path_pages')));
-    $form_state->setValue('matomo_codesnippet_before', trim($form_state->getValue('matomo_codesnippet_before')));
-    $form_state->setValue('matomo_codesnippet_after', trim($form_state->getValue('matomo_codesnippet_after')));
-    $form_state->setValue('matomo_visibility_user_role_roles', array_filter($form_state->getValue('matomo_visibility_user_role_roles')));
-    $form_state->setValue('matomo_trackmessages', array_filter($form_state->getValue('matomo_trackmessages')));
+    $form_state->setValue('matomo_visibility_request_path_pages', \trim($form_state->getValue('matomo_visibility_request_path_pages')));
+    $form_state->setValue('matomo_codesnippet_before', \trim($form_state->getValue('matomo_codesnippet_before')));
+    $form_state->setValue('matomo_codesnippet_after', \trim($form_state->getValue('matomo_codesnippet_after')));
+    $form_state->setValue('matomo_visibility_user_role_roles', \array_filter($form_state->getValue('matomo_visibility_user_role_roles')));
+    $form_state->setValue('matomo_trackmessages', \array_filter($form_state->getValue('matomo_trackmessages')));
 
-    if (!preg_match('/^\d{1,}$/', $form_state->getValue('matomo_site_id'))) {
+    if (!\preg_match('/^\d+$/', $form_state->getValue('matomo_site_id'))) {
       $form_state->setErrorByName('matomo_site_id', $this->t('A valid Matomo site ID is an integer only.'));
     }
 
-    $url = $form_state->getValue('matomo_url_http');
-    if ($url && substr($url, -strlen('/')) !== '/') {
-      $url .= '/';
-      $form_state->setValueForElement($form['general']['matomo_url_http'], $url);
-    }
-    $url = $url . 'matomo.php';
-    $skip_error_check = $form_state->getValue('matomo_url_skiperror');
-    try {
-      $result = $this->httpClient->get($url);
-      if (!$skip_error_check && $result->getStatusCode() != 200) {
-        $form_state->setErrorByName('matomo_url_http', $this->t('The validation of "@url" failed with error "@error" (HTTP code @code).', [
-          '@url' => UrlHelper::filterBadProtocol($url),
-          '@error' => $result->getReasonPhrase(),
-          '@code' => $result->getStatusCode(),
-        ]));
-      }
-    }
-    catch (RequestException $exception) {
-      if (!$skip_error_check) {
-        $form_state->setErrorByName('matomo_url_http', $this->t('The validation of "@url" failed with an exception "@error" (HTTP code @code).', [
-          '@url' => UrlHelper::filterBadProtocol($url),
-          '@error' => $exception->getMessage(),
-          '@code' => $exception->getCode(),
-        ]));
-      }
-    }
-
-    $matomo_url_https = $form_state->getValue('matomo_url_https');
-    if (!empty($matomo_url_https)) {
-      $url = $matomo_url_https;
-      if ($url && substr($url, -strlen('/')) !== '/') {
-        $url .= '/';
-        $form_state->setValueForElement($form['general']['matomo_url_https'], $url);
-      }
-      $url = $url . 'matomo.php';
-      try {
-        $result = $this->httpClient->get($url);
-        if (!$skip_error_check && $result->getStatusCode() != 200) {
-          $form_state->setErrorByName('matomo_url_https', $this->t('The validation of "@url" failed with error "@error" (HTTP code @code).', [
-            '@url' => UrlHelper::filterBadProtocol($url),
-            '@error' => $result->getReasonPhrase(),
-            '@code' => $result->getStatusCode(),
-          ]));
-        }
-      }
-      catch (RequestException $exception) {
-        if (!$skip_error_check) {
-          $form_state->setErrorByName('matomo_url_https', $this->t('The validation of "@url" failed with an exception "@error" (HTTP code @code).', [
-            '@url' => UrlHelper::filterBadProtocol($url),
-            '@error' => $exception->getMessage(),
-            '@code' => $exception->getCode(),
-          ]));
-        }
-      }
-    }
+    $this->validateUrl('matomo_url_http', $form, $form_state);
+    $this->validateUrl('matomo_url_https', $form, $form_state);
 
     // Verify that every path is prefixed with a slash, but don't check PHP
     // code snippets and do not check for slashes if no paths configured.
     if ($form_state->getValue('matomo_visibility_request_path_mode') != 2 && !empty($form_state->getValue('matomo_visibility_request_path_pages'))) {
-      $pages = preg_split('/(\r\n?|\n)/', $form_state->getValue('matomo_visibility_request_path_pages'));
+      $pages = \preg_split('/(\r\n?|\n)/', $form_state->getValue('matomo_visibility_request_path_pages'));
       foreach ($pages as $page) {
-        if (strpos($page, '/') !== 0 && $page !== '<front>') {
+        if (\strpos($page, '/') !== 0 && $page !== '<front>') {
           $form_state->setErrorByName('matomo_visibility_request_path_pages', $this->t('Path "@page" not prefixed with slash.', ['@page' => $page]));
           // Drupal forms show one error only.
           break;
@@ -636,14 +638,14 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
 
     // Clear obsolete local cache if cache has been disabled.
     if ($form_state->isValueEmpty('matomo_cache') && $form['advanced']['matomo_cache']['#default_value']) {
-      matomo_clear_js_cache();
+      \matomo_clear_js_cache();
     }
 
     // This is for the Newbie's who cannot read a text area description.
-    if (preg_match('/(.*)<\/?script(.*)>(.*)/i', $form_state->getValue('matomo_codesnippet_before'))) {
+    if (\preg_match('/(.*)<\/?script(.*)>(.*)/i', $form_state->getValue('matomo_codesnippet_before'))) {
       $form_state->setErrorByName('matomo_codesnippet_before', $this->t('Do not include the &lt;script&gt; tags in the javascript code snippets.'));
     }
-    if (preg_match('/(.*)<\/?script(.*)>(.*)/i', $form_state->getValue('matomo_codesnippet_after'))) {
+    if (\preg_match('/(.*)<\/?script(.*)>(.*)/i', $form_state->getValue('matomo_codesnippet_after'))) {
       $form_state->setErrorByName('matomo_codesnippet_after', $this->t('Do not include the &lt;script&gt; tags in the javascript code snippets.'));
     }
   }
@@ -672,12 +674,14 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       ->set('page_title_hierarchy_exclude_home', $form_state->getValue('matomo_page_title_hierarchy_exclude_home'))
       ->set('privacy.donottrack', $form_state->getValue('matomo_privacy_donottrack'))
       ->set('privacy.disablecookies', $form_state->getValue('matomo_privacy_disablecookies'))
+      ->set('disable_tracking', $form_state->getValue('matomo_disable_tracking'))
       ->set('cache', $form_state->getValue('matomo_cache'))
       ->set('visibility.request_path_mode', $form_state->getValue('matomo_visibility_request_path_mode'))
       ->set('visibility.request_path_pages', $form_state->getValue('matomo_visibility_request_path_pages'))
       ->set('visibility.user_account_mode', $form_state->getValue('matomo_visibility_user_account_mode'))
       ->set('visibility.user_role_mode', $form_state->getValue('matomo_visibility_user_role_mode'))
       ->set('visibility.user_role_roles', $form_state->getValue('matomo_visibility_user_role_roles'))
+      ->set('status_codes_disabled', \array_values(\array_filter($form_state->getValue('status_codes_disabled'))))
       ->save();
 
     if ($form_state->hasValue('matomo_translation_set')) {
@@ -691,6 +695,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
    * Validate a form element that should have tokens in it.
    *
    * For example:
+   *
    * @code
    * $form['my_node_text_element'] = [
    *   '#type' => 'textfield',
@@ -701,9 +706,9 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
    * @endcode
    */
   public static function tokenElementValidate(&$element, FormStateInterface $form_state) {
-    $value = isset($element['#value']) ? $element['#value'] : $element['#default_value'];
+    $value = $element['#value'] ?? $element['#default_value'];
 
-    if (!mb_strlen($value)) {
+    if (!\mb_strlen($value)) {
       // Empty value needs no further validation since the element should depend
       // on using the '#required' FAPI property.
       return $element;
@@ -712,11 +717,13 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     $tokens = \Drupal::token()->scan($value);
     $invalid_tokens = static::getForbiddenTokens($tokens);
     if ($invalid_tokens) {
-      $form_state->setError($element, t('The %element-title is using the following forbidden tokens with personal identifying information: @invalid-tokens.',
+      $form_state->setError($element, \t(
+        'The %element-title is using the following forbidden tokens with personal identifying information: @invalid-tokens.',
         [
           '%element-title' => $element['#title'],
-          '@invalid-tokens' => implode(', ', $invalid_tokens),
-        ]));
+          '@invalid-tokens' => \implode(', ', $invalid_tokens),
+        ]
+      ));
     }
 
     return $element;
@@ -733,16 +740,14 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
    */
   protected static function getForbiddenTokens(array $value) {
     $invalid_tokens = [];
-    $value_tokens = is_string($value) ? \Drupal::token()->scan($value) : $value;
 
-    foreach ($value_tokens as $tokens) {
-      if (array_filter($tokens, 'static::containsForbiddenToken')) {
-        $invalid_tokens = array_merge($invalid_tokens, array_values($tokens));
+    foreach ($value as $tokens) {
+      if (\array_filter($tokens, 'static::containsForbiddenToken')) {
+        $invalid_tokens = \array_merge($invalid_tokens, \array_values($tokens));
       }
     }
 
-    array_unique($invalid_tokens);
-    return $invalid_tokens;
+    return \array_unique($invalid_tokens);
   }
 
   /**
@@ -766,7 +771,7 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     // User tokens are not prefixed with colon to catch 'current-user' and
     // 'user'.
     //
-    // TODO: If someone has better ideas, share them, please!
+    // @todo If someone has better ideas, share them, please!
     $token_blocklist = [
       ':account-name]',
       ':author]',
@@ -806,20 +811,43 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
       ':ip-address]',
     ];
 
-    return preg_match('/' . implode('|', array_map('preg_quote', $token_blocklist)) . '/i', $token_string);
+    return \preg_match('/' . \implode('|', \array_map('preg_quote', $token_blocklist)) . '/i', $token_string);
   }
 
   /**
-   * {@inheritdoc}
+   * Validate if a Matomo URL is reachable.
+   *
+   * @param string $urlFormKey
+   *   The form element key to get the URL.
+   * @param array $form
+   *   The form array.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The form state object.
    */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      // Load the service required to construct this class.
-      $container->get('config.factory'),
-      $container->get('current_user'),
-      $container->get('module_handler'),
-      $container->get('http_client')
-    );
+  protected function validateUrl(string $urlFormKey, array &$form, FormStateInterface $form_state): void {
+    $url = $form_state->getValue($urlFormKey);
+    if ($url && \substr($url, -\strlen('/')) !== '/') {
+      $url .= '/';
+      $form_state->setValueForElement($form['general'][$urlFormKey], $url);
+    }
+    $url = $url . 'matomo.php';
+    try {
+      $result = $this->httpClient->request('GET', $url);
+      if ($result->getStatusCode() != 200) {
+        $this->messenger()->addWarning($this->t('The validation of "@url" failed with error "@error" (HTTP code @code).', [
+          '@url' => UrlHelper::filterBadProtocol($url),
+          '@error' => $result->getReasonPhrase(),
+          '@code' => $result->getStatusCode(),
+        ]));
+      }
+    }
+    catch (RequestException $exception) {
+      $this->messenger()->addWarning($this->t('The validation of "@url" failed with an exception "@error" (HTTP code @code).', [
+        '@url' => UrlHelper::filterBadProtocol($url),
+        '@error' => $exception->getMessage(),
+        '@code' => $exception->getCode(),
+      ]));
+    }
   }
 
 }
