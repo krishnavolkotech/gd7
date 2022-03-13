@@ -7,7 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
-    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Datamatrix' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
     'Dompdf\\Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',
     'Drupal' => $baseDir . '/core/lib/Drupal.php',
