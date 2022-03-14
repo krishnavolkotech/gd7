@@ -120,6 +120,10 @@ final class SecurityAdvisoriesFetcher {
   public function getSecurityAdvisories(bool $allow_outgoing_request = TRUE, int $timeout = 0): ?array {
     $advisories = [];
 
+    if (!allowed_external_host()) {
+      return NULL;
+    }
+
     $json_payload = $this->keyValueExpirable->get(self::ADVISORIES_JSON_EXPIRABLE_KEY);
     // If $json_payload is not an array then it was not set in this method or
     // has expired in which case we should try to retrieve the advisories.
@@ -311,6 +315,11 @@ final class SecurityAdvisoriesFetcher {
    */
   protected function doRequest(int $timeout): string {
     $options = [RequestOptions::TIMEOUT => $timeout];
+
+    if (!allowed_external_host()) {
+      return FALSE;
+    }
+
     if (!$this->withHttpFallback) {
       // If not using an HTTP fallback just use HTTPS and do not catch any
       // exceptions.

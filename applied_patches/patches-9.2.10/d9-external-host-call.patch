@@ -1,0 +1,45 @@
+diff --git a/core/modules/system/src/SecurityAdvisories/SecurityAdvisoriesFetcher.php b/core/modules/system/src/SecurityAdvisories/SecurityAdvisoriesFetcher.php
+index 486ea5783..fe867dd4c 100644
+--- a/core/modules/system/src/SecurityAdvisories/SecurityAdvisoriesFetcher.php
++++ b/core/modules/system/src/SecurityAdvisories/SecurityAdvisoriesFetcher.php
+@@ -120,6 +120,10 @@ public function __construct(ConfigFactoryInterface $config_factory, KeyValueExpi
+   public function getSecurityAdvisories(bool $allow_outgoing_request = TRUE, int $timeout = 0): ?array {
+     $advisories = [];
+ 
++    if (!allowed_external_host()) {
++      return NULL;
++    }
++
+     $json_payload = $this->keyValueExpirable->get(self::ADVISORIES_JSON_EXPIRABLE_KEY);
+     // If $json_payload is not an array then it was not set in this method or
+     // has expired in which case we should try to retrieve the advisories.
+@@ -311,6 +315,11 @@ protected function isApplicable(SecurityAdvisory $sa): bool {
+    */
+   protected function doRequest(int $timeout): string {
+     $options = [RequestOptions::TIMEOUT => $timeout];
++
++    if (!allowed_external_host()) {
++      return FALSE;
++    }
++
+     if (!$this->withHttpFallback) {
+       // If not using an HTTP fallback just use HTTPS and do not catch any
+       // exceptions.
+diff --git a/core/modules/system/system.module b/core/modules/system/system.module
+index 6a3ac6b64..663a7a49e 100644
+--- a/core/modules/system/system.module
++++ b/core/modules/system/system.module
+@@ -1073,8 +1073,11 @@ function system_cron() {
+     // Fetch the security advisories so that they will be pre-fetched during
+     // _system_advisories_requirements() and system_page_top().
+     /** @var \Drupal\system\SecurityAdvisories\SecurityAdvisoriesFetcher $fetcher */
+-    $fetcher = \Drupal::service('system.sa_fetcher');
+-    $fetcher->getSecurityAdvisories();
++
++    if (allowed_external_host()) {
++      $fetcher = \Drupal::service('system.sa_fetcher');
++      $fetcher->getSecurityAdvisories();
++    }
+   }
+ }
+ 
