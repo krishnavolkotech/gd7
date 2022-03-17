@@ -5,6 +5,8 @@ namespace Drupal\hzd_earlywarnings\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\cust_group\Controller\CustNodeController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\Core\Url;
 
 /**
  * Implements a form for the creation of early warnings.
@@ -151,9 +153,12 @@ class CreateEarlyWarningForm extends FormBase {
       'body' => $form_state->getValue('body'),
     ]);
     $node->save();
-
-    // The success message.
     $this->messenger()->addStatus($this->t('Early Warning gespeichert: @title', ['@title' => $form_state->getValue('title')]));
+    $route = 'entity.node.canonical';
+    $url = Url::fromRoute($route, ['node' => $node->id()])->toString();
+    $response = new RedirectResponse($url);
+    $response->send();
+    // The success message.
   }
 
   /**
