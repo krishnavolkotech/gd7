@@ -283,6 +283,8 @@ export default function DeployedReleasesManager(props) {
         fetchDeployments={fetchDeployments}
         loadingReleasesSpinner={loadingReleasesSpinner}
       />
+      <p></p>
+      <p>Als Mitglied der Gruppe „Zentrale Release Manager der Länder“ können Sie Einsatzmeldungen <a href="/zrml/eingesetzt"> hier </a>verwalten (siehe auch FAQ). Für Rückfragen steht Ihnen das ZRMK zur Verfügung.</p>
       <ReleaseLegend activeKey={props.activeKey} />
       <small>Releases, die sich nicht länger im Einsatz befinden, werden <i>kursiv</i> dargestellt.</small>
       <DeployedReleasesTable

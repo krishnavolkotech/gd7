@@ -12,6 +12,8 @@ export default function ReleaseViewNavigator() {
 
   /** @const {URLSearchParams} query - Read URL Params. */
   const query = useQuery();
+  
+  var bfservices ="";
 
   let active = "1";
   if (history.location.pathname.indexOf('bereitgestellt') > 0) {
@@ -36,19 +38,45 @@ export default function ReleaseViewNavigator() {
     active = "7";
   }
 
-  let groupPath = history.location.pathname.split("/")[1];
-  if (history.location.pathname.split("/")[1] === "group") {
-    groupPath += "/" + history.location.pathname.split("/")[2];
-    console.log(groupPath);
-  }
+
+
   const [activeKey, setActiveKey] = useState(active);
   // Pagination.
   const [page, setPage] = useState(1);
 
   const initialState = query.has("state") ? query.get("state") : "1";
 
+
+  let groupPath = history.location.pathname.split("/")[1];
+  if (history.location.pathname.split("/")[1] === "group") {
+    groupPath += "/" + history.location.pathname.split("/")[2];
+  }
+//Warning: groupname comes from splitting url -> not necessarily same as service name
+//Check if groupname is part of best/fakt services
+  bfservices = global.drupalSettings.bfservices;
+  console.log(bfservices);
+  bfservices = bfservices.map(a => a.title.toLowerCase());
+  console.log(bfservices);
+  let found = false;
+  for (var i = 0; i < bfservices.length; i++) {
+    if (bfservices[i] == groupPath) {
+      found = true;
+      console.log("found");
+      break;
+    }
+  }
+
+  // if groupname is part of best/fakt services set typevalue = bestfakt
+  let typevalue;
+  if (found == true) {
+    typevalue = "460";
+  }
+  else {
+    typevalue = "459";
+  }
+  const initialType = query.has("type") ? query.get("type") : typevalue;
   const initialFilterState = {
-    "type": query.has("type") ? query.get("type") : "459",
+    "type": initialType,
     "state": initialState,
     "environment": query.has("environment") ? query.get("environment") : "0",
     "service": query.has("service") ? query.get("service") : "0",
@@ -82,11 +110,14 @@ export default function ReleaseViewNavigator() {
    */
   const [filterState, setFilterState] = useState(initialFilterState);
 
+
+
   // Removes the PDF Export Button.
   useEffect(() => {
     const pdf = jQuery('a').filter(function (index) { return jQuery(this).text() === "PDF"; });
     pdf.remove();
   }, []);
+
 
   /**
    * Changes URL-Params depending on Nav / Filters, resets Pagination.
@@ -132,13 +163,15 @@ export default function ReleaseViewNavigator() {
     // }
     // pathname = explodedPath.join("/");
 
+
     // Change URL Params. 
     const params = new URLSearchParams();
     if (filterState.type !== "459" && filterState.type) {
       params.append("type", filterState.type);
     // } else {
-    //   params.delete("type");
+    // params.delete("type");
     }
+  
     if (filterState.state) {
       params.append("state", filterState.state);
     // } else {
@@ -174,6 +207,8 @@ export default function ReleaseViewNavigator() {
     // } else {
     //   params.delete("deploymentStatus");
     }
+    
+    
 
     history.push({
       // pathname: pathname,
@@ -190,6 +225,7 @@ export default function ReleaseViewNavigator() {
     // Reset Pagination.
     setPage(1);
   }, [filterState.type, filterState.state, filterState.environment, filterState.service, filterState.product, filterState.release, filterState.deploymentStatus]);
+
 
   useEffect(() => {
     let active = "1";
@@ -216,11 +252,6 @@ export default function ReleaseViewNavigator() {
     }
     setActiveKey(active);
 
-    let val = {};
-    val["items_per_page"] = "20";
-    if (["1", "2", "3", "5"].includes(active)) {
-      val["releaseStatus"] = active;
-    }
     // val["type"] = query.has("type") ? query.get("type") : "459";
     // val["state"] = query.has("state") ? query.get("state") : "1";
     // val["environment"] = query.has("environment") ? query.get("environment") : "0";
@@ -232,6 +263,13 @@ export default function ReleaseViewNavigator() {
     // Reset Pagination.
     setPage(1);
   }, [history.location.pathname])
+
+
+  let val = {};
+  val["items_per_page"] = "20";
+  if (["1", "2", "3", "5"].includes(active)) {
+    val["releaseStatus"] = active;
+  }
 
   return (
     <div>
@@ -246,6 +284,9 @@ export default function ReleaseViewNavigator() {
         <li className={activeKey==="6" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt-uebersicht?" + query.toString()}>Eingesetzt (Übersicht)</Link></li>
         <li className={activeKey==="7" ? "active" : ""}><Link to={"/" + groupPath + "/releases/einsatzinformationen?" + query.toString()}>Einsatzinformationen</Link></li>
       </ul>
+      <p>
+     {hinweis}
+     </p>
       { ["1", "2", "3", "5"].includes(activeKey) &&
         <ReleaseTableManager
           filterState={filterState}

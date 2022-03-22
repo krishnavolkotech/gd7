@@ -2,6 +2,14 @@ import React from 'react'
 
 export default function ReleaseLegend(props) {
 
+  if (props.activeKey === "7") {
+    var legend = [
+      <li><b>Legende:</b></li>,
+      <li> ID = Installationsdauer</li>,
+      <li> AD = Automatisiertes Deployment</li>,
+    ];
+  }
+  else {
   var legend = [
     <li><b>Legende:</b></li>,
     <li><img src="/modules/custom/hzd_release_management/images/download_icon.png" height="15" /> Download</li>,
@@ -18,7 +26,7 @@ export default function ReleaseLegend(props) {
       <li><img src="/modules/custom/hzd_release_inprogress_comments/images/create-green-icon.png" height="15" />Kommentieren</li>,
     ]);
   }
-
+}
   if (props.activeKey === "3") {
     // Gesperrt.
     return "";
