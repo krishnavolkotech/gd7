@@ -56,6 +56,10 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
             'mikehaertl\\tmp\\' => 15,
             'mikehaertl\\shellcommand\\' => 24,
         ),
+        'c' => 
+        array (
+            'cweagans\\Composer\\' => 18,
+        ),
         'Z' => 
         array (
             'ZipStream\\' => 10,
@@ -216,6 +220,10 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
         'mikehaertl\\shellcommand\\' => 
         array (
             0 => __DIR__ . '/..' . '/mikehaertl/php-shellcommand/src',
+        ),
+        'cweagans\\Composer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cweagans/composer-patches/src',
         ),
         'ZipStream\\' => 
         array (
