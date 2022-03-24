@@ -98,12 +98,12 @@ class ReactController extends ControllerBase {
     // get role -> drupalSettings (site admin > group admin rm > zrml)
     // get Verfahren
     $groupId = $routeMatch->getParameter('group');
-  
+  //ACHTUNG: Dev-App-Einstellungen
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
-     // '#attached' => ['library' => 'hzd_react/react_app_dev'],
-      '#attached' => ['library' => 'hzd_react/react_app'],
+      '#attached' => ['library' => 'hzd_react/react_app_dev'],
+     // '#attached' => ['library' => 'hzd_react/react_app'],
     ];
     $database = \Drupal::database();
 
@@ -147,7 +147,7 @@ class ReactController extends ControllerBase {
     }
 
     //BestFaktServices
-
+    // ACHTUNG: Neu für ARCO-Fix benötigt muss mit in Commit
     
   $bfservices= $database -> query("SELECT node.nid, node_field_data.title
         FROM node
@@ -325,6 +325,7 @@ class ReactController extends ControllerBase {
     }
     $stTime = number_format(( microtime(true) - $startTime), 4);
 
+    //ACHTUNG dev-app Einstellung
     // Rolle: site-admin, zrmk, zrml?
     $role = $this->getRole();
     $build = [
