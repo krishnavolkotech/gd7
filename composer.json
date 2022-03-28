@@ -93,6 +93,19 @@
         "sort-packages": true
     },
     "extra": {
+	"enable-patching": true,
+        "patches": {
+            "drupal/core" : {
+                "user": "applied_patches/patches-9.2.10/user-entity-owner-warning.patch",
+		"date": "applied_patches/patches-9.2.10/2854722-45.patch",
+		"node author": "applied_patches/patches-9.2.10/core-node_add_author_error-3161212-2-9.x.patch",
+		"external hosts": "applied_patches/patches-9.2.10/d9-external-host-call.patch",
+		"Style Plugin": "applied_patches/patches-9.2.10/StylePluginBase-public-renderFields-2824920-11.patch",
+		"views Render": "applied_patches/patches-9.2.10/custom-views-render.patch",
+		"menu link content": "applied_patches/patches-9.2.10/menu_link_content_entity_issue.patch",
+		"username Field": "applied_patches/patches-9.2.10/usernameField_display.patch"
+            }
+        },
         "drupal-scaffold": {
             "locations": {
                 "web-root": "./"
