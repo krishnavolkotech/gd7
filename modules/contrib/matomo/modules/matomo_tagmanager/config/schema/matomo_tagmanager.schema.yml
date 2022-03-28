@@ -1,11 +1,3 @@
-matomo_tagmanager.settings:
-  type: config_object
-  label: 'Matomo Tag Manager settings'
-  mapping:
-    container_location:
-      type: string
-      label: 'Container file location'
-
 matomo_tagmanager.container.*:
   type: config_entity
   label: 'Container settings'
@@ -19,6 +11,6 @@ matomo_tagmanager.container.*:
     weight:
       type: integer
       label: 'Weight'
-    container_id:
+    container_url:
       type: string
-      label: 'Container ID'
+      label: 'Container URL'

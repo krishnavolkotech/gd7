@@ -363,32 +363,6 @@ abstract class StylePluginBase extends PluginBase {
   }
 
   /**
-   * Gets all rendered fields.
-   *
-   * @return array|null
-   *   The output of all rendered fields, or NULL if it was empty.
-   */
-  public function getRenderedFields() {
-  	return isset($this->rendered_fields) ? $this->rendered_fields : NULL;
-  }
- 
-  /**
-   * Sets a rendered field.
-   *
-   * @param $field_value
-   *   The modified value of the rendered field.
-   *
-   * @param $row_index
-   *   The index count of the row.
-   *
-   *  @param $field_name
-   *    The id of the rendered field.
-   */
-  public function setRenderedField($field_value, $row_index, $field_name) {
-    $this->rendered_fields[$row_index][$field_name] = $field_value;
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function validateOptionsForm(&$form, FormStateInterface $form_state) {
@@ -779,7 +753,32 @@ abstract class StylePluginBase extends PluginBase {
     }
   }
 
+  /**
+   * Gets all rendered fields.
+   *
+   * @return array|null
+   *   The output of all rendered fields, or NULL if it was empty.
+   */
+  public function getRenderedFields() {
+  	return isset($this->rendered_fields) ? $this->rendered_fields : NULL;
+  }
  
+  /**
+   * Sets a rendered field.
+   *
+   * @param $field_value
+   *   The modified value of the rendered field.
+   *
+   * @param $row_index
+   *   The index count of the row.
+   *
+   *  @param $field_name
+   *    The id of the rendered field.
+   */
+  public function setRenderedField($field_value, $row_index, $field_name) {
+    $this->rendered_fields[$row_index][$field_name] = $field_value;
+  }
+
   /**
    * {@inheritdoc}
    */

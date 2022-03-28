@@ -29,7 +29,7 @@ class ContainerListBuilder extends DraggableListBuilder {
     $header = [];
     $header['label'] = $this->t('Label');
     $header['entity_id'] = $this->t('Machine name');
-    $header['container_id'] = $this->t('Container ID');
+    $header['container_url'] = $this->t('Container URL');
     $header['status'] = $this->t('Status');
 
     return $header + parent::buildHeader();
@@ -43,7 +43,7 @@ class ContainerListBuilder extends DraggableListBuilder {
     $row = [];
     $row['label'] = $entity->label();
     $row['entity_id'] = ['#markup' => $entity->id()];
-    $row['container_id'] = ['#markup' => $entity->containerId()];
+    $row['container_url'] = ['#markup' => $entity->containerUrl()];
     $row['status'] = ['#markup' => $entity->status() ? $this->t('enabled') : $this->t('disabled')];
 
     return $row + parent::buildRow($entity);

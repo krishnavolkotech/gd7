@@ -16,7 +16,6 @@ use Drupal\matomo\Component\Render\MatomoJavaScriptSnippet;
 function matomo_tagmanager_page_attachments(array &$page) {
   $account = \Drupal::currentUser();
   $config = \Drupal::config('matomo.settings');
-  $tagmanager_config = \Drupal::config('matomo_tagmanager.settings');
 
   /** @var Drupal\matomo_tagmanager\ContainerStorageInterface $container_storage */
   $container_storage = \Drupal::entityTypeManager()->getStorage('matomo_tagmanager_container');
@@ -45,15 +44,6 @@ function matomo_tagmanager_page_attachments(array &$page) {
     return;
   }
 
-  $url_http = $config->get('url_http');
-  $url_https = $config->get('url_https');
-  $container_location = $tagmanager_config->get('container_location') ?? '';
-  $matomo_url = empty($url_https) ? $url_http : $url_https;
-  if (empty($matomo_url)) {
-    // This should not happen.
-    return;
-  }
-
   // Build tracker code.
   // @see https://developer.matomo.org/guides/tagmanager/integration-plugin
   $script = 'var _mtm = window._mtm = window._mtm || [];';
@@ -61,20 +51,18 @@ function matomo_tagmanager_page_attachments(array &$page) {
   $script .= 'var d = document, g = d.createElement("script"), s = d.getElementsByTagName("script")[0];';
   $script .= 'g.type = "text/javascript";';
   $script .= 'g.async = true;';
-  $script .= 'g.src="${MATOMOURL}/${CONTAINERLOCATION}container_${CONTAINERID}.js";';
+  $script .= 'g.src="${CONTAINERURL}";';
   $script .= 's.parentNode.insertBefore(g, s);';
 
   $cache_tags = $page['#cache']['tags'] ?? [];
-
+  $cache_tags = Cache::mergeTags($cache_tags, $config->getCacheTags());
   foreach ($containers as $container) {
     // Add cache tags per container.
-    $cache_tags = Cache::mergeTags($cache_tags, $config->getCacheTags());
+    $cache_tags = Cache::mergeTags($cache_tags, $container->getCacheTags());
 
     // Build script.
     $replacements = [
-      '${MATOMOURL}' => rtrim($matomo_url, '/'),
-      '${CONTAINERLOCATION}' => ltrim($container_location, '/'),
-      '${CONTAINERID}' => $container->containerId(),
+      '${CONTAINERURL}' => trim($container->containerUrl()),
     ];
     $container_script = strtr($script, $replacements);
     $page['#attached']['html_head'][] = [

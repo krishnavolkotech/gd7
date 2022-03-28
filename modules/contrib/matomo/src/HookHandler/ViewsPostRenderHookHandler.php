@@ -33,7 +33,7 @@ class ViewsPostRenderHookHandler implements ContainerInjectionInterface {
    *
    * @var \Drupal\facets\FacetManager\DefaultFacetManager|null
    */
-  protected ?DefaultFacetManager $facetsManager;
+  protected $facetsManager;
 
   /**
    * Constructor.

@@ -88,13 +88,11 @@ class ContainerForm extends EntityForm {
       ],
     ];
 
-    $form['container_id'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Container ID'),
-      '#description' => $this->t('The ID assigned by Matomo Tag Manager for this website container. To get a container ID, <a href="https://matomo.org/">sign up for Matomo</a> and create a Tag Manager container for your website or configure your self-hosted instance of Matomo accordingly.'),
-      '#default_value' => $container->containerId(),
-      '#size' => 25,
-      '#maxlength' => 50,
+    $form['container_url'] = [
+      '#type' => 'url',
+      '#title' => $this->t('Container URL'),
+      '#description' => $this->t('The URL assigned by Matomo Tag Manager for this website container. To get a container, <a href="https://matomo.org/">sign up for Matomo</a> and create a Tag Manager container for your website or configure your self-hosted instance of Matomo accordingly.'),
+      '#default_value' => $container->containerUrl(),
       '#required' => TRUE,
     ];
 

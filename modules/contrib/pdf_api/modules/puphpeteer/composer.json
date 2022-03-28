@@ -1,0 +1,32 @@
+{
+    "name": "drupal/puphpeteer",
+    "description": "Provides a Puppeteer based PDF generation backend.",
+    "type": "drupal-module",
+    "keywords": [
+        "Drupal",
+        "Toolbar"
+    ],
+    "homepage": "http://drupal.org/project/puphpeteer",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Nigel Cunningham",
+            "homepage": "https://www.drupal.org/u/nigelcunningham",
+            "role": "Maintainer"
+        }
+    ],
+    "support": {
+        "issues": "https://www.drupal.org/project/issues/puphpeteer",
+        "source": "https://git.drupalcode.org/project/puphpeteer"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.drupal.org/8"
+        }
+    ],
+    "require": {
+        "nesk/puphpeteer": "^1.4",
+        "drupal/core": "^8.8.0 || ^9.0 || ^10.0"
+    }
+}

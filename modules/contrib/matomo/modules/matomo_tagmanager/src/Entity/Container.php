@@ -36,7 +36,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
  *         "id",
  *         "label",
  *         "weight",
- *         "container_id",
+ *         "container_url",
  *     },
  *     links = {
  *         "add-form": "/admin/config/system/matomo-tagmanager/add",
@@ -75,17 +75,17 @@ class Container extends ConfigEntityBase implements ContainerInterface {
   public $weight = 0;
 
   /**
-   * The Matomo Tag Manager container id.
+   * The Matomo Tag Manager container URL.
    *
    * @var string
    */
-  public $container_id = '';
+  public $container_url = '';
 
   /**
    * {@inheritdoc}
    */
-  public function containerId(): string {
-    return $this->container_id;
+  public function containerUrl(): string {
+    return $this->container_url;
   }
 
   /**

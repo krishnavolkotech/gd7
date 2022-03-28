@@ -44,7 +44,7 @@ class Matomo extends DisplayExtenderPluginBase {
    *
    * @var \Drupal\facets\FacetManager\DefaultFacetManager|null
    */
-  protected ?DefaultFacetManager $facetsManager;
+  protected $facetsManager;
 
   /**
    * {@inheritdoc}

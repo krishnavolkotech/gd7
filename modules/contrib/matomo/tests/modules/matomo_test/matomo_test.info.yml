@@ -3,7 +3,7 @@ description: 'Support module for Matomo testing.'
 type: module
 package: Testing
 
-# Information added by Drupal.org packaging script on 2022-02-28
-version: '8.x-1.16'
+# Information added by Drupal.org packaging script on 2022-03-13
+version: '8.x-1.17'
 project: 'matomo'
-datestamp: 1646049533
+datestamp: 1647206850

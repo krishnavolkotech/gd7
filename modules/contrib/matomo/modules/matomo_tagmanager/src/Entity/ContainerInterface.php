@@ -12,12 +12,12 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 interface ContainerInterface extends ConfigEntityInterface {
 
   /**
-   * Get the ID of the container.
+   * Get the URL of the container.
    *
    * @return string
-   *   The configured container ID.
+   *   The configured container URL.
    */
-  public function containerId(): string;
+  public function containerUrl(): string;
 
   /**
    * Get the container's weight.

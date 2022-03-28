@@ -4,7 +4,7 @@ description: 'Provides an API for generating PDFs.'
 package: PDF
 core_version_requirement: ^8 || ^9
 
-# Information added by Drupal.org packaging script on 2022-03-09
-version: '2.2.0'
+# Information added by Drupal.org packaging script on 2022-03-22
+version: '2.2.1'
 project: 'pdf_api'
-datestamp: 1646790297
+datestamp: 1647926686

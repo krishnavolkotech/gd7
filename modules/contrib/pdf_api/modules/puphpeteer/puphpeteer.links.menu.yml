@@ -1,0 +1,6 @@
+puphpeteer.config:
+  title: Puppeteer Configuration
+  route_name: puphpeteer.config
+  parent: system.admin_config_system
+  description: 'Use Puppeteer to generate PDFs.'
+  weight: -20

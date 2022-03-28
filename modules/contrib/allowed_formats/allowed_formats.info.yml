@@ -6,7 +6,7 @@ dependencies:
   - drupal:field
   - drupal:filter
 
-# Information added by Drupal.org packaging script on 2022-01-29
-version: '8.x-1.4'
+# Information added by Drupal.org packaging script on 2022-03-23
+version: '8.x-1.5'
 project: 'allowed_formats'
-datestamp: 1643490595
+datestamp: 1648060332
