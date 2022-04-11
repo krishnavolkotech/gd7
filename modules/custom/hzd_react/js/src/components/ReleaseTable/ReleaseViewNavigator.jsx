@@ -284,9 +284,6 @@ export default function ReleaseViewNavigator() {
         <li className={activeKey==="6" ? "active" : ""}><Link to={"/" + groupPath + "/releases/eingesetzt-uebersicht?" + query.toString()}>Eingesetzt (Übersicht)</Link></li>
         <li className={activeKey==="7" ? "active" : ""}><Link to={"/" + groupPath + "/releases/einsatzinformationen?" + query.toString()}>Einsatzinformationen</Link></li>
       </ul>
-      <p>
-     {hinweis}
-     </p>
       { ["1", "2", "3", "5"].includes(activeKey) &&
         <ReleaseTableManager
           filterState={filterState}

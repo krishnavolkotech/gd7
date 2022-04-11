@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import ReleaseFilter from './ReleaseFilter';
 import ReleaseLegend from './ReleaseLegend';
 import ReleaseTable from './ReleaseTable';
+import { Link, useHistory } from 'react-router-dom';
 
 export default function ReleaseTableManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
@@ -18,7 +19,11 @@ export default function ReleaseTableManager(props) {
 
   const [disableReleaseFilter, setDisableReleaseFilter] = useState(true);
 
+  const [disableTypeFilter, setDisableTypeFilter] = useState(false);
+
   const [loadingReleases, setLoadingReleases] = useState(true);
+
+  const history = useHistory();
 
   // Gets set to true when changing from archive to something else. Controls
   // when to refetch releases for the release filter in conjunction with an
@@ -43,7 +48,14 @@ export default function ReleaseTableManager(props) {
     if (props.filterState.service != "0") {
       fetchReleasesForFilter();
     }
-  }, [props.filterState.service])
+  }, [props.filterState.service]);
+
+  useEffect(() => {
+  if (history.location.pathname.includes('release-management') == false) {
+    setDisableTypeFilter(true);
+  }
+  }, []);
+  // console.log(history.location.pathname);
 
   /**
    * Checks, if archived release are navigated to or from and fills product and 
@@ -62,6 +74,7 @@ export default function ReleaseTableManager(props) {
       fetchReleasesForFilter();
       setWasKeyFive(true);
     }
+    
     return () => {
       if (props.activeKey === "5") {
         let val = {};
@@ -76,6 +89,8 @@ export default function ReleaseTableManager(props) {
    * Fetch the releases for the release table.
    */
   function fetchReleases(counter = 0) {
+   
+
     let url = '/jd7kfn9dm32ni/node/release';
     url += '?sort=' + props.filterState.releaseSortOrder + props.filterState.releaseSortBy;
     url += '&include=field_relese_services';
@@ -154,7 +169,6 @@ export default function ReleaseTableManager(props) {
         setLoadingReleases(false);
       });
     }
-
     /**
      * Fetches the releases for the release filter.
      */
@@ -182,9 +196,21 @@ export default function ReleaseTableManager(props) {
       .catch(error => console.log(error));
   }
 
+  // useEffect(() => {
+  //   if (props.filterState.type =460) {
+  //       let val = {};
+  //     val["link"] = props.releases.links["deployed-releases"].href + "&type460";
+  //     setReleases(prev => [...prev, ...val]);
+  //     }
+    
+  // }, []);
+  
+  
+
   /**
-   * Adds service information to the release object after fetching.
+   * Adds service information to the release object after fetching and adds url parameter for deployment-information links for best/fakt releases
    */
+  
   function addRelationshipData(response) {
     return response.data.map(release => {
       // Add Service name.
@@ -193,10 +219,14 @@ export default function ReleaseTableManager(props) {
       const serviceNid = serviceObject.attributes.drupal_internal__nid;
       release.serviceName = serviceName;
       release.serviceNid = serviceNid;
+      if ((props.filterState.type == 460) && ("deployed-releases" in release.links)) {
+        console.log('hier');
+        const newLink = release.links["deployed-releases"].href + "&type=460";
+        release.links["deployed-releases"].href  = newLink;
+      }
       return release;
     })
   }
-
   /**
    * Resets the filter state.
    */
@@ -212,6 +242,59 @@ export default function ReleaseTableManager(props) {
 
   }
 
+  var reA = /[^a-zA-Z]/g;
+  var reN = /[^0-9]/g;
+
+  //Funktion um ReleaseTitel im Filterdropdown alphanumerisch zu sortieren
+  function sortAlphaNum(a, b) {
+    var vorletzteA = a.attributes.field_calculated_title.slice(-3);
+    var vorletzteB = b.attributes.field_calculated_title.slice(-3);
+
+    if (vorletzteA.includes("-")) {
+      var aa = a.attributes.field_calculated_title.substr(0, a.attributes.field_calculated_title.lastIndexOf("-"));
+    }
+    else {
+      var aa = a.attributes.field_calculated_title
+    }
+    if (vorletzteB.includes("-")) {
+      var bb = b.attributes.field_calculated_title.substr(0, b.attributes.field_calculated_title.lastIndexOf("-"));
+    }
+    else {
+      var bb = b.attributes.field_calculated_title
+    }
+
+    var aZ = a.attributes.field_calculated_title.split('_')[1];
+    var bZ = b.attributes.field_calculated_title.split('_')[1];
+    var aA = aa.replace(reA, "");
+    var bA = bb.replace(reA, "");
+
+    if (aA === bA) {
+      var aN = parseInt(a.attributes.field_calculated_title.replace(reN, ""), 10);
+      var bN = parseInt(b.attributes.field_calculated_title.replace(reN, ""), 10);
+  
+     //Version should be descending.
+      const partsA = aZ.split('.');
+      const partsB = bZ.split('.');
+      for (var i = 0; i < partsB.length; i++) {
+        const vA = ~~partsA[i] // parse int
+        const vB = ~~partsB[i] // parse int
+        if (vA > vB) return -1;
+        if (vA < vB) return 1;
+      }
+      if (aN < bN) {
+        return 1;
+      }
+      if (aN > bN) {
+        return -1;
+      }
+      return 0;
+    }
+  }
+
+  useEffect(() => {
+    releases.sort(sortAlphaNum);
+  }, [loadingReleases]);
+
   return (
     <div>
       <p><a href="/release-management/beschreibung-des-status-der-dsl-konsens" target="_blank"><span class="glyphicon glyphicon-question-sign"></span> Erläuterung Status</a></p>
@@ -221,6 +304,7 @@ export default function ReleaseTableManager(props) {
         handleReset={handleReset}
         filterReleases={filterReleases}
         disableReleaseFilter={disableReleaseFilter}
+        disableTypeFilter={disableTypeFilter}
       />
       <ReleaseLegend activeKey={props.activeKey} />
       <ReleaseTable 
