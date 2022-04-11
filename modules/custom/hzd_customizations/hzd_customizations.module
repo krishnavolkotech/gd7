@@ -237,6 +237,23 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
   }
 }
 
+function find_all_alias_special_charecters() {
+    $db = \Drupal::database();
+    $result = $db->select('path_alias', 'pa')
+            ->fields('pa', array('id', 'alias'))
+            ->condition('alias', '', '!=');
+    $val = $result->execute()->fetchAll();
+    $states = array();
+    $count = 0;
+    $nodes = [];
+    foreach ($val as $aliases) {
+      if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬äöüß]/', $aliases->alias)) {
+          $nodes[$aliases->id] = $aliases->alias;
+      }
+    }
+            dump($nodes);	
+}
+
 /**
  * Implements hook_form_alter.
  */
@@ -244,6 +261,11 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $user = \Drupal::service('current_user');
   $uid = $user->id();
 
+
+  if ($form_id == 'node_page_edit_form') {
+    //find_all_alias_special_charecters();
+  }
+  
   // module_set_weight('hzd_user_customizations', 101);	
   //module_set_weight('legal', 100);
     
