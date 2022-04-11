@@ -79,6 +79,7 @@ function get_user_fields($user) {
       'state_id'
     ))
     ->condition('cp.uid', $user->id());
+
   $val = $result->execute()->fetchAssoc();
   $state = $db->select('states', 's')
     ->fields('s', array('state'))
@@ -1747,8 +1748,8 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
       }
       else {
         if ($group_alias && $node_alias) {
-	    $new_alias = "/".$group_alias. $node_alias;
-	    
+	    $cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($node_alias);
+	    $new_alias = "/".$group_alias.'/'. $cleanedtitle;
             $entity->path = [
               'alias' => $new_alias,
               'pathauto' => PathautoState::SKIP,
