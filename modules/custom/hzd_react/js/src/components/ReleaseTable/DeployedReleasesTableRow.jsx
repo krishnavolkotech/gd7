@@ -1,6 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react'
 import { Popover, Overlay } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
 /**
  * The DeployedReleasesTableRow React component.
@@ -12,6 +13,11 @@ export default function DeployedReleasesTableRow({ deployment, detail }) {
   const [show, setShow] = useState(false);
   // Target for the popover.
   const target = useRef(null);
+
+  /** @const {object} history - The history object (URL modifications). */
+  const history = useHistory()
+  const pathname = history.location.pathname;
+  const explodedPath = pathname.split("/"); 
 
   // Convert Unixtime to readable format.
   const date = new Date(deployment.date);
@@ -125,8 +131,12 @@ export default function DeployedReleasesTableRow({ deployment, detail }) {
           {deployment.downloadLink &&
             <a href={deployment.downloadLink}><img title="Release herunterladen" src="/modules/custom/hzd_release_management/images/download_icon.png" />&nbsp;</a>
           }
+          {/* fixt das Verlassen des Gruppenkontexts bei Aufruf Releasedoku */}
+          {/* {deployment.docuLink && */}
+          {/* //   <a href={"/release-management/releases/documentation/" + deployment.serviceNid + "/" + deployment.releaseNid }><img title="Dokumentation ansehen" src="/modules/custom/hzd_release_management/images/document-icon.png" /></a> */}
+          {/* // } */}
           {deployment.docuLink &&
-            <a href={"/release-management/releases/documentation/" + deployment.serviceNid + "/" + deployment.releaseNid }><img title="Dokumentation ansehen" src="/modules/custom/hzd_release_management/images/document-icon.png" /></a>
+            <a href={"/" + explodedPath[1] + "/releases/documentation/" + deployment.serviceNid + "/" + deployment.releaseNid }><img title="Dokumentation ansehen" src="/modules/custom/hzd_release_management/images/document-icon.png" /></a>
           }
           </div>
         </td>

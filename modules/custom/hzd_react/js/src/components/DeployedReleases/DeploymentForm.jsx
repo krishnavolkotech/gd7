@@ -199,6 +199,7 @@ export default function DeploymentForm(props) {
       setDateValidationState("error");
     }
 
+
     // Validates, that the selected date is not in the future.
     if (props.formState.date) {
       const formDate = new Date(props.formState.date);
@@ -208,8 +209,18 @@ export default function DeploymentForm(props) {
         setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Das angegebene Einsatzdatum liegt in der Zukunft</strong></p>])
         setDateValidationState("error");
       }
+      let year = formDate.getFullYear();
+      // Validates, that the selected date is (max 15 years in the past + ) complete 4 digits
+      var currentyear = new Date().getFullYear();
+      var minyear = currentyear -15;
+      if (year < minyear)  {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte geben Sie eine vollständige vierstellige Jahreszahl an, die nicht mehr als 15 Jahre in der Vergangenheit liegt.</strong></p>])
+        setDateValidationState("error");
+      }
     }
-
+  
+  
     // Validate format of field installation time.
     if (props.formState.installationTime.length > 0) {
       const allowedFormat = new RegExp('^[0-9]{1,3}:[0-5][0-9]$');
