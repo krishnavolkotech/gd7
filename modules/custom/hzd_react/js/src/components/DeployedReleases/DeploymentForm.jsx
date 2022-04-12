@@ -210,10 +210,15 @@ export default function DeploymentForm(props) {
         setDateValidationState("error");
       }
       let year = formDate.getFullYear();
-      // Validates, that the selected date is (max 15 years in the past + ) complete 4 digits
+      // Validates, that the selected date is (max 15 years in the past + ) complete 4 digits only
       var currentyear = new Date().getFullYear();
       var minyear = currentyear -15;
-      if (year < minyear)  {
+      if (year < minyear) {
+        setDisableSubmit(true);
+        setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte geben Sie eine vollständige vierstellige Jahreszahl an, die nicht mehr als 15 Jahre in der Vergangenheit liegt.</strong></p>])
+        setDateValidationState("error");
+      }
+      if (isNaN(parseFloat(year))) {
         setDisableSubmit(true);
         setValidateMessage(prev => [...prev, <p key="val-date-error"><span className="glyphicon glyphicon-exclamation-sign" /> <strong>Bitte geben Sie eine vollständige vierstellige Jahreszahl an, die nicht mehr als 15 Jahre in der Vergangenheit liegt.</strong></p>])
         setDateValidationState("error");

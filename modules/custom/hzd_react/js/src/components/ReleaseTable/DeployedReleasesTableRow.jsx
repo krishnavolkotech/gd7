@@ -47,6 +47,8 @@ export default function DeployedReleasesTableRow({ deployment, detail }) {
     }
   }, [info])
 
+ 
+
   /**
    * Handles info-icon press. Toggles Info Popover.
    */
@@ -62,6 +64,7 @@ export default function DeployedReleasesTableRow({ deployment, detail }) {
         })
         .catch(error => console.log(error));
     }
+   
     else if (!show) {
       setShow(true);
     }

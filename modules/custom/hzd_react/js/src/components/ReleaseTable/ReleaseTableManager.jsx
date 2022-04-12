@@ -220,7 +220,6 @@ export default function ReleaseTableManager(props) {
       release.serviceName = serviceName;
       release.serviceNid = serviceNid;
       if ((props.filterState.type == 460) && ("deployed-releases" in release.links)) {
-        console.log('hier');
         const newLink = release.links["deployed-releases"].href + "&type=460";
         release.links["deployed-releases"].href  = newLink;
       }
