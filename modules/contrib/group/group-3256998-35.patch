@@ -1,0 +1,328 @@
+From af3f3e043cf960424d586b9379f06925c68e4846 Mon Sep 17 00:00:00 2001
+From: Kristiaan Van den Eynde <magentix@gmail.com>
+Date: Wed, 30 Mar 2022 14:53:17 +0200
+Subject: [PATCH] Issue #3256998 by lbodiguel, coderdan, sitiveni,
+ kristiaanvandeneynde, Billodeau: Access to Revisions of Group Content is
+ Broken
+
+---
+ src/Plugin/GroupContentPermissionProvider.php |  60 +++++++
+ ...roupContentPermissionProviderInterface.php |  32 ++++
+ .../GroupContentPermissionProviderTest.php    | 166 +++++++++++++++++-
+ 3 files changed, 257 insertions(+), 1 deletion(-)
+
+diff --git a/src/Plugin/GroupContentPermissionProvider.php b/src/Plugin/GroupContentPermissionProvider.php
+index 014f374..ab66c20 100644
+--- a/src/Plugin/GroupContentPermissionProvider.php
++++ b/src/Plugin/GroupContentPermissionProvider.php
+@@ -161,6 +161,46 @@ class GroupContentPermissionProvider extends GroupContentHandlerBase implements
+     return FALSE;
+   }
+ 
++  /**
++   * {@inheritdoc}
++   */
++  public function getEntityViewAllRevisionsPermission() {
++    if ($this->definesEntityPermissions) {
++      return "view all $this->pluginId revisions";
++    }
++    return FALSE;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getEntityViewRevisionPermission() {
++    if ($this->definesEntityPermissions) {
++      return "view $this->pluginId revision";
++    }
++    return FALSE;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getEntityRevertRevisionPermission() {
++    if ($this->definesEntityPermissions) {
++      return "revert $this->pluginId revision";
++    }
++    return FALSE;
++  }
++
++  /**
++   * {@inheritdoc}
++   */
++  public function getEntityDeleteRevisionPermission() {
++    if ($this->definesEntityPermissions) {
++      return "delete $this->pluginId revision";
++    }
++    return FALSE;
++  }
++
+   /**
+    * {@inheritdoc}
+    */
+@@ -192,6 +232,14 @@ class GroupContentPermissionProvider extends GroupContentHandlerBase implements
+           return $this->getEntityDeletePermission($scope);
+         case 'create':
+           return $this->getEntityCreatePermission();
++        case 'view all revisions':
++          return $this->getEntityViewAllRevisionsPermission();
++        case 'view revision':
++          return $this->getEntityViewRevisionPermission();
++        case 'revert revision':
++          return $this->getEntityRevertRevisionPermission();
++        case 'delete revision':
++          return $this->getEntityDeleteRevisionPermission();
+       }
+     }
+ 
+@@ -263,6 +311,18 @@ class GroupContentPermissionProvider extends GroupContentHandlerBase implements
+     if ($name = $this->getEntityDeletePermission('own')) {
+       $permissions[$name] = $this->buildPermission("$prefix Delete own %entity_type entities");
+     }
++    if ($name = $this->getEntityViewAllRevisionsPermission()) {
++      $permissions[$name] = $this->buildPermission("$prefix View the version history and all revisions of %entity_type entities");
++    }
++    if ($name = $this->getEntityViewRevisionPermission()) {
++      $permissions[$name] = $this->buildPermission("$prefix View individual revisions of %entity_type entities");
++    }
++    if ($name = $this->getEntityRevertRevisionPermission()) {
++      $permissions[$name] = $this->buildPermission("$prefix Revert any revision of %entity_type entities");
++    }
++    if ($name = $this->getEntityDeleteRevisionPermission()) {
++      $permissions[$name] = $this->buildPermission("$prefix Delete any revision of %entity_type entities");
++    }
+ 
+     if ($name = $this->getEntityCreatePermission()) {
+       $permissions[$name] = $this->buildPermission(
+diff --git a/src/Plugin/GroupContentPermissionProviderInterface.php b/src/Plugin/GroupContentPermissionProviderInterface.php
+index eeecd71..6050bab 100644
+--- a/src/Plugin/GroupContentPermissionProviderInterface.php
++++ b/src/Plugin/GroupContentPermissionProviderInterface.php
+@@ -115,6 +115,38 @@ interface GroupContentPermissionProviderInterface {
+    */
+   public function getEntityCreatePermission();
+ 
++  /**
++   * Gets the name of the view all revisions permission for the entity.
++   *
++   * @return string|false
++   *   The permission name or FALSE if it does not apply.
++   */
++  public function getEntityViewAllRevisionsPermission();
++
++  /**
++   * Gets the name of the view revision permission for the entity.
++   *
++   * @return string|false
++   *   The permission name or FALSE if it does not apply.
++   */
++  public function getEntityViewRevisionPermission();
++
++  /**
++   * Gets the name of the revert revision permission for the entity.
++   *
++   * @return string|false
++   *   The permission name or FALSE if it does not apply.
++   */
++  public function getEntityRevertRevisionPermission();
++
++  /**
++   * Gets the name of the delete revision permission for the entity.
++   *
++   * @return string|false
++   *   The permission name or FALSE if it does not apply.
++   */
++  public function getEntityDeleteRevisionPermission();
++
+   /**
+    * Gets the name of the permission for the given operation, target and scope.
+    *
+diff --git a/tests/src/Unit/GroupContentPermissionProviderTest.php b/tests/src/Unit/GroupContentPermissionProviderTest.php
+index 53a089a..580d81c 100644
+--- a/tests/src/Unit/GroupContentPermissionProviderTest.php
++++ b/tests/src/Unit/GroupContentPermissionProviderTest.php
+@@ -463,6 +463,170 @@ class GroupContentPermissionProviderTest extends UnitTestCase {
+     return $cases;
+   }
+ 
++  /**
++   * Tests the entity view all revisions permission name.
++   *
++   * @param mixed $expected
++   *   The expected return value.
++   * @param string $plugin_id
++   *   The plugin ID.
++   * @param array $definition
++   *   The plugin definition.
++   * @param bool $implements_owner
++   *   Whether the plugin's entity type deals with ownership.
++   * @param bool $implements_published
++   *   Whether the plugin's entity type deals with publishing of entities.
++   *
++   * @covers ::getEntityViewAllRevisionsPermission
++   * @dataProvider entityViewAllRevisionsPermissionProvider
++   */
++  public function testGetEntityViewAllRevisionsPermission($expected, $plugin_id, array $definition, $implements_owner, $implements_published) {
++    $permission_provider = $this->createPermissionProvider($plugin_id, $definition, $implements_owner, $implements_published);
++    $this->assertEquals($expected, $permission_provider->getEntityViewAllRevisionsPermission());
++  }
++
++  /**
++   * Data provider for testGetEntityViewAllRevisionsPermission().
++   *
++   * @return array
++   *   A list of testGetEntityViewAllRevisionsPermission method arguments.
++   */
++  public function entityViewAllRevisionsPermissionProvider() {
++    $cases = [];
++    foreach ($this->getPermissionProviderScenarios() as $scenario) {
++      $case = $scenario;
++      $case['expected'] = FALSE;
++      if ($case['definition']['entity_access']) {
++        $case['expected'] = "view all {$scenario['plugin_id']} revisions";
++      }
++      $cases[] = $case;
++    }
++    return $cases;
++  }
++
++  /**
++   * Tests the entity view revision permission name.
++   *
++   * @param mixed $expected
++   *   The expected return value.
++   * @param string $plugin_id
++   *   The plugin ID.
++   * @param array $definition
++   *   The plugin definition.
++   * @param bool $implements_owner
++   *   Whether the plugin's entity type deals with ownership.
++   * @param bool $implements_published
++   *   Whether the plugin's entity type deals with publishing of entities.
++   *
++   * @covers ::getEntityViewRevisionPermission
++   * @dataProvider entityViewRevisionPermissionProvider
++   */
++  public function testGetEntityViewRevisionPermission($expected, $plugin_id, array $definition, $implements_owner, $implements_published) {
++    $permission_provider = $this->createPermissionProvider($plugin_id, $definition, $implements_owner, $implements_published);
++    $this->assertEquals($expected, $permission_provider->getEntityViewRevisionPermission());
++  }
++
++  /**
++   * Data provider for testGetEntityViewRevisionPermission().
++   *
++   * @return array
++   *   A list of testGetEntityViewRevisionPermission method arguments.
++   */
++  public function entityViewRevisionPermissionProvider() {
++    $cases = [];
++    foreach ($this->getPermissionProviderScenarios() as $scenario) {
++      $case = $scenario;
++      $case['expected'] = FALSE;
++      if ($case['definition']['entity_access']) {
++        $case['expected'] = "view {$scenario['plugin_id']} revision";
++      }
++      $cases[] = $case;
++    }
++    return $cases;
++  }
++
++  /**
++   * Tests the entity revert revision permission name.
++   *
++   * @param mixed $expected
++   *   The expected return value.
++   * @param string $plugin_id
++   *   The plugin ID.
++   * @param array $definition
++   *   The plugin definition.
++   * @param bool $implements_owner
++   *   Whether the plugin's entity type deals with ownership.
++   * @param bool $implements_published
++   *   Whether the plugin's entity type deals with publishing of entities.
++   *
++   * @covers ::getEntityRevertRevisionPermission
++   * @dataProvider entityRevertRevisionPermissionProvider
++   */
++  public function testGetEntityRevertRevisionPermission($expected, $plugin_id, array $definition, $implements_owner, $implements_published) {
++    $permission_provider = $this->createPermissionProvider($plugin_id, $definition, $implements_owner, $implements_published);
++    $this->assertEquals($expected, $permission_provider->getEntityRevertRevisionPermission());
++  }
++
++  /**
++   * Data provider for testGetEntityRevertRevisionPermission().
++   *
++   * @return array
++   *   A list of testGetEntityRevertRevisionPermission method arguments.
++   */
++  public function entityRevertRevisionPermissionProvider() {
++    $cases = [];
++    foreach ($this->getPermissionProviderScenarios() as $scenario) {
++      $case = $scenario;
++      $case['expected'] = FALSE;
++      if ($case['definition']['entity_access']) {
++        $case['expected'] = "revert {$scenario['plugin_id']} revision";
++      }
++      $cases[] = $case;
++    }
++    return $cases;
++  }
++
++  /**
++   * Tests the entity delete revision permission name.
++   *
++   * @param mixed $expected
++   *   The expected return value.
++   * @param string $plugin_id
++   *   The plugin ID.
++   * @param array $definition
++   *   The plugin definition.
++   * @param bool $implements_owner
++   *   Whether the plugin's entity type deals with ownership.
++   * @param bool $implements_published
++   *   Whether the plugin's entity type deals with publishing of entities.
++   *
++   * @covers ::getEntityDeleteRevisionPermission
++   * @dataProvider entityDeleteRevisionPermissionProvider
++   */
++  public function testGetEntityDeleteRevisionPermission($expected, $plugin_id, array $definition, $implements_owner, $implements_published) {
++    $permission_provider = $this->createPermissionProvider($plugin_id, $definition, $implements_owner, $implements_published);
++    $this->assertEquals($expected, $permission_provider->getEntityDeleteRevisionPermission());
++  }
++
++  /**
++   * Data provider for testGetEntityDeleteRevisionPermission().
++   *
++   * @return array
++   *   A list of testGetEntityDeleteRevisionPermission method arguments.
++   */
++  public function entityDeleteRevisionPermissionProvider() {
++    $cases = [];
++    foreach ($this->getPermissionProviderScenarios() as $scenario) {
++      $case = $scenario;
++      $case['expected'] = FALSE;
++      if ($case['definition']['entity_access']) {
++        $case['expected'] = "delete {$scenario['plugin_id']} revision";
++      }
++      $cases[] = $case;
++    }
++    return $cases;
++  }
++
+   /**
+    * Tests the permission name getter.
+    *
+@@ -530,7 +694,7 @@ class GroupContentPermissionProviderTest extends UnitTestCase {
+           break;
+       }
+     }
+-    
++
+     $this->assertEquals($expected, $permission_provider->getPermission($operation, $target, $scope));
+   }
+ 
+-- 
+2.17.1
+
