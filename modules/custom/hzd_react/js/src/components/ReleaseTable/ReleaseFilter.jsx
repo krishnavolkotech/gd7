@@ -45,7 +45,7 @@ export default function ReleaseFilter(props) {
     <option key="type-459" value="459">KONSENS</option>,
     <option key="type-460" value="460">Best/Fakt</option>,
   ];
-
+  
   // Verfahren Filter
   const services = global.drupalSettings.services[props.filterState.type];
   let servicesArray = Object.entries(services);
@@ -144,6 +144,7 @@ export default function ReleaseFilter(props) {
             <FormControl
               name="type"
               alt="Typfilter"
+              disabled={props.disableTypeFilter}
               componentClass="select"
               onChange={handleFilterSelect}
               value={props.filterState.type}
