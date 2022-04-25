@@ -54,9 +54,7 @@ export default function ReleaseViewNavigator() {
 //Warning: groupname comes from splitting url -> not necessarily same as service name
 //Check if groupname is part of best/fakt services
   bfservices = global.drupalSettings.bfservices;
-  console.log(bfservices);
   bfservices = bfservices.map(a => a.title.toLowerCase());
-  console.log(bfservices);
   let found = false;
   for (var i = 0; i < bfservices.length; i++) {
     if (bfservices[i] == groupPath) {

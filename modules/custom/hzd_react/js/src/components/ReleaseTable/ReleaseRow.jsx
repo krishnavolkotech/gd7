@@ -74,11 +74,13 @@ export default function ReleaseRow(props) {
   if ("deployed-releases" in props.release.links) {
     // Add link for deployment informations.
     // props.release.links["deployed-releases"].href+ "&type=460";
+    var deploymentInfoLink = props.release.links["deployed-releases"].href;
     if (history.location.pathname.includes('release-management') == false) {
-      var linkWithGroupContext =props.release.links["deployed-releases"].href.replace('release-management', groupPath);
+      deploymentInfoLink = deploymentInfoLink.replace('release-management', groupPath);
     }
-    actions.push(<a key={"ei-" + props.release.attributes.drupal_internal__nid} href={linkWithGroupContext}><img title="Einsatzinformationen anzeigen" className="e-info-icon" src="/modules/custom/hzd_release_management/images/e-icon.png" />&nbsp;</a>);
+    actions.push(<a key={"ei-" + props.release.attributes.drupal_internal__nid} href={deploymentInfoLink}><img title="Einsatzinformationen anzeigen" className="e-info-icon" src="/modules/custom/hzd_release_management/images/e-icon.png" />&nbsp;</a>);
   }
+  
   if (props.release.attributes.field_link) {
     // Add link for release download.
     actions.push(<a key={"li-" + props.release.attributes.drupal_internal__nid} href={props.release.attributes.field_link}><img src="/modules/custom/hzd_release_management/images/download_icon.png" title="Release herunterladen" />&nbsp;</a>);
