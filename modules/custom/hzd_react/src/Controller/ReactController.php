@@ -98,11 +98,11 @@ class ReactController extends ControllerBase {
     // get role -> drupalSettings (site admin > group admin rm > zrml)
     // get Verfahren
     $groupId = $routeMatch->getParameter('group');
-
+  //ACHTUNG: Dev-App-Einstellungen
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
-      // '#attached' => ['library' => 'hzd_react/react_app_dev'],
+      //'#attached' => ['library' => 'hzd_react/react_app_dev'],
       '#attached' => ['library' => 'hzd_react/react_app'],
     ];
     $database = \Drupal::database();
@@ -146,6 +146,18 @@ class ReactController extends ControllerBase {
       }
     }
 
+    //BestFaktServices
+    // ACHTUNG: Neu für ARCO-Fix benötigt muss mit in Commit
+    
+  $bfservices= $database -> query("SELECT node.nid, node_field_data.title
+        FROM node
+        JOIN node_field_data ON node_field_data.nid = node.nid
+        JOIN node__release_type ON node__release_type.entity_id = node.nid
+        WHERE node.type = 'services'
+        AND node__release_type.release_type_target_id = 460",
+  ) -> fetchAll();
+
+
     // Rolle: site-admin, zrmk, zrml?
     $role = $this->getRole();
 
@@ -166,6 +178,7 @@ class ReactController extends ControllerBase {
     $build['#attached']['drupalSettings']['states'] = $finalStates;
     $build['#attached']['drupalSettings']['environments'] = $environments;
     $build['#attached']['drupalSettings']['userstate'] = $userState;
+    $build['#attached']['drupalSettings']['bfservices'] = $bfservices;
 
     return $build;
   }
@@ -312,13 +325,14 @@ class ReactController extends ControllerBase {
     }
     $stTime = number_format(( microtime(true) - $startTime), 4);
 
+    //ACHTUNG dev-app Einstellung
     // Rolle: site-admin, zrmk, zrml?
     $role = $this->getRole();
     $build = [
       '#type' => 'markup',
       '#markup' => '<div id="react-app"></div>',
       '#attached' => [
-        // 'library' => 'hzd_react/react_app_dev',
+       // 'library' => 'hzd_react/react_app_dev',
         'library' => 'hzd_react/react_app',
         'drupalSettings' => [
           'environments' => $environments,
