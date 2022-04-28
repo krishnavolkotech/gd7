@@ -28,7 +28,12 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
   // Doppelte entfernen.
   const unique1 = [...new Set(optionsLandAlle)];
   const optionsKurz1 = unique1;
-  optionsKurz1.sort();
+ 
+  //Sortiert Landescheckboxen nach ID (Rheinfolge wie in Filtern)
+  optionsKurz1.sort(function (a, b) { return a - b });
+  //Mareile: Wenn man das hinzufügt, ist auch BU alphabetisch einsortiert.
+  // optionsKurz1.splice(5, 0, optionsKurz1[16]);
+  // optionsKurz1.pop();
 
   // FilterOptions Verfahren.
   const optionsVerfahrenAlle = [];
@@ -108,7 +113,7 @@ function ERFilter ({eingesetzte, setLandFilter, verfahrenFilter, setVerfahrenFil
   }
 
   return (
-
+    
     <div>
       <Row>
         <Col sm={3}>

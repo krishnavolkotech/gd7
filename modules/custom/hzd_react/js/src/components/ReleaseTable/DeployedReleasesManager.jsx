@@ -3,6 +3,7 @@ import DeployedReleasesFilter from '../DeployedReleases/DeployedReleasesFilter'
 import DeployedReleasesTable from './DeployedReleasesTable';
 import { Nav, NavItem } from 'react-bootstrap';
 import ReleaseLegend from './ReleaseLegend';
+import { useHistory } from 'react-router-dom';
 
 export default function DeployedReleasesManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
@@ -17,6 +18,10 @@ export default function DeployedReleasesManager(props) {
 
   /** @const {number} count - Changing this triggers fetch of deployed releases. */
   const [count, setCount] = useState(0);
+
+  const [disableTypeFilter, setDisableTypeFilter] = useState(false);
+
+  const history = useHistory();
 
   // Benötigt für die Initiale Befüllung der isArchived-State-Variablen. Wurde
   // die Seite "archiviert" initial aufgerufen?
@@ -86,6 +91,12 @@ export default function DeployedReleasesManager(props) {
     // setLoadingMessage(<p>Bereitgestellte Releases werden geladen ... <span className="glyphicon glyphicon-refresh glyphicon-spin" role="status" /></p>);
     fetchReleases(props.filterState.service);
   }, [props.filterState.service])
+
+  useEffect(() => {
+    if (history.location.pathname.includes('release-management') == false) {
+      setDisableTypeFilter(true);
+    }
+  }, []);
 
   /**
    * Fetches and appends release deployments (as state).
@@ -277,12 +288,15 @@ export default function DeployedReleasesManager(props) {
         filterState={props.filterState}
         setFilterState={props.setFilterState}
         handleReset={handleReset}
+        disableTypeFilter={disableTypeFilter}
         count={count}
         setCount={setCount}
         releases={releases}
         fetchDeployments={fetchDeployments}
         loadingReleasesSpinner={loadingReleasesSpinner}
       />
+      <p></p>
+      <p>Als Mitglied der Gruppe „Zentrale Release Manager der Länder“ können Sie Einsatzmeldungen <a href="/zrml/eingesetzt"> hier </a>verwalten (siehe auch FAQ). Für Rückfragen steht Ihnen das ZRMK zur Verfügung.</p>
       <ReleaseLegend activeKey={props.activeKey} />
       <small>Releases, die sich nicht länger im Einsatz befinden, werden <i>kursiv</i> dargestellt.</small>
       <DeployedReleasesTable

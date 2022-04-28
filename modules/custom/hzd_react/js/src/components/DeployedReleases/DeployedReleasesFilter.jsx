@@ -326,6 +326,7 @@ export default function DeployedReleasesFilter(props) {
               alt="Typfilter"
               componentClass="select"
               onChange={handleFilterSelect}
+              disabled={props.disableTypeFilter}
               value={props.filterState.type}
             >
               <option value="459">KONSENS</option>

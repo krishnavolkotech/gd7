@@ -661,7 +661,7 @@ display:
             operator: release_type_target_id_op
             operator_limit_selection: false
             operator_list: {  }
-            identifier: release_type
+            identifier: type
             required: false
             remember: false
             multiple: false

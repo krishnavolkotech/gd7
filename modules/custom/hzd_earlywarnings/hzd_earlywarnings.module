@@ -145,7 +145,7 @@ function hzd_earlywarnings_form_views_exposed_form_alter(array &$form, \Drupal\C
     ];
   }
   if (($view['view']->id() == 'early_warnings_mit_ref') && ($view['view']->current_display == 'page_1')) {
-    $releaseType = \Drupal::request()->query->get('release_type') ?: 459;
+    $releaseType = \Drupal::request()->query->get('type') ?: 459;
     $query = \Drupal::entityQuery('node');
     // Service query.
     $result = $query
