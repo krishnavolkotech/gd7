@@ -857,17 +857,15 @@ datasource_settings:
       default: true
       selected: {  }
 processor_settings:
-  group_access:
-    weights:
-      preprocess_query: -30
-  sort_datasources_result: {  }
-  reverse_entity_references: {  }
   add_url:
     plugin_id: add_url
     settings: {  }
   aggregated_field:
     plugin_id: aggregated_field
     settings: {  }
+  group_access:
+    weights:
+      preprocess_query: -30
   highlight:
     highlight: always
     highlight_partial: true
@@ -914,9 +912,11 @@ processor_settings:
   rendered_item:
     plugin_id: rendered_item
     settings: {  }
+  reverse_entity_references: {  }
   solr_date_range:
     weights:
       preprocess_index: 0
+  sort_datasources_result: {  }
 tracker_settings:
   default:
     indexing_order: fifo

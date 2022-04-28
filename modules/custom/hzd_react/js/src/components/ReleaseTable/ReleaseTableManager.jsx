@@ -2,6 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import ReleaseFilter from './ReleaseFilter';
 import ReleaseLegend from './ReleaseLegend';
 import ReleaseTable from './ReleaseTable';
+import { Link, useHistory } from 'react-router-dom';
 
 export default function ReleaseTableManager(props) {
   /** @const {number} fetchCount - Ensures that the latest fetch gets processed. */
@@ -18,7 +19,11 @@ export default function ReleaseTableManager(props) {
 
   const [disableReleaseFilter, setDisableReleaseFilter] = useState(true);
 
+  const [disableTypeFilter, setDisableTypeFilter] = useState(false);
+
   const [loadingReleases, setLoadingReleases] = useState(true);
+
+  const history = useHistory();
 
   // Gets set to true when changing from archive to something else. Controls
   // when to refetch releases for the release filter in conjunction with an
@@ -43,7 +48,14 @@ export default function ReleaseTableManager(props) {
     if (props.filterState.service != "0") {
       fetchReleasesForFilter();
     }
-  }, [props.filterState.service])
+  }, [props.filterState.service]);
+
+  useEffect(() => {
+  if (history.location.pathname.includes('release-management') == false) {
+    setDisableTypeFilter(true);
+  }
+  }, []);
+  // console.log(history.location.pathname);
 
   /**
    * Checks, if archived release are navigated to or from and fills product and 
@@ -62,6 +74,7 @@ export default function ReleaseTableManager(props) {
       fetchReleasesForFilter();
       setWasKeyFive(true);
     }
+    
     return () => {
       if (props.activeKey === "5") {
         let val = {};
@@ -76,6 +89,8 @@ export default function ReleaseTableManager(props) {
    * Fetch the releases for the release table.
    */
   function fetchReleases(counter = 0) {
+   
+
     let url = '/jd7kfn9dm32ni/node/release';
     url += '?sort=' + props.filterState.releaseSortOrder + props.filterState.releaseSortBy;
     url += '&include=field_relese_services';
@@ -154,7 +169,6 @@ export default function ReleaseTableManager(props) {
         setLoadingReleases(false);
       });
     }
-
     /**
      * Fetches the releases for the release filter.
      */
@@ -182,9 +196,21 @@ export default function ReleaseTableManager(props) {
       .catch(error => console.log(error));
   }
 
+  // useEffect(() => {
+  //   if (props.filterState.type =460) {
+  //       let val = {};
+  //     val["link"] = props.releases.links["deployed-releases"].href + "&type460";
+  //     setReleases(prev => [...prev, ...val]);
+  //     }
+    
+  // }, []);
+  
+  
+
   /**
-   * Adds service information to the release object after fetching.
+   * Adds service information to the release object after fetching and adds url parameter for deployment-information links for best/fakt releases
    */
+  
   function addRelationshipData(response) {
     return response.data.map(release => {
       // Add Service name.
@@ -193,10 +219,13 @@ export default function ReleaseTableManager(props) {
       const serviceNid = serviceObject.attributes.drupal_internal__nid;
       release.serviceName = serviceName;
       release.serviceNid = serviceNid;
+      if ((props.filterState.type == 460) && ("deployed-releases" in release.links)) {
+        const newLink = release.links["deployed-releases"].href + "&type=460";
+        release.links["deployed-releases"].href  = newLink;
+      }
       return release;
     })
   }
-
   /**
    * Resets the filter state.
    */
@@ -221,6 +250,7 @@ export default function ReleaseTableManager(props) {
         handleReset={handleReset}
         filterReleases={filterReleases}
         disableReleaseFilter={disableReleaseFilter}
+        disableTypeFilter={disableTypeFilter}
       />
       <ReleaseLegend activeKey={props.activeKey} />
       <ReleaseTable 

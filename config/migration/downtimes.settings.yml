@@ -9,7 +9,7 @@ resolve_maintenance_mail_body:
   format: full_html
 number_of_day: null
 number_of_days: '7'
-current_downtimes: "<p>Hier werden akute und geplante Ausfallzeiten länderübergreifender Systeme bekannt gegeben. Dies dient der schnellen Kommunikation von Betriebsstörungen, während die eigentliche Störungsbehebung über die vereinbarten Meldewege im jeweiligen Landesticket dokumentiert wird.</p>\r\n"
+current_downtimes: "<p>Hier werden akute und geplante Ausfallzeiten länderübergreifender Systeme bekannt gegeben. Dies dient der schnellen Kommunikation von Betriebsstörungen, während die eigentliche Störungsbehebung über die vereinbarten Meldewege im jeweiligen Landesticket dokumentiert wird. <a href=\"/betriebsportal-konsens/faq/allgemein\">Unterscheidung von Störung und Blockzeit sowie weitere Informationen im FAQ.</a></p>\r\n"
 archived_downtimes: ''
 report_downtimes: "<p><strong>Aktuelle Störung:</strong>&nbsp;Akuter Ausfall bzw. Nichterreichbarkeit eines Systems<br />\r\n<strong>Land:</strong> Das Land, in dem der Betrieb eines Verfahrens oder ZPS gestört ist.<br />\r\n<strong>Verfahren/ZPS:</strong> Verfahren oder ZPS, die durch die Störung nicht zur Verfügung stehen.<br />\r\n<br />\r\nIhre Meldung wird an alle&nbsp;Abonnenten der Benachrichtigungsoption \"Störungen und Blockzeiten\"&nbsp;versandt.&nbsp;<br />\r\n<br />\r\nBitte denken Sie unbedingt daran, Ihre Meldung zu gegebener Zeit wieder zu entfernen, um die Aktualität des BpK zu gewährleisten. Durch&nbsp;<i>Beheben</i>&nbsp;wird die Meldung in das Archiv verschoben.</p>\r\n"
 report_downtimes_2: "<p>Wählen Sie das Land aus, in dem die Wartungsarbeiten ausgeführt werden. Mehrfachauswahl ist möglich.<br />\r\n&nbsp;</p>\r\n"

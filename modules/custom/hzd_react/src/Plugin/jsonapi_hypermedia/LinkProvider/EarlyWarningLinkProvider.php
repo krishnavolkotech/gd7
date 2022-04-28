@@ -88,7 +88,7 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
   public function getLink($context) {
     assert($context instanceof JsonApiDocumentTopLevel);
     $access = $this->currentUser->isAuthenticated() ? AccessResult::allowed() : AccessResult::forbidden();
-
+    
     // Nid of the release.
     $releaseNid = $context->getField("drupal_internal__nid")->value;
 
@@ -99,19 +99,14 @@ final class EarlyWarningLinkProvider extends LinkProviderBase implements Contain
       ->condition('field_release_ref', $releaseNid)
       ->execute();
     
-    $serviceNid = $context->getField("field_relese_services")->entity->id();
+    $serviceEntity = $context->getField("field_relese_services")->entity;  
+    $serviceNid = $serviceEntity->id();
+    $releaseTyp = $serviceEntity->release_type->entity->id();
 
-    // @todo Identify correct release type (459 = KONSENS, 460 = Best/Fakt)
-    // $viewOptions = [
-    //   "query" => [
-    //     "services" => $serviceNid,
-    //     "releases" => $releaseNid,
-    //     "release_type" => 459,
-    //   ],
-    // ];
     $url = Url::fromRoute('view.early_warnings_mit_ref.page_1',[],['query' => [
       'services' => $serviceNid,
       'releases' => $releaseNid,
+      'type' => $releaseTyp,
     ]]);
 
     // Provide cacheability.
