@@ -58,13 +58,27 @@ class SamsNotifications extends FormBase {
     );
 
     $classes = [
-      '<' . $this->t('All classes') . '>',
-      'BIBLIOTHEK',
-      'ENTWICKLUNGSVERSION',
-      'MOCK',
-      'SCHEMA',
-      'NORM',
+      0 => '<' . $this->t('All classes') . '>',
+      1 => 'BIBLIOTHEK',
+      2 => 'ENTWICKLUNGSVERSION',
+      3 => 'MOCK',
+      4 => 'SCHEMA',
+      5 => 'NORM',
     ];
+
+    if ($form_state->hasValue('services')) {
+      // Sicherstellen, dass ein Verfahren gewählt wurde.
+      $serviceId = $form_state->getValue('services');
+      $serviceName = \Drupal::state()->get('samsFilterServices')[$serviceId];
+      if ($serviceName === 'REM') {
+        // Ergänzt Klassenauswahl 'DSL' für 'REM'.
+        $classes[6] = 'DSL';
+      }
+      if ($serviceName === 'ARC') {
+        // Ergänzt Klassenauswahl 'SEU' für 'ARC'.
+        $classes[7] = 'SEU';
+      }
+    }
 
     $form['classes'] = array(
       '#type' => 'select',
@@ -99,6 +113,21 @@ class SamsNotifications extends FormBase {
       'DEPRECATED',
     ];
 
+    // REM + DSL => FINAL
+    if ($form_state->hasValue('services')) {
+      $serviceId = $form_state->getValue('services');
+      $serviceName = \Drupal::state()->get('samsFilterServices')[$serviceId];
+      if ($serviceName === 'REM') {
+        if ($form_state->hasValue('classes')) {
+          $classId = $form_state->getValue('classes');
+          if ($classId == 6) {
+            // Reduziert Statusauswahl auf "FINAL", wenn REM + DSL ausgewählt wurden.
+            $status = ['<' . $this->t('All status') . '>', 'FINAL',];
+          }
+        }
+      }
+    }
+
     $form['status'] = array(
       '#type' => 'select',
       '#options' => $status,
@@ -106,6 +135,7 @@ class SamsNotifications extends FormBase {
       "#prefix" => "<div class='service_dropdown hzd-form-element col-md-2'>",
       '#suffix' => '</div>',
     );
+
 
     $form['submit'] = array(
       '#type' => 'submit',
@@ -170,6 +200,15 @@ class SamsNotifications extends FormBase {
           break;
         case 5:
           $class = 'NORM';
+          break;
+        case 6:
+          // Sonderlocke REM
+          $class = 'DSL';
+          break;
+        case 7:
+          // Sonderlocke ARC
+          $class = 'SEU';
+          break;
         default:
           $class = 'UNKNOWN';
       }
