@@ -19,19 +19,19 @@ bundle: planning_files
 mode: teaser
 content:
   field_planning_file_type:
-    label: above
-    weight: -4
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -4
     region: content
   field_upload_planning_file:
-    label: above
-    weight: -3
     type: file_default
+    label: above
     settings:
       use_description_as_link_text: true
     third_party_settings: {  }
+    weight: -3
     region: content
   links:
     weight: 100
@@ -45,4 +45,5 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true
   upload: true

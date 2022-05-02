@@ -17,12 +17,12 @@ plugin: maintenance_block
 settings:
   id: maintenance_block
   label: Blockzeiten
-  provider: downtimes
   label_display: visible
+  provider: downtimes
   number_of_posts: ''
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
     negate: true
     context_mapping: {  }
+    pages: '<front>'

@@ -19,17 +19,17 @@ plugin: 'block_content:bdd18fda-388a-4d7b-b060-d540b5dc9bf0'
 settings:
   id: 'block_content:bdd18fda-388a-4d7b-b060-d540b5dc9bf0'
   label: Gruppenadministration
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full
 visibility:
   language:
     id: language
-    langcodes:
-      en: en
-      de: de
     negate: false
     context_mapping:
       language: '@language.current_language_context:language_interface'
+    langcodes:
+      en: en
+      de: de

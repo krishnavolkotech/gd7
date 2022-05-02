@@ -11,12 +11,12 @@ pattern: 'incident-management/stoerung/[node:nid]'
 selection_criteria:
   748aec40-1b5e-4099-9735-dc737b6fcfe9:
     id: node_type
-    bundles:
-      downtimes: downtimes
     negate: false
+    uuid: 748aec40-1b5e-4099-9735-dc737b6fcfe9
     context_mapping:
       node: node
-    uuid: 748aec40-1b5e-4099-9735-dc737b6fcfe9
+    bundles:
+      downtimes: downtimes
 selection_logic: and
 weight: -7
 relationships: {  }

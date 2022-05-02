@@ -11,13 +11,13 @@ pattern: '[node:group_raw]/[node:menu-link:parents:join-path]/[node:title]'
 selection_criteria:
   9875a17d-a224-4820-9c75-a4d0b6d6bdc2:
     id: node_type
+    negate: false
+    uuid: 9875a17d-a224-4820-9c75-a4d0b6d6bdc2
+    context_mapping:
+      node: node
     bundles:
       dir_listing: dir_listing
       page: page
-    negate: false
-    context_mapping:
-      node: node
-    uuid: 9875a17d-a224-4820-9c75-a4d0b6d6bdc2
 selection_logic: and
 weight: -3
 relationships: {  }

@@ -24,25 +24,25 @@ plugin: cust_group_menu_block
 settings:
   id: cust_group_menu_block
   label: 'Custom Group Menu block'
-  provider: cust_group
   label_display: visible
+  provider: cust_group
 visibility:
   request_path:
     id: request_path
-    pages: "*/problems/*\r\n*/problems\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases\r\n*/eingesetzte-releases/archiv\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/downtimes/archive\r\n*/hilfe\r\n*group/*/risiken\r\n*group/*/risiken/archiv\r\n*group/*/massnahmen\r\n*group/*/massnahmen/archiv\r\n*group/*/risikocluster\r\n*ablage-attachments\r\n*arbeitsanleitungen-bs2000/al-edv-online\r\n*/zoe-rem\r\n*/betriebsportal-konsens/anleitung-zum-zertifikatscheck"
     negate: true
     context_mapping: {  }
+    pages: "*/problems/*\r\n*/problems\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases\r\n*/eingesetzte-releases/archiv\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/downtimes/archive\r\n*/hilfe\r\n*group/*/risiken\r\n*group/*/risiken/archiv\r\n*group/*/massnahmen\r\n*group/*/massnahmen/archiv\r\n*group/*/risikocluster\r\n*ablage-attachments\r\n*arbeitsanleitungen-bs2000/al-edv-online\r\n*/zoe-rem\r\n*/betriebsportal-konsens/anleitung-zum-zertifikatscheck"
   user_role:
     id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
     roles:
       authenticated: authenticated
       administrator: administrator
       site_administrator: site_administrator
-    negate: false
-    context_mapping:
-      user: '@user.current_user_context:current_user'
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: group_menu
     context_mapping: {  }
+    block_visibility_group: group_menu

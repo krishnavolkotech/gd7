@@ -20,11 +20,11 @@ plugin: verfahren_menu_side
 settings:
   id: verfahren_menu_side
   label: Verfahren
-  provider: cust_group
   label_display: visible
+  provider: cust_group
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
     negate: false
     context_mapping: {  }
+    pages: '<front>'

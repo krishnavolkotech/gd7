@@ -12,21 +12,21 @@ pattern: 'release-management/rz-schnellinfos/[node:field_unique_id]'
 selection_criteria:
   ecedd22c-72d1-4b45-9ebb-ec01373f50fc:
     id: node_type
-    bundles:
-      quickinfo: quickinfo
     negate: false
+    uuid: ecedd22c-72d1-4b45-9ebb-ec01373f50fc
     context_mapping:
       node: node
-    uuid: ecedd22c-72d1-4b45-9ebb-ec01373f50fc
+    bundles:
+      quickinfo: quickinfo
   64748674-7637-4669-9bc6-e80f4d6b1e34:
     id: language
+    negate: false
+    uuid: 64748674-7637-4669-9bc6-e80f4d6b1e34
+    context_mapping:
+      language: 'node:langcode:language'
     langcodes:
       de: de
       en: en
-    negate: false
-    context_mapping:
-      language: 'node:langcode:language'
-    uuid: 64748674-7637-4669-9bc6-e80f4d6b1e34
 selection_logic: and
 weight: -10
 relationships:

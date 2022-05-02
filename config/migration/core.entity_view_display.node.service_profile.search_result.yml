@@ -23,44 +23,44 @@ bundle: service_profile
 mode: search_result
 content:
   field_dependent_service:
-    label: above
-    weight: -2
     type: entity_reference_label
+    label: above
     settings:
       link: true
     third_party_settings: {  }
+    weight: -2
     region: content
   field_impact:
-    label: above
-    weight: 31
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 31
     region: content
   field_maintenance_advance_time:
-    label: above
-    weight: 0
     type: number_decimal
+    label: above
     settings:
       thousand_separator: ''
       decimal_separator: .
       scale: 2
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 0
     region: content
   field_service_operator:
-    label: above
-    weight: -4
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -4
     region: content
   field_service_recipient:
-    label: above
-    weight: -3
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -3
     region: content
   links:
     weight: 100
@@ -76,4 +76,5 @@ hidden:
   entity_print_view_word_docx: true
   field_dependent_downtimeservices: true
   langcode: true
+  search_api_excerpt: true
   upload: true

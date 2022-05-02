@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: omWr4s_-ZB9DeG-rP5oY4s3Pm2uiK-guRhGg0_DHHpM
+langcode: de
 simplify_admin: false
 simplify_nodes_global:
   author: author
@@ -22,6 +25,3 @@ simplify_blocks_global:
   revision_information: revision_information
   format: '0'
 simplify_profiles_global: {  }
-_core:
-  default_config_hash: omWr4s_-ZB9DeG-rP5oY4s3Pm2uiK-guRhGg0_DHHpM
-langcode: de

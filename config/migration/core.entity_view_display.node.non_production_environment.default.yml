@@ -24,47 +24,47 @@ bundle: non_production_environment
 mode: default
 content:
   comment:
-    label: hidden
     type: comment_default
-    weight: 20
+    label: hidden
     settings:
-      pager_id: 0
       view_mode: default
+      pager_id: 0
     third_party_settings: {  }
+    weight: 20
     region: content
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   field_non_production_state:
-    label: above
-    weight: -4
     type: list_key
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -4
     region: content
   field_order:
-    weight: 102
+    type: number_integer
     label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
-    type: number_integer
+    weight: 102
     region: content
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 100
     region: content
   upload:
+    type: file_default
     label: hidden
     settings:
       use_description_as_link_text: true
-    type: file_default
-    weight: 101
     third_party_settings: {  }
+    weight: 101
     region: content
 hidden:
   content_revision_log: true
@@ -73,3 +73,4 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true

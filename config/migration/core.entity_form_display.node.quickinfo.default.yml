@@ -33,19 +33,17 @@ dependencies:
 third_party_settings:
   field_group:
     group_meta_data:
-      label: '1 Meta-Daten'
-      weight: 0
       children:
         - field_custom_title
         - field_related_transfer_number
         - field_other_services
         - field_recipients
+      label: '1 Meta-Daten'
+      parent_name: ''
+      weight: 0
       format_type: fieldset
       format_settings: {  }
-      parent_name: ''
     group_content_information:
-      label: '2 Fachlich-inhaltliche Angaben'
-      weight: 1
       children:
         - field_intial_situation
         - field_professional_conditions
@@ -59,22 +57,24 @@ third_party_settings:
         - field_dates
         - field_creators
         - field_contact
+      label: '2 Fachlich-inhaltliche Angaben'
+      parent_name: ''
+      weight: 1
       format_type: fieldset
       format_settings: {  }
-      parent_name: ''
 id: node.quickinfo.default
 targetEntityType: node
 bundle: quickinfo
 mode: default
 content:
   field_additional_email_recipient:
-    weight: 3
     type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
+    weight: 3
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_author_name:
     type: string_textarea
     weight: 6
@@ -86,149 +86,149 @@ content:
   field_author_state:
     type: string_textarea
     weight: 5
+    region: content
     settings:
       rows: 1
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_business_impact:
+    type: text_textarea
     weight: 9
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_business_impact_services:
+    type: text_textarea
     weight: 11
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_contact:
+    type: text_textarea
     weight: 16
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_creators:
+    type: string_textarea
     weight: 15
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_custom_title:
+    type: string_textarea
     weight: 1
+    region: content
     settings:
       rows: 1
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_dates:
-    weight: 14
     type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
+    weight: 14
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_depend_other_services:
+    type: text_textarea
     weight: 8
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_intial_situation:
+    type: text_textarea
     weight: 5
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_other_services:
+    type: options_buttons
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_buttons
-    region: content
   field_professional_conditions:
+    type: text_textarea
     weight: 6
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_recipients:
+    type: options_buttons
     weight: 4
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_buttons
-    region: content
   field_related_transfer_number:
+    type: string_textarea
     weight: 2
+    region: content
     settings:
       rows: 1
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_special_notes:
+    type: text_textarea
     weight: 13
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_tech_requirements:
+    type: text_textarea
     weight: 7
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_technical_impact:
+    type: text_textarea
     weight: 10
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_technical_impact_services:
+    type: text_textarea
     weight: 12
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_unique_id:
-    weight: 4
     type: number
+    weight: 4
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    region: content
   upload:
-    settings:
-      progress_indicator: throbber
     type: file_generic
     weight: 2
-    third_party_settings: {  }
     region: content
+    settings:
+      progress_indicator: throbber
+    third_party_settings: {  }
 hidden:
   comment: true
   created: true

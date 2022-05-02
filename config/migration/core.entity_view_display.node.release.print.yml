@@ -23,11 +23,11 @@ bundle: release
 mode: print
 content:
   field_documentation_link:
-    label: above
-    weight: 32
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 32
     region: content
   links:
     weight: 100
@@ -49,4 +49,5 @@ hidden:
   field_relese_services: true
   field_status: true
   langcode: true
+  search_api_excerpt: true
   upload: true

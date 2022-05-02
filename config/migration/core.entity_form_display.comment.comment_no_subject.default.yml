@@ -15,16 +15,16 @@ third_party_settings:
     group_notifications:
       children:
         - field_do_not_send_notifications
+      label: Notifications
+      region: hidden
       parent_name: ''
       weight: 2
-      label: Notifications
       format_type: fieldset
       format_settings:
-        description: ''
         classes: ''
         id: ''
+        description: ''
         required_fields: true
-      region: hidden
 id: comment.comment_no_subject.default
 targetEntityType: comment
 bundle: comment_no_subject
@@ -38,19 +38,19 @@ content:
   comment_body:
     type: text_textarea
     weight: 1
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_do_not_send_notifications:
     type: options_buttons
     weight: 0
+    region: content
     settings: {  }
     third_party_settings:
       cust_group:
         group_files: 0
-    region: content
 hidden:
   langcode: true
   subject: true

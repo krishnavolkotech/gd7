@@ -19,12 +19,12 @@ bundle: faqs
 mode: teaser
 content:
   body:
-    label: hidden
     type: text_summary_or_trimmed
-    weight: 101
+    label: hidden
     settings:
       trim_length: 600
     third_party_settings: {  }
+    weight: 101
     region: content
   links:
     weight: 100
@@ -40,4 +40,5 @@ hidden:
   faq_kategorie: true
   faq_seite: true
   langcode: true
+  search_api_excerpt: true
   upload: true

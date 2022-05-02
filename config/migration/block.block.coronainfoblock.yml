@@ -24,8 +24,8 @@ plugin: 'block_content:b91d245a-5be5-4c4a-a0f0-3d502205afd2'
 settings:
   id: 'block_content:b91d245a-5be5-4c4a-a0f0-3d502205afd2'
   label: 'SARS-CoV-2: Aktuelle Informationen'
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full
@@ -33,17 +33,17 @@ visibility:
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''
   request_path:
     id: request_path
-    pages: '<front>'
     negate: false
     context_mapping: {  }
+    pages: '<front>'
   user_role:
     id: user_role
-    roles:
-      authenticated: authenticated
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+    roles:
+      authenticated: authenticated

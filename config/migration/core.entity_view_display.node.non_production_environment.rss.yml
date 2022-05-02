@@ -17,11 +17,11 @@ bundle: non_production_environment
 mode: rss
 content:
   field_non_production_state:
-    label: above
-    weight: -4
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -4
     region: content
   links:
     weight: 100
@@ -36,4 +36,5 @@ hidden:
   entity_print_view_word_docx: true
   field_order: true
   langcode: true
+  search_api_excerpt: true
   upload: true

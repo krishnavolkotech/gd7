@@ -18,8 +18,8 @@ plugin: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
 settings:
   id: 'block_content:63a8cb39-fe2c-4f1c-a82c-083abacb08d7'
   label: Verfahren
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full

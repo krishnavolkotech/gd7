@@ -13,25 +13,25 @@ pattern: '[group:title]'
 selection_criteria:
   4c84fdb5-d1f6-4491-ada0-36a719449601:
     id: 'entity_bundle:group'
+    negate: false
+    uuid: 4c84fdb5-d1f6-4491-ada0-36a719449601
+    context_mapping:
+      group: group
     bundles:
       closed: closed
       closed_private: closed_private
       moderate: moderate
       moderate_private: moderate_private
       open: open
-    negate: false
-    context_mapping:
-      group: group
-    uuid: 4c84fdb5-d1f6-4491-ada0-36a719449601
   9f4ed1fe-0909-406f-8365-7741f325b56b:
     id: language
+    negate: false
+    uuid: 9f4ed1fe-0909-406f-8365-7741f325b56b
+    context_mapping:
+      language: 'group:langcode:language'
     langcodes:
       de: de
       en: en
-    negate: false
-    context_mapping:
-      language: 'group:langcode:language'
-    uuid: 9f4ed1fe-0909-406f-8365-7741f325b56b
 selection_logic: and
 weight: -9
 relationships:

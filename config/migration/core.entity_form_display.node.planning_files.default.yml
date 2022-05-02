@@ -18,14 +18,15 @@ bundle: planning_files
 mode: default
 content:
   field_planning_file_type:
+    type: options_select
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_upload_planning_file:
-    weight: 2
     type: file_generic
+    weight: 2
+    region: content
     settings:
       progress_indicator: bar
     third_party_settings:
@@ -49,15 +50,14 @@ content:
             path: file_attach
             absolute: 0
             attach_mode: move
-    region: content
   title:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
 hidden:
   comment: true
   created: true

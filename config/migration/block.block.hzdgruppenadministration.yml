@@ -24,24 +24,24 @@ plugin: hzd_group_admin
 settings:
   id: hzd_group_admin
   label: Gruppenadministration
-  provider: hzd_release_management
   label_display: visible
+  provider: hzd_release_management
 visibility:
   language:
     id: language
-    langcodes:
-      de: de
-      en: en
     negate: false
     context_mapping:
       language: '@language.current_language_context:language_interface'
+    langcodes:
+      de: de
+      en: en
   request_path:
     id: request_path
-    pages: "*/problems/*\r\n*/problems\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases\r\n*/eingesetzte-releases/archiv\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/hilfe\r\n*/group/*/risiken\r\n*group/*/risiken/archiv\r\n*group/*/massnahmen\r\n*group/*/massnahmen/archiv\r\n*group/*/risikocluster\r\n*ablage-attachments\r\n*arbeitsanleitungen-bs2000/al-edv-online\r\n*/zoe-rem\r\n*/betriebsportal-konsens/anleitung-zum-zertifikatscheck"
     negate: true
     context_mapping: {  }
+    pages: "*/problems/*\r\n*/problems\r\n*/releases\r\n*/releases/*\r\n*/nodes\r\n*/eingesetzte-releases\r\n*/eingesetzte-releases/archiv\r\n*/stoerung\r\n*/stoerung/archive\r\n*/downtimes\r\n*/hilfe\r\n*/group/*/risiken\r\n*group/*/risiken/archiv\r\n*group/*/massnahmen\r\n*group/*/massnahmen/archiv\r\n*group/*/risikocluster\r\n*ablage-attachments\r\n*arbeitsanleitungen-bs2000/al-edv-online\r\n*/zoe-rem\r\n*/betriebsportal-konsens/anleitung-zum-zertifikatscheck"
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: group_menu
     context_mapping: {  }
+    block_visibility_group: group_menu

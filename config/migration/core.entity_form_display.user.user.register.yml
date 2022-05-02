@@ -20,19 +20,19 @@ mode: register
 content:
   account:
     weight: -10
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   matomo:
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   piwik:
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   timezone:
     weight: 6
     region: content
@@ -41,6 +41,7 @@ hidden:
   field_do_not_deactivate_automati: true
   field_message_preference: true
   field_notifications_status: true
+  field_privacy_policy: true
   l10n_client_contributor_key: true
   langcode: true
   language: true

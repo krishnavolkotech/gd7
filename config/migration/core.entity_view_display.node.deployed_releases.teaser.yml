@@ -36,41 +36,41 @@ bundle: deployed_releases
 mode: teaser
 content:
   body:
-    label: hidden
     type: text_summary_or_trimmed
-    weight: 101
+    label: hidden
     settings:
       trim_length: 600
     third_party_settings: {  }
+    weight: 101
     region: content
   field_archived_release:
-    label: above
-    weight: 16
     type: list_key
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 16
     region: content
   field_environment:
-    label: above
-    weight: 13
     type: list_key
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 13
     region: content
   field_user_state:
-    label: above
-    weight: 17
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 17
     region: content
   links:
-    weight: 100
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 100
+    region: content
 hidden:
   comment: true
   content_revision_log: true

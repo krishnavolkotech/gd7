@@ -43,144 +43,144 @@ bundle: problem
 mode: rss
 content:
   field_attachment:
-    label: above
-    weight: 12
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 12
     region: content
   field_closed:
-    label: above
-    weight: 19
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 19
     region: content
   field_comments:
-    label: above
-    weight: 9
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 9
     region: content
   field_diagnose:
-    label: above
-    weight: 4
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 4
     region: content
   field_eroffnet:
-    label: above
-    weight: 10
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 10
     region: content
   field_function:
-    label: above
-    weight: 3
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   field_priority:
-    label: above
-    weight: 7
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 7
     region: content
   field_problem_eroffnet:
-    label: above
-    weight: 20
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 20
     region: content
   field_problem_status:
-    label: above
-    weight: 1
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   field_processing:
-    label: above
-    weight: 11
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 11
     region: content
   field_release:
-    label: above
-    weight: 17
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 17
     region: content
   field_s_no:
-    label: above
-    weight: -3
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: -3
     region: content
   field_services:
-    label: above
-    weight: 2
     type: entity_reference_label
+    label: above
     settings:
       link: true
     third_party_settings: {  }
+    weight: 2
     region: content
   field_solution:
-    label: above
-    weight: 5
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 5
     region: content
   field_task_force:
-    label: above
-    weight: 8
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 8
     region: content
   field_ticketstore_count:
-    label: above
-    weight: 32
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 32
     region: content
   field_ticketstore_link:
-    label: above
-    weight: 31
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 31
     region: content
   field_version:
-    label: above
-    weight: 18
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 18
     region: content
   field_work_around:
-    label: above
-    weight: 6
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 6
     region: content
   links:
     weight: 100
@@ -202,4 +202,5 @@ hidden:
   field_sdcallid: true
   field_unlocated_cause: true
   langcode: true
+  search_api_excerpt: true
   upload: true

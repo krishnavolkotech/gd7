@@ -20,14 +20,24 @@ bundle: risk_cluster
 mode: teaser
 content:
   body:
-    label: hidden
     type: text_summary_or_trimmed
-    weight: 101
+    label: hidden
     settings:
       trim_length: 600
     third_party_settings: {  }
+    weight: 101
     region: content
   field_risks_cluster_class:
+    weight: 100
+    region: content
+  field_risks_cluster_impact:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  field_risks_cluster_propability:
+    settings: {  }
+    third_party_settings: {  }
     weight: 100
     region: content
   field_risks_data:
@@ -51,3 +61,4 @@ hidden:
   field_risk_id: true
   field_trend: true
   langcode: true
+  search_api_excerpt: true

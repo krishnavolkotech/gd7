@@ -30,51 +30,52 @@ bundle: release
 mode: default
 content:
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   field_calculated_title:
-    weight: 1
+    type: computed_string
     label: inline
     settings:
       sanitized: '1'
       cache_unit: '-1'
       cache_duration: '1'
     third_party_settings: {  }
-    type: computed_string
+    weight: 1
     region: content
   field_date:
-    label: inline
-    weight: 3
     type: date_from_timestamp_formatter
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   field_release_comments:
-    label: inline
-    weight: 4
     type: text_default
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 4
     region: content
   field_release_type:
-    label: inline
-    weight: 2
     type: list_default
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_relese_services:
-    label: inline
-    weight: 0
     type: entity_reference_label
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
   comment: true
+  comment_no_subject: true
   content_revision_log: true
   downtime_description: true
   entity_print_view_epub: true
@@ -85,4 +86,5 @@ hidden:
   field_status: true
   langcode: true
   links: true
+  search_api_excerpt: true
   upload: true

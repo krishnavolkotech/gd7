@@ -35,128 +35,128 @@ bundle: measure
 mode: log
 content:
   body:
-    label: above
     type: text_default
-    weight: 1
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   field_contact_person:
     type: entity_reference_label
-    weight: 11
-    region: content
     label: inline
     settings:
       link: false
     third_party_settings: {  }
+    weight: 11
+    region: content
   field_creation_date:
     type: datetime_default
+    label: inline
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
     weight: 12
     region: content
-    label: inline
-    settings:
-      format_type: medium
-      timezone_override: ''
-    third_party_settings: {  }
   field_estimated_effort:
     type: string
+    label: inline
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
     weight: 13
     region: content
-    label: inline
-    settings:
-      link_to_entity: false
-    third_party_settings: {  }
   field_expected_result:
     type: text_default
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
     weight: 15
     region: content
-    label: inline
-    settings: {  }
-    third_party_settings: {  }
   field_follow_up:
     type: datetime_default
+    label: inline
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
     weight: 14
     region: content
-    label: inline
-    settings:
-      format_type: medium
-      timezone_override: ''
-    third_party_settings: {  }
   field_measure_status:
     type: list_default
+    label: inline
+    settings: {  }
+    third_party_settings: {  }
     weight: 10
     region: content
-    label: inline
-    settings: {  }
-    third_party_settings: {  }
   field_non_production_state:
     type: list_default
-    weight: 8
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 8
+    region: content
   field_order_date:
     type: datetime_default
-    weight: 7
-    region: content
     label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium
     third_party_settings: {  }
+    weight: 7
+    region: content
   field_owner:
-    weight: 3
+    type: string
     label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 3
     region: content
   field_remarks:
-    weight: 5
+    type: text_default
     label: inline
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 5
     region: content
   field_risks:
-    weight: 4
+    type: tokenized_field_formatter
     label: above
     settings:
       token_data: '<a href=''[node:url]''>[node:field_risk_id] - [node:title]</a>'
     third_party_settings: {  }
-    type: tokenized_field_formatter
+    weight: 4
     region: content
   field_sponsor:
     type: string
-    weight: 6
-    region: content
     label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    weight: 6
+    region: content
   field_target_date:
-    weight: 2
+    type: datetime_default
     label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium
     third_party_settings: {  }
-    type: datetime_default
+    weight: 2
     region: content
   field_type:
     type: list_default
-    weight: 9
-    region: content
     label: inline
     settings: {  }
     third_party_settings: {  }
-  links:
-    weight: 0
+    weight: 9
     region: content
+  links:
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   content_revision_log: true
   downtime_description: true
@@ -168,3 +168,4 @@ hidden:
   field_risk_id: true
   langcode: true
   last_updated: true
+  search_api_excerpt: true

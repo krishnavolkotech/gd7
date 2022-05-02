@@ -17,14 +17,14 @@ plugin: 'system_menu_block:menu-36070'
 settings:
   id: 'system_menu_block:menu-36070'
   label: ARCO
-  provider: system
   label_display: visible
+  provider: system
   level: 1
   depth: 0
   expand_all_items: false
 visibility:
   request_path:
     id: request_path
-    pages: "/group/2\r\n/group/2/*\r\n/arco/*\r\n"
     negate: false
     context_mapping: {  }
+    pages: "/group/2\r\n/group/2/*\r\n/arco/*\r\n"

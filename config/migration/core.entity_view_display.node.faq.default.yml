@@ -23,34 +23,34 @@ mode: default
 content:
   body:
     type: text_summary_or_trimmed
-    weight: 2
+    label: hidden
     settings:
       trim_length: 600
     third_party_settings: {  }
-    label: hidden
+    weight: 2
     region: content
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   field_detailed_question:
     type: text_default
-    weight: 1
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   links:
-    weight: 3
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   path:
     type: path
-    weight: 2
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
 hidden:
   content_revision_log: true
@@ -59,4 +59,5 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true
   upload: true

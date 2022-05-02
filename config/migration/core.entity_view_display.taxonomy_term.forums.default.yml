@@ -16,10 +16,10 @@ mode: default
 content:
   description:
     type: text_default
-    weight: 0
+    label: above
     settings: {  }
     third_party_settings: {  }
-    label: above
+    weight: 0
     region: content
 hidden:
   entity_print_view_epub: true
@@ -27,3 +27,4 @@ hidden:
   entity_print_view_word_docx: true
   forum_container: true
   langcode: true
+  search_api_excerpt: true

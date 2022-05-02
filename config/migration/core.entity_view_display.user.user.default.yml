@@ -19,18 +19,18 @@ bundle: user
 mode: default
 content:
   masquerade:
-    weight: 50
     settings: {  }
     third_party_settings: {  }
+    weight: 50
     region: content
   user_picture:
+    type: image
     label: hidden
     settings:
-      image_style: ''
       image_link: content
-    type: image
-    weight: 6
+      image_style: ''
     third_party_settings: {  }
+    weight: 6
     region: content
 hidden:
   entity_print_view: true
@@ -40,6 +40,8 @@ hidden:
   field_do_not_deactivate_automati: true
   field_message_preference: true
   field_notifications_status: true
+  field_privacy_policy: true
   l10n_client_contributor_key: true
   langcode: true
   member_for: true
+  search_api_excerpt: true

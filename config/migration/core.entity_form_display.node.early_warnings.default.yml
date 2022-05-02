@@ -20,58 +20,58 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 3
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
-    region: content
   comment:
     type: comment_default
     weight: 20
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_earlywarning_release:
+    type: options_select
     weight: 2
-    type: options_select
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_release_ref:
+    type: entity_reference_autocomplete
     weight: 26
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_release_service:
-    weight: 1
     type: options_select
+    weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_service:
+    type: entity_reference_autocomplete
     weight: 27
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   title:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
 hidden:
   comment_no_subject: true
   created: true

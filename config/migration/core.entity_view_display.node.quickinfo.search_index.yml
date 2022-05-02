@@ -36,132 +36,132 @@ bundle: quickinfo
 mode: search_index
 content:
   field_additional_email_recipient:
-    label: above
-    weight: 8
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 8
     region: content
   field_author_name:
-    label: above
-    weight: 12
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 12
     region: content
   field_author_state:
-    label: above
-    weight: 13
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 13
     region: content
   field_business_impact:
-    label: above
-    weight: 22
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 22
     region: content
   field_business_impact_services:
-    label: above
-    weight: 24
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 24
     region: content
   field_contact:
-    label: above
-    weight: 29
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 29
     region: content
   field_creators:
-    label: above
-    weight: 28
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 28
     region: content
   field_dates:
-    label: above
-    weight: 27
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 27
     region: content
   field_depend_other_services:
-    label: above
-    weight: 21
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 21
     region: content
   field_intial_situation:
-    label: above
-    weight: 18
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 18
     region: content
   field_other_services:
-    label: above
-    weight: 8
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 8
     region: content
   field_professional_conditions:
-    label: above
-    weight: 19
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 19
     region: content
   field_recipients:
-    label: above
-    weight: 9
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 9
     region: content
   field_special_notes:
-    label: above
-    weight: 26
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 26
     region: content
   field_tech_requirements:
-    label: above
-    weight: 20
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 20
     region: content
   field_technical_impact:
-    label: above
-    weight: 23
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 23
     region: content
   field_technical_impact_services:
-    label: above
-    weight: 25
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 25
     region: content
   field_unique_id:
-    label: above
-    weight: 11
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 11
     region: content
   links:
     weight: 100
@@ -177,4 +177,5 @@ hidden:
   field_custom_title: true
   field_related_transfer_number: true
   langcode: true
+  search_api_excerpt: true
   upload: true

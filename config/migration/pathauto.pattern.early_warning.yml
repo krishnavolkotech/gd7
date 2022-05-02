@@ -12,21 +12,21 @@ pattern: 'release-management/early-warnings/[node:field_release_ref:entity:title
 selection_criteria:
   c54ece8d-d81a-4a60-a648-6edf8e32349e:
     id: node_type
-    bundles:
-      early_warnings: early_warnings
     negate: false
+    uuid: c54ece8d-d81a-4a60-a648-6edf8e32349e
     context_mapping:
       node: node
-    uuid: c54ece8d-d81a-4a60-a648-6edf8e32349e
+    bundles:
+      early_warnings: early_warnings
   67eee2e3-d8c3-4959-812a-87e59da6be06:
     id: language
+    negate: false
+    uuid: 67eee2e3-d8c3-4959-812a-87e59da6be06
+    context_mapping:
+      language: 'node:langcode:language'
     langcodes:
       de: de
       en: en
-    negate: false
-    context_mapping:
-      language: 'node:langcode:language'
-    uuid: 67eee2e3-d8c3-4959-812a-87e59da6be06
 selection_logic: and
 weight: -8
 relationships:
