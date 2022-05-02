@@ -18,18 +18,18 @@ plugin: favorites_block
 settings:
   id: favorites_block
   label: 'My Favorites'
-  provider: favorites
   label_display: visible
+  provider: favorites
 visibility:
   user_role:
     id: user_role
-    roles:
-      authenticated: authenticated
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+    roles:
+      authenticated: authenticated
   request_path:
     id: request_path
-    pages: "<front>\r\n*-groups"
     negate: true
     context_mapping: {  }
+    pages: "<front>\r\n*-groups"

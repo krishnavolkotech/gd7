@@ -20,29 +20,29 @@ plugin: 'system_menu_block:primary-links'
 settings:
   id: 'system_menu_block:primary-links'
   label: 'Primary links'
-  provider: system
   label_display: '0'
+  provider: system
   level: 1
   depth: 0
   expand_all_items: true
 visibility:
   language:
     id: language
-    langcodes:
-      de: de
-      en: en
     negate: false
     context_mapping:
       language: '@language.current_language_context:language_interface'
+    langcodes:
+      de: de
+      en: en
   user_role:
     id: user_role
-    roles:
-      authenticated: authenticated
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+    roles:
+      authenticated: authenticated
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''

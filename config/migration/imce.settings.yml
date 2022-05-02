@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: 4FhrEwOM9yJ8neEoN77sxroTRBUXqRwap0KSJtFnYJs
+langcode: de
 abs_urls: false
 admin_theme: false
 roles_profiles:
@@ -8,6 +11,3 @@ roles_profiles:
     private: admin
   site_administrator:
     private: admin
-_core:
-  default_config_hash: 4FhrEwOM9yJ8neEoN77sxroTRBUXqRwap0KSJtFnYJs
-langcode: de

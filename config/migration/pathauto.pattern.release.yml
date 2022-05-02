@@ -12,20 +12,20 @@ pattern: 'release-management/release/[node:nid]'
 selection_criteria:
   af5639df-638d-4a0b-804d-78fd2af4dc81:
     id: node_type
-    bundles:
-      release: release
     negate: false
+    uuid: af5639df-638d-4a0b-804d-78fd2af4dc81
     context_mapping:
       node: node
-    uuid: af5639df-638d-4a0b-804d-78fd2af4dc81
+    bundles:
+      release: release
   ece3fb80-b5e0-4356-82bc-6e75951d2e67:
     id: language
-    langcodes:
-      de: de
     negate: false
+    uuid: ece3fb80-b5e0-4356-82bc-6e75951d2e67
     context_mapping:
       language: 'node:langcode:language'
-    uuid: ece3fb80-b5e0-4356-82bc-6e75951d2e67
+    langcodes:
+      de: de
 selection_logic: and
 weight: -10
 relationships:

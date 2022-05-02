@@ -36,12 +36,12 @@ bundle: risk
 mode: teaser
 content:
   body:
-    label: hidden
     type: text_summary_or_trimmed
-    weight: 101
+    label: hidden
     settings:
       trim_length: 600
     third_party_settings: {  }
+    weight: 101
     region: content
   field_measures:
     weight: 100
@@ -83,3 +83,4 @@ hidden:
   field_risk_value: true
   field_scope: true
   langcode: true
+  search_api_excerpt: true

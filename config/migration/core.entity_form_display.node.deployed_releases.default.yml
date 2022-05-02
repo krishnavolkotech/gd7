@@ -35,104 +35,104 @@ bundle: deployed_releases
 mode: default
 content:
   field_abnormalities_bool:
+    type: boolean_checkbox
     weight: 6
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_abnormality_description:
+    type: text_textarea
     weight: 7
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_automated_deployment_bool:
+    type: boolean_checkbox
     weight: 5
+    region: content
     settings:
       display_label: true
     third_party_settings: {  }
-    type: boolean_checkbox
-    region: content
   field_date_deployed:
-    weight: 3
-    settings: {  }
-    third_party_settings: {  }
     type: datetime_default
+    weight: 3
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_deployed_release:
+    type: entity_reference_autocomplete
     weight: 8
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_deployment_status:
+    type: options_select
     weight: 11
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_environment:
+    type: options_select
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_first_deployment:
-    weight: 9
-    settings: {  }
-    third_party_settings: {  }
     type: options_buttons
+    weight: 9
     region: content
-  field_installation_time:
-    weight: 4
-    settings:
-      placeholder: ''
-    third_party_settings: {  }
-    type: number
-    region: content
-  field_prev_release:
-    weight: 10
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
-  field_service:
-    weight: 2
-    settings:
-      match_operator: CONTAINS
-      match_limit: 10
-      size: 60
-      placeholder: ''
-    third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
-  field_state_list:
-    weight: 26
     settings: {  }
     third_party_settings: {  }
-    type: options_select
+  field_installation_time:
+    type: number
+    weight: 4
     region: content
-  field_successor_release:
-    weight: 28
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+  field_prev_release:
+    type: entity_reference_autocomplete
+    weight: 10
+    region: content
     settings:
       match_operator: CONTAINS
       match_limit: 10
       size: 60
       placeholder: ''
     third_party_settings: {  }
+  field_service:
     type: entity_reference_autocomplete
+    weight: 2
     region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_state_list:
+    type: options_select
+    weight: 26
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_successor_release:
+    type: entity_reference_autocomplete
+    weight: 28
+    region: content
+    settings:
+      match_operator: CONTAINS
+      match_limit: 10
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
   field_user_state:
     type: number
     weight: 12
@@ -145,11 +145,11 @@ content:
   title:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
 hidden:
   body: true
   comment: true

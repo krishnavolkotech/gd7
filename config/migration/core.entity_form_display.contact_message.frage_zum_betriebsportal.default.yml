@@ -12,49 +12,49 @@ mode: default
 content:
   copy:
     weight: 7
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_category:
+    type: options_select
     weight: 4
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   langcode:
     type: language_select
     weight: 6
+    region: content
     settings:
       include_locked: true
     third_party_settings: {  }
-    region: content
   mail:
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   message:
     type: string_textarea
     weight: 5
+    region: content
     settings:
       rows: 12
       placeholder: ''
     third_party_settings: {  }
-    region: content
   name:
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   preview:
     weight: 40
     region: content
   subject:
     type: string_textfield
     weight: 3
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
 hidden: {  }

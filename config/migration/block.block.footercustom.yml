@@ -13,8 +13,8 @@ plugin: 'block_content:a4067fda-527c-4db0-9427-b23d4809a7d8'
 settings:
   id: 'block_content:a4067fda-527c-4db0-9427-b23d4809a7d8'
   label: Footer-custom
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full

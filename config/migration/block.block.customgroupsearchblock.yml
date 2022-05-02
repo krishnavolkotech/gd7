@@ -17,19 +17,19 @@ plugin: cust_group_search_block
 settings:
   id: cust_group_search_block
   label: 'Custom Group Search block'
-  provider: cust_group
   label_display: '0'
+  provider: cust_group
 visibility:
   user_role:
     id: user_role
-    roles:
-      authenticated: authenticated
-      site_administrator: site_administrator
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+    roles:
+      authenticated: authenticated
+      site_administrator: site_administrator
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''

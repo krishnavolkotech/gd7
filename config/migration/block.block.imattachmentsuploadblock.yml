@@ -18,16 +18,16 @@ plugin: im_attachments_upload_block
 settings:
   id: im_attachments_upload_block
   label: 'Im attachments upload block'
-  provider: cust_group
   label_display: '0'
+  provider: cust_group
 visibility:
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''
   request_path:
     id: request_path
-    pages: "/node/826\r\n/incident-management/ablage-attachments"
     negate: false
     context_mapping: {  }
+    pages: "/node/826\r\n/incident-management/ablage-attachments"

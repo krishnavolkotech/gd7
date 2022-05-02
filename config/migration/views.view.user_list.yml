@@ -17,151 +17,34 @@ base_table: users_field_data
 base_field: uid
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: perm
-        options:
-          perm: 'access user profiles'
-      cache:
-        type: tag
-        options: {  }
-      query:
-        type: views_query
-        options:
-          disable_sql_rewrite: false
-          distinct: false
-          replica: false
-          query_comment: ''
-          query_tags: {  }
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Suchen
-          reset_button: false
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
-          expose_sort_order: true
-          sort_asc_label: Auf
-          sort_desc_label: Ab
-      pager:
-        type: mini
-        options:
-          items_per_page: 10
-          offset: 0
-          id: 0
-          total_pages: null
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Einträge pro Seite'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- Alle -'
-            offset: false
-            offset_label: Offset
-          tags:
-            previous: ‹‹
-            next: ››
-      style:
-        type: table
-        options:
-          grouping: {  }
-          row_class: ''
-          default_row_class: true
-          override: true
-          sticky: false
-          caption: ''
-          summary: ''
-          description: ''
-          columns:
-            name: name
-            firstname: firstname
-            lastname: lastname
-            phone: phone
-            position: position
-            abbr: abbr
-            mail: mail
-          info:
-            name:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            firstname:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            lastname:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            phone:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            position:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            abbr:
-              sortable: true
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-            mail:
-              sortable: false
-              default_sort_order: asc
-              align: ''
-              separator: ''
-              empty_column: false
-              responsive: ''
-          default: '-1'
-          empty_table: false
-      row:
-        type: fields
+      title: Benutzer
       fields:
         name:
           id: name
           table: users_field_data
           field: name
+          relationship: none
+          group_type: group
+          admin_label: ''
           entity_type: user
           entity_field: name
+          plugin_id: field
           label: ''
+          exclude: false
           alter:
             alter_text: false
             make_link: false
             absolute: false
-            trim: false
             word_boundary: false
             ellipsis: false
             strip_tags: false
+            trim: false
             html: false
-          hide_empty: false
-          empty_zero: false
-          plugin_id: field
-          relationship: none
-          group_type: group
-          admin_label: ''
-          exclude: false
           element_type: ''
           element_class: ''
           element_label_type: ''
@@ -171,6 +54,8 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
           type: user_name
@@ -192,6 +77,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: mail
+          plugin_id: field
           label: ''
           exclude: false
           alter:
@@ -246,9 +134,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: user
-          entity_field: mail
-          plugin_id: field
         lastname:
           id: lastname
           table: cust_profile
@@ -264,20 +149,42 @@ display:
           table: cust_profile
           field: position
           plugin_id: standard
-      filters:
-        status:
-          value: '1'
-          table: users_field_data
-          field: status
-          plugin_id: boolean
-          entity_type: user
-          entity_field: status
-          id: status
+      pager:
+        type: mini
+        options:
+          offset: 0
+          items_per_page: 10
+          total_pages: null
+          id: 0
+          tags:
+            next: ››
+            previous: ‹‹
           expose:
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          group: 1
+            items_per_page: false
+            items_per_page_label: 'Einträge pro Seite'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- Alle -'
+            offset: false
+            offset_label: Offset
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Suchen
+          reset_button: false
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: true
+          sort_asc_label: Auf
+          sort_desc_label: Ab
+      access:
+        type: perm
+        options:
+          perm: 'access user profiles'
+      cache:
+        type: tag
+        options: {  }
+      empty: {  }
       sorts:
         lastname:
           id: lastname
@@ -286,19 +193,113 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: standard
           order: ASC
-          exposed: false
           expose:
             label: ''
-          plugin_id: standard
-      title: Benutzer
+            field_identifier: lastname
+          exposed: false
+      arguments: {  }
+      filters:
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          entity_type: user
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+          expose:
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+      style:
+        type: table
+        options:
+          grouping: {  }
+          row_class: ''
+          default_row_class: true
+          columns:
+            name: name
+            firstname: firstname
+            lastname: lastname
+            phone: phone
+            position: position
+            abbr: abbr
+            mail: mail
+          default: '-1'
+          info:
+            name:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            firstname:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            lastname:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            phone:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            position:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            abbr:
+              sortable: true
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+            mail:
+              sortable: false
+              default_sort_order: asc
+              align: ''
+              separator: ''
+              empty_column: false
+              responsive: ''
+          override: true
+          sticky: false
+          summary: ''
+          empty_table: false
+          caption: ''
+          description: ''
+      row:
+        type: fields
+      query:
+        type: views_query
+        options:
+          query_comment: ''
+          disable_sql_rewrite: false
+          distinct: false
+          replica: false
+          query_tags: {  }
+      relationships: {  }
+      css_class: sort-user-list
       header: {  }
       footer: {  }
-      empty: {  }
-      relationships: {  }
-      arguments: {  }
       display_extenders: {  }
-      css_class: sort-user-list
     cache_metadata:
       max-age: -1
       contexts:
@@ -308,227 +309,12 @@ display:
         - user.permissions
       tags: {  }
   address:
-    display_plugin: page
     id: address
     display_title: Seite
+    display_plugin: page
     position: 1
     display_options:
-      display_extenders:
-        views_merge_rows: {  }
-      path: address
-      menu:
-        enabled: true
-        expanded: false
       title: Mitglieder
-      defaults:
-        title: false
-        filters: false
-        filter_groups: false
-        fields: false
-        relationships: false
-        pager: false
-        access: false
-        empty: false
-        header: false
-        exposed_form: false
-        arguments: false
-      filters:
-        combine:
-          id: combine
-          table: views
-          field: combine
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: contains
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: combine_op
-            label: 'Name, E-Mail oder Benutzername'
-            description: ''
-            use_operator: false
-            operator: combine_op
-            identifier: text
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          fields:
-            lastname: lastname
-            name: name
-            firstname: firstname
-            mail: mail
-          plugin_id: combine
-        status:
-          value: '1'
-          table: users_field_data
-          field: status
-          plugin_id: boolean
-          entity_type: user
-          entity_field: status
-          id: status
-          expose:
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          group: 1
-        abbr:
-          id: abbr
-          table: states
-          field: abbr
-          relationship: state_id
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: abbr_op
-            label: Land
-            description: ''
-            use_operator: false
-            operator: abbr_op
-            identifier: state
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: 'State abbr'
-            description: ''
-            identifier: abbr
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items:
-              1: {  }
-              2: {  }
-              3: {  }
-          plugin_id: string
-        uid:
-          id: uid
-          table: inactive_users
-          field: uid
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: '0'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          plugin_id: is_null
-        uid_raw:
-          id: uid_raw
-          table: users_field_data
-          field: uid_raw
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: '>'
-          value:
-            min: ''
-            max: ''
-            value: '0'
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            placeholder: ''
-            min_placeholder: ''
-            max_placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: user
-          plugin_id: numeric
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
       fields:
         uid:
           id: uid
@@ -537,6 +323,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: uid
+          plugin_id: field
           label: Benutzer-ID
           exclude: true
           alter:
@@ -591,9 +380,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: user
-          entity_field: uid
-          plugin_id: field
         lastname:
           id: lastname
           table: cust_profile
@@ -601,6 +387,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: standard
           label: Nachname
           exclude: false
           alter:
@@ -642,7 +429,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          plugin_id: standard
         name:
           id: name
           table: users_field_data
@@ -650,6 +436,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: name
+          plugin_id: field
           label: Nachname
           exclude: true
           alter:
@@ -705,9 +494,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: user
-          entity_field: name
-          plugin_id: field
         firstname:
           id: firstname
           table: cust_profile
@@ -730,6 +516,7 @@ display:
           relationship: state_id
           group_type: group
           admin_label: ''
+          plugin_id: standard
           label: Land
           exclude: false
           alter:
@@ -771,7 +558,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          plugin_id: standard
         mail:
           id: mail
           table: users_field_data
@@ -779,6 +565,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: mail
+          plugin_id: field
           label: E-Mail
           exclude: false
           alter:
@@ -833,38 +622,16 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: user
-          entity_field: mail
-          plugin_id: field
-      relationships:
-        state_id:
-          id: state_id
-          table: cust_profile
-          field: state_id
-          relationship: none
-          group_type: group
-          admin_label: ' State id'
-          required: false
-          plugin_id: standard
-        uid:
-          id: uid
-          table: inactive_users
-          field: uid
-          relationship: none
-          group_type: group
-          admin_label: ' Inactive user'
-          required: false
-          plugin_id: standard
       pager:
         type: full
         options:
-          items_per_page: 50
           offset: 0
-          id: 0
+          items_per_page: 50
           total_pages: null
+          id: 0
           tags:
-            previous: ‹‹
             next: ››
+            previous: ‹‹
             first: '« Erste'
             last: 'Letzte »'
           expose:
@@ -876,6 +643,34 @@ display:
             offset: false
             offset_label: Offset
           quantity: 9
+      exposed_form:
+        type: bef
+        options:
+          submit_button: Suchen
+          reset_button: true
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: true
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+          bef:
+            general:
+              autosubmit: false
+              autosubmit_hide: false
+              allow_secondary: false
+              secondary_label: 'Erweiterte Optionen'
+            combine:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
+            abbr:
+              bef_format: default
+              more_options:
+                is_secondary: false
+                rewrite:
+                  filter_rewrite_values: ''
       access:
         type: role
         options:
@@ -889,51 +684,12 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: text
           empty: true
-          tokenize: false
           content:
             value: "<p>Keine Ergebnisse gefunden</p>\r\n"
             format: basic_html
-          plugin_id: text
-      header:
-        result:
-          id: result
-          table: views
-          field: result
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: false
-          content: '@total Mitglieder insgesamt'
-          plugin_id: result
-      exposed_form:
-        type: bef
-        options:
-          submit_button: Suchen
-          reset_button: true
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
-          expose_sort_order: true
-          sort_asc_label: Aufsteigend
-          sort_desc_label: Absteigend
-          bef:
-            general:
-              allow_secondary: false
-              secondary_label: 'Erweiterte Optionen'
-              autosubmit: false
-              autosubmit_hide: false
-            combine:
-              bef_format: default
-              more_options:
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: ''
-            abbr:
-              bef_format: default
-              more_options:
-                is_secondary: false
-                rewrite:
-                  filter_rewrite_values: ''
+          tokenize: false
       arguments:
         lastname:
           id: lastname
@@ -942,6 +698,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: string
           default_action: ignore
           exception:
             value: all
@@ -956,8 +713,8 @@ display:
           summary_options:
             base_path: ''
             count: true
-            items_per_page: 25
             override: false
+            items_per_page: 25
           summary:
             sort_order: asc
             number_of_records: 0
@@ -973,8 +730,252 @@ display:
           path_case: none
           transform_dash: false
           break_phrase: false
+      filters:
+        combine:
+          id: combine
+          table: views
+          field: combine
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: combine
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: combine_op
+            label: 'Name, E-Mail oder Benutzername'
+            description: ''
+            use_operator: false
+            operator: combine_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: text
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          fields:
+            lastname: lastname
+            name: name
+            firstname: firstname
+            mail: mail
+        status:
+          id: status
+          table: users_field_data
+          field: status
+          entity_type: user
+          entity_field: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
+          expose:
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+        abbr:
+          id: abbr
+          table: states
+          field: abbr
+          relationship: state_id
+          group_type: group
+          admin_label: ''
           plugin_id: string
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: abbr_op
+            label: Land
+            description: ''
+            use_operator: false
+            operator: abbr_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: state
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: 'State abbr'
+            description: ''
+            identifier: abbr
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: is_null
+          operator: '='
+          value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        uid_raw:
+          id: uid_raw
+          table: users_field_data
+          field: uid_raw
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: user
+          plugin_id: numeric
+          operator: '>'
+          value:
+            min: ''
+            max: ''
+            value: '0'
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      defaults:
+        empty: false
+        access: false
+        title: false
+        pager: false
+        exposed_form: false
+        relationships: false
+        fields: false
+        arguments: false
+        filters: false
+        filter_groups: false
+        header: false
+      relationships:
+        state_id:
+          id: state_id
+          table: cust_profile
+          field: state_id
+          relationship: none
+          group_type: group
+          admin_label: ' State id'
+          plugin_id: standard
+          required: false
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' Inactive user'
+          plugin_id: standard
+          required: false
       display_description: ''
+      header:
+        result:
+          id: result
+          table: views
+          field: result
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: result
+          empty: false
+          content: '@total Mitglieder insgesamt'
+      display_extenders:
+        views_merge_rows: {  }
+      path: address
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: -1
       contexts:
@@ -985,16 +986,15 @@ display:
         - user.roles
       tags: {  }
   attachment_1:
-    display_plugin: attachment
     id: attachment_1
     display_title: Anhang
+    display_plugin: attachment
     position: 4
     display_options:
-      display_extenders:
-        views_merge_rows: {  }
-      displays:
-        address: address
-      inherit_arguments: false
+      pager:
+        type: none
+        options:
+          offset: 0
       arguments:
         lastname:
           id: lastname
@@ -1003,6 +1003,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: string
           default_action: summary
           exception:
             value: all
@@ -1016,11 +1017,11 @@ display:
           default_argument_skip_url: false
           summary_options:
             base_path: ''
+            count: false
+            override: false
             items_per_page: 25
             inline: true
             separator: ' | '
-            count: false
-            override: false
           summary:
             sort_order: asc
             number_of_records: 0
@@ -1036,41 +1037,20 @@ display:
           path_case: lower
           transform_dash: false
           break_phrase: false
-          plugin_id: string
-      defaults:
-        arguments: false
-        relationships: false
-        filters: false
-        filter_groups: false
-      inherit_exposed_filters: false
-      pager:
-        type: none
-        options:
-          offset: 0
-      relationships:
-        uid:
-          id: uid
-          table: inactive_users
-          field: uid
-          relationship: none
-          group_type: group
-          admin_label: ' Inactive user'
-          required: false
-          plugin_id: standard
       filters:
         status:
-          value: '1'
+          id: status
           table: users_field_data
           field: status
-          plugin_id: boolean
           entity_type: user
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         uid:
           id: uid
           table: inactive_users
@@ -1078,6 +1058,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: is_null
           operator: '='
           value: '0'
           group: 1
@@ -1088,14 +1069,14 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1108,11 +1089,31 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: is_null
       filter_groups:
         operator: AND
         groups:
           1: AND
+      defaults:
+        relationships: false
+        arguments: false
+        filters: false
+        filter_groups: false
+      relationships:
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' Inactive user'
+          plugin_id: standard
+          required: false
+      display_extenders:
+        views_merge_rows: {  }
+      displays:
+        address: address
+      inherit_arguments: false
+      inherit_exposed_filters: false
     cache_metadata:
       max-age: -1
       contexts:
@@ -1123,9 +1124,9 @@ display:
         - user.permissions
       tags: {  }
   attachment_2:
-    display_plugin: attachment
     id: attachment_2
     display_title: 'Anhang 2'
+    display_plugin: attachment
     position: 5
     display_options:
       display_extenders: {  }
@@ -1138,27 +1139,12 @@ display:
         - user.permissions
       tags: {  }
   entity_reference_1:
-    display_plugin: entity_reference
     id: entity_reference_1
     display_title: 'Entity Reference'
+    display_plugin: entity_reference
     position: 1
     display_options:
-      display_extenders: {  }
       title: Mitglieder
-      defaults:
-        title: false
-        filters: false
-        filter_groups: false
-        fields: false
-        relationships: false
-        pager: false
-        access: false
-        group_by: false
-      filters: {  }
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
       fields:
         abbr:
           id: abbr
@@ -1167,6 +1153,7 @@ display:
           relationship: state_id
           group_type: group
           admin_label: ''
+          plugin_id: standard
           label: ''
           exclude: false
           alter:
@@ -1208,7 +1195,6 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          plugin_id: standard
         state:
           id: state
           table: states
@@ -1216,6 +1202,7 @@ display:
           relationship: state_id
           group_type: group
           admin_label: ''
+          plugin_id: standard
           label: ''
           exclude: false
           alter:
@@ -1257,27 +1244,16 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: true
-          plugin_id: standard
-      relationships:
-        state_id:
-          id: state_id
-          table: cust_profile
-          field: state_id
-          relationship: none
-          group_type: group
-          admin_label: ' State id'
-          required: false
-          plugin_id: standard
       pager:
         type: full
         options:
-          items_per_page: 20
           offset: 0
-          id: 0
+          items_per_page: 20
           total_pages: null
+          id: 0
           tags:
-            previous: ‹‹
             next: ››
+            previous: ‹‹
             first: '« Erste'
             last: 'Letzte »'
           expose:
@@ -1292,6 +1268,11 @@ display:
       access:
         type: none
         options: {  }
+      filters: {  }
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
       style:
         type: entity_reference
         options:
@@ -1303,7 +1284,27 @@ display:
             phone: '0'
             position: '0'
             mail: '0'
+      defaults:
+        access: false
+        title: false
+        pager: false
+        group_by: false
+        relationships: false
+        fields: false
+        filters: false
+        filter_groups: false
+      relationships:
+        state_id:
+          id: state_id
+          table: cust_profile
+          field: state_id
+          relationship: none
+          group_type: group
+          admin_label: ' State id'
+          plugin_id: standard
+          required: false
       group_by: true
+      display_extenders: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -1311,41 +1312,33 @@ display:
         - url.query_args
       tags: {  }
   page_1:
-    display_plugin: page
     id: page_1
     display_title: Seite
+    display_plugin: page
     position: 1
     display_options:
-      display_extenders:
-        views_merge_rows: {  }
-      path: user-list
-      menu:
-        enabled: true
-        expanded: false
       fields:
         name:
           id: name
           table: users_field_data
           field: name
+          relationship: none
+          group_type: group
+          admin_label: ''
           entity_type: user
           entity_field: name
+          plugin_id: field
           label: ''
+          exclude: false
           alter:
             alter_text: false
             make_link: false
             absolute: false
-            trim: false
             word_boundary: false
             ellipsis: false
             strip_tags: false
+            trim: false
             html: false
-          hide_empty: false
-          empty_zero: false
-          plugin_id: field
-          relationship: none
-          group_type: group
-          admin_label: ''
-          exclude: false
           element_type: ''
           element_class: ''
           element_label_type: ''
@@ -1355,6 +1348,8 @@ display:
           element_wrapper_class: ''
           element_default_classes: true
           empty: ''
+          hide_empty: false
+          empty_zero: false
           hide_alter_empty: true
           click_sort_column: value
           type: user_name
@@ -1376,6 +1371,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: user
+          entity_field: mail
+          plugin_id: field
           label: ''
           exclude: false
           alter:
@@ -1430,38 +1428,20 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: user
-          entity_field: mail
-          plugin_id: field
-      defaults:
-        fields: false
-        relationships: false
-        filters: false
-        filter_groups: false
-      relationships:
-        uid:
-          id: uid
-          table: inactive_users
-          field: uid
-          relationship: none
-          group_type: group
-          admin_label: ' Inactive user'
-          required: false
-          plugin_id: standard
       filters:
         status:
-          value: '1'
+          id: status
           table: users_field_data
           field: status
-          plugin_id: boolean
           entity_type: user
           entity_field: status
-          id: status
+          plugin_id: boolean
+          value: '1'
+          group: 1
           expose:
             operator: ''
             operator_limit_selection: false
             operator_list: {  }
-          group: 1
         uid:
           id: uid
           table: inactive_users
@@ -1469,6 +1449,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: is_null
           operator: '='
           value: '0'
           group: 1
@@ -1479,14 +1460,14 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1499,11 +1480,31 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          plugin_id: is_null
       filter_groups:
         operator: AND
         groups:
           1: AND
+      defaults:
+        relationships: false
+        fields: false
+        filters: false
+        filter_groups: false
+      relationships:
+        uid:
+          id: uid
+          table: inactive_users
+          field: uid
+          relationship: none
+          group_type: group
+          admin_label: ' Inactive user'
+          plugin_id: standard
+          required: false
+      display_extenders:
+        views_merge_rows: {  }
+      path: user-list
+      menu:
+        enabled: true
+        expanded: false
     cache_metadata:
       max-age: -1
       contexts:

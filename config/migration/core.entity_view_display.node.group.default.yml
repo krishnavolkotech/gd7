@@ -21,30 +21,30 @@ bundle: group
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 101
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 101
     region: content
   comment:
-    label: hidden
     type: comment_default
-    weight: 20
+    label: hidden
     settings:
-      pager_id: 0
       view_mode: default
+      pager_id: 0
     third_party_settings: {  }
+    weight: 20
     region: content
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   links:
-    weight: 100
     settings: {  }
     third_party_settings: {  }
+    weight: 100
     region: content
 hidden:
   content_revision_log: true
@@ -53,3 +53,4 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true

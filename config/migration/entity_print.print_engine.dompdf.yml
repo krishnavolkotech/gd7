@@ -4,8 +4,8 @@ status: true
 dependencies: {  }
 id: dompdf
 settings:
-  orientation: portrait
   default_paper_size: letter
+  orientation: portrait
   username: Azri
   password: ''
   enable_html5_parser: true
@@ -13,3 +13,4 @@ settings:
   cafile: ''
   verify_peer: false
   verify_peer_name: false
+  disable_log: false

@@ -21,48 +21,48 @@ bundle: service_profile
 mode: default
 content:
   field_dependent_downtimeservices:
+    type: entity_reference_autocomplete
     weight: 5
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
-    type: entity_reference_autocomplete
-    region: content
   field_dependent_service:
-    weight: 2
     type: options_select
+    weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_impact:
+    type: text_textarea
     weight: 4
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_maintenance_advance_time:
-    weight: 3
     type: number
+    weight: 3
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_service_operator:
+    type: options_buttons
     weight: 0
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_buttons
-    region: content
   field_service_recipient:
+    type: options_buttons
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_buttons
-    region: content
 hidden:
   body: true
   comment: true

@@ -15,25 +15,25 @@ content:
   entity_id:
     type: group_user_field_widget
     weight: 1
+    region: content
     settings:
       size: 60
       placeholder: ''
       hzd_group: ''
     third_party_settings: {  }
-    region: content
   group_roles:
     type: options_buttons
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   langcode:
     type: language_select
     weight: 0
+    region: content
     settings:
       include_locked: true
     third_party_settings: {  }
-    region: content
   translation:
     weight: 3
     region: content

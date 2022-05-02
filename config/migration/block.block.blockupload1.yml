@@ -18,23 +18,23 @@ plugin: 'block_upload:block_upload1'
 settings:
   id: 'block_upload:block_upload1'
   label: 'Datei hochladen'
-  provider: block_upload
   label_display: visible
+  provider: block_upload
 visibility:
-  node_type:
-    id: node_type
-    bundles:
-      im_upload_page: im_upload_page
-    negate: false
-    context_mapping:
-      node: '@node.node_route_context:node'
   request_path:
     id: request_path
-    pages: '/node/*/edit'
     negate: true
     context_mapping: {  }
+    pages: '/node/*/edit'
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''
+  node_type:
+    id: node_type
+    negate: false
+    context_mapping:
+      node: '@node.node_route_context:node'
+    bundles:
+      im_upload_page: im_upload_page

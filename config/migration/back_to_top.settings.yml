@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: HRQIGKnZ35Gs830cGCZcJjb0I17NVFpv4QHKQZyzloA
+langcode: de
 back_to_top_prevent_on_mobile: true
 back_to_top_prevent_in_admin: true
 back_to_top_prevent_in_front: true
@@ -9,6 +12,3 @@ back_to_top_bg_color: '#F7F7F7'
 back_to_top_border_color: '#CCCCCC'
 back_to_top_hover_color: '#EEEEEE'
 back_to_top_text_color: '#333333'
-_core:
-  default_config_hash: HRQIGKnZ35Gs830cGCZcJjb0I17NVFpv4QHKQZyzloA
-langcode: de

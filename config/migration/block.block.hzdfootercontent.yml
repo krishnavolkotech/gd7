@@ -16,6 +16,6 @@ plugin: hzd_footer
 settings:
   id: hzd_footer
   label: 'Hzd Footer content'
-  provider: cust_group
   label_display: '0'
+  provider: cust_group
 visibility: {  }

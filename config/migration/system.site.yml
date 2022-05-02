@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: yXadRE77Va-G6dxhd2kPYapAvbnSvTF6hO4oXiOEynI
+langcode: de
 uuid: 0e78d2c1-0fa4-4c93-94e2-fe45acb2ac70
 name: 'Betriebsportal KONSENS'
 mail: noreply-betriebsportal-konsens@hzd.hessen.de
@@ -8,8 +11,5 @@ page:
   front: /home
 admin_compact_mode: false
 weight_select_max: 100
-langcode: de
 default_langcode: de
-_core:
-  default_config_hash: yXadRE77Va-G6dxhd2kPYapAvbnSvTF6hO4oXiOEynI
 mail_notification: ''

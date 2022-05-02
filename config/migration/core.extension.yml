@@ -1,3 +1,6 @@
+_core:
+  default_config_hash: m2GVq11UAOVuNgj8x0t5fMOPujpvQQ_zxLoaly1BMEU
+langcode: de
 module:
   admin_toolbar: 0
   admin_toolbar_tools: 0
@@ -152,7 +155,4 @@ theme:
   seven: 0
   bootstrap: 0
   hzd: 0
-_core:
-  default_config_hash: m2GVq11UAOVuNgj8x0t5fMOPujpvQQ_zxLoaly1BMEU
-langcode: de
 profile: standard
