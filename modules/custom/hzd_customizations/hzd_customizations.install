@@ -4,6 +4,8 @@
  * @file
  */
 
+
+
 /**
  * Implements hook_uninstall().
  */
@@ -356,4 +358,79 @@ function hzd_customizations_update_8066(&$sandbox) {
       }
   }
   \Drupal::messenger()->addMessage('Deployed releases Processed to Group Release Management.');
+}
+
+/**
+ * Implements hook_update_N() on Module hzd_customizarions Update # 8067.
+ * Removing special Charecters from URl Aliases
+ */
+function hzd_customizations_update_8067(&$sandbox) {
+  custom_find_all_alias_special_charecters();
+  \Drupal::messenger()->addMessage('Replaced Special charecters in Path alias and added redirect.');
+}
+
+
+function custom_find_all_alias_special_charecters() {
+    $db = \Drupal::database();
+    $result = $db->select('path_alias', 'pa')
+            ->fields('pa', array('id', 'alias', 'path'))
+            ->condition('alias', '', '!=');
+    $val = $result->execute()->fetchAll();
+    $states = array();
+    $count = 0;
+    $nodes = [];
+    foreach ($val as $aliases) {
+        if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬äöüß]/', $aliases->alias)) {
+          $node_id = trim($aliases->path, "/node/");
+	  $node = \Drupal\node\Entity\Node::load($node_id);
+
+
+	  if ($node->getType() == 'page') {
+           custom_manual_redirect_save($node_id, $aliases->alias, $node);
+           $nodes[$node_id] = $aliases->alias;
+	 }
+      }
+    }
+}
+
+function custom_manual_redirect_save($nid, $old_alias, $node) {
+  $path_details = explode("/", $old_alias);
+  $group = '';
+  if (count($path_details) > 1) {
+    $group = $path_details[1];
+    unset($path_details[0]);
+    unset($path_details[1]);
+  }
+  $alias_string = implode("/", $path_details);
+  $cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($alias_string);
+  $new_alias = $group? "/". $group . "/".$cleanedtitle: "/".$cleanedtitle;
+
+  $path_alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $alias_objects = $path_alias_storage->loadByProperties([
+       'path' => "/node/".$nid,
+  ]);
+
+
+  if (count($alias_objects) > 0) {
+    foreach($alias_objects as $alias_object) {
+      $alias_object->delete();
+    }
+  }
+
+   $path_alias = \Drupal::entityTypeManager()->getStorage('path_alias')->create([
+    'path' => "/node/" . $nid,
+      'alias' => $new_alias,
+      'langcode' => "de",
+    ]);
+    $path_alias->save();
+    \Drupal::entityTypeManager()->getStorage('path_alias')->save($path_alias);
+
+
+  Drupal\redirect\Entity\Redirect::create([
+    'redirect_source' => trim($old_alias, '/'),
+    'redirect_redirect' => 'internal:'.'/node/'.$nid,
+    'language' => 'de',
+    'status_code' => '301',
+  ])->save();
+
 }

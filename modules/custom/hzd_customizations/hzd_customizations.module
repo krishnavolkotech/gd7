@@ -22,6 +22,7 @@ use Drupal\hzd_customizations\Controller\Inactiveusers;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\legal\Entity\Conditions;
 use Drupal\Core\Site\Settings;
+use Drupal\redirect\Entity\Redirect;
 
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 'site_administrator');
@@ -240,18 +241,67 @@ function hzd_customizations_node_view(array &$build, \Drupal\Core\Entity\EntityI
 function find_all_alias_special_charecters() {
     $db = \Drupal::database();
     $result = $db->select('path_alias', 'pa')
-            ->fields('pa', array('id', 'alias'))
+            ->fields('pa', array('id', 'alias', 'path'))
             ->condition('alias', '', '!=');
     $val = $result->execute()->fetchAll();
     $states = array();
     $count = 0;
     $nodes = [];
     foreach ($val as $aliases) {
-      if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬äöüß]/', $aliases->alias)) {
-          $nodes[$aliases->id] = $aliases->alias;
+        if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬äöüß]/', $aliases->alias)) {
+          $node_id = trim($aliases->path, "/node/");
+	  $node = \Drupal\node\Entity\Node::load($node_id);
+
+
+	  if ($node->getType() == 'page') {
+           manual_redirect_save($node_id, $aliases->alias, $node);
+           $nodes[$node_id] = $aliases->alias;
+	 }
       }
     }
-            dump($nodes);	
+//    dump($nodes);		
+}
+
+function manual_redirect_save($nid, $old_alias, $node) {
+  $path_details = explode("/", $old_alias);
+  $group = '';
+  if (count($path_details) > 1) {
+    $group = $path_details[1];
+    unset($path_details[0]);
+    unset($path_details[1]);
+  }
+  $alias_string = implode("/", $path_details);
+  $cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($alias_string);
+  $new_alias = $group? "/". $group . "/".$cleanedtitle: "/".$cleanedtitle;
+
+  $path_alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
+  $alias_objects = $path_alias_storage->loadByProperties([
+       'path' => "/node/".$nid,
+  ]);
+
+
+  if (count($alias_objects) > 0) {
+    foreach($alias_objects as $alias_object) {
+      $alias_object->delete();
+    }
+  }
+
+   $path_alias = \Drupal::entityTypeManager()->getStorage('path_alias')->create([
+    'path' => "/node/" . $nid,
+      'alias' => $new_alias,
+      'langcode' => "de",
+    ]);
+    $path_alias->save();
+    \Drupal::entityTypeManager()->getStorage('path_alias')->save($path_alias);
+
+
+  Drupal\redirect\Entity\Redirect::create([
+    'redirect_source' => trim($old_alias, '/'),
+    'redirect_redirect' => 'internal:'.'/node/'.$nid,
+    'language' => 'de',
+    'status_code' => '301',
+  ])->save();
+
 }
 
 /**
@@ -261,11 +311,12 @@ function hzd_customizations_form_alter(&$form, FormStateInterface $form_state, $
   $user = \Drupal::service('current_user');
   $uid = $user->id();
 
-
+/*
   if ($form_id == 'node_page_edit_form') {
-    //find_all_alias_special_charecters();
+    find_all_alias_special_charecters();
   }
-  
+*/
+
   // module_set_weight('hzd_user_customizations', 101);	
   //module_set_weight('legal', 100);
     
