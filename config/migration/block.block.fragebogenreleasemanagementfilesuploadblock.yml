@@ -17,16 +17,16 @@ plugin: fragebogen_files_upload_block
 settings:
   id: fragebogen_files_upload_block
   label: 'Fragebogen ReleaseManagement Files Upload Block'
-  provider: cust_group
   label_display: '0'
+  provider: cust_group
 visibility:
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''
   request_path:
     id: request_path
-    pages: "/node/784\r\n"
     negate: false
     context_mapping: {  }
+    pages: "/node/784\r\n"

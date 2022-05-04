@@ -19,33 +19,33 @@ bundle: event
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 1
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   comment:
-    label: hidden
     type: comment_default
-    weight: 4
+    label: hidden
     settings:
-      pager_id: 0
       view_mode: default
+      pager_id: 0
     third_party_settings: {  }
+    weight: 4
     region: content
   links:
-    weight: 3
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   upload:
+    type: file_default
     label: hidden
     settings:
       use_description_as_link_text: true
-    type: file_default
-    weight: 2
     third_party_settings: {  }
+    weight: 2
     region: content
 hidden:
   content_revision_log: true
@@ -55,3 +55,4 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true

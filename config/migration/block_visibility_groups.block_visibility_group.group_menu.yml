@@ -13,6 +13,10 @@ logic: or
 conditions:
   5f279d16-e6c4-4d28-9c4b-d5613c453b74:
     id: node_type
+    negate: false
+    uuid: 5f279d16-e6c4-4d28-9c4b-d5613c453b74
+    context_mapping:
+      node: '@node.node_route_context:node'
     bundles:
       deployed_releases: deployed_releases
       dir_listing: dir_listing
@@ -29,10 +33,6 @@ conditions:
       release_comments: release_comments
       risk: risk
       risk_cluster: risk_cluster
-    negate: false
-    context_mapping:
-      node: '@node.node_route_context:node'
-    uuid: 5f279d16-e6c4-4d28-9c4b-d5613c453b74
   d4223c81-c685-4008-8e3c-572ba232972f:
     id: group_type
     group_types:
@@ -47,15 +47,15 @@ conditions:
     uuid: d4223c81-c685-4008-8e3c-572ba232972f
   8b2f3aa6-d083-450d-b812-919f4cd7d8d3:
     id: 'entity_bundle:taxonomy_term'
+    negate: false
+    uuid: 8b2f3aa6-d083-450d-b812-919f4cd7d8d3
+    context_mapping: {  }
     bundles:
       faq_kategorie: faq_kategorie
-    negate: false
-    context_mapping: {  }
-    uuid: 8b2f3aa6-d083-450d-b812-919f4cd7d8d3
   c34304de-96f6-45d4-b175-cb4bf78d5605:
     id: request_path
-    pages: "*/taxonomy/term/*\r\n*/forum/*\r\n*/*/revisions/*/view"
     negate: false
-    context_mapping: {  }
     uuid: c34304de-96f6-45d4-b175-cb4bf78d5605
+    context_mapping: {  }
+    pages: "*/taxonomy/term/*\r\n*/forum/*\r\n*/*/revisions/*/view"
 allow_other_conditions: true

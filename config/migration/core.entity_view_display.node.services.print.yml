@@ -22,20 +22,20 @@ bundle: services
 mode: print
 content:
   field_diff:
-    label: above
-    weight: 1
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 1
     region: content
   field_downtime_type:
-    label: above
-    weight: 0
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   links:
     weight: 100
@@ -53,4 +53,5 @@ hidden:
   field_release_name: true
   langcode: true
   release_type: true
+  search_api_excerpt: true
   upload: true

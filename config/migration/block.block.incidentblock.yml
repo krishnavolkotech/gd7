@@ -17,12 +17,12 @@ plugin: incidents_block
 settings:
   id: incidents_block
   label: 'Aktuelle Störungen'
-  provider: downtimes
   label_display: visible
+  provider: downtimes
   number_of_posts: ''
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
     negate: false
     context_mapping: {  }
+    pages: '<front>'

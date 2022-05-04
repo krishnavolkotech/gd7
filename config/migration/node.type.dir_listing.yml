@@ -2,11 +2,11 @@ uuid: 3a7c2339-3e69-4602-836b-b96b80ac20be
 langcode: de
 status: true
 dependencies:
+  module:
+    - menu_ui
   enforced:
     module:
       - filebrowser
-  module:
-    - menu_ui
 third_party_settings:
   menu_ui:
     available_menus:

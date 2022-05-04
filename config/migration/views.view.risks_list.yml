@@ -31,61 +31,12 @@ base_table: group_content_field_data
 base_field: id
 display:
   default:
-    display_plugin: default
     id: default
     display_title: Master
+    display_plugin: default
     position: 0
     display_options:
-      access:
-        type: group_permission
-        options:
-          group_permission: 'leave group'
-      cache:
-        type: none
-        options: {  }
-      query:
-        type: views_query
-        options:
-          disable_sql_rewrite: true
-          distinct: true
-          replica: false
-          query_comment: ''
-          query_tags: {  }
-      exposed_form:
-        type: basic
-        options:
-          submit_button: Anwenden
-          reset_button: true
-          reset_button_label: Zurücksetzen
-          exposed_sorts_label: 'Sortieren nach'
-          expose_sort_order: false
-          sort_asc_label: Aufsteigend
-          sort_desc_label: Absteigend
-      pager:
-        type: full
-        options:
-          items_per_page: 20
-          offset: 0
-          id: 0
-          total_pages: null
-          tags:
-            previous: ‹‹
-            next: ››
-            first: '« Anfang'
-            last: 'Ende »'
-          expose:
-            items_per_page: false
-            items_per_page_label: 'Elemente pro Seite'
-            items_per_page_options: '5, 10, 25, 50'
-            items_per_page_options_all: false
-            items_per_page_options_all_label: '- Alle -'
-            offset: false
-            offset_label: Offset
-          quantity: 9
-      style:
-        type: table
-      row:
-        type: fields
+      title: Einzelrisiken
       fields:
         field_risk_id:
           id: field_risk_id
@@ -94,6 +45,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Nr.
           exclude: false
           alter:
@@ -149,7 +101,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_id:
           id: field_id
           table: node__field_id
@@ -157,6 +108,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Nr.
           exclude: true
           alter:
@@ -211,7 +163,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         title:
           id: title
           table: node_field_data
@@ -219,6 +170,9 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: title
+          plugin_id: field
           label: Titel
           exclude: false
           alter:
@@ -274,9 +228,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: node
-          entity_field: title
-          plugin_id: field
         field_risk_status:
           id: field_risk_status
           table: node__field_risk_status
@@ -284,6 +235,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Status
           exclude: false
           alter:
@@ -338,7 +290,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_risk_category:
           id: field_risk_category
           table: node__field_risk_category
@@ -346,6 +297,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Risiko-kategorie
           exclude: true
           alter:
@@ -403,7 +355,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_risk_value:
           id: field_risk_value
           table: node__field_risk_value
@@ -411,6 +362,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: 'Risikowert und -klasse'
           exclude: false
           alter:
@@ -469,7 +421,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_follow_up:
           id: field_follow_up
           table: node__field_follow_up
@@ -477,6 +428,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Wiedervorlage
           exclude: true
           alter:
@@ -533,7 +485,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_non_production_state:
           id: field_non_production_state
           table: node__field_non_production_state
@@ -541,6 +492,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: 'Zuständiges Land'
           exclude: false
           alter:
@@ -595,7 +547,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         field_owner:
           id: field_owner
           table: node__field_owner
@@ -603,6 +554,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Eigentümer
           exclude: false
           alter:
@@ -658,7 +610,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         view_node:
           id: view_node
           table: node
@@ -666,6 +617,8 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: entity_link
           label: 'Link to Inhalt'
           exclude: true
           alter:
@@ -710,8 +663,6 @@ display:
           text: view
           output_url_as_text: false
           absolute: false
-          entity_type: node
-          plugin_id: entity_link
         nid:
           id: nid
           table: node_field_data
@@ -719,6 +670,9 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: nid
+          plugin_id: field
           label: ID
           exclude: true
           alter:
@@ -775,9 +729,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: node
-          entity_field: nid
-          plugin_id: field
         id:
           id: id
           table: groups_field_data
@@ -785,6 +736,9 @@ display:
           relationship: gid
           group_type: group
           admin_label: ''
+          entity_type: group
+          entity_field: id
+          plugin_id: field
           label: ID
           exclude: true
           alter:
@@ -839,9 +793,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          entity_type: group
-          entity_field: id
-          plugin_id: field
         field_risk_clusters:
           id: field_risk_clusters
           table: node__field_risk_clusters
@@ -849,6 +800,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: field
           label: Risikocluster
           exclude: false
           alter:
@@ -959,7 +911,6 @@ display:
           multi_type: separator
           separator: ', '
           field_api_classes: false
-          plugin_id: field
         nothing:
           id: nothing
           table: views
@@ -967,6 +918,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: custom
           label: ''
           exclude: false
           alter:
@@ -1008,7 +960,89 @@ display:
           hide_empty: false
           empty_zero: false
           hide_alter_empty: false
-          plugin_id: custom
+      pager:
+        type: full
+        options:
+          offset: 0
+          items_per_page: 20
+          total_pages: null
+          id: 0
+          tags:
+            next: ››
+            previous: ‹‹
+            first: '« Anfang'
+            last: 'Ende »'
+          expose:
+            items_per_page: false
+            items_per_page_label: 'Elemente pro Seite'
+            items_per_page_options: '5, 10, 25, 50'
+            items_per_page_options_all: false
+            items_per_page_options_all_label: '- Alle -'
+            offset: false
+            offset_label: Offset
+          quantity: 9
+      exposed_form:
+        type: basic
+        options:
+          submit_button: Anwenden
+          reset_button: true
+          reset_button_label: Zurücksetzen
+          exposed_sorts_label: 'Sortieren nach'
+          expose_sort_order: false
+          sort_asc_label: Aufsteigend
+          sort_desc_label: Absteigend
+      access:
+        type: group_permission
+        options:
+          group_permission: 'leave group'
+      cache:
+        type: none
+        options: {  }
+      empty:
+        area:
+          id: area
+          table: views
+          field: area
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: text
+          empty: true
+          content:
+            value: 'Keine Daten vorhanden.'
+            format: full_html
+          tokenize: false
+      sorts:
+        field_risk_id_value:
+          id: field_risk_id_value
+          table: node__field_risk_id
+          field: field_risk_id_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          plugin_id: standard
+          order: ASC
+          expose:
+            label: 'Nr. (field_risk_id)'
+            field_identifier: field_risk_id_value
+          exposed: false
+        created:
+          id: created
+          table: node_field_data
+          field: created
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          entity_field: created
+          plugin_id: date
+          order: DESC
+          expose:
+            label: ''
+            field_identifier: created
+          exposed: false
+          granularity: second
+      arguments: {  }
       filters:
         type:
           id: type
@@ -1017,6 +1051,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             open-group_node-risk: open-group_node-risk
@@ -1028,6 +1065,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -1035,8 +1074,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1049,9 +1086,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: group_content
-          entity_field: type
-          plugin_id: bundle
         eref_node_titles:
           id: eref_node_titles
           table: node_field_data
@@ -1059,6 +1093,8 @@ display:
           relationship: field_risk_clusters
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: eref_node_titles
           operator: or
           value: {  }
           group: 1
@@ -1069,6 +1105,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: risk_cluster
             required: false
             remember: false
@@ -1081,8 +1119,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: 0
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1096,8 +1132,6 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          entity_type: node
-          plugin_id: eref_node_titles
           sort_order: '0'
           sort_by: '1'
           get_unpublished: '1'
@@ -1109,6 +1143,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: string
           operator: '='
           value: ''
           group: 1
@@ -1119,6 +1154,8 @@ display:
             description: null
             use_operator: false
             operator: field_risk_category_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: field_risk_category_value
             required: false
             remember: false
@@ -1126,8 +1163,6 @@ display:
             remember_roles:
               authenticated: authenticated
             placeholder: null
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: true
           group_info:
             label: ''
@@ -1156,7 +1191,6 @@ display:
                 title: C
                 operator: '='
                 value: C
-          plugin_id: string
         field_risk_value_value:
           id: field_risk_value_value
           table: node__field_risk_value
@@ -1164,6 +1198,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '='
           value:
             min: ''
@@ -1177,17 +1212,17 @@ display:
             description: null
             use_operator: false
             operator: field_risk_value_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: field_risk_value_value
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: null
             min_placeholder: null
             max_placeholder: null
-            operator_limit_selection: false
-            operator_list: {  }
+            placeholder: null
           is_grouped: true
           group_info:
             label: ''
@@ -1204,52 +1239,51 @@ display:
                 title: '&lt;Risikowert&gt;'
                 operator: 'not empty'
                 value:
-                  value: ''
                   min: ''
                   max: ''
+                  value: ''
               2:
                 title: '1'
                 operator: '='
                 value:
-                  value: '1'
                   min: ''
                   max: ''
+                  value: '1'
               3:
                 title: '2'
                 operator: '='
                 value:
-                  value: '2'
                   min: ''
                   max: ''
+                  value: '2'
               4:
                 title: '3'
                 operator: '='
                 value:
-                  value: '3'
                   min: ''
                   max: ''
+                  value: '3'
               5:
                 title: '4'
                 operator: '='
                 value:
-                  value: '4'
                   min: ''
                   max: ''
+                  value: '4'
               6:
                 title: '6'
                 operator: '='
                 value:
-                  value: '6'
                   min: ''
                   max: ''
+                  value: '6'
               7:
                 title: '9'
                 operator: '='
                 value:
-                  value: '9'
                   min: ''
                   max: ''
-          plugin_id: numeric
+                  value: '9'
         field_risk_status_value:
           id: field_risk_status_value
           table: node__field_risk_status
@@ -1257,6 +1291,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: list_field
           operator: or
           value:
             created: created
@@ -1271,6 +1306,8 @@ display:
             description: ''
             use_operator: false
             operator: field_risk_status_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: risk_status
             required: false
             remember: false
@@ -1283,8 +1320,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: true
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1298,7 +1333,6 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          plugin_id: list_field
         field_non_production_state_value:
           id: field_non_production_state_value
           table: node__field_non_production_state
@@ -1306,6 +1340,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: list_field
           operator: or
           value:
             2: '2'
@@ -1338,6 +1373,8 @@ display:
             description: ''
             use_operator: false
             operator: field_non_production_state_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: risk_state
             required: false
             remember: false
@@ -1350,8 +1387,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: true
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: 'Responsible state (field_non_production_state)'
@@ -1368,7 +1403,6 @@ display:
               2: {  }
               3: {  }
           reduce_duplicates: false
-          plugin_id: list_field
         combine:
           id: combine
           table: views
@@ -1376,6 +1410,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: combine
           operator: contains
           value: ''
           group: 1
@@ -1386,6 +1421,8 @@ display:
             description: ''
             use_operator: false
             operator: combine_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: combine
             required: false
             remember: false
@@ -1398,8 +1435,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             placeholder: '<Suchtext eingeben>'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1416,7 +1451,6 @@ display:
             field_id: field_id
             title: title
             field_owner: field_owner
-          plugin_id: combine
         nid:
           id: nid
           table: node_field_data
@@ -1424,6 +1458,9 @@ display:
           relationship: reverse__node__field_risks
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: nid
+          plugin_id: numeric
           operator: '='
           value:
             min: ''
@@ -1437,6 +1474,8 @@ display:
             description: ''
             use_operator: false
             operator: nid_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: measure
             required: false
             remember: false
@@ -1448,11 +1487,9 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -1465,9 +1502,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: nid
-          plugin_id: numeric
         field_risk_status_value_1:
           id: field_risk_status_value_1
           table: node__field_risk_status
@@ -1475,6 +1509,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: list_field
           operator: not
           value:
             completed: completed
@@ -1486,6 +1521,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -1493,8 +1530,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1508,52 +1543,22 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          plugin_id: list_field
-      sorts:
-        field_risk_id_value:
-          id: field_risk_id_value
-          table: node__field_risk_id
-          field: field_risk_id_value
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          order: ASC
-          exposed: false
-          expose:
-            label: 'Nr. (field_risk_id)'
-          plugin_id: standard
-        created:
-          id: created
-          table: node_field_data
-          field: created
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          order: DESC
-          exposed: false
-          expose:
-            label: ''
-          granularity: second
-          entity_type: node
-          entity_field: created
-          plugin_id: date
-      title: Einzelrisiken
-      header: {  }
-      footer: {  }
-      empty:
-        area:
-          id: area
-          table: views
-          field: area
-          relationship: none
-          group_type: group
-          admin_label: ''
-          empty: true
-          tokenize: false
-          content:
-            value: 'Keine Daten vorhanden.'
-            format: full_html
-          plugin_id: text
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      style:
+        type: table
+      row:
+        type: fields
+      query:
+        type: views_query
+        options:
+          query_comment: ''
+          disable_sql_rewrite: true
+          distinct: true
+          replica: false
+          query_tags: {  }
       relationships:
         gc__node:
           id: gc__node
@@ -1562,6 +1567,8 @@ display:
           relationship: none
           group_type: group
           admin_label: 'Group content Inhalt'
+          entity_type: group_content
+          plugin_id: group_content_to_entity
           required: true
           group_content_plugins:
             'group_node:risk': 'group_node:risk'
@@ -1590,8 +1597,6 @@ display:
             'group_node:services': '0'
             'group_node:service_profile': '0'
             'group_node:story': '0'
-          entity_type: group_content
-          plugin_id: group_content_to_entity
         field_risk_clusters:
           id: field_risk_clusters
           table: node__field_risk_clusters
@@ -1599,8 +1604,8 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: 'field_risk_clusters: Inhalt'
-          required: false
           plugin_id: standard
+          required: false
         reverse__node__field_risks:
           id: reverse__node__field_risks
           table: node_field_data
@@ -1608,9 +1613,9 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: field_risks
-          required: false
           entity_type: node
           plugin_id: entity_reverse
+          required: false
         gid:
           id: gid
           table: group_content_field_data
@@ -1618,19 +1623,16 @@ display:
           relationship: none
           group_type: group
           admin_label: Group
-          required: true
           entity_type: group_content
           entity_field: gid
           plugin_id: standard
-      arguments: {  }
-      display_extenders:
-        views_merge_rows: {  }
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
+          required: true
       css_class: risk-list
       group_by: true
+      header: {  }
+      footer: {  }
+      display_extenders:
+        views_merge_rows: {  }
     cache_metadata:
       max-age: -1
       contexts:
@@ -1651,14 +1653,12 @@ display:
         - 'config:field.storage.node.field_risk_status'
         - 'config:field.storage.node.field_risk_value'
   page_1:
-    display_plugin: page
     id: page_1
     display_title: Archiv
+    display_plugin: page
     position: 2
     display_options:
-      display_extenders:
-        views_merge_rows: {  }
-      path: group/%group/risiken/archiv
+      title: 'Archivierte Einzelrisiken'
       filters:
         type:
           id: type
@@ -1667,6 +1667,9 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
           operator: in
           value:
             open-group_node-risk: open-group_node-risk
@@ -1678,6 +1681,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -1685,8 +1690,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1699,9 +1702,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: group_content
-          entity_field: type
-          plugin_id: bundle
         eref_node_titles:
           id: eref_node_titles
           table: node_field_data
@@ -1709,6 +1709,8 @@ display:
           relationship: field_risk_clusters
           group_type: group
           admin_label: ''
+          entity_type: node
+          plugin_id: eref_node_titles
           operator: or
           value: {  }
           group: 1
@@ -1719,6 +1721,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: risk_cluster
             required: false
             remember: false
@@ -1731,8 +1735,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: 0
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -1746,8 +1748,6 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          entity_type: node
-          plugin_id: eref_node_titles
           sort_order: '0'
           sort_by: '1'
           get_unpublished: '1'
@@ -1759,6 +1759,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: string
           operator: '='
           value: ''
           group: 1
@@ -1769,6 +1770,8 @@ display:
             description: null
             use_operator: false
             operator: field_risk_category_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: field_risk_category_value
             required: false
             remember: false
@@ -1776,8 +1779,6 @@ display:
             remember_roles:
               authenticated: authenticated
             placeholder: null
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: true
           group_info:
             label: ''
@@ -1806,7 +1807,6 @@ display:
                 title: C
                 operator: '='
                 value: C
-          plugin_id: string
         field_risk_value_value:
           id: field_risk_value_value
           table: node__field_risk_value
@@ -1814,6 +1814,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: numeric
           operator: '='
           value:
             min: ''
@@ -1827,17 +1828,17 @@ display:
             description: null
             use_operator: false
             operator: field_risk_value_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: field_risk_value_value
             required: false
             remember: false
             multiple: false
             remember_roles:
               authenticated: authenticated
-            placeholder: null
             min_placeholder: null
             max_placeholder: null
-            operator_limit_selection: false
-            operator_list: {  }
+            placeholder: null
           is_grouped: true
           group_info:
             label: ''
@@ -1854,52 +1855,51 @@ display:
                 title: '&lt;Risikowert&gt;'
                 operator: 'not empty'
                 value:
-                  value: ''
                   min: ''
                   max: ''
+                  value: ''
               2:
                 title: '1'
                 operator: '='
                 value:
-                  value: '1'
                   min: ''
                   max: ''
+                  value: '1'
               3:
                 title: '2'
                 operator: '='
                 value:
-                  value: '2'
                   min: ''
                   max: ''
+                  value: '2'
               4:
                 title: '3'
                 operator: '='
                 value:
-                  value: '3'
                   min: ''
                   max: ''
+                  value: '3'
               5:
                 title: '4'
                 operator: '='
                 value:
-                  value: '4'
                   min: ''
                   max: ''
+                  value: '4'
               6:
                 title: '6'
                 operator: '='
                 value:
-                  value: '6'
                   min: ''
                   max: ''
+                  value: '6'
               7:
                 title: '9'
                 operator: '='
                 value:
-                  value: '9'
                   min: ''
                   max: ''
-          plugin_id: numeric
+                  value: '9'
         field_non_production_state_value:
           id: field_non_production_state_value
           table: node__field_non_production_state
@@ -1907,6 +1907,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: list_field
           operator: or
           value:
             2: '2'
@@ -1939,6 +1940,8 @@ display:
             description: ''
             use_operator: false
             operator: field_non_production_state_value_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: risk_state
             required: false
             remember: false
@@ -1951,8 +1954,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             reduce: true
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: 'Responsible state (field_non_production_state)'
@@ -1969,7 +1970,6 @@ display:
               2: {  }
               3: {  }
           reduce_duplicates: false
-          plugin_id: list_field
         combine:
           id: combine
           table: views
@@ -1977,6 +1977,7 @@ display:
           relationship: none
           group_type: group
           admin_label: ''
+          plugin_id: combine
           operator: contains
           value: ''
           group: 1
@@ -1987,6 +1988,8 @@ display:
             description: ''
             use_operator: false
             operator: combine_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: combine
             required: false
             remember: false
@@ -1999,8 +2002,6 @@ display:
               group_administrator: '0'
               site_administrator: '0'
             placeholder: '<Suchtext eingeben>'
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -2017,7 +2018,6 @@ display:
             field_id: field_id
             title: title
             field_owner: field_owner
-          plugin_id: combine
         nid:
           id: nid
           table: node_field_data
@@ -2025,6 +2025,9 @@ display:
           relationship: reverse__node__field_risks
           group_type: group
           admin_label: ''
+          entity_type: node
+          entity_field: nid
+          plugin_id: numeric
           operator: '='
           value:
             min: ''
@@ -2038,6 +2041,8 @@ display:
             description: ''
             use_operator: false
             operator: nid_op
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: measure
             required: false
             remember: false
@@ -2049,11 +2054,9 @@ display:
               group_member: '0'
               group_administrator: '0'
               site_administrator: '0'
-            placeholder: ''
             min_placeholder: ''
             max_placeholder: ''
-            operator_limit_selection: false
-            operator_list: {  }
+            placeholder: ''
           is_grouped: false
           group_info:
             label: ''
@@ -2066,9 +2069,6 @@ display:
             default_group: All
             default_group_multiple: {  }
             group_items: {  }
-          entity_type: node
-          entity_field: nid
-          plugin_id: numeric
         field_risk_status_value_1:
           id: field_risk_status_value_1
           table: node__field_risk_status
@@ -2076,6 +2076,7 @@ display:
           relationship: gc__node
           group_type: group
           admin_label: ''
+          plugin_id: list_field
           operator: or
           value:
             completed: completed
@@ -2087,6 +2088,8 @@ display:
             description: ''
             use_operator: false
             operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
             identifier: ''
             required: false
             remember: false
@@ -2094,8 +2097,6 @@ display:
             remember_roles:
               authenticated: authenticated
             reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
           is_grouped: false
           group_info:
             label: ''
@@ -2109,17 +2110,18 @@ display:
             default_group_multiple: {  }
             group_items: {  }
           reduce_duplicates: false
-          plugin_id: list_field
-      defaults:
-        filters: false
-        filter_groups: false
-        title: false
       filter_groups:
         operator: AND
         groups:
           1: AND
-      title: 'Archivierte Einzelrisiken'
+      defaults:
+        title: false
+        filters: false
+        filter_groups: false
       display_description: ''
+      display_extenders:
+        views_merge_rows: {  }
+      path: group/%group/risiken/archiv
     cache_metadata:
       max-age: -1
       contexts:
@@ -2140,11 +2142,519 @@ display:
         - 'config:field.storage.node.field_risk_status'
         - 'config:field.storage.node.field_risk_value'
   risks:
-    display_plugin: page
     id: risks
     display_title: Page
+    display_plugin: page
     position: 1
     display_options:
+      filters:
+        type:
+          id: type
+          table: group_content_field_data
+          field: type
+          relationship: none
+          group_type: group
+          admin_label: ''
+          entity_type: group_content
+          entity_field: type
+          plugin_id: bundle
+          operator: in
+          value:
+            open-group_node-risk: open-group_node-risk
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        eref_node_titles:
+          id: eref_node_titles
+          table: node_field_data
+          field: eref_node_titles
+          relationship: field_risk_clusters
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          plugin_id: eref_node_titles
+          operator: or
+          value: {  }
+          group: 1
+          exposed: true
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: risk_cluster
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            reduce: 0
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+          sort_order: '0'
+          sort_by: '1'
+          get_unpublished: '1'
+          get_filter_no_results: '1'
+        field_risk_category_value:
+          id: field_risk_category_value
+          table: node__field_risk_category
+          field: field_risk_category_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          plugin_id: string
+          operator: '='
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_risk_category_value_op
+            label: 'Risk category (field_risk_category)'
+            description: null
+            use_operator: false
+            operator: field_risk_category_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_risk_category_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            placeholder: null
+          is_grouped: true
+          group_info:
+            label: ''
+            description: ''
+            identifier: risk_category
+            optional: false
+            widget: select
+            multiple: false
+            remember: false
+            default_group: '1'
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: '&lt;Risikokategorie&gt;'
+                operator: 'not empty'
+                value: ''
+              2:
+                title: A
+                operator: '='
+                value: A
+              3:
+                title: B
+                operator: '='
+                value: B
+              4:
+                title: C
+                operator: '='
+                value: C
+        field_risk_value_value:
+          id: field_risk_value_value
+          table: node__field_risk_value
+          field: field_risk_value_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          plugin_id: numeric
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_risk_value_value_op
+            label: 'Risk value (field_risk_value)'
+            description: null
+            use_operator: false
+            operator: field_risk_value_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: field_risk_value_value
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            min_placeholder: null
+            max_placeholder: null
+            placeholder: null
+          is_grouped: true
+          group_info:
+            label: ''
+            description: ''
+            identifier: risk_value
+            optional: false
+            widget: select
+            multiple: false
+            remember: false
+            default_group: '1'
+            default_group_multiple: {  }
+            group_items:
+              1:
+                title: '&lt;Risikowert&gt;'
+                operator: 'not empty'
+                value:
+                  min: ''
+                  max: ''
+                  value: ''
+              2:
+                title: '1'
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: '1'
+              3:
+                title: '2'
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: '2'
+              4:
+                title: '3'
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: '3'
+              5:
+                title: '4'
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: '4'
+              6:
+                title: '6'
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: '6'
+              7:
+                title: '9'
+                operator: '='
+                value:
+                  min: ''
+                  max: ''
+                  value: '9'
+        field_risk_status_value:
+          id: field_risk_status_value
+          table: node__field_risk_status
+          field: field_risk_status_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          plugin_id: list_field
+          operator: or
+          value:
+            created: created
+            accepted: accepted
+            active: active
+            in_effect: in_effect
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_risk_status_value_op
+            label: ''
+            description: ''
+            use_operator: false
+            operator: field_risk_status_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: risk_status
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            reduce: true
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+        field_non_production_state_value:
+          id: field_non_production_state_value
+          table: node__field_non_production_state
+          field: field_non_production_state_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          plugin_id: list_field
+          operator: or
+          value:
+            2: '2'
+            3: '3'
+            4: '4'
+            5: '5'
+            6: '6'
+            7: '7'
+            8: '8'
+            9: '9'
+            10: '10'
+            11: '11'
+            12: '12'
+            13: '13'
+            14: '14'
+            15: '15'
+            16: '16'
+            17: '17'
+            18: '18'
+            20: '20'
+            21: '21'
+            22: '22'
+            23: '23'
+            19: '19'
+          group: 1
+          exposed: true
+          expose:
+            operator_id: field_non_production_state_value_op
+            label: ''
+            description: ''
+            use_operator: false
+            operator: field_non_production_state_value_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: risk_state
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            reduce: true
+          is_grouped: false
+          group_info:
+            label: 'Responsible state (field_non_production_state)'
+            description: null
+            identifier: field_non_production_state_value
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items:
+              1: {  }
+              2: {  }
+              3: {  }
+          reduce_duplicates: false
+        combine:
+          id: combine
+          table: views
+          field: combine
+          relationship: none
+          group_type: group
+          admin_label: ''
+          plugin_id: combine
+          operator: contains
+          value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: combine_op
+            label: ''
+            description: ''
+            use_operator: false
+            operator: combine_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: combine
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            placeholder: '<Suchtext eingeben>'
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          fields:
+            field_risk_id: field_risk_id
+            title: title
+            field_owner: field_owner
+        nid:
+          id: nid
+          table: node_field_data
+          field: nid
+          relationship: reverse__node__field_risks
+          group_type: group
+          admin_label: ''
+          entity_type: node
+          entity_field: nid
+          plugin_id: numeric
+          operator: '='
+          value:
+            min: ''
+            max: ''
+            value: ''
+          group: 1
+          exposed: true
+          expose:
+            operator_id: nid_op
+            label: 'Zugehörige Maßnahme'
+            description: ''
+            use_operator: false
+            operator: nid_op
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: measure
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+              anonymous: '0'
+              administrator: '0'
+              group_member: '0'
+              group_administrator: '0'
+              site_administrator: '0'
+            min_placeholder: ''
+            max_placeholder: ''
+            placeholder: ''
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+        field_risk_status_value_1:
+          id: field_risk_status_value_1
+          table: node__field_risk_status
+          field: field_risk_status_value
+          relationship: gc__node
+          group_type: group
+          admin_label: ''
+          plugin_id: list_field
+          operator: not
+          value:
+            completed: completed
+          group: 1
+          exposed: false
+          expose:
+            operator_id: ''
+            label: ''
+            description: ''
+            use_operator: false
+            operator: ''
+            operator_limit_selection: false
+            operator_list: {  }
+            identifier: ''
+            required: false
+            remember: false
+            multiple: false
+            remember_roles:
+              authenticated: authenticated
+            reduce: false
+          is_grouped: false
+          group_info:
+            label: ''
+            description: ''
+            identifier: ''
+            optional: true
+            widget: select
+            multiple: false
+            remember: false
+            default_group: All
+            default_group_multiple: {  }
+            group_items: {  }
+          reduce_duplicates: false
+      filter_groups:
+        operator: AND
+        groups:
+          1: AND
+      defaults:
+        filters: false
+        filter_groups: false
+      rendering_language: '***LANGUAGE_entity_translation***'
       display_extenders:
         views_merge_rows:
           merge_rows: false
@@ -2232,519 +2742,11 @@ display:
         type: none
         title: Risks
         description: ''
-        expanded: false
-        parent: 'menu_link_content:01a4a124-29f0-41a8-8576-60a674601206'
         weight: 0
-        context: '0'
+        expanded: false
         menu_name: menu-340
-      rendering_language: '***LANGUAGE_entity_translation***'
-      filters:
-        type:
-          id: type
-          table: group_content_field_data
-          field: type
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: in
-          value:
-            open-group_node-risk: open-group_node-risk
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: group_content
-          entity_field: type
-          plugin_id: bundle
-        eref_node_titles:
-          id: eref_node_titles
-          table: node_field_data
-          field: eref_node_titles
-          relationship: field_risk_clusters
-          group_type: group
-          admin_label: ''
-          operator: or
-          value: {  }
-          group: 1
-          exposed: true
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: risk_cluster
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            reduce: 0
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          entity_type: node
-          plugin_id: eref_node_titles
-          sort_order: '0'
-          sort_by: '1'
-          get_unpublished: '1'
-          get_filter_no_results: '1'
-        field_risk_category_value:
-          id: field_risk_category_value
-          table: node__field_risk_category
-          field: field_risk_category_value
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_risk_category_value_op
-            label: 'Risk category (field_risk_category)'
-            description: null
-            use_operator: false
-            operator: field_risk_category_value_op
-            identifier: field_risk_category_value
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            placeholder: null
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: true
-          group_info:
-            label: ''
-            description: ''
-            identifier: risk_category
-            optional: false
-            widget: select
-            multiple: false
-            remember: false
-            default_group: '1'
-            default_group_multiple: {  }
-            group_items:
-              1:
-                title: '&lt;Risikokategorie&gt;'
-                operator: 'not empty'
-                value: ''
-              2:
-                title: A
-                operator: '='
-                value: A
-              3:
-                title: B
-                operator: '='
-                value: B
-              4:
-                title: C
-                operator: '='
-                value: C
-          plugin_id: string
-        field_risk_value_value:
-          id: field_risk_value_value
-          table: node__field_risk_value
-          field: field_risk_value_value
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_risk_value_value_op
-            label: 'Risk value (field_risk_value)'
-            description: null
-            use_operator: false
-            operator: field_risk_value_value_op
-            identifier: field_risk_value_value
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            placeholder: null
-            min_placeholder: null
-            max_placeholder: null
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: true
-          group_info:
-            label: ''
-            description: ''
-            identifier: risk_value
-            optional: false
-            widget: select
-            multiple: false
-            remember: false
-            default_group: '1'
-            default_group_multiple: {  }
-            group_items:
-              1:
-                title: '&lt;Risikowert&gt;'
-                operator: 'not empty'
-                value:
-                  value: ''
-                  min: ''
-                  max: ''
-              2:
-                title: '1'
-                operator: '='
-                value:
-                  value: '1'
-                  min: ''
-                  max: ''
-              3:
-                title: '2'
-                operator: '='
-                value:
-                  value: '2'
-                  min: ''
-                  max: ''
-              4:
-                title: '3'
-                operator: '='
-                value:
-                  value: '3'
-                  min: ''
-                  max: ''
-              5:
-                title: '4'
-                operator: '='
-                value:
-                  value: '4'
-                  min: ''
-                  max: ''
-              6:
-                title: '6'
-                operator: '='
-                value:
-                  value: '6'
-                  min: ''
-                  max: ''
-              7:
-                title: '9'
-                operator: '='
-                value:
-                  value: '9'
-                  min: ''
-                  max: ''
-          plugin_id: numeric
-        field_risk_status_value:
-          id: field_risk_status_value
-          table: node__field_risk_status
-          field: field_risk_status_value
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          operator: or
-          value:
-            created: created
-            accepted: accepted
-            active: active
-            in_effect: in_effect
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_risk_status_value_op
-            label: ''
-            description: ''
-            use_operator: false
-            operator: field_risk_status_value_op
-            identifier: risk_status
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            reduce: true
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          plugin_id: list_field
-        field_non_production_state_value:
-          id: field_non_production_state_value
-          table: node__field_non_production_state
-          field: field_non_production_state_value
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          operator: or
-          value:
-            2: '2'
-            3: '3'
-            4: '4'
-            5: '5'
-            6: '6'
-            7: '7'
-            8: '8'
-            9: '9'
-            10: '10'
-            11: '11'
-            12: '12'
-            13: '13'
-            14: '14'
-            15: '15'
-            16: '16'
-            17: '17'
-            18: '18'
-            20: '20'
-            21: '21'
-            22: '22'
-            23: '23'
-            19: '19'
-          group: 1
-          exposed: true
-          expose:
-            operator_id: field_non_production_state_value_op
-            label: ''
-            description: ''
-            use_operator: false
-            operator: field_non_production_state_value_op
-            identifier: risk_state
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            reduce: true
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: 'Responsible state (field_non_production_state)'
-            description: null
-            identifier: field_non_production_state_value
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items:
-              1: {  }
-              2: {  }
-              3: {  }
-          reduce_duplicates: false
-          plugin_id: list_field
-        combine:
-          id: combine
-          table: views
-          field: combine
-          relationship: none
-          group_type: group
-          admin_label: ''
-          operator: contains
-          value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: combine_op
-            label: ''
-            description: ''
-            use_operator: false
-            operator: combine_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: combine
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            placeholder: '<Suchtext eingeben>'
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          fields:
-            field_risk_id: field_risk_id
-            title: title
-            field_owner: field_owner
-          plugin_id: combine
-        nid:
-          id: nid
-          table: node_field_data
-          field: nid
-          relationship: reverse__node__field_risks
-          group_type: group
-          admin_label: ''
-          operator: '='
-          value:
-            min: ''
-            max: ''
-            value: ''
-          group: 1
-          exposed: true
-          expose:
-            operator_id: nid_op
-            label: 'Zugehörige Maßnahme'
-            description: ''
-            use_operator: false
-            operator: nid_op
-            operator_limit_selection: false
-            operator_list: {  }
-            identifier: measure
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-              anonymous: '0'
-              administrator: '0'
-              group_member: '0'
-              group_administrator: '0'
-              site_administrator: '0'
-            placeholder: ''
-            min_placeholder: ''
-            max_placeholder: ''
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          entity_type: node
-          entity_field: nid
-          plugin_id: numeric
-        field_risk_status_value_1:
-          id: field_risk_status_value_1
-          table: node__field_risk_status
-          field: field_risk_status_value
-          relationship: gc__node
-          group_type: group
-          admin_label: ''
-          operator: not
-          value:
-            completed: completed
-          group: 1
-          exposed: false
-          expose:
-            operator_id: ''
-            label: ''
-            description: ''
-            use_operator: false
-            operator: ''
-            identifier: ''
-            required: false
-            remember: false
-            multiple: false
-            remember_roles:
-              authenticated: authenticated
-            reduce: false
-            operator_limit_selection: false
-            operator_list: {  }
-          is_grouped: false
-          group_info:
-            label: ''
-            description: ''
-            identifier: ''
-            optional: true
-            widget: select
-            multiple: false
-            remember: false
-            default_group: All
-            default_group_multiple: {  }
-            group_items: {  }
-          reduce_duplicates: false
-          plugin_id: list_field
-      defaults:
-        filters: false
-        filter_groups: false
-      filter_groups:
-        operator: AND
-        groups:
-          1: AND
+        parent: 'menu_link_content:01a4a124-29f0-41a8-8576-60a674601206'
+        context: '0'
       relationship: field_risk_clusters
       fieldsets:
         - more

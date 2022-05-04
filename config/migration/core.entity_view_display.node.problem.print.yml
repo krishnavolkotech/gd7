@@ -43,20 +43,20 @@ bundle: problem
 mode: print
 content:
   field_ticketstore_count:
-    label: above
-    weight: 32
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 32
     region: content
   field_ticketstore_link:
-    label: above
-    weight: 31
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 31
     region: content
   links:
     weight: 100
@@ -95,4 +95,5 @@ hidden:
   field_version: true
   field_work_around: true
   langcode: true
+  search_api_excerpt: true
   upload: true

@@ -22,42 +22,42 @@ bundle: release_comments
 mode: mail
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 3
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   comment_no_subject:
-    weight: 4
+    type: comment_default
     label: above
     settings:
       view_mode: mail
       pager_id: 0
     third_party_settings: {  }
-    type: comment_default
+    weight: 4
     region: content
   field_release_ref:
     type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
     weight: 1
     region: content
-    label: hidden
-    settings:
-      link: false
-    third_party_settings: {  }
   field_service:
     type: entity_reference_label
-    weight: 0
-    region: content
     label: hidden
     settings:
       link: false
     third_party_settings: {  }
-  links:
-    weight: 2
+    weight: 0
     region: content
+  links:
     settings: {  }
     third_party_settings: {  }
+    weight: 2
+    region: content
 hidden:
   content_revision_log: true
   downtime_description: true

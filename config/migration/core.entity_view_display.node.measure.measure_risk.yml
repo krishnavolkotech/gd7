@@ -36,72 +36,72 @@ third_party_settings:
         - field_target_date
         - field_owner
         - field_risks
+      label: table
       parent_name: ''
       weight: 1
       format_type: html_element
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         element: div
         show_label: false
         label_element: h3
         attributes: ''
         effect: none
         speed: fast
-      label: table
 id: node.measure.measure_risk
 targetEntityType: node
 bundle: measure
 mode: measure_risk
 content:
   body:
-    label: inline
     type: text_default
-    weight: 2
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_owner:
-    weight: 4
+    type: string
     label: inline
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 4
     region: content
   field_remarks:
-    weight: 2
+    type: text_default
     label: inline
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 2
     region: content
   field_risks:
-    weight: 5
+    type: entity_reference_entity_view
     label: inline
     settings:
-      link: true
       view_mode: default
+      link: true
     third_party_settings: {  }
-    type: entity_reference_entity_view
+    weight: 5
     region: content
   field_target_date:
-    weight: 3
+    type: datetime_default
     label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium
     third_party_settings: {  }
-    type: datetime_default
+    weight: 3
     region: content
   last_updated:
     weight: 100
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   content_revision_log: true
   downtime_description: true
@@ -122,3 +122,4 @@ hidden:
   field_sponsor: true
   field_type: true
   langcode: true
+  search_api_excerpt: true

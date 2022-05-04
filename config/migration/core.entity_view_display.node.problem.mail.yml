@@ -50,182 +50,182 @@ bundle: problem
 mode: mail
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 21
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 21
     region: content
   comment:
-    label: hidden
     type: comment_default
-    weight: 18
+    label: hidden
     settings:
-      pager_id: 0
       view_mode: default
+      pager_id: 0
     third_party_settings: {  }
+    weight: 18
     region: content
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   field_attachment:
-    label: inline
-    weight: 13
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 13
     region: content
   field_closed:
-    label: inline
-    weight: 16
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 16
     region: content
   field_comments:
-    label: inline
-    weight: 10
     type: text_default
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 10
     region: content
   field_diagnose:
-    label: inline
-    weight: 5
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 5
     region: content
   field_eroffnet:
-    label: inline
-    weight: 11
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 11
     region: content
   field_function:
-    label: inline
-    weight: 4
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 4
     region: content
   field_priority:
-    label: inline
-    weight: 8
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 8
     region: content
   field_problem_eroffnet:
-    label: inline
-    weight: 17
     type: number_integer
+    label: inline
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 17
     region: content
   field_problem_status:
-    label: inline
-    weight: 2
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_processing:
-    label: inline
-    weight: 12
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 12
     region: content
   field_release:
-    label: inline
-    weight: 14
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 14
     region: content
   field_s_no:
-    label: inline
-    weight: 0
     type: number_integer
+    label: inline
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 0
     region: content
   field_sdcallid:
-    label: inline
-    weight: 1
     type: number_integer
+    label: inline
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 1
     region: content
   field_services:
-    label: inline
-    weight: 3
     type: entity_reference_label
+    label: inline
     settings:
       link: true
     third_party_settings: {  }
+    weight: 3
     region: content
   field_solution:
-    label: inline
-    weight: 6
     type: text_default
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 6
     region: content
   field_task_force:
-    label: inline
-    weight: 9
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 9
     region: content
   field_ticketstore_count:
-    label: inline
-    weight: 20
     type: number_integer
+    label: inline
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 20
     region: content
   field_ticketstore_link:
-    label: inline
-    weight: 19
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 19
     region: content
   field_version:
-    label: inline
-    weight: 15
     type: basic_string
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 15
     region: content
   field_work_around:
-    label: inline
-    weight: 7
     type: text_default
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 7
     region: content
   upload:
+    type: file_default
     label: hidden
     settings:
       use_description_as_link_text: true
-    type: file_default
-    weight: 22
     third_party_settings: {  }
+    weight: 22
     region: content
 hidden:
   content_revision_log: true
@@ -241,3 +241,4 @@ hidden:
   field_unlocated_cause: true
   langcode: true
   links: true
+  search_api_excerpt: true

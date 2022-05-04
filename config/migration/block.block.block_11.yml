@@ -18,19 +18,19 @@ plugin: 'block_content:9329f366-eec5-4ca0-b4c5-a411299615da'
 settings:
   id: 'block_content:9329f366-eec5-4ca0-b4c5-a411299615da'
   label: 'Inhalt bearbeiten'
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full
 visibility:
   user_role:
     id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
     roles:
       authenticated: authenticated
       group_member: group_member
       group_administrator: group_administrator
       site_administrator: site_administrator
-    context_mapping:
-      user: '@user.current_user_context:current_user'
-    negate: false

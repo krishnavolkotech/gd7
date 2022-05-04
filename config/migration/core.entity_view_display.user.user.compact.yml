@@ -25,12 +25,12 @@ content:
     region: content
   user_picture:
     type: image
-    weight: 0
-    settings:
-      image_style: thumbnail
-      image_link: content
-    third_party_settings: {  }
     label: hidden
+    settings:
+      image_link: content
+      image_style: thumbnail
+    third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
   entity_print_view: true
@@ -40,6 +40,8 @@ hidden:
   field_do_not_deactivate_automati: true
   field_message_preference: true
   field_notifications_status: true
+  field_privacy_policy: true
   l10n_client_contributor_key: true
   langcode: true
   member_for: true
+  search_api_excerpt: true

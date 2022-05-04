@@ -35,29 +35,29 @@ bundle: deployed_releases
 mode: search_result
 content:
   field_archived_release:
-    label: above
-    weight: 16
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 16
     region: content
   field_environment:
-    label: above
-    weight: 13
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 13
     region: content
   field_user_state:
-    label: above
-    weight: 17
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: 17
     region: content
   links:
     weight: 100

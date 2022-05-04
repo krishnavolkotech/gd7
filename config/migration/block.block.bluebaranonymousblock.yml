@@ -17,13 +17,13 @@ plugin: blue_bar_anonymous_block
 settings:
   id: blue_bar_anonymous_block
   label: 'Blue Bar Anonymous block'
-  provider: cust_group
   label_display: '0'
+  provider: cust_group
 visibility:
   user_role:
     id: user_role
-    roles:
-      anonymous: anonymous
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+    roles:
+      anonymous: anonymous

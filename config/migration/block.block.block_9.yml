@@ -18,8 +18,8 @@ plugin: 'block_content:db5f461e-9d63-40c5-9b93-d1c965c17b1e'
 settings:
   id: 'block_content:db5f461e-9d63-40c5-9b93-d1c965c17b1e'
   label: ITSM-Prozesse
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full

@@ -55,29 +55,29 @@ third_party_settings:
         - field_installation_time
         - field_deployment_status
         - links
+      label: Einsatzmeldung
       parent_name: ''
+      region: content
       weight: 0
       format_type: details
-      region: content
       format_settings:
-        description: ''
-        open: true
-        id: ''
         classes: ''
-      label: Einsatzmeldung
+        id: ''
+        open: true
+        description: ''
     group_aenderungshistorie:
       children:
         - content_revision_log
+      label: Änderungshistorie
       parent_name: ''
+      region: content
       weight: 1
       format_type: details
-      region: content
       format_settings:
-        description: ''
-        open: true
-        id: ''
         classes: ''
-      label: Änderungshistorie
+        id: ''
+        open: true
+        description: ''
 id: node.deployed_releases.default
 targetEntityType: node
 bundle: deployed_releases
@@ -85,8 +85,6 @@ mode: default
 content:
   content_revision_log:
     type: revision_log_formatter
-    weight: 2
-    region: content
     label: hidden
     settings:
       order: desc
@@ -94,124 +92,126 @@ content:
       header_template: '@action by @user at @datetime'
       limit: '0'
     third_party_settings: {  }
+    weight: 2
+    region: content
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   field_abnormalities_bool:
-    weight: 13
+    type: boolean
     label: above
     settings:
       format: default
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    type: boolean
+    weight: 13
     region: content
   field_abnormality_description:
     type: text_default
-    weight: 14
-    region: content
     label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 14
+    region: content
   field_automated_deployment_bool:
-    weight: 12
+    type: boolean
     label: above
     settings:
       format: default
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    type: boolean
+    weight: 12
     region: content
   field_date_deployed:
-    weight: 11
+    type: datetime_default
     label: above
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium
     third_party_settings: {  }
-    type: datetime_default
+    weight: 11
     region: content
   field_deployed_release:
-    weight: 7
+    type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 7
     region: content
   field_deployment_status:
-    weight: 16
+    type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 16
     region: content
   field_environment:
-    label: above
-    weight: 5
     type: list_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 5
     region: content
   field_first_deployment:
-    weight: 8
+    type: boolean
     label: above
     settings:
       format: default
       format_custom_false: ''
       format_custom_true: ''
     third_party_settings: {  }
-    type: boolean
+    weight: 8
     region: content
   field_installation_time:
-    weight: 15
+    type: number_integer
     label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
-    type: number_integer
+    weight: 15
     region: content
   field_prev_release:
-    weight: 9
+    type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 9
     region: content
   field_service:
-    weight: 6
+    type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 6
     region: content
   field_state_list:
-    weight: 4
+    type: list_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: list_default
+    weight: 4
     region: content
   field_successor_release:
-    weight: 10
+    type: entity_reference_label
     label: above
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 10
     region: content
   links:
-    weight: 17
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 17
+    region: content
 hidden:
   body: true
   comment: true

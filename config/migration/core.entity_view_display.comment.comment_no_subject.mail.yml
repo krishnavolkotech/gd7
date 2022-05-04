@@ -15,11 +15,11 @@ bundle: comment_no_subject
 mode: mail
 content:
   comment_body:
-    label: hidden
     type: text_default
-    weight: 0
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
 hidden:
   entity_print_view_epub: true
@@ -28,3 +28,4 @@ hidden:
   field_do_not_send_notifications: true
   langcode: true
   links: true
+  search_api_excerpt: true

@@ -18,21 +18,21 @@ bundle: open
 mode: default
 content:
   field_description:
+    type: string_textfield
     weight: 2
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_einfuehrung:
+    type: text_textarea
     weight: 6
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_forum_containers:
     type: entity_reference_autocomplete
     weight: 7
@@ -44,34 +44,34 @@ content:
       placeholder: ''
     third_party_settings: {  }
   field_group_body:
+    type: text_textarea
     weight: 3
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   label:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
   langcode:
     type: language_select
     weight: 1
+    region: content
     settings:
       include_locked: true
     third_party_settings: {  }
-    region: content
   path:
     type: path
     weight: 5
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   status:
     type: boolean_checkbox
     weight: 7

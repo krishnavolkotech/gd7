@@ -11,12 +11,12 @@ pattern: '/risikomanagement-betrieb/risiko/[node:field_risk_id]'
 selection_criteria:
   128e3d20-cc81-400b-a456-02e5f2af1c2f:
     id: node_type
-    bundles:
-      risk: risk
     negate: false
+    uuid: 128e3d20-cc81-400b-a456-02e5f2af1c2f
     context_mapping:
       node: node
-    uuid: 128e3d20-cc81-400b-a456-02e5f2af1c2f
+    bundles:
+      risk: risk
 selection_logic: and
 weight: -5
 relationships: {  }

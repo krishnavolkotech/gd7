@@ -12,21 +12,21 @@ pattern: 'release-management/release-comments/[node:field_release_ref:entity:tit
 selection_criteria:
   a7e5faad-60ba-495e-a9f2-37e9b4a4e04b:
     id: node_type
-    bundles:
-      release_comments: release_comments
     negate: false
+    uuid: a7e5faad-60ba-495e-a9f2-37e9b4a4e04b
     context_mapping:
       node: node
-    uuid: a7e5faad-60ba-495e-a9f2-37e9b4a4e04b
+    bundles:
+      release_comments: release_comments
   cd6afe8c-c535-4d26-9f44-a65db1ebb3f4:
     id: language
+    negate: false
+    uuid: cd6afe8c-c535-4d26-9f44-a65db1ebb3f4
+    context_mapping:
+      language: 'node:langcode:language'
     langcodes:
       de: de
       en: en
-    negate: false
-    context_mapping:
-      language: 'node:langcode:language'
-    uuid: cd6afe8c-c535-4d26-9f44-a65db1ebb3f4
 selection_logic: and
 weight: -5
 relationships:

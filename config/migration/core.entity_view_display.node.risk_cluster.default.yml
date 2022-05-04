@@ -21,16 +21,14 @@ bundle: risk_cluster
 mode: default
 content:
   body:
-    label: inline
     type: text_default
-    weight: 1
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   content_revision_log:
     type: revision_log_formatter
-    weight: 8
-    region: content
     label: hidden
     settings:
       order: desc
@@ -38,82 +36,85 @@ content:
       header_template: '@action by @user at @datetime'
       limit: '0'
     third_party_settings: {  }
+    weight: 8
+    region: content
   field_cluster_id:
-    weight: 9
+    type: number_integer
     label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
-    type: number_integer
+    weight: 9
     region: content
   field_comments:
-    weight: 6
+    type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 6
     region: content
   field_id:
-    weight: 7
+    type: serial_default_formatter
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: serial_default_formatter
+    weight: 7
     region: content
   field_risk_id:
-    weight: 10
+    type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: 10
     region: content
   field_risks:
-    weight: 3
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 3
+    region: content
   field_risks_cluster_class:
+    settings: {  }
+    third_party_settings: {  }
     weight: 3
     region: content
-    settings: {  }
-    third_party_settings: {  }
   field_risks_cluster_impact:
-    weight: 100
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 100
+    region: content
   field_risks_cluster_propability:
-    weight: 100
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 100
+    region: content
   field_risks_data:
+    settings: {  }
+    third_party_settings: {  }
     weight: 4
     region: content
-    settings: {  }
-    third_party_settings: {  }
   field_trend:
-    weight: 5
+    type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 5
     region: content
   last_updated:
+    settings: {  }
+    third_party_settings: {  }
     weight: 2
     region: content
+  links:
     settings: {  }
     third_party_settings: {  }
-  links:
     weight: 0
     region: content
-    settings: {  }
-    third_party_settings: {  }
 hidden:
   downtime_description: true
   entity_print_view_epub: true
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true

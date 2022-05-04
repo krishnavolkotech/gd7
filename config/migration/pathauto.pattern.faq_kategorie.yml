@@ -12,12 +12,12 @@ pattern: '[term:parent:name]/faq/[term:name]'
 selection_criteria:
   c582b9f6-83fe-45d3-976c-309fa4330f42:
     id: 'entity_bundle:taxonomy_term'
-    bundles:
-      faq_seite: faq_seite
     negate: false
+    uuid: c582b9f6-83fe-45d3-976c-309fa4330f42
     context_mapping:
       taxonomy_term: taxonomy_term
-    uuid: c582b9f6-83fe-45d3-976c-309fa4330f42
+    bundles:
+      faq_seite: faq_seite
 selection_logic: and
 weight: -6
 relationships: {  }

@@ -44,255 +44,255 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 27
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
-    region: content
   comment:
     type: comment_default
     weight: 25
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   created:
     type: datetime_timestamp
     weight: 14
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_attachment:
+    type: string_textarea
     weight: 18
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_closed:
+    type: string_textarea
     weight: 23
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_comments:
-    weight: 13
-    settings:
-      rows: 5
-      placeholder: ''
-    third_party_settings: {  }
     type: text_textarea
+    weight: 13
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_diagnose:
+    type: string_textarea
     weight: 7
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_eroffnet:
+    type: string_textarea
     weight: 16
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_function:
+    type: string_textarea
     weight: 6
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_interface_affected:
+    type: string_textarea
     weight: 31
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_orp_nr:
+    type: string_textarea
     weight: 34
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_part_of_lueafp:
+    type: string_textarea
     weight: 33
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_priority:
+    type: string_textarea
     weight: 11
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_proactive_creation:
+    type: string_textarea
     weight: 30
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_problem_eroffnet:
+    type: number
     weight: 24
-    type: number
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_problem_status:
+    type: string_textarea
     weight: 3
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_problem_symptoms:
+    type: string_textarea
     weight: 29
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_processing:
+    type: string_textarea
     weight: 17
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_release:
-    weight: 21
     type: string_textarea
+    weight: 21
+    region: content
     settings:
-      placeholder: ''
       rows: 5
+      placeholder: ''
     third_party_settings: {  }
-    region: content
   field_s_no:
+    type: number
     weight: 1
-    type: number
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_sdcallid:
-    weight: 2
     type: number
+    weight: 2
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_services:
-    weight: 5
     type: options_select
+    weight: 5
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_solution:
+    type: text_textarea
     weight: 9
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_task_force:
+    type: string_textarea
     weight: 12
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_ticketstore_count:
-    weight: 28
     type: number
+    weight: 28
+    region: content
     settings:
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_ticketstore_link:
+    type: string_textarea
     weight: 26
-    type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_unlocated_cause:
+    type: string_textarea
     weight: 32
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: string_textarea
-    region: content
   field_version:
-    weight: 22
     type: string_textarea
-    settings:
-      placeholder: ''
-      rows: 5
-    third_party_settings: {  }
+    weight: 22
     region: content
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
   field_work_around:
+    type: text_textarea
     weight: 10
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   langcode:
     type: language_select
     weight: 4
+    region: content
     settings:
       include_locked: true
     third_party_settings: {  }
-    region: content
   promote:
     type: boolean_checkbox
+    weight: 19
+    region: content
     settings:
       display_label: true
-    weight: 19
     third_party_settings: {  }
-    region: content
   sticky:
     type: boolean_checkbox
+    weight: 20
+    region: content
     settings:
       display_label: true
-    weight: 20
     third_party_settings: {  }
-    region: content
   title:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
   translation:
     weight: 15
     region: content
@@ -301,13 +301,13 @@ content:
   uid:
     type: entity_reference_autocomplete
     weight: 8
+    region: content
     settings:
       match_operator: CONTAINS
+      match_limit: 10
       size: 60
       placeholder: ''
-      match_limit: 10
     third_party_settings: {  }
-    region: content
 hidden:
   path: true
   status: true

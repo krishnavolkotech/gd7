@@ -198,12 +198,18 @@ class UrlGenerator implements UrlGeneratorInterface {
       if ('variable' === $token[0]) {
         if (!$optional || !array_key_exists($token[3], $defaults) || (isset($mergedParams[$token[3]]) && (string) $mergedParams[$token[3]] !== (string) $defaults[$token[3]])) {
           // check requirement
-	  if (is_object($mergedParams[$token[3]])) {
-             $nid = $mergedParams[$token[3]]->id();
-           }
-	   else {
-             $nid = $mergedParams[$token[3]];
-           }
+            if (is_object($mergedParams[$token[3]])) {
+                if (method_exists($mergedParams[$token[3]], 'id')) {
+                    $nid = $mergedParams[$token[3]]->id();
+                }
+                else {
+                    $nid = $mergedParams[$token[3]]->__toString();
+                }
+            }
+            else {
+                $nid = $mergedParams[$token[3]];
+            }
+
   	   if (!preg_match('#^' . $token[2] . '$#', $nid)) {
             $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given) to generate a corresponding URL.', $token[3], $name, $token[2], $nid);
             throw new InvalidParameterException($message);

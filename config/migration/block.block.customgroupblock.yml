@@ -15,6 +15,6 @@ plugin: cust_group_block
 settings:
   id: cust_group_block
   label: 'Group Specific Links'
-  provider: core
   label_display: '0'
+  provider: core
 visibility: {  }

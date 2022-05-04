@@ -12,20 +12,20 @@ pattern: '[node:group_raw]/forum/[node:title]'
 selection_criteria:
   08ddcef4-5e45-467f-bb27-585bcaae2579:
     id: node_type
-    bundles:
-      forum: forum
     negate: false
+    uuid: 08ddcef4-5e45-467f-bb27-585bcaae2579
     context_mapping:
       node: node
-    uuid: 08ddcef4-5e45-467f-bb27-585bcaae2579
+    bundles:
+      forum: forum
   f387424f-3843-45bf-a9d3-df56b30c0a51:
     id: language
-    langcodes:
-      de: de
     negate: false
+    uuid: f387424f-3843-45bf-a9d3-df56b30c0a51
     context_mapping:
       language: 'node:langcode:language'
-    uuid: f387424f-3843-45bf-a9d3-df56b30c0a51
+    langcodes:
+      de: de
 selection_logic: and
 weight: -1
 relationships:

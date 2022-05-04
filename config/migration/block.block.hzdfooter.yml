@@ -18,6 +18,6 @@ plugin: 'simple_block:hzdfooter_content'
 settings:
   id: 'simple_block:hzdfooter_content'
   label: 'HZD Footer'
-  provider: simple_block
   label_display: '0'
+  provider: simple_block
 visibility: {  }

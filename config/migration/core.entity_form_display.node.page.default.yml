@@ -26,15 +26,16 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 1
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_page_files:
-    weight: 2
     type: file_generic
+    weight: 2
+    region: content
     settings:
       progress_indicator: bar
     third_party_settings:
@@ -60,7 +61,6 @@ content:
             attach_mode: move
       imce:
         enabled: false
-    region: content
   path:
     type: path
     weight: 3
@@ -70,11 +70,11 @@ content:
   title:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
 hidden:
   comment: true
   created: true

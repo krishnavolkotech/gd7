@@ -21,45 +21,45 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 2
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
       show_summary: false
     third_party_settings: {  }
-    region: content
   field_comments:
+    type: text_textarea
     weight: 4
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_id:
+    type: serial_default_widget
     weight: 5
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: serial_default_widget
-    region: content
   field_risk_id:
+    type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: 'Beispiel: C1'
     third_party_settings:
       cust_group:
         group_files: 0
-    type: string_textfield
-    region: content
   field_trend:
+    type: text_textarea
     weight: 3
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   title:
     type: string_textfield
     weight: 1

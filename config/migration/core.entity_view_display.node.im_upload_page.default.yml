@@ -25,38 +25,38 @@ bundle: im_upload_page
 mode: default
 content:
   body:
-    label: hidden
     type: text_default
-    weight: 101
+    label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 101
     region: content
   comment:
-    label: hidden
     type: comment_default
-    weight: 20
+    label: hidden
     settings:
-      pager_id: 0
       view_mode: default
+      pager_id: 0
     third_party_settings: {  }
+    weight: 20
     region: content
   entity_print_view:
-    weight: 0
     settings: {  }
     third_party_settings: {  }
+    weight: 0
     region: content
   links:
-    weight: 100
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 100
+    region: content
   upload:
+    type: file_default
     label: hidden
     settings:
       use_description_as_link_text: true
-    type: file_default
-    weight: 102
     third_party_settings: {  }
+    weight: 102
     region: content
 hidden:
   content_revision_log: true
@@ -67,3 +67,4 @@ hidden:
   field_im_upload_page_files: true
   field_state: true
   langcode: true
+  search_api_excerpt: true
