@@ -112,6 +112,7 @@ module:
   queue_ui: 0
   quickedit: 0
   rdf: 0
+  redirect: 0
   rest: 0
   revision_log: 0
   search_api: 0
