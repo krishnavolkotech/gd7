@@ -126,6 +126,12 @@ class HzdSamsStorage {
         case 'norm':
           $this->class = 'NORM';
           break;
+        case 'dsl':
+          $this->class = 'DSL';
+          break; 
+        case 'seu':
+          $this->class = 'SEU';
+          break;
         case 'performance-test':  // Nur zu Dev-Zwecken
           $status = '';
         default:
@@ -134,7 +140,8 @@ class HzdSamsStorage {
     }
     elseif ($this->class === '') {
     }
-    elseif (is_numeric($this->class) && $this->class >= 0 && $this->class <= 5) {
+    //CCL 04.05.22 muss hier wirklich <=5 gegen <=7 getauscht werden?
+    elseif (is_numeric($this->class) && $this->class >= 0 && $this->class <= 7) {
       $classes = [
         '',
         'BIBLIOTHEK',
@@ -142,6 +149,8 @@ class HzdSamsStorage {
         'MOCK',
         'SCHEMA',
         'NORM',
+        'DSL',
+        'SEU',
       ];
       $this->class = $classes[$this->class];
     }
