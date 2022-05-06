@@ -371,26 +371,26 @@ function hzd_customizations_update_8067(&$sandbox) {
 
 
 function custom_find_all_alias_special_charecters() {
-    $db = \Drupal::database();
-    $result = $db->select('path_alias', 'pa')
-            ->fields('pa', array('id', 'alias', 'path'))
-            ->condition('alias', '', '!=');
-    $val = $result->execute()->fetchAll();
-    $states = array();
-    $count = 0;
-    $nodes = [];
-    foreach ($val as $aliases) {
-        if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬äöüß]/', $aliases->alias)) {
-          $node_id = trim($aliases->path, "/node/");
-	  $node = \Drupal\node\Entity\Node::load($node_id);
-
-
-	  if ($node->getType() == 'page') {
-           custom_manual_redirect_save($node_id, $aliases->alias, $node);
-           $nodes[$node_id] = $aliases->alias;
-	 }
+  $db = \Drupal::database();
+  $result = $db->select('path_alias', 'pa')
+               ->fields('pa', array('id', 'alias', 'path'))
+               ->condition('alias', '', '!=');
+  $val = $result->execute()->fetchAll();
+  $states = array();
+  $count = 0;
+  $nodes = [];
+  foreach ($val as $aliases) {
+    if (preg_match('/[\'^£$%&*()}{@#~?><>,|=+¬äöüß]/', $aliases->alias)) {
+      $node_id = trim($aliases->path, "/node/");
+      $node = \Drupal\node\Entity\Node::load($node_id);
+      if (is_object($node)) {
+        if ($node->getType() == 'page') {
+          custom_manual_redirect_save($node_id, $aliases->alias, $node);
+          $nodes[$node_id] = $aliases->alias;
+        }
       }
     }
+  }
 }
 
 function custom_manual_redirect_save($nid, $old_alias, $node) {
