@@ -11,12 +11,12 @@ pattern: '/risikomanagement-betrieb/massnahme/[node:field_risk_id]'
 selection_criteria:
   5626d1b7-f537-4931-8783-18e24c2a1e7f:
     id: node_type
-    bundles:
-      measure: measure
     negate: false
+    uuid: 5626d1b7-f537-4931-8783-18e24c2a1e7f
     context_mapping:
       node: node
-    uuid: 5626d1b7-f537-4931-8783-18e24c2a1e7f
+    bundles:
+      measure: measure
 selection_logic: and
 weight: -5
 relationships: {  }

@@ -15,7 +15,7 @@ class QueueMailLanguageFunctionalTest extends QueueMailFunctionalTest {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['queue_mail_language', 'queue_mail_test'];
+  protected static $modules = ['queue_mail_language', 'queue_mail_test'];
 
   /**
    * {@inheritdoc}

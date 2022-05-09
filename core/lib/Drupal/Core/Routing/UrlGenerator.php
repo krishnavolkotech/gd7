@@ -7,7 +7,6 @@ use Drupal\Core\Render\BubbleableMetadata;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RequestContext as SymfonyRequestContext;
 use Symfony\Component\Routing\Route as SymfonyRoute;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\PathProcessor\OutboundPathProcessorInterface;
 use Drupal\Core\RouteProcessor\OutboundRouteProcessorInterface;
@@ -199,12 +198,24 @@ class UrlGenerator implements UrlGeneratorInterface {
       if ('variable' === $token[0]) {
         if (!$optional || !array_key_exists($token[3], $defaults) || (isset($mergedParams[$token[3]]) && (string) $mergedParams[$token[3]] !== (string) $defaults[$token[3]])) {
           // check requirement
-          if (!preg_match('#^' . $token[2] . '$#', $mergedParams[$token[3]])) {
-            $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given) to generate a corresponding URL.', $token[3], $name, $token[2], $mergedParams[$token[3]]);
+            if (is_object($mergedParams[$token[3]])) {
+                if (method_exists($mergedParams[$token[3]], 'id')) {
+                    $nid = $mergedParams[$token[3]]->id();
+                }
+                else {
+                    $nid = $mergedParams[$token[3]]->__toString();
+                }
+            }
+            else {
+                $nid = $mergedParams[$token[3]];
+            }
+
+  	   if (!preg_match('#^' . $token[2] . '$#', $nid)) {
+            $message = sprintf('Parameter "%s" for route "%s" must match "%s" ("%s" given) to generate a corresponding URL.', $token[3], $name, $token[2], $nid);
             throw new InvalidParameterException($message);
           }
 
-          $url = $token[1] . $mergedParams[$token[3]] . $url;
+          $url = $token[1] . $nid . $url;
           $optional = FALSE;
         }
       }
@@ -254,7 +265,7 @@ class UrlGenerator implements UrlGeneratorInterface {
   /**
    * {@inheritdoc}
    */
-  public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH) {
+  public function generate($name, $parameters = [], $referenceType = self::ABSOLUTE_PATH): string {
     $options['absolute'] = is_bool($referenceType) ? $referenceType : $referenceType === self::ABSOLUTE_URL;
     return $this->generateFromRoute($name, $parameters, $options);
   }
@@ -423,8 +434,8 @@ class UrlGenerator implements UrlGeneratorInterface {
     if ($name instanceof SymfonyRoute) {
       $route = $name;
     }
-    elseif (NULL === $route = clone $this->provider->getRouteByName($name)) {
-      throw new RouteNotFoundException(sprintf('Route "%s" does not exist.', $name));
+    else {
+      $route = clone $this->provider->getRouteByName($name);
     }
     return $route;
   }

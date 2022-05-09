@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
 use Drupal\Tests\BrowserTestBase;
@@ -26,9 +28,16 @@ class MatomoUserFieldsTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * Admin user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $adminUser;
+
+  /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $permissions = [
@@ -38,8 +47,8 @@ class MatomoUserFieldsTest extends BrowserTestBase {
     ];
 
     // User to set up matomo.
-    $this->admin_user = $this->drupalCreateUser($permissions);
-    $this->drupalLogin($this->admin_user);
+    $this->adminUser = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($this->adminUser);
   }
 
   /**
@@ -53,30 +62,28 @@ class MatomoUserFieldsTest extends BrowserTestBase {
 
     // Check if the pseudo field is shown on account forms.
     $this->drupalGet('admin/config/people/accounts/form-display');
-    $this->assertResponse(200);
-    $this->assertRaw('Matomo settings', '[testMatomoUserFields]: Matomo settings field exists on Manage form display.');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->responseContains('Matomo settings');
 
     // No customization allowed.
     $this->config('matomo.settings')->set('visibility.user_account_mode', 0)->save();
-    $this->drupalGet('user/' . $this->admin_user->id() . '/edit');
-    $this->assertResponse(200);
-    $this->assertNoRaw('Matomo settings', '[testMatomoUserFields]: Matomo settings field does not exist on user edit page.');
+    $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->responseNotContains('Matomo settings');
 
     // Tracking on by default, users with opt-in or out of matomo tracking
     // permission can opt out.
     $this->config('matomo.settings')->set('visibility.user_account_mode', 1)->save();
-    $this->drupalGet('user/' . $this->admin_user->id() . '/edit');
-    $this->assertResponse(200);
-    $this->assertRaw('Users are tracked by default, but you are able to opt out.',
-      '[testMatomoUserFields]: Matomo settings field exists on on user edit page');
+    $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->responseContains('Users are tracked by default, but you are able to opt out.');
 
     // Tracking off by default, users with opt-in or out of matomo tracking
     // permission can opt in.
     $this->config('matomo.settings')->set('visibility.user_account_mode', 2)->save();
-    $this->drupalGet('user/' . $this->admin_user->id() . '/edit');
-    $this->assertResponse(200);
-    $this->assertRaw('Users are <em>not</em> tracked by default, but you are able to opt in.',
-      '[testMatomoUserFields]: Matomo settings field exists on on user edit page.');
+    $this->drupalGet('user/' . $this->adminUser->id() . '/edit');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->responseContains('Users are <em>not</em> tracked by default, but you are able to opt in.');
   }
 
 }

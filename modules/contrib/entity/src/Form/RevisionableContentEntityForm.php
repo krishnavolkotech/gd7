@@ -136,11 +136,11 @@ class RevisionableContentEntityForm extends ContentEntityForm {
 
     if ($insert) {
       $logger->notice('@type: added %info.', $context);
-      \Drupal::messenger()->addMessage($this->t('@type %info has been created.', $t_args));
+      drupal_set_message($this->t('@type %info has been created.', $t_args));
     }
     else {
       $logger->notice('@type: updated %info.', $context);
-      \Drupal::messenger()->addMessage($this->t('@type %info has been updated.', $t_args));
+      drupal_set_message($this->t('@type %info has been updated.', $t_args));
     }
 
     if ($this->entity->id()) {
@@ -157,7 +157,7 @@ class RevisionableContentEntityForm extends ContentEntityForm {
     else {
       // In the unlikely case something went wrong on save, the entity will be
       // rebuilt and entity form redisplayed.
-      \Drupal::messenger()->addMessage($this->t('The entity could not be saved.'), 'error');
+      drupal_set_message($this->t('The entity could not be saved.'), 'error');
       $form_state->setRebuild();
     }
   }

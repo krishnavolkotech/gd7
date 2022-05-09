@@ -17,16 +17,16 @@ plugin: search_group_content
 settings:
   id: search_group_content
   label: 'Content type search filter'
-  provider: hzd_customizations
   label_display: '0'
+  provider: hzd_customizations
 visibility:
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''
   request_path:
     id: request_path
-    pages: "/suche\r\n/suche*\r\n/suche/*\r\nsuche\r\nsuche*"
     negate: false
     context_mapping: {  }
+    pages: "/suche\r\n/suche*\r\n/suche/*\r\nsuche\r\nsuche*"

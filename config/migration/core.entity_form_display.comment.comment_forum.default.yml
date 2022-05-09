@@ -15,16 +15,16 @@ third_party_settings:
     group_notifications:
       children:
         - field_do_not_send_notifications
+      label: Notifications
+      region: hidden
       parent_name: ''
       weight: 3
       format_type: fieldset
       format_settings:
-        id: ''
         classes: ''
+        id: ''
         description: ''
         required_fields: true
-      label: Notifications
-      region: hidden
 _core:
   default_config_hash: EMa4-jXqGoooiV0X2bgOJxBI7RVBhpXWc_780E4YwGQ
 id: comment.comment_forum.default
@@ -40,27 +40,27 @@ content:
   comment_body:
     type: text_textarea
     weight: 2
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    region: content
   field_do_not_send_notifications:
+    type: options_buttons
     weight: 4
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_buttons
-    region: content
   subject:
     type: string_textfield
     weight: 1
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings:
       cust_group:
         group_files: 0
-    region: content
 hidden:
   langcode: true
   translation: true

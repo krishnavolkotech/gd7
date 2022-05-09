@@ -15,36 +15,36 @@ bundle: incident_managent
 mode: default
 content:
   field_description:
-    weight: -3
+    type: string
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
-    type: string
+    weight: -3
     region: content
   field_group_body:
-    weight: -2
+    type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: -2
     region: content
   field_old_reference:
-    weight: -4
+    type: number_integer
     label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
-    type: number_integer
+    weight: -4
     region: content
   label:
-    label: hidden
     type: string
-    weight: -5
+    label: hidden
     settings:
       link_to_entity: false
     third_party_settings: {  }
+    weight: -5
     region: content
 hidden:
   changed: true
@@ -53,4 +53,5 @@ hidden:
   entity_print_view_pdf: true
   entity_print_view_word_docx: true
   langcode: true
+  search_api_excerpt: true
   uid: true

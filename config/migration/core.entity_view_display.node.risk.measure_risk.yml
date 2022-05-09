@@ -38,18 +38,18 @@ mode: measure_risk
 content:
   field_id:
     type: serial_default_formatter
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
     weight: 0
     region: content
-    label: hidden
-    settings: {  }
-    third_party_settings: {  }
   field_risk_status:
     type: list_default
-    weight: 1
-    region: content
     label: hidden
     settings: {  }
     third_party_settings: {  }
+    weight: 1
+    region: content
 hidden:
   body: true
   content_revision_log: true
@@ -81,3 +81,4 @@ hidden:
   langcode: true
   last_updated: true
   links: true
+  search_api_excerpt: true

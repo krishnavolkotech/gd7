@@ -1082,7 +1082,7 @@ class ViewExecutable {
 
       $argument->setRelationship();
 
-      $arg = isset($this->args[$position]) ? $this->args[$position] : NULL;
+      $arg = $this->args[$position] ?? NULL;
       $argument->position = $position;
 
       if (isset($arg) || $argument->hasDefaultArgument()) {
@@ -1115,7 +1115,7 @@ class ViewExecutable {
         $substitutions["{{ arguments.$id }}"] = $arg_title;
         // Since argument validator plugins can potentially transform the value,
         // use whatever value the argument handler now has, not the raw value.
-        $substitutions["{{ raw_arguments.$id }}"] = !is_array($argument->getValue())?strip_tags(Html::decodeEntities($argument->getValue())):'';
+        $substitutions["{{ raw_arguments.$id }}"] = strip_tags(Html::decodeEntities($argument->getValue()));
 
         // Test to see if we should use this argument's title
         if (!empty($argument->options['title_enable']) && !empty($argument->options['title'])) {
@@ -1703,7 +1703,7 @@ class ViewExecutable {
       $old_view = array_pop($this->old_view);
     }
 
-    views_set_current_view(isset($old_view) ? $old_view : FALSE);
+    views_set_current_view($old_view ?? FALSE);
   }
 
   /**
@@ -1842,7 +1842,6 @@ class ViewExecutable {
     if ($this->initStyle()) {
       $title = $this->style_plugin->tokenizeValue($title, 0);
     }
-
     return $title;
   }
 
@@ -2292,7 +2291,7 @@ class ViewExecutable {
     // Get the existing configuration
     $fields = $this->displayHandlers->get($display_id)->getOption($types[$type]['plural']);
 
-    return isset($fields[$id]) ? $fields[$id] : NULL;
+    return $fields[$id] ?? NULL;
   }
 
   /**
@@ -2452,7 +2451,7 @@ class ViewExecutable {
    */
   public function hasFormElements() {
     foreach ($this->field as $field) {
-      if (property_exists($field, 'views_form_callback') || method_exists($field, 'viewsForm')) {
+      if (method_exists($field, 'viewsForm')) {
         return TRUE;
       }
     }

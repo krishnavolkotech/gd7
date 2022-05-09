@@ -20,36 +20,46 @@ bundle: risk_cluster
 mode: log
 content:
   body:
-    label: above
     type: text_default
-    weight: 1
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 1
     region: content
   field_comments:
-    weight: 4
+    type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 4
     region: content
   field_risks:
-    weight: 3
-    region: content
     settings: {  }
     third_party_settings: {  }
-  field_trend:
     weight: 3
+    region: content
+  field_risks_cluster_impact:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  field_risks_cluster_propability:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 100
+    region: content
+  field_trend:
+    type: text_default
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 3
     region: content
   links:
-    weight: 0
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 0
+    region: content
 hidden:
   content_revision_log: true
   downtime_description: true
@@ -63,3 +73,4 @@ hidden:
   field_risks_data: true
   langcode: true
   last_updated: true
+  search_api_excerpt: true

@@ -1,4 +1,3 @@
-third_party_settings: {  }
 favicon:
   mimetype: image/vnd.microsoft.icon
   path: themes/hzd/favicon.ico
@@ -13,6 +12,7 @@ logo:
   path: ''
   url: ''
   use_default: true
+third_party_settings: {  }
 schemas:
   stable: 8000
   classy: 8000

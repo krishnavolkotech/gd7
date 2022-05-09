@@ -7,9 +7,8 @@
 
 namespace Drupal\pdf_api\Plugin;
 
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Plugin\PluginBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 
@@ -24,6 +23,13 @@ abstract class PdfGeneratorBase extends PluginBase implements PdfGeneratorInterf
    * @var array
    */
   protected $options = array();
+
+  /**
+   * The entity being rendered.
+   *
+   * @var \Drupal\Core\Entity\EntityInterface
+   */
+  protected $entity;
 
   /**
    * {@inheritdoc}
@@ -266,6 +272,27 @@ abstract class PdfGeneratorBase extends PluginBase implements PdfGeneratorInterf
    */
   public function setOptions(array $options) {
     $this->options += $options;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function usePrintableDisplay() {
+    return TRUE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setEntity(EntityInterface $entity) {
+    $this->entity = $entity;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEntity() {
+    return $this->entity;
   }
 
 }

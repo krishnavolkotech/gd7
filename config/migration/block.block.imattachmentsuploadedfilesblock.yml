@@ -18,18 +18,18 @@ plugin: im_attachments_uploaded_files_block
 settings:
   id: im_attachments_uploaded_files_block
   label: 'Im attachments uploaded files block'
-  provider: cust_group
   label_display: '0'
+  provider: cust_group
 visibility:
   condition_group:
     id: condition_group
     negate: false
-    block_visibility_group: ''
     context_mapping: {  }
+    block_visibility_group: ''
   'entity_bundle:node':
     id: 'entity_bundle:node'
-    bundles:
-      im_upload_page: im_upload_page
     negate: false
     context_mapping:
       node: '@node.node_route_context:node'
+    bundles:
+      im_upload_page: im_upload_page

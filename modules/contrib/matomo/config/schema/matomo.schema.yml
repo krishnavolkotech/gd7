@@ -112,6 +112,9 @@ matomo.settings:
     translation_set:
       type: boolean
       label: 'Track translation sets as one unit'
+    disable_tracking:
+      type: boolean
+      label: 'Disable tracking'
     cache:
       type: boolean
       label: 'Locally cache tracking code file'
@@ -121,3 +124,46 @@ matomo.settings:
     page_title_hierarchy_exclude_home:
       type: boolean
       label: 'Hide home page from hierarchy'
+    status_codes_disabled:
+      type: sequence
+      label: 'Status codes disabled'
+      sequence:
+        type: string
+        label: 'Status code'
+
+views.display_extender.matomo:
+  type: views_display_extender
+  mapping:
+    enabled:
+      type: boolean
+      label: 'Enable Matomo integration'
+    keyword_gets:
+      type: string
+      label: 'GET parameters for keyword'
+    keyword_behavior:
+      type: string
+      label: 'Keyword behavior'
+    keyword_concat_separator:
+      type: string
+      label: 'Keyword concatenation separator'
+    category_behavior:
+      type: string
+      label: 'Category behavior'
+    category_gets:
+      type: string
+      label: 'GET parameters for category'
+    category_concat_separator:
+      type: string
+      label: 'Category concatenation separator'
+    category_fallback:
+      type: string
+      label: 'Category fallback'
+    category_facets:
+      type: sequence
+      label: 'Facets used for category'
+      sequence:
+        type: string
+        label: 'Facet ID'
+    category_facets_concat_separator:
+      type: string
+      label: 'Category concatenation separator for facets'

@@ -7,6 +7,8 @@
 
 namespace Drupal\pdf_api\Plugin;
 
+use Drupal\Core\Entity\EntityInterface;
+
 /**
  * Defines an interface for PDF generator plugins.
  */
@@ -157,5 +159,38 @@ interface PdfGeneratorInterface {
    *   Whether any errors occurred and were not ignored.
    */
   public function displayErrors();
+
+  /**
+   * Use Printable display mode?
+   *
+   * We normally generate the HTML using buildPdfContent and a render call.
+   * That doesn't let JS run and may limit the CSS that's used. A PDF generator
+   * can instead override this function (which returns FALSE in the base
+   * implementation) and return true, it will then need to use the printable
+   * entity URL to get content.
+   *
+   * @return bool
+   *   Whether we are using the default entity print rendering method.
+   */
+  public function usePrintableDisplay();
+
+  /**
+   * Set the entity being displayed by the generator.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface
+   *   The entity being rendered.
+   */
+  public function setEntity(EntityInterface $entity);
+
+  /**
+   * Provide the entity being displayed to the generator.
+   *
+   * If the generator is not using printable's display (eg it is using a view
+   * mode on the entity) this is how it gets access.
+   *
+   * @return \Drupal\Core\Entity\EntityInterface
+   *   The entity being rendered.
+   */
+  public function getEntity();
 
 }

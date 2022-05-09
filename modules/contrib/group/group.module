@@ -295,6 +295,7 @@ function group_entity_access(EntityInterface $entity, $operation, AccountInterfa
   // check for 'view', 'update' or 'delete' access on new entities, even though
   // that makes little sense. We need to account for it to avoid crashes because
   // we would otherwise query the DB with a non-existent node ID.
+
   if ($entity->isNew()) {
     return AccessResult::neutral();
   }

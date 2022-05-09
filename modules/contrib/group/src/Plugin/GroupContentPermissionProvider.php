@@ -164,6 +164,46 @@ class GroupContentPermissionProvider extends GroupContentHandlerBase implements 
   /**
    * {@inheritdoc}
    */
+  public function getEntityViewAllRevisionsPermission() {
+    if ($this->definesEntityPermissions) {
+      return "view all $this->pluginId revisions";
+    }
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEntityViewRevisionPermission() {
+    if ($this->definesEntityPermissions) {
+      return "view $this->pluginId revision";
+    }
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEntityRevertRevisionPermission() {
+    if ($this->definesEntityPermissions) {
+      return "revert $this->pluginId revision";
+    }
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getEntityDeleteRevisionPermission() {
+    if ($this->definesEntityPermissions) {
+      return "delete $this->pluginId revision";
+    }
+    return FALSE;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getPermission($operation, $target, $scope = 'any') {
     assert(in_array($target, ['relation', 'entity'], TRUE), '$target must be either "relation" or "entity"');
     assert(in_array($scope, ['any', 'own'], TRUE), '$target must be either "relation" or "entity"');
@@ -192,6 +232,14 @@ class GroupContentPermissionProvider extends GroupContentHandlerBase implements 
           return $this->getEntityDeletePermission($scope);
         case 'create':
           return $this->getEntityCreatePermission();
+        case 'view all revisions':
+          return $this->getEntityViewAllRevisionsPermission();
+        case 'view revision':
+          return $this->getEntityViewRevisionPermission();
+        case 'revert revision':
+          return $this->getEntityRevertRevisionPermission();
+        case 'delete revision':
+          return $this->getEntityDeleteRevisionPermission();
       }
     }
 
@@ -262,6 +310,18 @@ class GroupContentPermissionProvider extends GroupContentHandlerBase implements 
     }
     if ($name = $this->getEntityDeletePermission('own')) {
       $permissions[$name] = $this->buildPermission("$prefix Delete own %entity_type entities");
+    }
+    if ($name = $this->getEntityViewAllRevisionsPermission()) {
+      $permissions[$name] = $this->buildPermission("$prefix View the version history and all revisions of %entity_type entities");
+    }
+    if ($name = $this->getEntityViewRevisionPermission()) {
+      $permissions[$name] = $this->buildPermission("$prefix View individual revisions of %entity_type entities");
+    }
+    if ($name = $this->getEntityRevertRevisionPermission()) {
+      $permissions[$name] = $this->buildPermission("$prefix Revert any revision of %entity_type entities");
+    }
+    if ($name = $this->getEntityDeleteRevisionPermission()) {
+      $permissions[$name] = $this->buildPermission("$prefix Delete any revision of %entity_type entities");
     }
 
     if ($name = $this->getEntityCreatePermission()) {

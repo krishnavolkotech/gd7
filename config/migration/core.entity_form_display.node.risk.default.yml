@@ -41,37 +41,39 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 17
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
       show_summary: false
     third_party_settings: {  }
-    region: content
   field_affected_oes:
+    type: text_textarea
     weight: 13
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_arbeitslog:
+    type: text_textarea
     weight: 19
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_category:
+    type: options_select
     weight: 14
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_contact_person:
+    type: group_user_field_widget
     weight: 4
+    region: content
     settings:
       size: '60'
       placeholder: ''
@@ -80,122 +82,120 @@ content:
     third_party_settings:
       cust_group:
         group_files: 0
-    type: group_user_field_widget
-    region: content
   field_creation_date:
+    type: datetime_default
     weight: 2
+    region: content
     settings: {  }
     third_party_settings:
       cust_group:
         group_files: 0
-    type: datetime_default
-    region: content
   field_follow_up:
+    type: datetime_default
     weight: 15
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: datetime_default
-    region: content
   field_graduation_date:
-    weight: 16
-    settings: {  }
-    third_party_settings: {  }
     type: datetime_default
+    weight: 16
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_id:
-    weight: 23
-    settings: {  }
-    third_party_settings: {  }
     type: serial_default_widget
+    weight: 23
     region: content
-  field_non_production_state:
-    weight: 10
     settings: {  }
     third_party_settings: {  }
+  field_non_production_state:
     type: options_select
+    weight: 10
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_owner:
+    type: string_textfield
     weight: 11
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_probability_of_occurrence:
+    type: options_select
     weight: 6
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_remarks:
+    type: text_textarea
     weight: 18
+    region: content
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
-    type: text_textarea
-    region: content
   field_reported_by:
+    type: string_textfield
     weight: 3
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    type: string_textfield
-    region: content
   field_risk_category:
-    weight: 22
-    settings: {  }
-    third_party_settings: {  }
     type: computed_string_widget
+    weight: 22
     region: content
-  field_risk_clusters:
-    weight: 9
     settings: {  }
     third_party_settings: {  }
+  field_risk_clusters:
     type: options_select
+    weight: 9
     region: content
+    settings: {  }
+    third_party_settings: {  }
   field_risk_id:
+    type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: 'Beispiel: R1.1'
     third_party_settings:
       cust_group:
         group_files: 0
-    type: string_textfield
-    region: content
   field_risk_impact:
+    type: options_select
     weight: 7
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_risk_status:
+    type: options_select
     weight: 5
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_risk_trend:
+    type: options_select
     weight: 8
+    region: content
     settings: {  }
     third_party_settings: {  }
-    type: options_select
-    region: content
   field_risk_value:
-    weight: 21
-    settings: {  }
-    third_party_settings: {  }
     type: computed_number_widget
+    weight: 21
     region: content
-  field_scope:
-    weight: 12
     settings: {  }
     third_party_settings: {  }
+  field_scope:
     type: options_select
+    weight: 12
     region: content
+    settings: {  }
+    third_party_settings: {  }
   path:
     type: path
     weight: 20

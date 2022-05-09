@@ -25,6 +25,8 @@ codesnippet:
   before: ''
   after: ''
 translation_set: false
+disable_tracking: false
 cache: false
 page_title_hierarchy: false
 page_title_hierarchy_exclude_home: true
+status_codes_disabled: {  }

@@ -19,25 +19,25 @@ mode: default
 content:
   account:
     weight: 0
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   field_message_preference:
     type: options_buttons
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   matomo:
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   piwik:
     weight: 3
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   timezone:
     weight: 6
     region: content
@@ -45,6 +45,7 @@ hidden:
   contact: true
   field_do_not_deactivate_automati: true
   field_notifications_status: true
+  field_privacy_policy: true
   l10n_client_contributor_key: true
   langcode: true
   language: true

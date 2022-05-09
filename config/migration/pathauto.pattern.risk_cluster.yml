@@ -11,12 +11,12 @@ pattern: '/risikomanagement-betrieb/risikocluster/[node:field_risk_id]'
 selection_criteria:
   757c4e0f-d214-4a09-848e-6cebd634c810:
     id: node_type
-    bundles:
-      risk_cluster: risk_cluster
     negate: false
+    uuid: 757c4e0f-d214-4a09-848e-6cebd634c810
     context_mapping:
       node: node
-    uuid: 757c4e0f-d214-4a09-848e-6cebd634c810
+    bundles:
+      risk_cluster: risk_cluster
 selection_logic: and
 weight: -5
 relationships: {  }

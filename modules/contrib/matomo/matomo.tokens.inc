@@ -5,6 +5,8 @@
  * Builds placeholder replacement tokens for user-related data.
  */
 
+declare(strict_types = 1);
+
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Render\BubbleableMetadata;
 
@@ -12,6 +14,7 @@ use Drupal\Core\Render\BubbleableMetadata;
  * Implements hook_token_info().
  */
 function matomo_token_info() {
+  $user = [];
   $user['matomo-role-names'] = [
     'name' => t('User role names'),
     'description' => t('The role names the user account is a member of as comma separated list.'),

@@ -18,20 +18,20 @@ plugin: 'block_content:483fce3b-c454-496e-9cce-42060f772fca'
 settings:
   id: 'block_content:483fce3b-c454-496e-9cce-42060f772fca'
   label: 'Quick Links'
-  provider: block_content
   label_display: visible
+  provider: block_content
   status: true
   info: ''
   view_mode: full
 visibility:
   user_role:
     id: user_role
+    negate: false
+    context_mapping:
+      user: '@user.current_user_context:current_user'
     roles:
       anonymous: anonymous
       authenticated: authenticated
       group_member: group_member
       group_administrator: group_administrator
       site_administrator: site_administrator
-    context_mapping:
-      user: '@user.current_user_context:current_user'
-    negate: false

@@ -16,6 +16,6 @@ plugin: star_favorites_block
 settings:
   id: star_favorites_block
   label: 'Add To Favorites'
-  provider: favorites
   label_display: '0'
+  provider: favorites
 visibility: {  }

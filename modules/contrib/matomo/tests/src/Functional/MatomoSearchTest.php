@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
-use Drupal\Tests\Traits\Core\CronRunTrait;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\Traits\Core\CronRunTrait;
 
 /**
  * Test search functionality of Matomo module.
@@ -30,9 +32,16 @@ class MatomoSearchTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * Admin user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $adminUser;
+
+  /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'page', 'name' => 'Basic page']);
@@ -46,8 +55,8 @@ class MatomoSearchTest extends BrowserTestBase {
     ];
 
     // User to set up matomo.
-    $this->admin_user = $this->drupalCreateUser($permissions);
-    $this->drupalLogin($this->admin_user);
+    $this->adminUser = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($this->adminUser);
   }
 
   /**
@@ -61,10 +70,10 @@ class MatomoSearchTest extends BrowserTestBase {
 
     // Check tracking code visibility.
     $this->drupalGet('');
-    $this->assertRaw($site_id, '[testMatomoSearch]: Tracking code is displayed for authenticated users.');
+    $this->assertSession()->responseContains($site_id);
 
     $this->drupalGet('search/node');
-    $this->assertNoRaw('_paq.push(["trackSiteSearch", ', '[testMatomoSearch]: Search tracker not added to page.');
+    $this->assertSession()->responseNotContains('_paq.push(["trackSiteSearch", ');
 
     // Enable site search support.
     $this->config('matomo.settings')->set('track.site_search', 1)->save();
@@ -77,32 +86,43 @@ class MatomoSearchTest extends BrowserTestBase {
     $edit = [];
     $edit['title[0][value]'] = 'This is a test title';
     $edit['body[0][value]'] = 'This test content contains ' . $search['keys'] . ' string.';
+    $this->drupalGet('search/node');
 
     // Fire a search, it's expected to get 0 results.
-    $this->drupalPostForm('search/node', $search, 'Search');
-    $this->assertRaw('_paq.push(["trackSiteSearch", ', '[testMatomoSearch]: Search results tracker is displayed.');
-    $this->assertRaw('window.matomo_search_results = 0;', '[testMatomoSearch]: Search yielded no results.');
+    $this->submitForm($search, 'Search');
+    $this->assertSession()->responseContains('_paq.push(["trackSiteSearch", ');
+    $this->assertSession()->responseContains('window.matomo_search_results = 0;');
+    $this->drupalGet('node/add/page');
 
     // Save the node.
-    $this->drupalPostForm('node/add/page', $edit, 'Save');
-    $this->assertText($this->t('@type @title has been created.', ['@type' => 'Basic page', '@title' => $edit['title[0][value]']]), 'Basic page created.');
+    $this->submitForm($edit, 'Save');
+    $this->assertSession()->pageTextContains($this->t('@type @title has been created.', [
+      '@type' => 'Basic page',
+      '@title' => $edit['title[0][value]'],
+    ]));
 
     // Index the node or it cannot found.
     $this->cronRun();
+    $this->drupalGet('search/node');
 
-    $this->drupalPostForm('search/node', $search, 'Search');
-    $this->assertRaw('_paq.push(["trackSiteSearch", ', '[testMatomoSearch]: Search results tracker is displayed.');
-    $this->assertRaw('window.matomo_search_results = 1;', '[testMatomoSearch]: One search result found.');
+    $this->submitForm($search, 'Search');
+    $this->assertSession()->responseContains('_paq.push(["trackSiteSearch", ');
+    $this->assertSession()->responseContains('window.matomo_search_results = 1;');
+    $this->drupalGet('node/add/page');
 
-    $this->drupalPostForm('node/add/page', $edit, 'Save');
-    $this->assertText($this->t('@type @title has been created.', ['@type' => 'Basic page', '@title' => $edit['title[0][value]']]), 'Basic page created.');
+    $this->submitForm($edit, 'Save');
+    $this->assertSession()->pageTextContains($this->t('@type @title has been created.', [
+      '@type' => 'Basic page',
+      '@title' => $edit['title[0][value]'],
+    ]));
 
     // Index the node or it cannot found.
     $this->cronRun();
+    $this->drupalGet('search/node');
 
-    $this->drupalPostForm('search/node', $search, 'Search');
-    $this->assertRaw('_paq.push(["trackSiteSearch", ', '[testMatomoSearch]: Search results tracker is displayed.');
-    $this->assertRaw('window.matomo_search_results = 2;', '[testMatomoSearch]: Two search results found.');
+    $this->submitForm($search, 'Search');
+    $this->assertSession()->responseContains('_paq.push(["trackSiteSearch", ');
+    $this->assertSession()->responseContains('window.matomo_search_results = 2;');
   }
 
 }

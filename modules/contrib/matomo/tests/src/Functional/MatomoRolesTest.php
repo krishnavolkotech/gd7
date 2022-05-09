@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
 use Drupal\Core\Session\AccountInterface;
@@ -27,9 +29,16 @@ class MatomoRolesTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * Admin user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $adminUser;
+
+  /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $permissions = [
@@ -38,7 +47,7 @@ class MatomoRolesTest extends BrowserTestBase {
     ];
 
     // User to set up matomo.
-    $this->admin_user = $this->drupalCreateUser($permissions);
+    $this->adminUser = $this->drupalCreateUser($permissions);
   }
 
   /**
@@ -57,28 +66,43 @@ class MatomoRolesTest extends BrowserTestBase {
     $this->config('matomo.settings')->set('visibility.user_role_roles', [])->save();
 
     // Check tracking code visibility.
-    $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is displayed for anonymous users on frontpage with default settings.');
-    $this->drupalGet('admin');
-    $this->assertRaw('"403/URL = "', '[testMatomoRoleVisibility]: 403 Forbidden tracking code is displayed for anonymous users in admin section with default settings.');
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => TRUE,
+    ]);
+    $this->expectPath('admin', [
+      'access' => FALSE,
+      'matomo_snippet' => TRUE,
+    ]);
 
-    $this->drupalLogin($this->admin_user);
+    $this->drupalLogin($this->adminUser);
 
-    $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is displayed for authenticated users on frontpage with default settings.');
-    $this->drupalGet('admin');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is NOT displayed for authenticated users in admin section with default settings.');
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => TRUE,
+    ]);
+    $this->expectPath('admin', [
+      'access' => TRUE,
+      'matomo_snippet' => FALSE,
+    ]);
 
     // Test if the non-default settings are working as expected.
     // Enable tracking only for authenticated users.
-    $this->config('matomo.settings')->set('visibility.user_role_roles', [AccountInterface::AUTHENTICATED_ROLE => AccountInterface::AUTHENTICATED_ROLE])->save();
+    $this->config('matomo.settings')->set('visibility.user_role_roles', [
+      AccountInterface::AUTHENTICATED_ROLE => AccountInterface::AUTHENTICATED_ROLE,
+    ])->save();
 
-    $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is displayed for authenticated users only on frontpage.');
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => TRUE,
+    ]);
 
     $this->drupalLogout();
-    $this->drupalGet('');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is NOT displayed for anonymous users on frontpage.');
+
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => FALSE,
+    ]);
 
     // Add to every role except the selected ones.
     $this->config('matomo.settings')->set('visibility.user_role_mode', 1)->save();
@@ -86,29 +110,70 @@ class MatomoRolesTest extends BrowserTestBase {
     $this->config('matomo.settings')->set('visibility.user_role_roles', [])->save();
 
     // Check tracking code visibility.
-    $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is added to every role and displayed for anonymous users.');
-    $this->drupalGet('admin');
-    $this->assertRaw('"403/URL = "', '[testMatomoRoleVisibility]: 403 Forbidden tracking code is shown for anonymous users if every role except the selected ones is selected.');
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => TRUE,
+    ]);
+    $this->expectPath('admin', [
+      'access' => FALSE,
+      'matomo_snippet' => TRUE,
+    ]);
 
-    $this->drupalLogin($this->admin_user);
+    $this->drupalLogin($this->adminUser);
 
-    $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is added to every role and displayed on frontpage for authenticated users.');
-    $this->drupalGet('admin');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is added to every role and NOT displayed in admin section for authenticated users.');
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => TRUE,
+    ]);
+    $this->expectPath('admin', [
+      'access' => FALSE,
+      'matomo_snippet' => FALSE,
+    ]);
 
     // Disable tracking for authenticated users.
-    $this->config('matomo.settings')->set('visibility.user_role_roles', [AccountInterface::AUTHENTICATED_ROLE => AccountInterface::AUTHENTICATED_ROLE])->save();
+    $this->config('matomo.settings')->set('visibility.user_role_roles', [
+      AccountInterface::AUTHENTICATED_ROLE => AccountInterface::AUTHENTICATED_ROLE,
+    ])->save();
 
-    $this->drupalGet('');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is NOT displayed on frontpage for excluded authenticated users.');
-    $this->drupalGet('admin');
-    $this->assertNoRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is NOT displayed in admin section for excluded authenticated users.');
+    $this->expectPath('', [
+      'access' => TRUE,
+      'matomo_snippet' => FALSE,
+    ]);
+    $this->expectPath('admin', [
+      'access' => TRUE,
+      'matomo_snippet' => FALSE,
+    ]);
 
     $this->drupalLogout();
-    $this->drupalGet('');
-    $this->assertRaw('u+"matomo.php"', '[testMatomoRoleVisibility]: Tracking code is displayed on frontpage for included anonymous users.');
+
+    $this->expectPath('admin', [
+      'access' => TRUE,
+      'matomo_snippet' => TRUE,
+    ]);
+  }
+
+  /**
+   * Test a path.
+   *
+   * @param string $path
+   *   The tested path.
+   * @param array $expectations_configuration
+   *   An array of the expectation that will determine the assertions.
+   */
+  protected function expectPath(string $path, array $expectations_configuration): void {
+    $this->drupalGet($path);
+    $access = $expectations_configuration['access'];
+    $matomo_snippet = $expectations_configuration['matomo_snippet'];
+
+    if ($access && $matomo_snippet) {
+      $this->assertSession()->responseContains('u+"matomo.php"');
+    }
+    elseif (!$access && $matomo_snippet) {
+      $this->assertSession()->responseContains('"403/URL = "');
+    }
+    elseif ($access && !$matomo_snippet) {
+      $this->assertSession()->responseNotContains('u+"matomo.php"');
+    }
   }
 
 }

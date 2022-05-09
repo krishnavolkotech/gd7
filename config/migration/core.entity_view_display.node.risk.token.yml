@@ -42,80 +42,80 @@ third_party_settings:
         - field_follow_up
         - field_risk_category_value
         - field_measures
+      label: table
       parent_name: ''
       weight: 0
       format_type: html_element
       format_settings:
         label: table
+        classes: risk-table-wrapper
+        id: ''
         element: div
         show_label: false
         label_element: h3
         attributes: ''
         effect: none
         speed: fast
-        id: ''
-        classes: risk-table-wrapper
-      label: table
 id: node.risk.token
 targetEntityType: node
 bundle: risk
 mode: token
 content:
   body:
-    label: inline
     type: text_default
-    weight: 5
+    label: inline
     settings: {  }
     third_party_settings: {  }
+    weight: 5
     region: content
   field_follow_up:
     type: datetime_default
+    label: inline
+    settings:
+      timezone_override: ''
+      format_type: medium
+    third_party_settings: {  }
     weight: 7
     region: content
-    label: inline
-    settings:
-      format_type: medium
-      timezone_override: ''
-    third_party_settings: {  }
   field_graduation_date:
     type: datetime_default
-    weight: 1
-    region: content
     label: inline
     settings:
-      format_type: medium
       timezone_override: ''
+      format_type: medium
     third_party_settings: {  }
-  field_measures:
-    weight: 9
+    weight: 1
     region: content
+  field_measures:
     settings: {  }
     third_party_settings: {  }
+    weight: 9
+    region: content
   field_remarks:
-    weight: 3
+    type: text_default
     label: inline
     settings: {  }
     third_party_settings: {  }
-    type: text_default
+    weight: 3
     region: content
   field_risk_category_value:
-    weight: 8
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 8
+    region: content
   field_risk_clusters:
-    weight: 4
+    type: entity_reference_label
     label: inline
     settings:
       link: true
     third_party_settings: {  }
-    type: entity_reference_label
+    weight: 4
     region: content
   last_updated:
-    weight: 6
-    region: content
     settings: {  }
     third_party_settings: {  }
+    weight: 6
+    region: content
 hidden:
   content_revision_log: true
   downtime_description: true
@@ -141,3 +141,4 @@ hidden:
   field_scope: true
   langcode: true
   links: true
+  search_api_excerpt: true

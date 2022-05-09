@@ -23,56 +23,56 @@ bundle: release
 mode: search_index
 content:
   field_date:
-    label: above
-    weight: -2
     type: number_integer
+    label: above
     settings:
       thousand_separator: ''
       prefix_suffix: true
     third_party_settings: {  }
+    weight: -2
     region: content
   field_documentation_link:
-    label: above
-    weight: 32
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 32
     region: content
   field_link:
-    label: above
-    weight: 31
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 31
     region: content
   field_release_comments:
-    label: above
-    weight: -1
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -1
     region: content
   field_release_type:
-    label: above
-    weight: -4
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: -4
     region: content
   field_relese_services:
-    label: above
-    weight: -3
     type: entity_reference_label
+    label: above
     settings:
       link: true
     third_party_settings: {  }
+    weight: -3
     region: content
   field_status:
-    label: above
-    weight: 6
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 6
     region: content
   links:
     weight: 100
@@ -88,4 +88,5 @@ hidden:
   entity_print_view_word_docx: true
   field_calculated_title: true
   langcode: true
+  search_api_excerpt: true
   upload: true

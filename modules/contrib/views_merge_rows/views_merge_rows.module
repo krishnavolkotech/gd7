@@ -13,7 +13,7 @@ use Drupal\views_merge_rows\HookHandler\ViewsPreRenderHookHandler;
 /**
  * Implements hook_theme().
  */
-function views_merge_rows_theme($existing, $type, $theme, $path) {
+function views_merge_rows_theme(array $existing, string $type, string $theme, string $path) : array {
   return [
     'merge_rows_theme' => [
       'render element' => 'form',
@@ -26,8 +26,9 @@ function views_merge_rows_theme($existing, $type, $theme, $path) {
  *
  * Merges the rows according to the settings for current display.
  */
-function views_merge_rows_views_pre_render(ViewExecutable $view) {
-  \Drupal::service('class_resolver')
-    ->getInstanceFromDefinition(ViewsPreRenderHookHandler::class)
-    ->process($view);
+function views_merge_rows_views_pre_render(ViewExecutable $view) : void {
+  /** @var \Drupal\views_merge_rows\HookHandler\ViewsPreRenderHookHandler $instance */
+  $instance = \Drupal::service('class_resolver')
+    ->getInstanceFromDefinition(ViewsPreRenderHookHandler::class);
+  $instance->process($view);
 }

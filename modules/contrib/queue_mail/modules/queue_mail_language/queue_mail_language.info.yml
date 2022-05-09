@@ -6,7 +6,7 @@ package: Mail
 dependencies:
   - drupal:language
 
-# Information added by Drupal.org packaging script on 2020-05-05
-version: '8.x-1.3'
+# Information added by Drupal.org packaging script on 2021-09-22
+version: '8.x-1.4'
 project: 'queue_mail'
-datestamp: 1588684758
+datestamp: 1632316351

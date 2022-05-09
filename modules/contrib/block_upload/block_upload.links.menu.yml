@@ -1,0 +1,6 @@
+block_upload.admin:
+  title: 'Block Upload Settings'
+  description: 'Configure Block Upload settings'
+  route_name: block_upload.admin
+  parent: system.admin_config_ui
+  weight: 10

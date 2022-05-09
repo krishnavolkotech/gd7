@@ -21,18 +21,18 @@ plugin: itsmprozesse_menu_block
 settings:
   id: itsmprozesse_menu_block
   label: ITSM-Prozesse
-  provider: cust_group
   label_display: visible
+  provider: cust_group
 visibility:
   request_path:
     id: request_path
-    pages: '<front>'
     negate: true
     context_mapping: {  }
+    pages: '<front>'
   user_role:
     id: user_role
-    roles:
-      authenticated: authenticated
     negate: false
     context_mapping:
       user: '@user.current_user_context:current_user'
+    roles:
+      authenticated: authenticated

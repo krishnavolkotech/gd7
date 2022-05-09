@@ -19,32 +19,32 @@ content:
   body:
     type: text_textarea_with_summary
     weight: 3
+    region: content
     settings:
       rows: 9
       summary_rows: 3
       placeholder: ''
     third_party_settings: {  }
-    region: content
   faq_kategorie:
     type: options_select
     weight: 2
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   faq_seite:
     type: options_select
     weight: 1
+    region: content
     settings: {  }
     third_party_settings: {  }
-    region: content
   title:
     type: string_textfield
     weight: 0
+    region: content
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
-    region: content
 hidden:
   comment: true
   created: true

@@ -1,30 +1,30 @@
-cancel_confirm:
-  body: "[user:display-name],\r\n\r\nauf der Seite  [site:name] wurde eine Anfrage zur Löschung Ihres Benutzerkontos gestellt .\r\n\r\nSie können nun Ihr Benutzerkonto auf der Seite [site:url-brief]  schliessen, indem Sie auf folgenden Link klicken oder diesen in die Adresszeile Ihres Browsers kopieren:\r\n\r\n[user:cancel-url]\r\n\r\nBeachten Sie: Die Schließung Ihres Benutzerkontos kannn icht rükgägngig gemacht werden.\r\n\r\nDieser Link läuft innerhalb eines Tages ab. Es passiert nichts, wenn Sie den Link nicht benutzen.\r\n\r\nIch Team von:\r\n\r\n--  [site:name]"
-  subject: 'Account details for [user:name] at [site:name] (deleted)'
-password_reset:
-  body: "Hallo [user:name],\r\n\r\nes wurde ein neues Passwort für Ihren Zugang zu dem Betriebsportal KONSENS angefordert. Falls Sie diese Aktion nicht selber angefordert haben, ignorieren Sie bitte diese Email. Sie können sich jetzt mit dem folgenden Link anmelden:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Link, der nur einmal benutzt werden kann und 24 Stunden gültig ist. Melden Sie sich nicht innerhalb dieser Zeit an, verfällt der Link ohne Wirkung. Nach der Anmeldung werden Sie auf eine Seite weitergeleitet, wo Sie ihr Passwort ändern können.\r\n\r\n-- Team Betriebsportal KONSENS"
-  subject: 'Ihr neues Passwort für das Betriebsportal KONSENS'
-register_admin_created:
-  body: "Herzlich Willkommen [user:name],\r\n\r\nein Administrator hat Sie als Benutzer bei uns registriert. Sie können sich jetzt mit dem folgenden Benutzernamen und Passwort hier anmelden: \r\n\r\nURL: [site:login-url]\r\nBenutzername: [user:name]\r\n\r\nSie können hierzu auch einfach auf den folgenden Link klicken oder diese Adresse in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Login-Link, der nur einmal benutzt werden kann. Nach der ersten Anmeldung ändern Sie bitte sofort Ihr Passwort.\r\n\r\n-- Team Betriebsportal KONSENS"
-  subject: 'Herzlich Willkommen beim Betriebsportal KONSENS'
-register_no_approval_required:
-  body: "Herzlich Willkommen [user:name],\r\n\r\nvielen Dank für Ihre Registrierung beim Betriebsportal KONSENS.\r\n\r\nBenutzername: [user:name]\r\n\r\nSie können sich nun mit dem folgenden Link erstmalig anmelden:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Login-Link, der nur einmal benutzt werden kann. Nach der ersten Anmeldung &auml;ndern Sie bitte sofort Ihr Passwort.\r\n\r\nZukünftig können Sie sich über folgenden Link im BpK anmelden:\r\n\r\nURL: [site:url]\r\n\r\nInformation zum Status Ihres Accounts:\r\nAktuell ist Ihr Account aktiv. Wenn Sie Benachrichtigungen konfigurieren, erhalten Sie diese per Email.\r\nWenn Sie sich länger als ein Jahr nicht am BpK anmelden, wird Ihr Account nach vorheriger Ankündigung automatisch deaktiviert. \r\nSie erhalten danach keine Emailbenachrichtigungen mehr. Durch einen erneuten Login wird Ihr Account automatisch wieder reaktiviert.\r\n\r\n-- Team Betriebsportal KONSENS"
-  subject: 'Herzlich Willkommen beim Betriebsportal KONSENS'
-register_pending_approval:
-  body: "Herzlich Willkommen [user:name],\r\n\r\nvielen Dank für Ihre Registrierung. Wir bemühen uns um eine schnelle Bearbeitung. Nach der Freischaltung können sich mit dem folgenden Benutzernamen und Passwort hier anmelden:\r\n\r\nURL: [site:login-url]\r\nBenutzername: [user:name]\r\n\r\nSie können hierzu auch einfach auf den folgenden Link klicken oder diese Adresse in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Login-Link, der nur einmal benutzt werden kann. Nach der ersten Anmeldung ändern Sie bitte sofort Ihr Passwort.\r\n\r\n-- Team Betriebsportal KONSENS"
-  subject: 'Account details for [user:display-name] at [site:name] (pending admin approval)'
-register_pending_approval_admin:
-  body: "[user:display-name] has applied for an account.\r\n\r\n[user:edit-url]"
-  subject: 'Account details for [user:display-name] at [site:name] (pending admin approval)'
-status_activated:
-  body: "Hallo [user:name],\r\n\r\nIhr Benutzerkonto wurde reaktiviert.\r\n\r\nBitte melden Sie sich heute noch unter Verwendung Ihres gewohnten Benutzernamens und Passworts am BpK an, um nicht wieder von der heute Nacht anstehenden automatischen Sperre erfasst zu werden. Diese betrifft alle Benutzerkonten, die länger als ein Jahr nicht aktiv waren. \r\nWenn Sie ein neues Passwort benötigen, können Sie dieses über das Anmeldeformular anfordern.\r\nBei Problemen mit der Anmeldung verwenden Sie bitte das Kontaktformular.\r\nURL: http://betriebsportal-konsens.hessen.testa-de.net\r\n\r\n-- Team Betriebsportal KONSENS"
-  subject: 'Ihr Benutzerkonto im Betriebsportal KONSENS wurde reaktiviert'
-status_blocked:
-  body: '[user:name], Your account on [site:name] has been blocked.'
-  subject: 'Account details for [user:name] at [site:name] (blocked)'
-status_canceled:
-  body: "[user:display-name],\r\n\r\nYour account on [site:name] has been canceled.\r\n\r\n--  [site:name] team"
-  subject: 'Details für Benutzerkonto [user:display-name] auf [site:name] (abgebrochen)'
-langcode: de
 _core:
   default_config_hash: r_VG2AQN5andXmmy8cQAYj1i9OinO1B4ia9al1ZKAvE
+langcode: de
+cancel_confirm:
+  subject: 'Account details for [user:name] at [site:name] (deleted)'
+  body: "[user:display-name],\r\n\r\nauf der Seite  [site:name] wurde eine Anfrage zur Löschung Ihres Benutzerkontos gestellt .\r\n\r\nSie können nun Ihr Benutzerkonto auf der Seite [site:url-brief]  schliessen, indem Sie auf folgenden Link klicken oder diesen in die Adresszeile Ihres Browsers kopieren:\r\n\r\n[user:cancel-url]\r\n\r\nBeachten Sie: Die Schließung Ihres Benutzerkontos kannn icht rükgägngig gemacht werden.\r\n\r\nDieser Link läuft innerhalb eines Tages ab. Es passiert nichts, wenn Sie den Link nicht benutzen.\r\n\r\nIch Team von:\r\n\r\n--  [site:name]"
+password_reset:
+  subject: 'Ihr neues Passwort für das Betriebsportal KONSENS'
+  body: "Hallo [user:name],\r\n\r\nes wurde ein neues Passwort für Ihren Zugang zu dem Betriebsportal KONSENS angefordert. Falls Sie diese Aktion nicht selber angefordert haben, ignorieren Sie bitte diese Email. Sie können sich jetzt mit dem folgenden Link anmelden:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Link, der nur einmal benutzt werden kann und 24 Stunden gültig ist. Melden Sie sich nicht innerhalb dieser Zeit an, verfällt der Link ohne Wirkung. Nach der Anmeldung werden Sie auf eine Seite weitergeleitet, wo Sie ihr Passwort ändern können.\r\n\r\n-- Team Betriebsportal KONSENS"
+register_admin_created:
+  subject: 'Herzlich Willkommen beim Betriebsportal KONSENS'
+  body: "Herzlich Willkommen [user:name],\r\n\r\nein Administrator hat Sie als Benutzer bei uns registriert. Sie können sich jetzt mit dem folgenden Benutzernamen und Passwort hier anmelden: \r\n\r\nURL: [site:login-url]\r\nBenutzername: [user:name]\r\n\r\nSie können hierzu auch einfach auf den folgenden Link klicken oder diese Adresse in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Login-Link, der nur einmal benutzt werden kann. Nach der ersten Anmeldung ändern Sie bitte sofort Ihr Passwort.\r\n\r\n-- Team Betriebsportal KONSENS"
+register_no_approval_required:
+  subject: 'Herzlich Willkommen beim Betriebsportal KONSENS'
+  body: "Herzlich Willkommen [user:name],\r\n\r\nvielen Dank für Ihre Registrierung beim Betriebsportal KONSENS.\r\n\r\nBenutzername: [user:name]\r\n\r\nSie können sich nun mit dem folgenden Link erstmalig anmelden:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Login-Link, der nur einmal benutzt werden kann. Nach der ersten Anmeldung &auml;ndern Sie bitte sofort Ihr Passwort.\r\n\r\nZukünftig können Sie sich über folgenden Link im BpK anmelden:\r\n\r\nURL: [site:url]\r\n\r\nInformation zum Status Ihres Accounts:\r\nAktuell ist Ihr Account aktiv. Wenn Sie Benachrichtigungen konfigurieren, erhalten Sie diese per Email.\r\nWenn Sie sich länger als ein Jahr nicht am BpK anmelden, wird Ihr Account nach vorheriger Ankündigung automatisch deaktiviert. \r\nSie erhalten danach keine Emailbenachrichtigungen mehr. Durch einen erneuten Login wird Ihr Account automatisch wieder reaktiviert.\r\n\r\n-- Team Betriebsportal KONSENS"
+register_pending_approval:
+  subject: 'Account details for [user:display-name] at [site:name] (pending admin approval)'
+  body: "Herzlich Willkommen [user:name],\r\n\r\nvielen Dank für Ihre Registrierung. Wir bemühen uns um eine schnelle Bearbeitung. Nach der Freischaltung können sich mit dem folgenden Benutzernamen und Passwort hier anmelden:\r\n\r\nURL: [site:login-url]\r\nBenutzername: [user:name]\r\n\r\nSie können hierzu auch einfach auf den folgenden Link klicken oder diese Adresse in Ihren Browser kopieren:\r\n\r\n[user:one-time-login-url]\r\n\r\nDies ist ein temporärer Login-Link, der nur einmal benutzt werden kann. Nach der ersten Anmeldung ändern Sie bitte sofort Ihr Passwort.\r\n\r\n-- Team Betriebsportal KONSENS"
+register_pending_approval_admin:
+  subject: 'Account details for [user:display-name] at [site:name] (pending admin approval)'
+  body: "[user:display-name] has applied for an account.\r\n\r\n[user:edit-url]"
+status_activated:
+  subject: 'Ihr Benutzerkonto im Betriebsportal KONSENS wurde reaktiviert'
+  body: "Hallo [user:name],\r\n\r\nIhr Benutzerkonto wurde reaktiviert.\r\n\r\nBitte melden Sie sich heute noch unter Verwendung Ihres gewohnten Benutzernamens und Passworts am BpK an, um nicht wieder von der heute Nacht anstehenden automatischen Sperre erfasst zu werden. Diese betrifft alle Benutzerkonten, die länger als ein Jahr nicht aktiv waren. \r\nWenn Sie ein neues Passwort benötigen, können Sie dieses über das Anmeldeformular anfordern.\r\nBei Problemen mit der Anmeldung verwenden Sie bitte das Kontaktformular.\r\nURL: http://betriebsportal-konsens.hessen.testa-de.net\r\n\r\n-- Team Betriebsportal KONSENS"
+status_blocked:
+  subject: 'Account details for [user:name] at [site:name] (blocked)'
+  body: '[user:name], Your account on [site:name] has been blocked.'
+status_canceled:
+  subject: 'Details für Benutzerkonto [user:display-name] auf [site:name] (abgebrochen)'
+  body: "[user:display-name],\r\n\r\nYour account on [site:name] has been canceled.\r\n\r\n--  [site:name] team"

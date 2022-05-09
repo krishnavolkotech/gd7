@@ -35,28 +35,26 @@ dependencies:
 third_party_settings:
   field_group:
     group_meta_data:
-      label: '1 Meta-Daten'
-      weight: 0
       children:
         - field_custom_title
         - field_related_transfer_number
         - field_other_services
         - field_recipients
+      label: '1 Meta-Daten'
+      parent_name: ''
+      weight: 0
       format_type: html_element
       format_settings:
         label: '1 Meta-Daten'
+        classes: ''
+        id: ''
         element: div
         show_label: true
         label_element: h3
         attributes: ''
         effect: none
         speed: fast
-        id: ''
-        classes: ''
-      parent_name: ''
     group_content_information:
-      label: '2 Fachlich-inhaltliche Angaben'
-      weight: 1
       children:
         - field_intial_situation
         - field_professional_conditions
@@ -71,141 +69,143 @@ third_party_settings:
         - field_creators
         - field_contact
         - upload
+      label: '2 Fachlich-inhaltliche Angaben'
+      parent_name: ''
+      weight: 1
       format_type: html_element
       format_settings:
         label: '2 Fachlich-inhaltliche Angaben'
+        classes: ''
+        id: ''
         element: div
         show_label: true
         label_element: h3
         attributes: ''
         effect: none
         speed: fast
-        id: ''
-        classes: ''
-      parent_name: ''
 id: node.quickinfo.default
 targetEntityType: node
 bundle: quickinfo
 mode: default
 content:
   field_business_impact:
-    label: above
-    weight: 8
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 8
     region: content
   field_business_impact_services:
-    label: above
-    weight: 10
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 10
     region: content
   field_contact:
-    label: above
-    weight: 15
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 15
     region: content
   field_creators:
-    label: above
-    weight: 14
     type: basic_string
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 14
     region: content
   field_custom_title:
-    weight: 0
+    type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: basic_string
+    weight: 0
     region: content
   field_dates:
-    label: above
-    weight: 13
     type: basic_string
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 13
     region: content
   field_depend_other_services:
-    label: above
-    weight: 7
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 7
     region: content
   field_intial_situation:
-    label: above
-    weight: 4
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 4
     region: content
   field_other_services:
-    label: above
-    weight: 2
     type: list_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 2
     region: content
   field_professional_conditions:
-    label: above
-    weight: 5
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 5
     region: content
   field_recipients:
-    label: above
-    weight: 3
     type: list_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 3
     region: content
   field_related_transfer_number:
-    weight: 1
+    type: basic_string
     label: above
     settings: {  }
     third_party_settings: {  }
-    type: basic_string
+    weight: 1
     region: content
   field_special_notes:
-    label: above
-    weight: 12
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 12
     region: content
   field_tech_requirements:
-    label: above
-    weight: 6
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 6
     region: content
   field_technical_impact:
-    label: above
-    weight: 9
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 9
     region: content
   field_technical_impact_services:
-    label: above
-    weight: 11
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 11
     region: content
   upload:
+    type: file_table_alter
     label: above
     settings: {  }
-    type: file_table_alter
-    weight: 16
     third_party_settings: {  }
+    weight: 16
     region: content
 hidden:
   comment: true
@@ -221,3 +221,4 @@ hidden:
   field_unique_id: true
   langcode: true
   links: true
+  search_api_excerpt: true

@@ -10,8 +10,9 @@ declare(strict_types = 1);
 /**
  * Implements hook_install().
  */
-function views_merge_rows_install() {
+function views_merge_rows_install() : void {
   $config = \Drupal::service('config.factory')->getEditable('views.settings');
+  /** @var array $display_extenders */
   $display_extenders = $config->get('display_extenders') ?: [];
   $display_extenders[] = 'views_merge_rows';
   $config->set('display_extenders', $display_extenders);
@@ -21,8 +22,9 @@ function views_merge_rows_install() {
 /**
  * Implements hook_uninstall().
  */
-function views_merge_rows_uninstall() {
+function views_merge_rows_uninstall() : void {
   $config = \Drupal::service('config.factory')->getEditable('views.settings');
+  /** @var array $display_extenders */
   $display_extenders = $config->get('display_extenders') ?: [];
   $key = array_search('views_merge_rows', $display_extenders);
   if ($key !== FALSE) {
@@ -35,12 +37,14 @@ function views_merge_rows_uninstall() {
 /**
  * Remove Unused "use_grouping" entry in views config.
  */
-function views_merge_rows_update_8200() {
+function views_merge_rows_update_8200() : void {
   $config_factory = \Drupal::configFactory();
   foreach ($config_factory->listAll('views.view.') as $view_config_name) {
     $view = $config_factory->getEditable($view_config_name);
     $save = FALSE;
-    foreach ($view->get('display') as $display_name => $display) {
+    /** @var array $view_displays */
+    $view_displays = $view->get('display');
+    foreach ($view_displays as $display_name => $display) {
       if (isset($display['display_options']['use_grouping'])) {
         unset($display['display_options']['use_grouping']);
         $view->set("display.$display_name", $display);
@@ -56,12 +60,14 @@ function views_merge_rows_update_8200() {
 /**
  * Move config from display handler options to display extender.
  */
-function views_merge_rows_update_8201() {
+function views_merge_rows_update_8201() : void {
   $config_factory = \Drupal::configFactory();
   foreach ($config_factory->listAll('views.view.') as $view_config_name) {
     $view = $config_factory->getEditable($view_config_name);
     $save = FALSE;
-    foreach ($view->get('display') as $display_name => $display) {
+    /** @var array $view_displays */
+    $view_displays = $view->get('display');
+    foreach ($view_displays as $display_name => $display) {
       if (isset($display['display_options']['merge_rows']) || isset($display['display_options']['field_config'])) {
         $merge_rows = $display['display_options']['merge_rows'] ?? FALSE;
         $field_config = $display['display_options']['field_config'] ?? [];

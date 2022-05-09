@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\Tests\matomo\Functional;
 
 use Drupal\Component\Serialization\Json;
@@ -27,9 +29,16 @@ class MatomoCustomVariablesTest extends BrowserTestBase {
   protected $defaultTheme = 'stark';
 
   /**
+   * Admin user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
+  protected $adminUser;
+
+  /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $permissions = [
@@ -38,7 +47,7 @@ class MatomoCustomVariablesTest extends BrowserTestBase {
     ];
 
     // User to set up matomo.
-    $this->admin_user = $this->drupalCreateUser($permissions);
+    $this->adminUser = $this->drupalCreateUser($permissions);
   }
 
   /**
@@ -87,7 +96,7 @@ class MatomoCustomVariablesTest extends BrowserTestBase {
     $this->drupalGet('');
 
     foreach ($custom_vars as $slot) {
-      $this->assertRaw('_paq.push(["setCustomVariable", ' . Json::encode($slot['slot']) . ', ' . Json::encode($slot['name']) . ', ' . Json::encode($slot['value']) . ', ' . Json::encode($slot['scope']) . ']);', '[testMatomoCustomVariables]: setCustomVariable ' . $slot['slot'] . ' is shown.');
+      $this->assertSession()->responseContains('_paq.push(["setCustomVariable", ' . Json::encode($slot['slot']) . ', ' . Json::encode($slot['name']) . ', ' . Json::encode($slot['value']) . ', ' . Json::encode($slot['scope']) . ']);');
     }
 
     // Test whether tokens are replaced in custom variable names.
@@ -127,14 +136,13 @@ class MatomoCustomVariablesTest extends BrowserTestBase {
       ],
     ];
     $this->config('matomo.settings')->set('custom.variable', $custom_vars)->save();
-    $this->verbose('<pre>' . print_r($custom_vars, TRUE) . '</pre>');
 
     $this->drupalGet('');
-    $this->assertRaw('_paq.push(["setCustomVariable", 1, ' . Json::encode("Name: $site_slogan") . ', ' . Json::encode("Value: $site_slogan") . ', "visit"]', '[testMatomoCustomVariables]: Tokens have been replaced in custom variable.');
-    $this->assertNoRaw('_paq.push(["setCustomVariable", 2,', '[testMatomoCustomVariables]: Value with empty name is not shown.');
-    $this->assertNoRaw('_paq.push(["setCustomVariable", 3,', '[testMatomoCustomVariables]: Name with empty value is not shown.');
-    $this->assertNoRaw('_paq.push(["setCustomVariable", 4,', '[testMatomoCustomVariables]: Empty name and value is not shown.');
-    $this->assertNoRaw('_paq.push(["setCustomVariable", 5,', '[testMatomoCustomVariables]: Empty name and value is not shown.');
+    $this->assertSession()->responseContains('_paq.push(["setCustomVariable", 1, ' . Json::encode("Name: {$site_slogan}") . ', ' . Json::encode("Value: {$site_slogan}") . ', "visit"]');
+    $this->assertSession()->responseNotContains('_paq.push(["setCustomVariable", 2,');
+    $this->assertSession()->responseNotContains('_paq.push(["setCustomVariable", 3,');
+    $this->assertSession()->responseNotContains('_paq.push(["setCustomVariable", 4,');
+    $this->assertSession()->responseNotContains('_paq.push(["setCustomVariable", 5,');
   }
 
 }

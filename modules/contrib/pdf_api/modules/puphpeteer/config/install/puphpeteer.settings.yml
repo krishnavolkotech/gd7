@@ -1,0 +1,13 @@
+executable_path: ''
+idle_timeout: 5
+read_timeout: 5
+stop_timeout: 5
+log_to_node_console: false
+debug: false
+log_to_browser_console: false
+headless: true
+triggerDebugging: false
+devTools: false
+slowMo: 0
+source: printable
+pagedjs: false

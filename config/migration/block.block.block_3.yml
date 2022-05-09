@@ -17,8 +17,8 @@ plugin: 'block_content:4e118b88-554c-48c7-9de7-56862d0892d9'
 settings:
   id: 'block_content:4e118b88-554c-48c7-9de7-56862d0892d9'
   label: ''
-  provider: block_content
   label_display: '0'
+  provider: block_content
   status: true
   info: ''
   view_mode: full

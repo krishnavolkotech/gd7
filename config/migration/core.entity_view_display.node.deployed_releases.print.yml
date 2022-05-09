@@ -35,11 +35,11 @@ bundle: deployed_releases
 mode: print
 content:
   field_environment:
-    label: above
-    weight: 13
     type: text_default
+    label: above
     settings: {  }
     third_party_settings: {  }
+    weight: 13
     region: content
   links:
     weight: 100

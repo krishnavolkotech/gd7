@@ -24,7 +24,8 @@ use Symfony\Component\Filesystem\Filesystem;
  *   id = "mpdf",
  *   module = "pdf_api",
  *   title = @Translation("mPDF"),
- *   description = @Translation("PDF generator using the mPDF generator.")
+ *   description = @Translation("PDF generator using the mPDF generator."),
+ *   required_class = "Mpdf\Mpdf"
  * )
  */
 class MpdfGenerator extends PdfGeneratorBase implements ContainerFactoryPluginInterface {

@@ -28,7 +28,7 @@ class QueueMailConfigurationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['queue_mail'];
+  protected static $modules = ['queue_mail'];
 
   /**
    * {@inheritdoc}
@@ -44,7 +44,6 @@ class QueueMailConfigurationTest extends BrowserTestBase {
    */
   public function testDefaultConfiguration() {
     $this->drupalLogin($this->adminUser);
-
     $this->drupalGet(static::CONFIGURATION_PATH);
 
     $default_values = [
@@ -65,6 +64,7 @@ class QueueMailConfigurationTest extends BrowserTestBase {
    */
   public function testChangeConfiguration() {
     $this->drupalLogin($this->adminUser);
+    $this->drupalGet(static::CONFIGURATION_PATH);
 
     $edit = [
       'queue_mail_keys' => '*',
@@ -73,9 +73,9 @@ class QueueMailConfigurationTest extends BrowserTestBase {
       'threshold' => 100,
       'requeue_interval' => 21600,
     ];
+    $this->submitForm($edit, 'Save configuration');
 
-    $this->drupalPostForm(static::CONFIGURATION_PATH, $edit, 'Save configuration');
-
+    $this->drupalGet(static::CONFIGURATION_PATH);
     foreach ($edit as $field => $value) {
       $this->assertSession()->fieldValueEquals($field, $value);
     }
@@ -94,7 +94,8 @@ class QueueMailConfigurationTest extends BrowserTestBase {
       'queue_mail_queue_time'  => 30,
       'queue_mail_queue_wait_time' => 35,
     ];
-    $this->drupalPostForm(static::CONFIGURATION_PATH, $edit, 'Save configuration');
+    $this->drupalGet(static::CONFIGURATION_PATH);
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseContains($validation_text);
 
     // "Wait time per item" value is less than "Queue processing time" value.
@@ -102,7 +103,7 @@ class QueueMailConfigurationTest extends BrowserTestBase {
       'queue_mail_queue_time'  => 30,
       'queue_mail_queue_wait_time' => 25,
     ];
-    $this->drupalPostForm(static::CONFIGURATION_PATH, $edit, 'Save configuration');
+    $this->submitForm($edit, 'Save configuration');
     $this->assertSession()->responseNotContains($validation_text);
   }
 
