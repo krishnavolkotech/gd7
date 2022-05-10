@@ -1748,7 +1748,7 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
       }
       else {
         if ($group_alias && $node_alias) {
-	    $cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($node_alias);
+	    $cleanedtitle = custom_url_cleaner($node_alias);
 	    $new_alias = "/".$group_alias.'/'. $cleanedtitle;
             $entity->path = [
               'alias' => $new_alias,

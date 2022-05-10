@@ -271,7 +271,8 @@ function manual_redirect_save($nid, $old_alias, $node) {
     unset($path_details[1]);
   }
   $alias_string = implode("/", $path_details);
-  $cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($alias_string);
+  $cleanedtitle = custom_url_cleaner($alias_string);
+  //$cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($alias_string);
   $new_alias = $group? "/". $group . "/".$cleanedtitle: "/".$cleanedtitle;
 
   $path_alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
@@ -1736,4 +1737,15 @@ function allowed_external_host() {
     return FALSE;
   }   
   return TRUE;
+}
+
+function custom_url_cleaner($alias) {
+  $path_details = explode("/", $alias);
+  $cleaned_title = '';
+  foreach($path_details as $path) {
+    if ($path) {
+      $cleanedtitle .= \Drupal::service("pathauto.alias_cleaner")->cleanString($path). "/";
+    }
+  }
+  return rtrim($cleanedtitle, '/');
 }

@@ -364,7 +364,7 @@ function hzd_customizations_update_8066(&$sandbox) {
  * Implements hook_update_N() on Module hzd_customizarions Update # 8067.
  * Removing special Charecters from URl Aliases
  */
-function hzd_customizations_update_8067(&$sandbox) {
+function hzd_customizations_update_8068(&$sandbox) {
   custom_find_all_alias_special_charecters();
   \Drupal::messenger()->addMessage('Replaced Special charecters in Path alias and added redirect.');
 }
@@ -401,8 +401,10 @@ function custom_manual_redirect_save($nid, $old_alias, $node) {
     unset($path_details[0]);
     unset($path_details[1]);
   }
+
   $alias_string = implode("/", $path_details);
-  $cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($alias_string);
+  $cleanedtitle = custom_url_cleaner($alias_string);
+  //$cleanedtitle = \Drupal::service("pathauto.alias_cleaner")->cleanString($alias_string);
   $new_alias = $group? "/". $group . "/".$cleanedtitle: "/".$cleanedtitle;
 
   $path_alias_storage = \Drupal::entityTypeManager()->getStorage('path_alias');
