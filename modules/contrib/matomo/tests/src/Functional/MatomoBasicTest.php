@@ -68,21 +68,6 @@ class MatomoBasicTest extends BrowserTestBase {
     $this->drupalGet('admin/config/system/matomo');
     $this->assertSession()->responseContains('Matomo site ID');
 
-    // Check for account code validation.
-    $edit['matomo_site_id'] = $this->randomMachineName(2);
-    $edit['matomo_url_http'] = 'http://www.example.com/matomo/';
-    $this->drupalGet('admin/config/system/matomo');
-    $this->submitForm($edit, 'Save configuration');
-    $this->assertSession()->pageTextContains('Matomo site ID must be a number.');
-
-    // Check that a validation error is shown for exponential number formats.
-    // These are accepted by the core number field validation, but are not valid
-    // as a Matomo site ID.
-    $edit['matomo_site_id'] = '12.34e9';
-    $this->drupalGet('admin/config/system/matomo');
-    $this->submitForm($edit, 'Save configuration');
-    $this->assertSession()->pageTextContains('A valid Matomo site ID is an integer only.');
-
     // Verify that invalid URLs throw a form error.
     $edit = [];
     $edit['matomo_site_id'] = 1;

@@ -90,7 +90,7 @@ function matomo_requirements($phase) {
     $config = \Drupal::config('matomo.settings');
 
     // Raise warning if Matomo user account has not been set yet.
-    if (!preg_match('/^\d{1,}$/', $config->get('site_id') ?? '')) {
+    if (empty($config->get('site_id') ?? '')) {
       $requirements['matomo_site_id'] = [
         'title' => t('Matomo module'),
         'description' => t('Matomo module has not been configured yet. Please configure its settings from the <a href=":url">Matomo settings page</a>.', [':url' => Url::fromRoute('matomo.admin_settings_form')->toString()]),

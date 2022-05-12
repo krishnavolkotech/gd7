@@ -79,6 +79,7 @@
         "drupal/simplify": "^1.2",
         "drupal/subpathauto": "^1.1",
         "drupal/swiftmailer": "^2.0",
+        "drupal/symfony_mailer": "^1.0@alpha",
         "drupal/ultimate_cron": "^2.0@alpha",
         "drupal/view_unpublished": "^1.0",
         "drupal/views_merge_rows": "^2.2",

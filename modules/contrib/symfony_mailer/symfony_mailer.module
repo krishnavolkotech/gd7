@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * Allows sending emails with Symfony Mailer.
+ */
+
+use Drupal\symfony_mailer\EmailInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function symfony_mailer_theme($existing, $type, $theme, $path) {
+  return [
+    'email' => [
+      'variables' => [
+        'email' => NULL,
+      ],
+      'mail theme' => TRUE,
+    ],
+  ];
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK() for email.
+ */
+function symfony_mailer_theme_suggestions_email(array $variables) {
+  return array_slice($variables['email']->getSuggestions('email', '__'), 1);
+}
+
+/**
+ * Prepares variables for email template.
+ *
+ * Default template: email.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - email: An associative array containing the Email object.
+ */
+function template_preprocess_email(&$variables) {
+  $email = $variables['email'];
+  $variables['body'] = $email->getBody();
+  $variables = array_merge($variables, $email->getVariables());
+}

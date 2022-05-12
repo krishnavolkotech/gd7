@@ -97,6 +97,7 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
             'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\Mime\\' => 23,
+            'Symfony\\Component\\Mailer\\' => 25,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
             'Symfony\\Component\\Finder\\' => 25,
@@ -145,6 +146,7 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
         ),
         'H' => 
         array (
+            'Http\\Message\\' => 13,
             'Html2Text\\' => 10,
         ),
         'G' => 
@@ -329,6 +331,10 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
         array (
             0 => __DIR__ . '/..' . '/symfony/mime',
         ),
+        'Symfony\\Component\\Mailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/mailer',
+        ),
         'Symfony\\Component\\HttpKernel\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/http-kernel',
@@ -461,6 +467,10 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
         'Laminas\\Diactoros\\' => 
         array (
             0 => __DIR__ . '/..' . '/laminas/laminas-diactoros/src',
+        ),
+        'Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/message-factory/src',
         ),
         'Html2Text\\' => 
         array (
@@ -664,6 +674,7 @@ class ComposerStaticInit6087419e9ae938f2aee54e4f4d91f481
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'Dompdf\\Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'Drupal' => __DIR__ . '/../..' . '/core/lib/Drupal.php',

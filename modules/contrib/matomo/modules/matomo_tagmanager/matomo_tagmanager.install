@@ -10,7 +10,7 @@ declare(strict_types = 1);
 /**
  * Convert container ID into container URL. Remove settings.
  */
-function matomo_tagmanager_update_8000(): void {
+function matomo_tagmanager_update_8001(): void {
   $container_location = '';
   $tagmanager_config = \Drupal::configFactory()->getEditable('matomo_tagmanager.settings');
   // Delete no more needed config.

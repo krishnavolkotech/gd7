@@ -2,7 +2,7 @@
  * @file
  * Extends methods from core/misc/tabledrag.js.
  */
- (function ($) {
+(function ($) {
 
   // Save the original prototype.
   var prototype = Drupal.tableDrag.prototype;

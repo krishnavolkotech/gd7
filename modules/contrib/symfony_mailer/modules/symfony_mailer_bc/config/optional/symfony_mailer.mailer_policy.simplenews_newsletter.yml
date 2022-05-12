@@ -1,0 +1,13 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - simplenews
+id: simplenews_newsletter
+configuration:
+  email_body:
+    content:
+      value: "<div class=\"clearfix\">\r\n  {{ body }}\r\n</div>\r\n\r\n{% if not opt_out_hidden %}\r\n  <p class=\"simplenews-unsubscribe\"><a href=\"[simplenews-subscriber:unsubscribe-url]\">Unsubscribe from this newsletter</a></p>\r\n{% endif %}\r\n\r\n{% if test %}\r\n  <p class=\"simplenews-test-message\">This is a test version of the newsletter.</p>\r\n{% endif %}"
+      format: email_html
+  email_subject:
+    value: '[[simplenews-newsletter:name]] [node:title]'

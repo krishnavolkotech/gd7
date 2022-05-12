@@ -90,13 +90,10 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     $form['general']['matomo_site_id'] = [
       '#default_value' => $config->get('site_id'),
       '#description' => $this->t('The user account number is unique to the websites domain. Click the <strong>Settings</strong> link in your Matomo account, then the <strong>Websites</strong> tab and enter the appropriate site <strong>ID</strong> into this field.'),
-      '#maxlength' => 20,
       '#required' => TRUE,
       '#size' => 15,
       '#title' => $this->t('Matomo site ID'),
-      '#type' => 'number',
-      '#min' => 0,
-      '#step' => 1,
+      '#type' => 'textfield',
     ];
     $form['general']['matomo_url_http'] = [
       '#default_value' => $config->get('url_http'),
@@ -615,10 +612,6 @@ class MatomoAdminSettingsForm extends ConfigFormBase {
     $form_state->setValue('matomo_codesnippet_after', \trim($form_state->getValue('matomo_codesnippet_after')));
     $form_state->setValue('matomo_visibility_user_role_roles', \array_filter($form_state->getValue('matomo_visibility_user_role_roles')));
     $form_state->setValue('matomo_trackmessages', \array_filter($form_state->getValue('matomo_trackmessages')));
-
-    if (!\preg_match('/^\d+$/', $form_state->getValue('matomo_site_id'))) {
-      $form_state->setErrorByName('matomo_site_id', $this->t('A valid Matomo site ID is an integer only.'));
-    }
 
     $this->validateUrl('matomo_url_http', $form, $form_state);
     $this->validateUrl('matomo_url_https', $form, $form_state);
