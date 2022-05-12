@@ -1747,34 +1747,43 @@ function cust_group_entity_presave(Drupal\Core\Entity\EntityInterface $entity){
           ];
       }
       else {
-        if ($group_alias && $node_alias) {
-	    $cleanedtitle = custom_url_cleaner($node_alias);
-	    $new_alias = "/".$group_alias.'/'. $cleanedtitle;
-            $entity->path = [
-              'alias' => $new_alias,
-              'pathauto' => PathautoState::SKIP,
-            ];
-	/*
-	  if(strpos($node_alias, "/".$group_alias) === 0) {
+          if ($group_alias && $node_alias) {
+              $cleanedtitle = custom_url_cleaner($node_alias);
+              $new_alias = "/".$group_alias.'/'. $cleanedtitle;
+              $entity->path = [
+                  'alias' => $new_alias,
+                  'pathauto' => PathautoState::SKIP,
+              ];
           }
           else {
-            $new_alias = "/".$group_alias. $node_alias;
-	    	        dump("IN ELSE ". $new_alias);	
-            $entity->path = [
-              'alias' => $new_alias,
-              'pathauto' => PathautoState::SKIP,
-            ];
-          }
-	 */
-        }
-        else {
-          $entity->path = [
-            'pathauto' => PathautoState::CREATE,
-          ];
-        }// END OF groupAlias
+              $entity->path = [
+                  'pathauto' => PathautoState::CREATE,
+              ];
+          }// END OF groupAlias
       }
-      
     }
+  }
+  else {
+      if ($entity->getEntityTypeId() == 'node') {
+          $node_alias = false;
+          if(isset($entity->path->getValue('list')[0]['alias'])){
+              $node_alias = $entity->path->getValue('list')[0]['alias'];
+          }
+
+          if ($node_alias) {
+              $cleanedtitle = custom_url_cleaner($node_alias);
+              $new_alias = "/". $cleanedtitle;
+              $entity->path = [
+                  'alias' => $new_alias,
+                  'pathauto' => PathautoState::SKIP,
+              ];
+          }
+          else {
+              $entity->path = [
+                  'pathauto' => PathautoState::CREATE,
+              ];
+          }
+      }
   }
 }
 
