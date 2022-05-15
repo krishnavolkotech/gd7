@@ -1,0 +1,11 @@
+--- core/modules/views/src/Plugin/views/style/StylePluginBase.php
++++ core/modules/views/src/Plugin/views/style/StylePluginBase.php
+@@ -651,7 +651,7 @@ public function renderGrouping($records, $groupings = array(), $group_rendered =
+    * @param array $result
+    *   The result array from $view->result
+    */
+-  protected function renderFields(array $result) {
++  public function renderFields(array $result) {
+     if (!$this->usesFields()) {
+       return;
+     }
