@@ -42,7 +42,7 @@ trait ResourceObjectEntityLoaderTrait {
    *   Thrown in case the requested entity type does not support UUIDs.
    */
   public function loadEntityFromResourceObject(ResourceObject $resource_object) {
-    return $this->entityRepository->loadEntityByUuid($resource_object->getResourceType(), $resource_object->getId());
+    return $this->entityRepository->loadEntityByUuid($resource_object->getResourceType()->getEntityTypeId(), $resource_object->getId());
   }
 
 }
