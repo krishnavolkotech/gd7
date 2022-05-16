@@ -100,3 +100,32 @@ hzd_sams.norm_deprecated_tab:
   base_route: hzd_sams.view_norm_final
   weight: 0
   
+hzd_sams.dsl_final_tab:
+  title: Final
+  route_name: hzd_sams.view_dsl_final
+  base_route: hzd_sams.view_dsl_final
+  weight: 0
+  
+hzd_sams.seu_final_tab:
+  title: Final
+  route_name: hzd_sams.view_seu_final
+  base_route: hzd_sams.view_seu_final
+  weight: 0
+
+hzd_sams.seu_rc_tab:
+  title: RC
+  route_name: hzd_sams.view_seu_rc
+  base_route: hzd_sams.view_seu_final
+  weight: 0
+  
+hzd_sams.seu_test_tab:
+  title: Test
+  route_name: hzd_sams.view_seu_test
+  base_route: hzd_sams.view_seu_final
+  weight: 0
+  
+hzd_sams.seu_deprecated_tab:
+  title: Deprecated
+  route_name: hzd_sams.view_seu_deprecated
+  base_route: hzd_sams.view_seu_final
+  weight: 0  
