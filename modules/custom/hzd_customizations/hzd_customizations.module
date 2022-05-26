@@ -23,6 +23,7 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\legal\Entity\Conditions;
 use Drupal\Core\Site\Settings;
 use Drupal\redirect\Entity\Redirect;
+use Drupal\Core\Database\Database;
 
 if (!defined('SITE_ADMIN')) {
   define('SITE_ADMIN', 'site_administrator');
@@ -840,7 +841,16 @@ function custom_quickinfo(&$form, FormStateInterface $form_state) {
  * Implements hook_views_query_alter().
  */
 function hzd_customizations_views_query_alter(ViewExecutable $view, $query) {
+/*
+  if ($view->id() == 'hzd_group_members' && $view->getDisplay()->display['id'] == 'approved') {
+      $query->where[]['conditions'][] = [
+        "field"    => 'group_content_field_data.type',
+        "value"    => 'group_content_type%',
+        "operator" => 'NOT LIKE',
+      ];
 
+  }
+  */
   if ($view->id() == 'my_groups') {
     $member = \Drupal::currentUser();
     $user_groups = \Drupal\cust_group\CustGroupHelper::hzd_user_groups_list($member->id());
