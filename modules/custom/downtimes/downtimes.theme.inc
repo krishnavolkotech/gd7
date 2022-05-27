@@ -23,7 +23,7 @@ use Drupal\Core\Url;
 /*
  * Custom service checkbox theme function
  */
-function theme_service_checkbox($element) {
+function template_preprocess_service_checkbox($element) {
   //_form_set_attributes($element, array('form-checkbox'));
   $checkbox = '<input ';
   $checkbox .= 'type="checkbox" ';
@@ -53,13 +53,13 @@ function theme_service_checkbox($element) {
  * Custom checkboxes theme function
  */
 
-function theme_service_checkboxes(&$variables) {
+function template_preprocess_service_checkboxes(&$variables) {
   /* Uncomment the below line to dump array values */
   $html = "";
   $element = $variables['element'];
   foreach ($element['#options'] as $key => $val) {
     /* Use our custom checkbox theme function */
-    $html .= theme_service_checkbox($element[$key], $key);
+    $html .= template_preprocess_service_checkbox($element[$key], $key);
   }
-  return $html;
+  $variables['html_element'] = $html;
 }

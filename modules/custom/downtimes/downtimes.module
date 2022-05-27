@@ -818,7 +818,6 @@ function downtimes_theme() {
     ),
     'service_checkboxes' => array(
       'render element' => 'element',
-      'function' => 'theme_service_checkboxes',
       'file' => 'downtimes.theme.inc',
     ),
   );
