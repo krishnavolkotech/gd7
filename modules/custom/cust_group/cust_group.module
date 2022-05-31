@@ -1869,3 +1869,21 @@ function delete_path_alias($source) {
     $alias_object->delete();
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the node form.
+ */
+function cust_group_form_group_form_alter(&$form, FormStateInterface $form_state) {
+  $form['#validate'][] = 'group_path_form_validate';
+}
+
+function group_path_form_validate($form, &$form_state){
+  $path_value = $form_state->getValue('path');
+  $automatic_value = $path_value['0']['pathauto'];
+  $alias = $path_value['0']['alias'];
+  if($automatic_value == '0'){
+    if(empty($alias)){
+      $form_state->setErrorByName('form', 'You must provide path to this page.');
+    }
+  }
+}
