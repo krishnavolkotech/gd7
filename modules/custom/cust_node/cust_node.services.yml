@@ -1,0 +1,5 @@
+services:
+  cust_node_init_revision:
+    class: Drupal\cust_node\EventSubscriber\RevisionSubscriber
+    tags:
+      - {name: event_subscriber} 
