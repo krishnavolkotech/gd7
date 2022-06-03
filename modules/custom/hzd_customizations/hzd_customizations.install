@@ -436,3 +436,60 @@ function custom_manual_redirect_save($nid, $old_alias, $node) {
   ])->save();
 
 }
+
+
+
+function hzd_customizations_update_8069(){
+  $database = \Drupal::database();
+  $query = $database->query("select alias, count(alias) as count from path_alias group by alias having count(alias) > 1;");
+  $result = $query->fetchAll();
+
+  // echo '<pre>';
+  // print_r($result);
+  foreach($result as $alias){
+    $path = $alias->alias;
+    if($path){
+      $query_str = "SELECT * FROM `path_alias` WHERE `alias` = '$path';";
+      $query = $database->query($query_str);
+      $result1 = $query->fetchAll();
+      // print_r($result1);
+      if(count($result1) > 1){
+        $first_path = $result1[0];
+        $same_results = true;
+        foreach($result1 as $multi_alias){
+          if(($first_path->path != $multi_alias->path) && str_contains($first_path->path, '/node/')){
+            // ignore for this condition; if same alias exist for different source path
+            $same_results = false;
+          }
+        }
+        
+        if($same_results && str_contains($first_path->path, '/node/')){
+          print_r($result1);
+          $_path = $first_path->path;
+          $_alias = $first_path->alias;
+          // print_r($first_path);
+          $explode_path = explode('/', $_path);
+          // print_r($explode_path);
+          if($explode_path[2]){
+            $nid = $explode_path[2];
+            //echo $_alias_node = \Drupal::service('path_alias.manager')->getAliasByPath('/node/'.$nid);
+            $node = \Drupal\node\Entity\Node::load($nid); 
+            $node_array = $node->toArray();
+            //print_r($node_array['path']);
+            if(isset($node_array['path'][0]['alias'])){
+              $_alias_node = $node_array['path'][0]['alias'];
+              $_alias_node_pid = $node_array['path'][0]['pid'];
+              // $_query = "DELETE FROM `path_alias` WHERE `path_alias`.`id` != $_alias_node_pid AND `alias` = '$_alias_node'";
+              $_query = "DELETE FROM `path_alias` WHERE `path_alias`.`id` != $_alias_node_pid AND `path` = '$_path'";
+              // $query = $database->query($_query)->execute();
+              \Drupal::database()->query($_query);
+            }
+
+          }
+        }
+        
+      }
+    }
+  }
+
+}
