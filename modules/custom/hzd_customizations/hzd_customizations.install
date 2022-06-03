@@ -436,3 +436,52 @@ function custom_manual_redirect_save($nid, $old_alias, $node) {
   ])->save();
 
 }
+
+function hzd_customizations_update_8067(&$sandbox) {
+
+    $db = \Drupal::database();
+    $result = $db->select('node', 'pa')
+                 ->fields('pa', array('nid'))
+                 ->condition('type', 'page');
+    $nids = $result->execute()->fetchAllKeyed();
+    $nids = array_keys($nids);
+
+    if($nids){
+      foreach($nids as $nid){
+        $node = \Drupal\node\Entity\Node::load($nid);        
+        if (is_object($node)) {
+          $node_array = $node->toArray();
+          if(isset($node_array['path'][0]['alias'])){
+            $alias_from_node = $node_array['path'][0]['alias'];
+            // do nothing
+          }else{
+            $alias = \Drupal::service('path_alias.manager')->getAliasByPath('/node/'.$nid);
+            if($alias){
+              $set_alias = [
+                'alias' => $alias,
+                'langcode' => "de",
+              ];
+              $node->set('path', $set_alias);
+
+              try {
+                $node->save();
+                \Drupal::messenger()->addMessage('Success path set : nid---alias :- ' . $nid .'---'. $alias);
+              }
+              
+              //catch exception
+              catch(Exception $e) {
+                \Drupal::messenger()->addMessage('Failed path set : nid---alias :- ' . $nid .'---'. $alias, 'error');
+              }
+
+            }else{
+              // Generate the new alias.
+              // todo :
+            }
+
+          }
+        }
+      }
+    }
+
+
+}
